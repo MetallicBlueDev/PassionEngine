@@ -1,63 +1,52 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require("secure.class.php");
-    Core_Secure::checkInstance();
+	require("secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Nom des tables de base de donnÃ©es utilisÃ©e par le moteur.
- *
- * @author SÃ©bastien Villemain
+ * Constantes pour les noms des tables de base de donnée
+ * Utilisabe via Core_Table::MaTable
+ * 
+ * @author Sébastien Villemain
  */
 class Core_Table {
-
-    /**
-     * Table des bannissements.
-     *
-     * @var string
-     */
-    const BANNED_TABLE = "banned";
-
-    /**
-     * Table des blocks.
-     *
-     * @var string
-     */
-    const BLOCKS_TABLE = "blocks";
-
-    /**
-     * Table de la configuration du moteur.
-     *
-     * @var string
-     */
-    const CONFIG_TABLE = "configs";
-
-    /**
-     * Table des menus.
-     *
-     * @var string
-     */
-    const MENUS_TABLES = "menus";
-
-    /**
-     * Table des modules.
-     *
-     * @var string
-     */
-    const MODULES_TABLE = "modules";
-
-    /**
-     * Table des utilisateurs.
-     *
-     * @var string
-     */
-    const USERS_TABLE = "users";
-
-    /**
-     * Table des administrateurs.
-     *
-     * @var string
-     */
-    const USERS_ADMIN_TABLE = "users_admin";
-
+	
+	/**
+	 * Prefix de chaque table
+	 */ 
+	private static $prefix = "";
+	
+	// Nom des tables
+	public static $BANNED_TABLE = "banned";
+	public static $BLOCKS_TABLE = "blocks";
+	public static $CONFIG_TABLE = "configs";
+	public static $MENUS_TABLES = "menus";
+	public static $MODULES_TABLE = "modules";
+	public static $USERS_TABLE = "users";
+	public static $USERS_ADMIN_TABLE = "users_admin";
+	
+	private static $tables = array(
+		"CONFIG_TABLE", "USERS_TABLE",
+		"BANNED_TABLE", "BLOCKS_TABLE",
+		"MODULES_TABLE", "USERS_ADMIN_TABLE",
+		"MENUS_TABLES"
+	);
+	
+	/**
+	 * Ajoute le prefixe pour chaque table
+	 * 
+	 * @param $prefix
+	 */
+	public static function setPrefix($prefix) {
+		// Aucun préfixe n'a été renseigné
+		if (empty(self::$prefix) && !empty($prefix)) {
+			self::$prefix = $prefix;
+			// Application du préfixe
+			foreach (self::$tables as $value) {
+				self::$$value = $prefix . "_" . self::$$value;
+			}
+		}
+	}
 }
+?>

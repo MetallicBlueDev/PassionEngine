@@ -1,13 +1,13 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 class Exec_Marker {
 	
 	/**
-	 * Marqueur de dÃ©but
+	 * Marqueur de début
 	 * 
 	 * @var array
 	 */
@@ -21,14 +21,14 @@ class Exec_Marker {
 	private static $finishTime = array();
 	
 	/**
-	 * Marque le temps de dÃ©but de gÃ©nÃ©ration
+	 * Marque le temps de début de génération
 	 */
 	public static function startTimer($name) {
 		self::$startTime[$name] = self::maker();
 	}
 	
 	/**
-	 * Marque le temps de fin de gÃ©nÃ©ration
+	 * Marque le temps de fin de génération
 	 */
 	public static function stopTimer($name) {
 		self::$finishTime[$name] = self::maker();
@@ -44,18 +44,20 @@ class Exec_Marker {
 	}
 	
 	/**
-	 * Retourne le temps qui a Ã©tÃ© mis pour gÃ©nÃ©rÃ© la page en ms
+	 * Retourne le temps qui a été mis pour généré la page
 	 * 
-	 * @return int le temps de gÃ©nÃ©ration en milliseconde (ms)
+	 * @param $virgule int chiffre après la virgule
+	 * @return int le temps de génération
 	 */
-	public static function &getTime($name) {
+	public static function &getTime($name, $virgule = 4) {
 		if (isset(self::$startTime[$name]) 
 				&& isset(self::$finishTime[$name])) {
-			$rslt = self::$finishTime[$name] - self::$startTime[$name];
-			$rslt = round($rslt, 4) * 1000;
-			return $rslt;
+					$rslt = self::$finishTime[$name] - self::$startTime[$name];
+					$rslt = round($rslt, $virgule);
+					return $rslt;
+		} else {
+			return 0;
 		}
-		return 0;
 	}
 }
 

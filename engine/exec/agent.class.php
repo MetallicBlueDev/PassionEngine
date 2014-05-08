@@ -1,62 +1,63 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
  * Analyseur de protocole USER AGENT
  * 
- * @author SÃ©bastien Villemain
+ * @author Sébastien Villemain
+ *
  */
 class Exec_Agent {
 	
 	/**
 	 * Adresse IP du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userIp;
 	
 	/**
 	 * Host du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userHost;
 	
 	/**
 	 * OS du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userOs;
 	
 	/**
 	 * Navigateur du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userBrowserName;
 	
 	/**
 	 * Version du navigateur du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userBrowserVersion;
 	
 	/**
 	 * Referer du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userReferer;
 	
 	/**
 	 * User agent complet du client
 	 * 
-	 * @var string
+	 * @var String
 	 */
 	public static $userAgent;
 	
@@ -176,9 +177,9 @@ class Exec_Agent {
 );
 	
 	/**
-	 * Execute une vÃ©rification sur l'host
+	 * Execute une vérification sur l'host
 	 * 
-	 * @return string
+	 * @return String
 	 */
 	private static function checkUserHost() {
 		if (self::$userHost == self::$userIp) {
@@ -202,11 +203,10 @@ class Exec_Agent {
 	/**
 	 * Retourne le nom du browser ou du bot
 	 * 
-	 * @return string
+	 * @return String
 	 */
 	private static function &checkUserBrower() {
 		// Boucle sur tout les Browsers et Bot connus
-		$browserName = "";
 		foreach (self::$browserRessouces as $browserAgent => $browserName) {
 			if (preg_match("/" . $browserAgent . "[ \/]([0-9\.]+)/ie", self::$userAgent, $version)
 					|| preg_match("/" . $browserAgent . "/ie", self::$userAgent, $version)) {
@@ -214,31 +214,28 @@ class Exec_Agent {
 				return $browserName;
 			}
 		}
-		$browserName = "Unknown Browser";
-		return $browserName;
+		return "Unknown Browser";
 	}
 	
 	/**
 	 * Retourne le nom de l'Os
 	 * 
-	 * @return string
+	 * @return String
 	 */
 	private static function &checkUserOs() {
 		// Boucle sur tout les systemes d'exploitations
-		$osName = "";
 		foreach (self::$osRessources as $osAgent => $osName) {
 			if (preg_match("/" . $osAgent . "/ie", self::$userAgent)) {
 				return $osName;
 			}
 		}
-		$osName = "Unknown Os";
-		return $osName;
+		return "Unknown Os";
 	}
 	
 	/**
-	 * Lance l'analyse et la rÃ©cuperation d'information sur le client
+	 * Lance l'analyse et la récuperation d'information sur le client
 	 */
-	public static function executeAnalysis() {
+	public static function getVisitorsStats() {
 		// Adresse Ip du client
 		self::$userIp = self::checkUserIp();
 		
@@ -256,7 +253,7 @@ class Exec_Agent {
 	/**
 	 * Renseigne l'adresse IP (v4) correcte du client
 	 * 
-	 * @return $userIp string
+	 * @return $userIp String
 	 */
 	private static function &checkUserIp() {
 		// Recherche de l'IP

@@ -1,47 +1,40 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+	require("../engine/core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Block login, accÃ¨s rapide Ã  une connexion, Ã  une dÃ©connexion et Ã  son compte.
+ * Block login, accès rapide a une connexion, a une déconnexion et a son compte
+ * 
+ * @author Sebastien Villemain
  *
- * @author SÃ©bastien Villemain
  */
-class Block_Comment extends Libs_BlockModel {
-
-    private $displayOnModule = array();
-
-    private function configure() {
-        list($displayOnModule) = explode('|', $this->getBlockData()->getContent());
-        $this->displayOnModule = explode('>:>', $displayOnModule); // on rï¿½cupï¿½re une chaine sous forme monModule>:>monModule2
-    }
-
-    private function &render() {
-        $content = "";
-        return $content;
-    }
-
-    public function display() {
-        $this->configure();
-        // Si le module courant fait partie de la liste des affichages
-        if (Core_Loader::isCallable("Libs_Module") && Exec_Utils::inArray(Libs_Module::getInstance()->getInfoModule()->getName(), $this->displayOnModule)) {
-            // Si la position est interieur au module (moduletop ou modulebottom)
-            if ($this->getBlockData()->getSide() == 5 || $this->getBlockData()->getSide() == 6) {
-                echo $this->render();
-            }
-        }
-    }
-
-    public function install() {
-
-    }
-
-    public function uninstall() {
-
-    }
-
+class Block_Comment extends Block_Model {
+	
+	private $displayOnModule = array();
+	
+	public function configure() {
+		list($displayOnModule) = explode('|', $this->content);
+		$this->displayOnModule = explode('>:>', $displayOnModule); // on récupère une chaine sous forme monModule>:>monModule2
+	}
+	
+	public function &render() {
+		$content = "";
+		return $content;
+	}
+	
+	public function display() {
+		$this->configure();
+		// Si le module courant fait partie de la liste des affichages
+		if (Core_Loader::isCallable("Libs_Module") && in_array(Libs_Module::$module, $this->displayOnModule)) {
+			// Si la position est interieur au module (moduletop ou modulebottom)
+			if ($this->side == 5 || $this->side == 6) {
+				echo $this->render();
+			}
+		}
+	}
 }
+
 
 ?>

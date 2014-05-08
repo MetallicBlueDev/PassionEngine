@@ -1,458 +1,711 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require("secure.class.php");
-    Core_Secure::checkInstance();
+	require("secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Gestionnaire de la communication SQL.
- *
- * @author SÃ©bastien Villemain
+ * Gestionnaire de la communication SQL
+ * 
+ * @author Sébastien Villemain
+ * 
  */
-class Core_Sql extends Base_Model {
-
-    /**
-     * Gestionnnaire SQL.
-     *
-     * @var Core_Sql
-     */
-    private static $coreSql = null;
-
-    /**
-     * ModÃ¨le de base sÃ©lectionnÃ©.
-     *
-     * @var Base_Model
-     */
-    private $selectedBase = null;
-
-    /**
-     * Nouveau gestionnaire.
-     */
-    protected function __construct() {
-        parent::__construct();
-        $baseClassName = "";
-        $loaded = false;
-        $databaseConfig = Core_Main::getInstance()->getConfigDatabase();
-
-        if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
-            // Chargement des drivers pour la base
-            $baseClassName = "Base_" . ucfirst($databaseConfig['type']);
-            $loaded = Core_Loader::classLoader($baseClassName);
-        }
-
-        if (!$loaded) {
-            Core_Secure::getInstance()->throwException("sqlType", null, array(
-                $databaseConfig['type']));
-        }
-
-        if (!Core_Loader::isCallable($baseClassName, "initializeBase")) {
-            Core_Secure::getInstance()->throwException("sqlCode", null, array(
-                $baseClassName));
-        }
-
-        try {
-            $this->selectedBase = new $baseClassName();
-            $this->selectedBase->initializeBase($databaseConfig);
-        } catch (Exception $ex) {
-            $this->selectedBase = null;
-            Core_Secure::getInstance()->throwException($ex->getMessage(), $ex);
-        }
-    }
-
-    public function initializeBase(array &$database) {
-        // NE RIEN FAIRE
-        unset($database);
-    }
-
-    public function __destruct() {
-        parent::__destruct();
-    }
-
-    /**
-     * Retourne l'instance du gestionnaire SQL.
-     *
-     * @return Core_Sql
-     */
-    public static function &getInstance() {
-        self::checkInstance();
-        return self::$coreSql;
-    }
-
-    /**
-     * VÃ©rification de l'instance du gestionnaire SQL.
-     */
-    public static function checkInstance() {
-        if (self::$coreSql === null) {
-            self::$coreSql = new self();
-        }
-    }
-
-    /**
-     * DÃ©termine si une connexion est disponible.
-     *
-     * @return boolean
-     */
-    public static function hasConnection() {
-        return self::$coreSql !== null && self::$coreSql->selectedBase !== null;
-    }
-
-    /**
-     * Retourne la liste des types de base supportÃ©
-     *
-     * @return array
-     */
-    public static function &listBases() {
-        $baseList = array();
-        $files = Core_CacheBuffer::listNames("engine/base");
-
-        foreach ($files as $fileName) {
-            // Nettoyage du nom de la page
-            $pos = strpos($fileName, ".class");
-
-            // Si c'est une page administrable
-            if ($pos !== false && $pos > 0) {
-                $baseList[] = substr($fileName, 0, $pos);
-            }
-        }
-        return $baseList;
-    }
-
-    protected function canUse() {
-        // NE RIEN FAIRE
-        return false;
-    }
-
-    /**
-     * Etablie une connexion Ã  la base de donnÃ©es.
-     */
-    public function dbConnect() {
-        $this->selectedBase->dbConnect();
-    }
-
-    /**
-     * DÃ©connexion de la base de donnÃ©es.
-     */
-    public function dbDeconnect() {
-        if (self::hasConnection()) {
-            $this->selectedBase->dbDeconnect();
-        }
-    }
-
-    /**
-     * SÃ©lectionne la base de donnÃ©es.
-     *
-     * @return boolean
-     */
-    public function &dbSelect() {
-        return $this->selectedBase->dbSelect();
-    }
-
-    /**
-     * Retourne le nombre de ligne affectÃ©es par la derniÃ¨re commande.
-     * (SELECT, SHOW, DELETE, INSERT, REPLACE and UPDATE).
-     *
-     * @return int
-     */
-    public function &affectedRows() {
-        return $this->selectedBase->affectedRows();
-    }
-
-    /**
-     * Retourne le nom de l'hÃ´te.
-     *
-     * @return string
-     */
-    public function &getDatabaseHost() {
-        return $this->selectedBase->getDatabaseHost();
-    }
-
-    /**
-     * Retourne le nom d'utilisateur.
-     *
-     * @return string
-     */
-    public function &getDatabaseUser() {
-        return $this->selectedBase->getDatabaseUser();
-    }
-
-    /**
-     * Retourne le mot de passe.
-     *
-     * @return string
-     */
-    public function &getDatabasePass() { // TODO NE PAS METTRE EN PUBLIC.
-        return $this->selectedBase->getDatabasePass();
-    }
-
-    /**
-     * Retourne le nom de la base de donnÃ©es.
-     *
-     * @return string
-     */
-    public function &getDatabaseName() {
-        return $this->selectedBase->getDatabaseName();
-    }
-
-    /**
-     * Retourne le type de base (exemple mysqli).
-     *
-     * @return string
-     */
-    public function &getDatabaseType() {
-        return $this->selectedBase->getDatabaseType();
-    }
-
-    /**
-     * Retourne le prÃ©fixe Ã  utiliser sur les tables.
-     *
-     * @return string
-     */
-    public function &getDatabasePrefix() {
-        return $this->selectedBase->getDatabasePrefix();
-    }
-
-    /**
-     * Supprime des informations.
-     *
-     * @param string $table Nom de la table
-     * @param array $where
-     * @param array $like
-     * @param string $limit
-     */
-    public function delete($table, array $where = array(), array $like = array(), $limit = "") {
-        $this->selectedBase->delete($table, $where, $like, $limit);
-
-        try {
-            $this->query();
-        } catch (Exception $ex) {
-            Core_Secure::getInstance()->throwException($ex->getMessage(), $ex);
-        }
-    }
-
-    /**
-     * Retourne un tableau contenant toutes les lignes demandÃ©es.
-     *
-     * @return array
-     */
-    public function &fetchArray() {
-        return $this->selectedBase->fetchArray();
-    }
-
-    /**
-     * Retourne un tableau contenant tous les objets demandÃ©s.
-     *
-     * @return array(object)
-     */
-    public function &fetchObject($className = null) {
-        return $this->selectedBase->fetchObject($className);
-    }
-
-    /**
-     * InsÃ¨re une ou des valeurs dans une table.
-     *
-     * @param string $table Nom de la table
-     * @param array $keys
-     * @param array $values
-     */
-    public function insert($table, array $keys, array $values) {
-        $this->selectedBase->insert($table, $keys, $values);
-
-        try {
-            $this->query();
-        } catch (Exception $ex) {
-            Core_Secure::getInstance()->throwException($ex->getMessage(), $ex);
-        }
-    }
-
-    /**
-     * Retourne l'identifiant de la derniÃ¨re ligne inserÃ©e.
-     *
-     * @return string
-     */
-    public function &insertId() {
-        return $this->selectedBase->insertId();
-    }
-
-    /**
-     * Envoi une requÃªte Sql.
-     *
-     * @param string $sql
-     * @throws Exception
-     */
-    public function query($sql = "") {
-        $sql = (!empty($sql)) ? $sql : $this->getSql();
-
-        $this->selectedBase->query($sql);
-        $this->selectedBase->resetQuoted();
-
-        // Ajout la requÃªte au log
-        if (Core_Secure::debuggingMode()) {
-            Core_Logger::addSqlRequest($sql);
-        }
-
-        // CrÃ©ation d'une exception si une rÃ©ponse est nÃ©gative (false)
-        if ($this->getQueries() === false) {
-            throw new Fail_Sql("sqlReq");
-        }
-    }
-
-    /**
-     * SÃ©lection des informations d'une table.
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function select($table, array $values, array $where = array(), array $orderby = array(), $limit = "") {
-        $this->selectedBase->select($table, $values, $where, $orderby, $limit);
-
-        try {
-            $this->query();
-        } catch (Exception $ex) {
-            Core_Secure::getInstance()->throwException($ex->getMessage(), $ex);
-        }
-    }
-
-    /**
-     * Mise Ã  jour des donnÃ©es d'une table.
-     *
-     * @param string $table Nom de la table
-     * @param array $values Sous la forme array("keyName" => "newValue")
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function update($table, array $values, array $where, array $orderby = array(), $limit = "") {
-        $this->selectedBase->update($table, $values, $where, $orderby, $limit);
-
-        try {
-            $this->query();
-        } catch (Exception $ex) {
-            Core_Secure::getInstance()->throwException($ex->getMessage(), $ex);
-        }
-    }
-
-    /**
-     * Retourne le dernier rÃ©sultat de la derniÃ¨re requÃªte executÃ©e.
-     *
-     * @return resource
-     */
-    public function &getQueries() {
-        return $this->selectedBase->getQueries();
-    }
-
-    /**
-     * Retourne la derniÃ¨re requÃªte sql.
-     *
-     * @return string
-     */
-    public function &getSql() {
-        return $this->selectedBase->getSql();
-    }
-
-    /**
-     * Retourne l'Ã©tat de la connexion.
-     *
-     * @return boolean
-     */
-    public function connected() {
-        return $this->selectedBase !== null && $this->selectedBase->connected();
-    }
-
-    /**
-     * LibÃ¨re la mÃ©moire du rÃ©sultat.
-     *
-     * @param resource $query
-     * @return boolean
-     */
-    public function &freeResult($query = null) {
-        $query = (!empty($query)) ? $query : $this->getQueries();
-        return $this->selectedBase->freeResult($query);
-    }
-
-    /**
-     * Ajoute le dernier rÃ©sultat dans le buffer typÃ© en tableau.
-     *
-     * @param string $name
-     * @param string $key clÃ© Ã  utiliser
-     */
-    public function addArrayBuffer($name, $key = "") {
-        $this->selectedBase->addArrayBuffer($name, $key);
-        $this->freeResult();
-    }
-
-    /**
-     * Ajoute le dernier rÃ©sultat dans le buffer typÃ© en object.
-     *
-     * @param string $name
-     * @param string $key clÃ© Ã  utiliser
-     */
-    public function addObjectBuffer($name, $key = "") {
-        $this->selectedBase->addObjectBuffer($name, $key);
-        $this->freeResult();
-    }
-
-    /**
-     * Retourne le buffer courant puis l'incremente.
-     *
-     * @param string $name
-     * @return array or object
-     */
-    public function &fetchBuffer($name) {
-        return $this->selectedBase->fetchBuffer($name);
-    }
-
-    /**
-     * Retourne le buffer complet choisi.
-     *
-     * @param string $name
-     * @return array or object
-     */
-    public function &getBuffer($name) {
-        return $this->selectedBase->getBuffer($name);
-    }
-
-    /**
-     * Retourne les derniÃ¨res erreurs.
-     *
-     * @return array
-     */
-    public function &getLastError() {
-        return $this->selectedBase->getLastError();
-    }
-
-    /**
-     * Marquer une clÃ© comme dÃ©jÃ  quotÃ©e.
-     *
-     * @param string $key
-     * @param boolean $value
-     */
-    public function addQuoted($key, $value = true) {
-        $this->selectedBase->addQuoted($key, $value);
-    }
-
-    public function resetQuoted() {
-        // NE RIEN FAIRE
-    }
-
-    /**
-     * Retourne la version de la base de donnÃ©es.
-     *
-     * @return string
-     */
-    public function &getVersion() {
-        return $this->selectedBase->getVersion();
-    }
-
-    /**
-     * Retourne le type d'encodage de la base de donnÃ©es.
-     *
-     * @return string
-     */
-    public function &getCollation() {
-        return $this->selectedBase->getCollation();
-    }
-
+class Core_Sql {
+	
+	/**
+	 * Instance de la base
+	 * 
+	 * @var Base_xxxx
+	 */ 
+	protected static $base = false;
+	
+	/**
+	 * Démarre une instance de communication avec la base
+	 * 
+	 * @param $db array
+	 * @return Base_Type
+	 */
+	public static function &makeInstance($db = array()) {
+		if (self::$base === false && count($db) >= 5) {			
+			// Vérification du type de base de donnée
+			if (!is_file(TR_ENGINE_DIR . "/engine/base/" . $db['type'] . ".class.php")) {
+				Core_Secure::getInstance()->debug("sqlType");
+			}
+			
+			// Chargement des drivers pour la base
+			$BaseClass = "Base_" . ucfirst($db['type']);
+			Core_Loader::classLoader($BaseClass);
+			
+			try {
+				self::$base = new $BaseClass($db);
+			} catch (Exception $ie) {
+				Core_Secure::getInstance()->debug($ie);
+			}
+		}
+		return self::$base;
+	}
+	
+	/**
+	 * Etablie une connexion à la base de donnée
+	 */
+	public static function dbConnect() {
+		self::$base->dbConnect();
+	}
+	
+	/**
+	 * Selectionne une base de donnée
+	 * 
+	 * @return boolean true succes
+	 */
+	public static function &dbSelect() {
+		$rslt = self::$base->dbSelect();
+		return $rslt;
+	}
+	
+	/**
+	 * Get number of LAST affected rows 
+	 * 
+	 * @return int
+	 */
+	public static function &affectedRows() {
+		return self::$base->affectedRows();
+	}
+	
+	/**
+	 * Supprime des informations
+	 * 
+	 * @param $table String Nom de la table
+	 * @param $where array
+	 * @param $like array
+	 * @param $limit String
+	 */
+	public static function delete($table, $where = array(), $like = array(), $limit = false) {
+		self::$base->delete($table, $where, $like, $limit);
+		
+		try {
+			self::query();
+		} catch (Exception $ie) {
+			Core_Secure::getInstance()->debug($ie);
+		}
+	}
+	
+	/**
+	 * Retourne un tableau qui contient le ligne demandée
+	 * 
+	 * @return array
+	 */
+	public static function &fetchArray() {
+		return self::$base->fetchArray();
+	}
+	
+	/**
+	 * Retourne un objet qui contient le ligne demandée
+	 * 
+	 * @return object
+	 */
+	public static function &fetchObject() {
+		return self::$base->fetchObject();
+	}
+	
+	/**
+	 * Insere une ou des valeurs dans une table
+	 * 
+	 * @param $table String Nom de la table
+	 * @param $keys array
+	 * @param $values array
+	 */
+	public static function insert($table, $keys, $values) {
+		self::$base->insert($table, $keys, $values);
+		
+		try {
+			self::query();
+		} catch (Exception $ie) {
+			Core_Secure::getInstance()->debug($ie);
+		}
+	}
+	
+	/**
+	 * Retourne l'id de la dernière ligne inserée
+	 * 
+	 * @return int
+	 */
+	public static function &insertId() {
+		return self::$base->insertId();
+	}
+	
+	/**
+	 * Get number of affected rows 
+	 * 
+	 * @param $queries
+	 * @return int
+	 */
+	public static function &numRows($queries = "") {
+		$queries = (!empty($queries)) ? $queries : self::getQueries();
+		return self::$base->numRows($queries);
+	}
+	
+	/**
+	 * Envoie une requête Sql
+	 * 
+	 * @param $Sql
+	 */
+	public static function query($sql = "") {
+		$sql = (!empty($sql)) ? $sql : self::getSql();
+		self::$base->query($sql);
+		self::$base->resetQuoted();
+		
+		if (Core_Main::statisticMarker()) Core_Exception::setSqlRequest($sql);
+		
+		// Création d'une exception si une réponse est négative (false)
+		if (self::getQueries() === false) throw new Exception("sqlReq");
+		
+		// Incremente le nombre de requête effectuées
+		Core_Exception::$numberOfRequest++;
+	}
+	
+	/**
+	 * Selection d'information
+	 * 
+	 * @param $table String
+	 * @param $values array
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit String
+	 */
+	public static function select($table, $values, $where = array(), $orderby = array(), $limit = false) {
+		self::$base->select($table, $values, $where, $orderby, $limit);
+		
+		try {
+			self::query();
+		} catch (Exception $ie) {
+			Core_Secure::getInstance()->debug($ie);
+		}
+	}
+	
+	/**
+	 * Mise à jour d'une table
+	 * 
+	 * @param $table Nom de la table
+	 * @param $values array) Sous la forme array("keyName" => "newValue")
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit String
+	 */
+	public static function update($table, $values, $where, $orderby = array(), $limit = false) {
+		self::$base->update($table, $values, $where, $orderby, $limit);
+		
+		try {
+			self::query();
+		} catch (Exception $ie) {
+			Core_Secure::getInstance()->debug($ie);
+		}
+	}
+	
+	/**
+	 * Retourne dernier résultat de la dernière requête executée
+	 *
+	 * @return mixed Ressource ID ou boolean false
+	 */
+	public static function &getQueries() {
+		return self::$base->getQueries();
+	}
+	
+	/**
+	 * Retourne la derniere requête sql
+	 * 
+	 * @return String
+	 */
+	public static function &getSql() {
+		return self::$base->getSql();
+	}
+	
+	/**
+	 * Libere la memoire du resultat
+	 * 
+	 * @param $querie Resource Id
+	 * @return boolean
+	 */
+	public static function &freeResult($querie = "") {
+		$querie = (!empty($querie)) ? $querie : self::getQueries();
+		return self::$base->freeResult($querie);
+	}
+	
+	/**
+	 * Ajoute un bout de donnée dans le buffer
+	 * 
+	 * @param $key String cles a utiliser
+	 * @param $name String
+	 */
+	public static function addBuffer($name, $key = "") {
+		self::$base->addBuffer($name, $key);
+		self::freeResult();
+	}
+	
+	/**
+	 * Retourne le buffer courant puis l'incremente
+	 * 
+	 * @param $name String
+	 * @return array - object
+	 */
+	public static function &fetchBuffer($name) {
+		return self::$base->fetchBuffer($name);
+	}
+	
+	/**
+	 * Retourne le buffer complet choisis
+	 * 
+	 * @param $name String
+	 * @return array - object
+	 */
+	public static function &getBuffer($name) {
+		return self::$base->getBuffer($name);
+	}
+	
+	/**
+	 * Retourne les dernieres erreurs
+	 * 
+	 * @return array
+	 */
+	public static function &getLastError() {
+		return self::$base->getLastError();
+	}
+	
+	/**
+	 * Marqué une cles comme déjà quoté
+	 * 
+	 * @param $key String
+	 */
+	public static function addQuoted($key, $value = 1) {
+		self::$base->addQuoted($key, $value);
+	}
 }
+
+/**
+ * Gestionnaire de la communication SQL
+ * 
+ * @author Sébastien Villemain
+ * 
+ */
+abstract class Base_Model {
+	
+	/**
+	 * Nom d'host de la base
+	 * 
+	 * @var String
+	 */
+	protected $dbHost = "";
+	
+	/**
+	 * Nom d'utilisateur de la base
+	 * 
+	 * @var String
+	 */
+	protected $dbUser = "";
+	
+	/**
+	 * Mot de passe de la base
+	 * 
+	 * @var String
+	 */
+	protected $dbPass = "";
+	
+	/**
+	 * Nom de la base
+	 * 
+	 * @var String
+	 */
+	protected $dbName = "";
+	
+	/**
+	 * Type de base de donnée
+	 * 
+	 * @var String
+	 */
+	protected $dbType = "";
+	
+	/**
+	 * ID de la connexion
+	 * 
+	 * @var String
+	 */
+	protected $connId = false;
+	
+	/**
+	 * Dernier resultat de la derniere requête SQL
+	 * 
+	 * @var String ressources ID
+	 */
+	protected $queries = "";
+	
+	/**
+	 * Derniere requête SQL
+	 * 
+	 * @var String
+	 */
+	protected $sql = "";
+	
+	/**
+	 * Buffer sous forme de tableau array contenant des objets stanndarts
+	 * 
+	 * @var array - object
+	 */
+	protected $buffer = array();
+	
+	/**
+	 * Quote pour les objects, champs...
+	 * 
+	 * @var String
+	 */
+	protected $quoteKey = "`";
+	
+	/**
+	 * Quote pour les valeurs uniquement
+	 * 
+	 * @var String
+	 */
+	protected $quoteValue = "'";
+	
+	/**
+	 * Tableau contenant les cles déjà quoté
+	 * 
+	 * @var array
+	 */
+	protected $quoted = array();
+	
+	/**
+	 * Parametre la connexion, test la connexion puis engage une connexion
+	 * 
+	 * @param $db array
+	 */
+	public function __construct($db) {
+		$this->dbHost = $db['host'];
+		$this->dbUser = $db['user'];
+		$this->dbPass = $db['pass'];
+		$this->dbName = $db['name'];
+		$this->dbType = $db['type'];
+		
+		if ($this->test()) {
+			// Connexion au serveur
+			$this->dbConnect();
+			if (!$this->isConnected()) {
+				throw new Exception("sqlConnect");
+			}
+			
+			// Selection d'une base de donnée
+			if (!$this->dbSelect()) {
+				throw new Exception("sqlDbSelect");
+			}
+		} else {
+			throw new Exception("sqlTest");
+		}
+	}
+	
+	/**
+	 * Destruction de la communication
+	 */
+	public function __destruct() {
+		$this->dbDeconnect();
+	}
+	
+	/**
+	 * Etablie une connexion à la base de donnée
+	 */
+	public function dbConnect() {
+	}
+	
+	/**
+	 * Selectionne une base de donnée
+	 * 
+	 * @return boolean true succes
+	 */
+	public function &dbSelect() {
+		return false;
+	}
+	
+	/**
+	 * Get number of LAST affected rows 
+	 * 
+	 * @return int
+	 */
+	public function &affectedRows() {
+		return 0;
+	}
+	
+	/**
+	 * Supprime des informations
+	 * 
+	 * @param $table Nom de la table
+	 * @param $where
+	 * @param $like
+	 * @param $limit
+	 */
+	public function delete($table, $where = array(), $like = array(), $limit = false) {
+	}
+	
+	/**
+	 * Retourne un tableau qui contient les lignes demandées
+	 * 
+	 * @return array
+	 */
+	public function &fetchArray() {
+		return array();
+	}
+	
+	/**
+	 * Retourne un objet qui contient les lignes demandées
+	 * 
+	 * @return object
+	 */
+	public function &fetchObject() {
+		return array();
+	}
+	
+	/**
+	 * Insere de valeurs dans une table
+	 * 
+	 * @param $table Nom de la table
+	 * @param $keys
+	 * @param $values
+	 */
+	public function insert($table, $keys, $values) {
+	}
+	
+	/**
+	 * Retourne l'id de la dernière ligne inserée
+	 * 
+	 * @return int
+	 */
+	public function &insertId() {
+		return 0;
+	}
+	
+	/**
+	 * Get number of affected rows 
+	 * 
+	 * @param $queries
+	 * @return int
+	 */
+	public function &numRows($queries = "") {
+		return 0;
+	}
+	
+	/**
+	 * Envoie une requête Sql
+	 * 
+	 * @param $Sql
+	 */
+	public function query($sql = "") {
+	}
+	
+	/**
+	 * Selection d'information
+	 * 
+	 * @param $table String
+	 * @param $values array
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit
+	 */
+	public function select($table, $values, $where = array(), $orderby = array(), $limit = false) {
+	}
+	
+	/**
+	 * Mise à jour d'une table
+	 * 
+	 * @param $table Nom de la table
+	 * @param $values array() $value[$key]
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit
+	 */
+	public function update($table, $values, $where, $orderby = array(), $limit = false) {
+	}
+	
+	/**
+	 * Retourne dernier résultat de la dernière requête executée
+	 *
+	 * @return mixed Ressource ID ou boolean false
+	 */
+	public function &getQueries() {
+		return $this->queries;
+	}
+	
+	/**
+	 * Retourne la derniere requête sql
+	 * 
+	 * @return String
+	 */
+	public function &getSql() {
+		return $this->sql;
+	}
+	
+	/**
+	 * Retourne l'etat de la connexion
+	 * 
+	 * @return boolean
+	 */
+	public function &isConnected() {
+		return ($this->connId != false) ? true : false;
+	}
+	
+	/**
+	 * Libere la memoire du resultat
+	 * 
+	 * @param $querie Resource Id
+	 * @return boolean
+	 */
+	public function &freeResult($querie) {
+		return false;
+	}
+	
+	/**
+	 * Ajoute le dernier résultat dans le buffer
+	 * 
+	 * @param $key String cles a utiliser
+	 * @param $name String
+	 */
+	public function addBuffer($name, $key) {
+		if (!isset($this->buffer[$name])) {
+			while ($row = $this->fetchObject()) {
+				if ($key) $this->buffer[$name][$row->$key] = $row;
+				else $this->buffer[$name][] = $row;
+			}
+			$reset = $this->buffer[$name][0];
+		}
+	}
+	
+	/**
+	 * Retourne le buffer courant puis l'incremente
+	 * 
+	 * @param $name String
+	 * @return array - object
+	 */
+	public function &fetchBuffer($name) {
+		$buffer = current($this->buffer[$name]);
+		next($this->buffer[$name]);
+		return $buffer;
+	}
+	
+	/**
+	 * Retourne le buffer complet demandé
+	 * 
+	 * @param $name String
+	 * @return array - object
+	 */
+	public function &getBuffer($name) {
+		return $this->buffer[$name];
+	}
+	
+	/**
+	 * Vérifie si la plateform est disponible
+	 * 
+	 * @return boolean
+	 */
+	public function &test() {
+		return false;
+	}
+	
+	/**
+	 * Retourne les dernieres erreurs
+	 * 
+	 * @return array
+	 */
+	public function &getLastError() {
+		return array("<b>Last Sql query</b> : " . $this->getSql());
+	}
+	
+	/**
+	 * Quote les identifiants et les valeurs
+	 * 
+	 * @param $s String
+	 * @return String
+	 */
+	protected function &addQuote($s, $isValue = false) {
+		// Ne pas quoter les champs avec la notation avec les point
+		if (($isValue && !in_array($s, $this->quoted)) || (!$isValue && strpos($s, "." ) === false && !isset($this->quoted[$s]))) {
+			if ($isValue) $q = $this->quoteValue;
+			else $q = $this->quoteKey;
+			$s = $q . $s . $q;
+		}
+		return $s;
+	}
+	
+	/**
+	 * Marqué une cles et/ou une valeur comme déjà quoté
+	 * 
+	 * @param $key String
+	 */
+	public function addQuoted($key, $value = 1) {
+		if (!empty($key)) $this->quoted[$key] = $value;
+		else $this->quoted[] = $value;
+	}
+	
+	/**
+	 * Remise à zéro du tableau de cles déjà quoté
+	 */
+	public function resetQuoted() {
+		$this->quoted = array();
+	}
+	
+	/**
+	 * Conversion des valeurs dite PHP en valeurs semblable SQL
+	 * 
+	 * @param $value mixed type
+	 * @return $value mixed type
+	 */
+	protected function &converValue($value) {
+		if (is_array($value)) {
+			foreach($value as $realKey => $realValue) {
+				$value[$realKey] = $this->converValue($realValue);
+			}
+		}
+		
+		if (is_bool($value)) {
+			$value = ($value == false) ? 0 : 1;
+		} else if (is_null($value)) {
+			$value = "NULL";
+		} else if (is_string($value)) {
+			$value = $this->converEscapeString($value);
+		}
+		$value = $this->addQuote($value, true);
+		return $value;
+	}
+	
+	/**
+	 * Conversion des clès
+	 * 
+	 * @param $key mixed type
+	 * @return $key mixed type
+	 */
+	protected function &converKey($key) {
+		if (is_array($key)) {
+			foreach($key as $realKey => $keyValue) {
+				$key[$realKey] = $this->converKey($keyValue);
+			}
+		} else {
+			$key = $this->addQuote($key);
+		}
+		
+		// Convertie les multiples espaces (tabulation, espace en trop) en espace simple
+		$key = preg_replace("/[\t ]+/", " ", $key);
+		return $key;
+	}
+	
+	/**
+	 * Retourne le bon espacement dans une string
+	 * 
+	 * @param $str String
+	 * @return String
+	 */
+	protected function &converEscapeString($str) {
+		if (function_exists("mysql_real_escape_string") && is_resource($this->conn_id)) {
+			$str = mysql_real_escape_string($str, $this->conn_id);
+		} elseif (function_exists("mysql_escape_string")) {// WARNING: DEPRECATED
+			$str = mysql_escape_string($str);
+		} else {
+			$str = addslashes($str);
+		}
+		return $str;
+	}
+}
+?>

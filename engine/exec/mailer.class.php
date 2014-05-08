@@ -1,32 +1,33 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
  * Gestionnaire de email
  * 
- * @author SÃ©bastien Villemain
+ * @author Sébastien Villemain
+ *
  */
 class Exec_Mailer {
 	
 	/**
-	 * VÃ©rifie la validitÃ© du mail
+	 * Vérifie la validité du mail
 	 * 
-	 * @param $address adresse email a vÃ©rifier
+	 * @param $address adresse email a vérifier
 	 * @return boolean true l'adresse email est valide
 	 */
-	public static function validMail($address) {
+	public static function &validMail($address) {
 		return (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? true : false;
 	}
 	
 	/**
-	 * Retourne une chaine ou une image gÃ©nÃ©rÃ©
+	 * Retourne une chaine ou une image généré
 	 * 
 	 * @param $mail
 	 * @param $name
-	 * @return string or string with HTML TAG
+	 * @return String or String with HTML TAG
 	 */
 	public static function &protectedDisplay($mail, $name = "mail") {
 		$mail = str_replace("@", "_AT_", $mail);

@@ -1,113 +1,58 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require("secure.class.php");
-    Core_Secure::checkInstance();
+	require("secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Gestionnaire de rÃ©Ã©criture du tampon de sortie.
+ * Gestionnaire URL REWRITING
+ * 
+ * @author Sébastien Villemain
  *
- * @author SÃ©bastien Villemain
  */
 class Core_UrlRewriting {
-
-    /**
-     * Gestionnnaire de rÃ©Ã©criture.
-     *
-     * @var Core_UrlRewriting
-     */
-    private static $coreUrlRewriting = null;
-
-    /**
-     * VÃ©rifie si l'url rewriting a Ã©tÃ© activÃ©e.
-     *
-     * @var boolean
-     */
-    private $canUse = false;
-
-    /**
-     * Nouveau gestionnaire.
-     */
-    private function __construct() {
-        if (Core_Main::doUrlRewriting()) {
-            $this->canUse = $this->testPassed();
-        }
-    }
-
-    /**
-     * Instance du gestionnaire de rÃ©Ã©criture du tampon de sortie.
-     *
-     * @return Core_UrlRewriting
-     */
-    public static function &getInstance() {
-        if (self::$coreUrlRewriting === null) {
-            self::$coreUrlRewriting = new self();
-        }
-        return self::$coreUrlRewriting;
-    }
-
-    public function &rewriteLink($link) {
-        if ($this->canUse) {
-
-        }
-        return $link;
-    }
-
-    public function &rewriteBuffer($buffer) {
-        if ($this->canUse) {
-
-        }
-        return $buffer;
-    }
-
-    /**
-     * Obtention d'une adresse URL complÃ¨te.
-     *
-     * @param string $link Adresse URL Ã  rÃ©Ã©crire.
-     * @param boolean $layout true ajouter le layout.
-     * @return string
-     */
-    public static function &getLink($link, $layout = false) {
-        // Configuration du layout
-        if ($layout) {
-            $layout = "&amp;layout=";
-
-            if (strpos($link, "blockId=") !== false) {
-                $layout .= "block";
-            } else if (strpos($link, "mod=") !== false) {
-                $layout .= "module";
-            } else {
-                $layout .= "default";
-            }
-
-            $link .= $layout;
-        }
-
-        // Recherche de la page principal
-        if (strpos($link, "index.php") === false) {
-            if ($link[0] === "?") {
-                $link = "index.php" . $link;
-            } else {
-                $link = "index.php?" . $link;
-            }
-        }
-
-        // Finalise la rÃ©Ã©criture du lien
-        return self::getInstance()->rewriteLink($link);
-    }
-
-    /**
-     * VÃ©rifie si les tests ont Ã©tÃ© passÃ©s avec succÃ¨s.
-     *
-     * @return boolean
-     */
-    private function &testPassed() {
-        $rslt = false;
-        // TODO vÃ©rifie si fichier tmp de test est OK
-        // si pas OK et pas de fichier tmp pour signaler la dÃ©sactivation
-        // on tente de mettre urlRewriting a 0 puis on crÃ©Ã© le fichier tmp de dÃ©sactivation
-        // si dÃ©jÃ  fichier tmp de dÃ©castivation ajouter erreur dans Core_Logger
-        return $rslt;
-    }
-
+	
+	/**
+	 * Vérifie si l'url rewriting a été activé
+	 * 
+	 * @return boolean true c'est activé
+	 */
+	public static function &isActived() {
+		if (Core_Main::doUrlRewriting() && self::testPassed()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Vérifie si la classe peut être activé
+	 * Alias de isActived()
+	 * 
+	 * @return boolean
+	 */
+	public static function &test() {
+		return self::isActived();
+	}
+	
+	/**
+	 * Vérifie si les tests ont été passés avec succès
+	 * 
+	 * @return boolean
+	 */
+	private static function &testPassed() {
+		// TODO vérifie si fichier tmp de test est OK
+		// si pas OK et pas de fichier tmp pour signaler la désactivation
+		// on tente de mettre urlRewriting a 0 puis on créé le fichier tmp de désactivation
+		// si déjà fichier tmp de décastivation ajouter erreur dans Core_Exception
+		return false;
+	}
+	
+	public static function &rewriteLink($link) {
+		return $link;
+	}
+	
+	public static function &rewriteBuffer($buffer) {
+		return $buffer;
+	}
 }
+?>

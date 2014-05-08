@@ -1,169 +1,243 @@
-<?php
+<?php 
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Gestionnaire de transaction utilisant l'extension MySql (ancienne version obselÃ¨te).
- * Ne supporte que les bases de donnÃ©es MySql.
- *
- * @author SÃ©bastien Villemain
+ * Gestionnaire de la communication SQL
+ * 
+ * @author Sébastien Villemain
+ * 
  */
 class Base_Mysql extends Base_Model {
+	
+	public function __construct($db) {
+		parent::__construct($db);
+	}
+	
+	public function __destruct() {
+		parent::__destruct();
+	}
+	
+	/**
+	 * Etablie une connexion à la base de donnée
+	 */
+	public function dbConnect() {
+		$this->connId = @mysql_connect($this->dbHost, $this->dbUser, $this->dbPass);
+	}
+	
+	/**
+	 * Selectionne une base de donnée
+	 * 
+	 * @return boolean true succes
+	 */
+	public function &dbSelect() {
+		if ($this->connId) {
+			return @mysql_select_db($this->dbName, $this->connId);
+		}
+		return false;
+	}
+	
+	/**
+	 * Déconnexion à la base de donnée
+	 */
+	public function dbDeconnect() {
+		if ($this->connId) {
+			$this->connId = @mysql_close($this->connId);
+		}
+		$this->connId = false;
+	}
+	
+	/**
+	 * Envoie une requête Sql
+	 * 
+	 * @param $Sql
+	 */
+	public function query($sql) {
+		$this->queries = @mysql_query($sql, $this->connId);
+	}
+	
+	/**
+	 * Retourne un tableau qui contient la ligne demandée
+	 * 
+	 * @return array
+	 */
+	public function &fetchArray() {
+		return mysql_fetch_array($this->queries, MYSQL_ASSOC);
+	}
+	
+	/**
+	 * Retourne un objet qui contient les ligne demandée
+	 * 
+	 * @return object
+	 */
+	public function &fetchObject() {
+		return mysql_fetch_object($this->queries);
+	}
+	
+	/**
+	 * Libere la memoire du resultat
+	 * 
+	 * @param $querie Resource Id
+	 * @return boolean
+	 */
+	public function &freeResult($querie) {
+		if (is_resource($querie)) {
+			return mysql_free_result($querie);
+		}
+		return false;
+	}
+	
+	/**
+	 * Get number of LAST affected rows 
+	 * 
+	 * @return int
+	 */
+	public function &affectedRows() {
+		return mysql_affected_rows($this->connId);
+	}
+	
+	/**
+	 * Get number of affected rows 
+	 * 
+	 * @param $queries
+	 * @return int
+	 */
+	public function &numRows($queries) {
+		if (is_resource($querie)) {
+			return mysql_num_rows($queries);
+		}
+		return 0;
+	}
+	
+	/**
+	 * Get the ID generated from the previous INSERT operation
+	 * 
+	 * @return int
+	 */
+	public function &insertId() {
+		return mysql_insert_id($this->connId);
+	}
+	
+	/**
+	 * Mise à jour d'une table
+	 * 
+	 * @param $table Nom de la table
+	 * @param $values array) Sous la forme array("keyName" => "newValue")
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit String
+	 */
+	public function update($table, $values, $where, $orderby = array(), $limit = false) {
+		// Affectation des clès a leurs valeurs
+		foreach($values as $key => $value) {
+			$valuesString[] = $this->converKey($key) ." = " . $this->converValue($value, $key);
+		}
+		
+		// Mise en place du where
+		if (!is_array($where)) $where = array($where);
+		// Mise en place de la limite
+		$limit = (!$limit) ? "" : " LIMIT " . $limit;
+		// Mise en place de l'ordre
+		$orderby = (count($orderby) >= 1)? " ORDER BY " . implode(", ", $orderby): "";
+		
+		// Mise en forme de la requête finale
+		$sql = "UPDATE " . $table . " SET " . implode(", ", $valuesString);
+		$sql .= (count($where) >= 1) ? " WHERE " . implode(" ", $where) : "";
+		$sql .= $orderby . $limit;
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * Insere une ou des valeurs dans une table
+	 * 
+	 * @param $table String Nom de la table
+	 * @param $keys array
+	 * @param $values array
+	 */
+	public function insert($table, $keys, $values) {
+		if (!is_array($keys)) $keys = array($keys);
+		if (!is_array($values)) $values = array($values);
+		
+		$sql = "INSERT INTO " . $table . " ("
+		. implode(", ", $this->converKey($keys)) . ") VALUES ('"
+		. implode("', '", $this->converValue($values)) . "')";
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * Supprime des informations
+	 * 
+	 * @param $table String Nom de la table
+	 * @param $where array
+	 * @param $like array
+	 * @param $limit String
+	 */
+	public function delete($table, $where = array(), $like = array(), $limit = false) {
+		// Mise en place du WHERE
+		if (!is_array($where)) $where = array($where);
+		$where = (count($where) >= 1) ? " WHERE " . implode(" ", $where) : "";
+		
+		// Mise en place du LIKE
+		$like = (!is_array($like)) ? array($like) : $like;
+		$like = (count($like) >= 1) ? " LIKE " . implode(" ", $like) : "";
+		
+		// Fonction ET entre WHERE et LIKE
+		if (!empty($where) && !empty($like)) {
+			$where .= "AND";
+		}
 
-    /**
-     * Le type de la derniÃ¨re commande.
-     * SELECT, DELETE, UPDATE, INSERT, REPLACE.
-     *
-     * @var string
-     */
-    private $lastSqlCommand = "";
-
-    protected function canUse() {
-        $rslt = function_exists("mysql_connect");
-
-        if (!$rslt) {
-            Core_Logger::addException("MySql function not found");
-        }
-        return $rslt;
-    }
-
-    public function dbConnect() {
-        $link = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUser(), $this->getDatabasePass());
-
-        if ($link) {
-            $this->connId = $link;
-        } else {
-            $this->connId = null;
-        }
-    }
-
-    public function &dbSelect() {
-        $rslt = false;
-
-        if ($this->connected()) {
-            $rslt = mysql_select_db($this->getDatabaseName(), $this->connId);
-        }
-        return $rslt;
-    }
-
-    public function dbDeconnect() {
-        if ($this->connected()) {
-            mysql_close($this->connId);
-        }
-
-        $this->connId = null;
-    }
-
-    public function query($sql) {
-        $this->queries = mysql_query($sql, $this->connId);
-
-        if ($this->queries === false) {
-            Core_Logger::addException("MySql query: " . mysql_error());
-        }
-    }
-
-    public function &fetchArray() {
-        $values = array();
-
-        if (is_resource($this->queries)) {
-            $nbRows = $this->affectedRows();
-
-            for ($i = 0; $i < $nbRows; $i++) {
-                $values[] = mysql_fetch_array($this->queries, MYSQL_ASSOC);
-            }
-        }
-        return $values;
-    }
-
-    public function &fetchObject($className = null) {
-        $values = array();
-
-        if (is_resource($this->queries)) {
-            $nbRows = $this->affectedRows();
-
-            // VÃ©rification avant de rentrer dans la boucle (optimisation)
-            if (empty($className)) {
-                for ($i = 0; $i < $nbRows; $i++) {
-                    $values[] = mysql_fetch_object($this->queries);
-                }
-            } else {
-                for ($i = 0; $i < $nbRows; $i++) {
-                    $values[] = mysql_fetch_object($this->queries, $className);
-                }
-            }
-        }
-        return $values;
-    }
-
-    public function &freeResult($query) {
-        $rslt = false;
-
-        if (is_resource($query)) {
-            $rslt = mysql_free_result($query);
-        }
-        return $rslt;
-    }
-
-    public function &affectedRows() {
-        $rslt = -1;
-
-        if ($this->lastSqlCommand === "SELECT" || $this->lastSqlCommand === "SHOW") {
-            $rslt = mysql_num_rows($this->queries);
-        } else {
-            $rslt = mysql_affected_rows($this->connId);
-        }
-        return $rslt;
-    }
-
-    public function &insertId() {
-        $lastId = mysql_insert_id($this->connId);
-        return $lastId;
-    }
-
-    public function &getLastError() {
-        $error = parent::getLastError();
-        $error[] = "<b>MySql response</b> : " . mysql_error();
-        return $error;
-    }
-
-    public function &getVersion() {
-        // Exemple : 5.6.15-log
-        $version = mysql_get_server_info($this->connId);
-        $version = ($version !== false) ? $version : "?";
-        return $version;
-    }
-
-    public function update($table, array $values, array $where, array $orderby = array(), $limit = "") {
-        $this->lastSqlCommand = "UPDATE";
-        parent::update($table, $values, $where, $orderby, $limit);
-    }
-
-    public function select($table, array $values, array $where = array(), array $orderby = array(), $limit = "") {
-        $this->lastSqlCommand = "SELECT";
-        parent::select($table, $values, $where, $orderby, $limit);
-    }
-
-    public function insert($table, array $keys, array $values) {
-        $this->lastSqlCommand = "INSERT";
-        parent::insert($table, $keys, $values);
-    }
-
-    public function delete($table, array $where = array(), array $like = array(), $limit = "") {
-        $this->lastSqlCommand = "DELETE";
-        parent::delete($table, $where, $like, $limit);
-    }
-
-    protected function converEscapeString($str) {
-        if (function_exists("mysql_real_escape_string") && is_resource($this->connId)) {
-            $str = mysql_real_escape_string($str, $this->connId);
-        } else if (function_exists("mysql_escape_string")) {// WARNING: DEPRECATED
-            $str = mysql_escape_string($str);
-        } else {
-            $str = parent::converEscapeString($str);
-        }
-        return $str;
-    }
-
+		$limit = (!$limit) ? "" : " LIMIT " . $limit;
+		$sql = "DELETE FROM " . $table . $where . $like . $limit;
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * Selection d'information
+	 * 
+	 * @param $table String
+	 * @param $values array
+	 * @param $where array
+	 * @param $orderby array
+	 * @param $limit String
+	 */
+	public function select($table, $values, $where = array(), $orderby = array(), $limit = false) {
+		// Mise en place des valeurs selectionnées
+		if (!is_array($values)) $values = array($values);
+		$values = implode(", ", $values);
+		
+		// Mise en place du where
+		if (!is_array($where)) $where = array($where);
+		$where = (count($where) >= 1) ? " WHERE " . implode(" ", $where) : "";
+		// Mise en place de la limite
+		$limit = (!$limit) ? "" : " LIMIT " . $limit;
+		// Mise en place de l'ordre
+		$orderby = (count($orderby) >= 1)? " ORDER BY " . implode(", ", $orderby): "";
+		
+		// Mise en forme de la requête finale
+		$sql = "SELECT " . $values . " FROM " . $table . $where . $orderby . $limit;
+		$this->sql = $sql;
+	}
+	
+	/**
+	 * Vérifie que le module mysql est chargé
+	 * 
+	 * @return boolean
+	 */
+	public function &test() {
+		return (function_exists("mysql_connect"));
+	}
+	
+	/**
+	 * Retourne les dernieres erreurs
+	 * 
+	 * @return array
+	 */
+	public function &getLastError() {
+		$error = parent::getLastError();
+		$error[] ="<b>MySql response</b> : " . mysql_error();
+		return $error;
+	}
 }
+?>

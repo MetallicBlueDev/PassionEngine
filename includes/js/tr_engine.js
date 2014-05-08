@@ -5,18 +5,20 @@ function validLogon(formId, loginId, passwordId) {
 	$(formId).submit(function(){
 		var isLogin = false;
 		var isPassword = false;
-		if (checkLogin($(loginId).val())) {
-			$(loginId).removeClass('error');
+		var login = $(loginId);
+		var password = $(passwordId);
+		if (checkLogin(login.val())) {
+			login.removeClass('error');
 			isLogin = true;
 		} else {
-			$(loginId).addClass('error');
+			login.addClass('error');
 			isLogin = false;
 		}
-		if (checkPassword($(passwordId).val())) {
-			$(passwordId).removeClass('error');
+		if (checkPassword(password.val())) {
+			password.removeClass('error');
 			isPassword = true;
 		} else {
-			$(passwordId).addClass('error');
+			password.addClass('error');
 			isPassword = false;
 		}
 		if (isLogin && isPassword) {postForm(this);}
@@ -25,22 +27,24 @@ function validLogon(formId, loginId, passwordId) {
 }
 function validForgetLogin(formId, mailId) {
 	$(formId).submit(function(){
-		if (checkMail($(mailId).val())) {
-			$(mailId).removeClass('error');
+		var mail = $(mailId);
+		if (checkMail(mail.val())) {
+			mail.removeClass('error');
 			postForm(this);
 		} else {
-			$(mailId).addClass('error');
+			mail.addClass('error');
 		}
 		return false;
 	});
 }
 function validForgetPass(formId, loginId) {
 	$(formId).submit(function(){
-		if (checkLogin($(loginId).val())) {
-			$(loginId).removeClass('error');
+		var login = $(loginId);
+		if (checkLogin(login.val())) {
+			login.removeClass('error');
 			postForm(this);
 		} else {
-			$(loginId).addClass('error');
+			login.addClass('error');
 		}
 		return false;
 	});
@@ -60,7 +64,7 @@ function validAccount(formId, loginId, passwordId, passwordConfirmeId, mailId) {
 		} else {
 			$(loginId).addClass('error');
 		}
-		if ($(passwordId).val().length > 0 || $(passwordConfirmeId).val().length > 0) {
+		if ($(passwordId).val().length > 0 || $(passwordConfirmeId).val() > 0) {
 			if (checkPassword($(passwordId).val()) && $(passwordId).val() == $(passwordConfirmeId).val()) {
 				isPassword = true;
 				$(passwordId).removeClass('error');

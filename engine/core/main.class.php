@@ -1,711 +1,372 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Classe principal du moteur.
+ * Classe principal du moteur
+ * 
+ * @author Sébastien Villemain
  *
- * @author SÃ©bastien Villemain
  */
 class Core_Main {
-
-    /**
-     * Instance principal du moteur.
-     *
-     * @var Core_Main
-     */
-    private static $coreMain = null;
-
-    /**
-     * Tableau de configuration.
-     */
-    private $configs;
-
-    /**
-     * Mode de mise en page courante.
-     * default : affichage normale et complet
-     * module : affichage uniquement du module si javascript activÃ©
-     * block : affichage uniquement du block si javascript activÃ©
-     * modulepage : affichage uniquement du module forcÃ©
-     * blockpage : affichage uniquement du block forcÃ©
-     *
-     * @var string
-     */
-    private $layout = "default";
-
-    private function __construct() {
-        // NE RIEN FAIRE
-    }
-
-    /**
-     * Retourne l'instance principal du moteur.
-     *
-     * @return Core_Main
-     */
-    public static function &getInstance() {
-        self::checkInstance();
-        return self::$coreMain;
-    }
-
-    /**
-     * VÃ©rification de l'instance principal du moteur.
-     */
-    public static function checkInstance() {
-        if (self::$coreMain === null) {
-            if (Core_Secure::debuggingMode()) {
-                Exec_Marker::startTimer("core");
-            }
-
-            self::$coreMain = new self();
-            self::$coreMain->prepare();
-
-            if (Core_Secure::debuggingMode()) {
-                Exec_Marker::stopTimer("core");
-            }
-        }
-    }
-
-    /**
-     * Ajoute les donnÃ©es Ã  la configuration.
-     *
-     * @param array
-     */
-    public function addConfig(array $configuration) {
-        foreach ($configuration as $key => $value) {
-            if (is_array($value)) {
-                $this->configs[$key] = $value;
-            } else {
-                $this->configs[$key] = Exec_Entities::stripSlashes($value);
-            }
-        }
-    }
-
-    /**
-     * Ajoute les donnÃ©es d'inclusion Ã  la configuration.
-     *
-     * @param string $name
-     * @param array $include
-     */
-    public function addInclude($name, array $include) {
-        $this->addConfig(array(
-            $name => $include));
-    }
-
-    /**
-     * Retourne le contenu de la configuration.
-     *
-     * @param string $key
-     * @param string $subKey
-     * @return string
-     */
-    public function &getConfigValue($key, $subKey = "") {
-        $rslt = null;
-
-        if (isset($this->configs[$key])) {
-            $rslt = $this->configs[$key];
-
-            if (isset($rslt[$subKey])) {
-                $rslt = $rslt[$subKey];
-            }
-        }
-        return $rslt;
-    }
-
-    /**
-     * Retourne la configuration ftp.
-     *
-     * @return array
-     */
-    public function &getConfigFtp() {
-        return $this->getConfigValue("configs_ftp");
-    }
-
-    /**
-     * Retourne la configuration de la base de donnÃ©es.
-     *
-     * @return array
-     */
-    public function &getConfigDatabase() {
-        return $this->getConfigValue("configs_database");
-    }
-
-    /**
-     * DÃ©termine si l'url rewriting est activÃ©.
-     *
-     * @return boolean
-     */
-    public function doUrlRewriting() {
-        return ($this->getConfigValue("urlRewriting") === "1") ? true : false;
-    }
-
-    /**
-     * VÃ©rifie l'Ã©tat de maintenance.
-     *
-     * @return boolean
-     */
-    public function doDumb() {
-        return (!$this->doOpening() && Core_Session::getInstance()->userRank < 2);
-    }
-
-    /**
-     * VÃ©rifie l'Ã©tat du site (ouvert/fermÃ©).
-     *
-     * @return boolean
-     */
-    public function doOpening() {
-        return ($this->getDefaultSiteStatut() === "open");
-    }
-
-    /**
-     * DÃ©termine l'Ã©tat des inscriptions au site.
-     *
-     * @return boolean
-     */
-    public function registrationAllowed() {
-        return ($this->getConfigValue("registrationAllowed") === "1") ? true : false;
-    }
-
-    /**
-     * Retourne le prÃ©fixe des cookies.
-     *
-     * @return string
-     */
-    public function &getCookiePrefix() {
-        return $this->getConfigValue("cookiePrefix");
-    }
-
-    /**
-     * Retourne la durÃ©e de validitÃ© du cache.
-     *
-     * @return int
-     */
-    public function &getCacheTimeLimit() {
-        return $this->getConfigValue("cacheTimeLimit");
-    }
-
-    /**
-     * Retourne la clÃ© de cryptage.
-     *
-     * @return string
-     */
-    public function &getCryptKey() {
-        return $this->getConfigValue("cryptKey");
-    }
-
-    /**
-     * Retourne le mode du captcha.
-     *
-     * @return string
-     */
-    public function &getCaptchaMode() {
-        return $this->getConfigValue("captchaMode");
-    }
-
-    /**
-     * Retourne l'adresse email de l'administrateur.
-     *
-     * @return string
-     */
-    public function &getDefaultAdministratorMail() {
-        return $this->getDefaultConfigValue("defaultAdministratorMail", function() {
-            return TR_ENGINE_MAIL;
-        });
-    }
-
-    /**
-     * Retourne le nom du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteName() {
-        return $this->getDefaultConfigValue("defaultSiteName", function() {
-            return Core_Request::getString("SERVER_NAME", "", "SERVER");
-        });
-    }
-
-    /**
-     * Retourne le slogan du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteSlogan() {
-        return $this->getDefaultConfigValue("defaultSiteSlogan", function() {
-            return "TR ENGINE";
-        });
-    }
-
-    /**
-     * Retourne le status du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteStatut() {
-        return $this->getDefaultConfigValue("defaultSiteStatut", function() {
-            return "open";
-        });
-    }
-
-    /**
-     * Retourne la raison de la fermeture du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteCloseReason() {
-        return $this->getDefaultConfigValue("defaultSiteCloseReason", function() {
-            return " ";
-        });
-    }
-
-    /**
-     * Retourne la description du site.
-     *
-     * @return string
-     */
-    public function &getDefaultDescription() {
-        return $this->getDefaultConfigValue("defaultDescription", function() {
-            return "TR ENGINE";
-        });
-    }
-
-    /**
-     * Retourne les mots clÃ©s du site.
-     *
-     * @return string
-     */
-    public function &getDefaultKeyWords() {
-        return $this->getDefaultConfigValue("defaultKeyWords", function() {
-            return "TR ENGINE";
-        });
-    }
-
-    /**
-     * Retourne la langue par dÃ©faut.
-     *
-     * @return string
-     */
-    public function &getDefaultLanguage() {
-        return $this->getDefaultConfigValue("defaultLanguage", function() {
-            return "english";
-        });
-    }
-
-    /**
-     * Retourne le template par dÃ©faut.
-     *
-     * @return string
-     */
-    public function &getDefaultTemplate() {
-        return $this->getDefaultConfigValue("defaultTemplate", function() {
-            return " ";
-        });
-    }
-
-    /**
-     * Retourne le nom du module par dÃ©faut.
-     *
-     * @return string
-     */
-    public function &getDefaultMod() {
-        return $this->getDefaultConfigValue("defaultMod", function() {
-            return "home";
-        });
-    }
-
-    /**
-     * DÃ©termine si l'affichage se fait en Ã©cran complet (affichage classique).
-     *
-     * @return boolean true c'est en plein Ã©cran.
-     */
-    public function isDefaultLayout() {
-        return (($this->layout === "default") ? true : false);
-    }
-
-    /**
-     * DÃ©termine si l'affichage se fait en Ã©cran minimal ciblÃ© module.
-     *
-     * @return boolean true c'est un affichage de module uniquement.
-     */
-    public function isModuleLayout() {
-        return (($this->layout === "module" || $this->layout === "modulepage") ? true : false);
-    }
-
-    /**
-     * DÃ©termine si l'affichage se fait en Ã©cran minimal ciblÃ© block.
-     *
-     * @return boolean true c'est un affichage de block uniquement.
-     */
-    public function isBlockLayout() {
-        return (($this->layout === "block" || $this->layout == "blockpage") ? true : false);
-    }
-
-    /**
-     * DÃ©marrage TR ENGINE.
-     */
-    public function start() {
-        if (Core_Secure::debuggingMode()) {
-            Exec_Marker::startTimer("launcher");
-        }
-
-        // VÃ©rification des bannissements
-        Core_BlackBan::checkBlackBan();
-
-        Core_Html::checkInstance();
-
-        // Configure les informations de page demandÃ©es
-        $this->checkLayout();
-        $this->checkMakeStyle();
-
-        if (!Core_Secure::debuggingMode()) {
-            $this->compressionOpen();
-        }
-
-        // VÃ©rification du bannissement
-        if (!Core_BlackBan::isBlackUser()) {
-            // VÃ©rification du type d'affichage
-            if ($this->isDefaultLayout()) {
-                // Affichage classique du site
-                if ($this->doDumb()) {
-                    // Mode maintenance: possibilitÃ© de s'identifier
-                    Libs_Block::getInstance()->launchOneBlock(array(
-                        "type = 'login'"));
-
-                    Exec_Marker::stopTimer("main");
-
-                    // Affichage des donnÃ©es de la page de maintenance (fermeture)
-                    $libsMakeStyle = new Libs_MakeStyle();
-                    $libsMakeStyle->assign("closeText", ERROR_DEBUG_CLOSE);
-                    $libsMakeStyle->display("close");
-                } else {
-                    // Mode normal: exÃ©cution gÃ©nÃ©ral
-                    Libs_Module::getInstance()->launch();
-                    Libs_Block::getInstance()->launchAllBlock();
-
-                    Exec_Marker::stopTimer("main");
-
-                    $libsMakeStyle = new Libs_MakeStyle();
-                    $libsMakeStyle->display("index");
-                }
-            } else {
-                // Affichage autonome des modules et blocks
-                if ($this->isModuleLayout()) {
-                    $libsModule = Libs_Module::getInstance();
-
-                    // Affichage du module uniquement
-                    $libsModule->launch();
-
-                    Exec_Marker::stopTimer("main");
-
-                    echo $libsModule->getModule();
-                } else if ($this->isBlockLayout()) {
-                    $libsBlock = Libs_Block::getInstance();
-
-                    // Affichage du block uniquement
-                    $libsBlock->launchOneBlock();
-
-                    Exec_Marker::stopTimer("main");
-
-                    echo $libsBlock->getBlock();
-                }
-
-                // Execute la commande de rÃ©cupÃ©ration d'erreur
-                Core_Logger::displayMessages();
-
-                // Javascript autonome
-                Core_Html::getInstance()->selfJavascript();
-            }
-
-            // Validation du cache / Routine du cache
-            Core_CacheBuffer::valideCacheBuffer();
-
-            if (Core_Secure::debuggingMode()) {
-                // Assemble tous les messages d'erreurs dans un fichier log
-                Core_Logger::logException();
-            }
-        } else {
-            Exec_Marker::stopTimer("main");
-
-            Core_BlackBan::displayBlackPage();
-        }
-
-        if (Core_Secure::debuggingMode()) {
-            Exec_Marker::stopTimer("launcher");
-        } else {
-            $this->compressionClose();
-        }
-    }
-
-    /**
-     * Recherche de nouveau composant.
-     *
-     * @return boolean true nouveau composant dÃ©tectÃ©.
-     */
-    public function newComponentDetected() {
-        // TODO dÃ©tection de nouveau module a coder
-        return false;
-    }
-
-    /**
-     * DÃ©marrage de l'installeur.
-     */
-    public function install() {
-        // TODO installation a coder
-//        $installPath = TR_ENGINE_DIR . "/install/index.php";
-//        if (is_file($installPath)) {
-//            require($installPath);
-//        }
-    }
-
-    /**
-     * Retourne la valeur par dÃ©faut de la configuration.
-     *
-     * @param string $keyName
-     * @param string $callback
-     * @return string
-     */
-    private function &getDefaultConfigValue($keyName, $callback) {
-        $value = $this->getConfigValue($keyName);
-
-        if (empty($value)) {
-            $value = $callback();
-            $this->addConfig(array(
-                $keyName => $value));
-        }
-        return $value;
-    }
-
-    /**
-     * VÃ©rification et assignation du layout.
-     */
-    private function checkLayout() {
-        // Assignation et vÃ©rification de fonction layout
-        $layout = strtolower(Core_Request::getWord("layout"));
-
-        // Configuration du layout
-        if ($layout !== "default" && $layout !== "modulepage" && $layout !== "blockpage" && (($layout !== "block" && $layout !== "module") || (!Core_Html::getInstance()->javascriptEnabled()))) {
-            $layout = "default";
-        }
-
-        $this->layout = $layout;
-    }
-
-    /**
-     * VÃ©rification et assignation du template.
-     */
-    private function checkMakeStyle() {
-        $templateName = Core_Session::getInstance()->userTemplate;
-
-        // Tentative d'utilisation du template du client
-        if (!Libs_MakeStyle::setCurrentTemplate($templateName)) {
-            $templateName = null;
-        }
-
-        if (empty($templateName)) {
-            $templateName = $this->getDefaultTemplate();
-
-            // Tentative d'utilisation du template du site
-            Libs_MakeStyle::setCurrentTemplate($templateName);
-        }
-    }
-
-    /**
-     * Lance le tampon de sortie.
-     * EntÃªte & tamporisation de sortie.
-     */
-    private function compressionOpen() {
-        header("Vary: Cookie, Accept-Encoding");
-
-        if (extension_loaded('zlib') && !ini_get('zlib.output_compression') && function_exists("ob_gzhandler") && !$this->doUrlRewriting()) {
-            ob_start("ob_gzhandler");
-        } else {
-            ob_start();
-        }
-    }
-
-    /**
-     * Relachement des tampons de sortie.
-     */
-    private function compressionClose() {
-        $canContinue = false;
-
-        do {
-            $canContinue = ob_end_flush();
-        } while ($canContinue);
-    }
-
-    /**
-     * PrÃ©paration TR ENGINE.
-     * ProcÃ©dure de prÃ©paration du moteur.
-     * Une Ã©tape avant le dÃ©marrage rÃ©el.
-     */
-    private function prepare() {
-        if (!$this->loadCacheBuffer()) {
-            Core_Secure::getInstance()->throwException("ftpPath", null, array(
-                Core_Loader::getAbsolutePath("configs_ftp")));
-        }
-
-        if (!$this->loadSql()) {
-            Core_Secure::getInstance()->throwException("sqlPath", null, array(
-                Core_Loader::getAbsolutePath("configs_database")));
-        }
-
-        if (!$this->loadConfig()) {
-            Core_Secure::getInstance()->throwException("configPath", null, array(
-                Core_Loader::getAbsolutePath("configs_config")));
-        }
-
-        // Analyse pour les statistiques
-        Exec_Agent::executeAnalysis();
-
-        // Chargement de la session
-        Core_Session::checkInstance();
-    }
-
-    /**
-     * Charge le gestionnaire de cache et les donnÃ©es FTP.
-     *
-     * @return boolean true chargÃ©
-     */
-    private function loadCacheBuffer() {
-        $canUse = Core_Loader::isCallable("Core_CacheBuffer");
-
-        if (!$canUse) {
-            // Mode natif PHP actif
-            Core_CacheBuffer::setModeActived(array(
-                "php"));
-
-            // Chemin du fichier de configuration ftp
-            if (Core_Loader::includeLoader("configs_ftp")) {
-                $mode = strtolower($this->getConfigValue("configs_ftp", "type"));
-
-                if (!empty($mode)) {
-                    Core_CacheBuffer::setModeActived(array(
-                        $mode));
-                }
-
-                $canUse = true;
-            }
-        }
-        return $canUse;
-    }
-
-    /**
-     * Charge le gestionnaire Sql.
-     *
-     * @return boolean true chargÃ©
-     */
-    private function loadSql() {
-        $canUse = Core_Loader::isCallable("Core_Sql");
-
-        if (!$canUse) {
-            // Chemin vers le fichier de configuration de la base de donnÃ©es
-            if (Core_Loader::includeLoader("configs_database")) {
-                // DÃ©marrage de l'instance Core_Sql
-                Core_Sql::checkInstance();
-
-                $canUse = true;
-            }
-        }
-        return $canUse;
-    }
-
-    /**
-     * Charge la configuration gÃ©nÃ©rale.
-     */
-    private function loadConfig() {
-        // Chemin vers le fichier de configuration du moteur
-        $canUse = Core_Loader::includeLoader("configs_config");
-
-        if ($canUse) {
-            // Tentative d'utilisation de la configuration
-            $rawConfig = $this->getConfigValue("configs_config");
-
-            if (!empty($rawConfig)) {
-                $newConfig = array();
-
-                // VÃ©rification de l'adresse email du webmaster
-                if (!Exec_Mailer::validMail($rawConfig["TR_ENGINE_MAIL"])) {
-                    Core_Logger::addException("Default mail isn't valide");
-                }
-
-                define("TR_ENGINE_MAIL", $rawConfig["TR_ENGINE_MAIL"]);
-
-                // VÃ©rification du statut
-                $rawConfig["TR_ENGINE_STATUT"] = strtolower($rawConfig["TR_ENGINE_STATUT"]);
-
-                if ($rawConfig["TR_ENGINE_STATUT"] !== "close" && $rawConfig["TR_ENGINE_STATUT"] !== "open") {
-                    $rawConfig["TR_ENGINE_STATUT"] = "open";
-                }
-
-                define("TR_ENGINE_STATUT", $rawConfig["TR_ENGINE_STATUT"]);
-
-                if (TR_ENGINE_STATUT == "close") {
-                    Core_Secure::getInstance()->throwException("close");
-                }
-
-                // VÃ©rification de la durÃ©e de validitÃ© du cache
-                if (!is_int($rawConfig['cacheTimeLimit']) || $rawConfig['cacheTimeLimit'] < 1) {
-                    $rawConfig['cacheTimeLimit'] = 7;
-                }
-
-                $newConfig['cacheTimeLimit'] = (int) $rawConfig['cacheTimeLimit'];
-
-                // VÃ©rification du prÃ©fixage des cookies
-                if (empty($rawConfig['cookiePrefix'])) {
-                    $rawConfig['cookiePrefix'] = "tr";
-                }
-
-                $newConfig['cookiePrefix'] = $rawConfig['cookiePrefix'];
-
-                // VÃ©rification de la clÃ© de cryptage
-                if (!empty($rawConfig['cryptKey'])) {
-                    $newConfig['cryptKey'] = $rawConfig['cryptKey'];
-                }
-
-                // Ajout Ã  la configuration courante
-                $this->addConfig($newConfig);
-            } else {
-                // Il n'est pas normale de n'avoir aucune information
-                $canUse = false;
-            }
-
-            // Nettoyage des clÃ©s temporaires
-            unset($this->configs['configs_config']);
-
-            // Si tout semble en ordre, nous continuons le chargement
-            if ($canUse) {
-                // Chargement de la configuration via la cache
-                $newConfig = array();
-                Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_TMP);
-
-                // Si le cache est disponible
-                if (Core_CacheBuffer::cached("configs.php")) {
-                    $newConfig = Core_CacheBuffer::getCache("configs.php");
-                } else {
-                    $content = "";
-                    $coreSql = Core_Sql::getInstance();
-
-                    // RequÃªte vers la base de donnÃ©es de configs
-                    $coreSql->select(Core_Table::CONFIG_TABLE, array(
-                        "name",
-                        "value"));
-
-                    foreach ($coreSql->fetchArray() as $row) {
-                        $content .= Core_CacheBuffer::serializeData(array(
-                            $row['name'] => $row['value']));
-                        $newConfig[$row['name']] = Exec_Entities::stripSlashes($row['value']);
-                    }
-
-                    // Mise en cache
-                    Core_CacheBuffer::writingCache("configs.php", $content, true);
-                }
-
-                // Ajout a la configuration courante
-                $this->addConfig($newConfig);
-            }
-        }
-        return $canUse;
-    }
-
+	
+	/**
+	 * Tableau d'information de configuration
+	 */ 
+	public static $coreConfig;
+	
+	/**
+	 * Mode de mise en page courante
+	 * default : affichage normale et complet
+	 * module : affichage uniquement du module si javascript activé
+	 * block : affichage uniquement du block si javascript activé
+	 * modulepage : affichage uniquement du module forcé 
+	 * blockpage : affichage uniquement du block forcé
+	 * 
+	 * @var String
+	 */
+	public static $layout = "default";
+	
+	/**
+	 * Statistique et debug mode
+	 * 
+	 * @var boolean
+	 */
+	private static $statisticMarker = false;
+	
+	/**
+	 * Préparation TR ENGINE
+	 * Procédure de préparation du moteur
+	 * Une étape avant le démarrage réel
+	 */
+	public function __construct($statisticMarker = false) {
+		self::$statisticMarker = $statisticMarker;
+		
+		if (self::$statisticMarker) Exec_Marker::startTimer("core");
+		
+		// Vérification de la version PHP
+		if (TR_ENGINE_PHP_VERSION < "5.0.0") {
+			Core_Secure::getInstance()->debug("phpVersion");
+		}
+		
+		// Charge le gestionnaire d'exception
+		Core_Loader::classLoader("Core_Exception");
+		
+		// Charge les constantes de table
+		Core_Loader::classLoader("Core_Table");
+		
+		// Chargement du gestionnaire de cache
+		Core_Loader::classLoader("Core_CacheBuffer");
+		
+		// Chargement de la configuration
+		Core_Loader::classLoader("Core_ConfigsLoader");
+		$coreConfigLoader = new Core_ConfigsLoader();
+		
+		// Connexion à la base de donnée
+		$this->setCoreSql($coreConfigLoader->getDatabase());
+		
+		// Chargement du convertiseur d'entities
+		Core_Loader::classLoader("Exec_Entities");
+		
+		// Récuperation de la configuration
+		$this->setCoreConfig($coreConfigLoader->getConfig());
+		
+		// Destruction du chargeur de configs
+		unset($coreConfigLoader);
+		
+		// Chargement du gestionnaire d'accès url
+		Core_Loader::classLoader("Core_Request");
+		
+		if (self::$statisticMarker) Exec_Marker::stopTimer("core");
+		
+		// TODO isoler l'installation
+		$installPath = TR_ENGINE_DIR . "/install/index.php";
+		if (is_file($installPath)) {
+			require($installPath);
+		}
+	}
+	
+	/**
+	 * Capture et instancie le gestionnaire Sql
+	 */
+	private function setCoreSql($db) {
+		Core_Loader::classLoader("Core_Sql");
+		Core_Sql::makeInstance($db);
+		Core_Table::setPrefix($db['prefix']);
+	}
+	
+	/**
+	 * Charge la configuration a partir de la base
+	 * 
+	 * @return array
+	 */
+	private function getConfigDb() {
+		$config = array();
+		Core_CacheBuffer::setSectionName("tmp");
+		$content = "";
+		
+		// Requête vers la base de donnée de configs
+		Core_Sql::select(Core_Table::$CONFIG_TABLE, array("name", "value"));
+		while ($row = Core_Sql::fetchArray()) {
+			$config[$row['name']] = stripslashes(htmlentities($row['value'], ENT_NOQUOTES));
+			$content .= "$" . Core_CacheBuffer::getSectionName() . "['" . $row['name'] . "'] = \"" . Exec_Entities::addSlashes($config[$row['name']]) . "\"; ";
+		}
+		// Mise en cache
+		Core_CacheBuffer::writingCache("configs.php", $content, true);
+		// Retourne le configuration pour l'ajout
+		return $config;
+	}
+	
+	/**
+	 * Ajoute l'objet a la configuration
+	 * 
+	 * @param $config array
+	 */
+	private function addToConfig($config) {
+		if (is_array($config)) {
+			foreach($config as $key => $value) {
+				self::$coreConfig[$key] = Exec_Entities::stripSlashes($value);
+			}
+		}
+	}
+	
+	/**
+	 * Recupere les variables de configuration
+	 * Utilisation du cache ou sinon de la base de donnée
+	 * 
+	 * @param $configIncFile
+	 */
+	private function setCoreConfig($configIncFile) {
+		// Ajout a la configuration courante
+		$this->addToConfig($configIncFile);
+		
+		// Configuration via le fichier temporaire
+		Core_CacheBuffer::setSectionName("tmp");
+		if (Core_CacheBuffer::cached("configs.php")) {
+			$configCached = Core_CacheBuffer::getCache("configs.php");
+			$this->addToConfig($configCached);
+		} else {
+			// Recherche de la configuration dans la base de donnée
+			$configDb = $this->getConfigDb();
+			// Ajout a la configuration courante
+			$this->addToConfig($configDb);
+		}
+	}
+	
+	/**
+	 * Démarrage TR ENGINE
+	 */
+	public function start() {
+		if (self::$statisticMarker) Exec_Marker::startTimer("launcher");
+		
+		// Gestionnaire des cookie
+		Core_Loader::classLoader("Exec_Cookie");
+		
+		// Chargement de l'outil de cryptage
+		Core_Loader::classLoader("Exec_Crypt");
+		
+		// Analyse pour les statistiques
+		Core_Loader::classLoader("Exec_Agent");
+		Exec_Agent::getVisitorsStats();
+		
+		// Chargement des sessions
+		Core_Loader::classLoader("Core_Session");
+		Core_Session::getInstance();
+		
+		// Chargement du moteur de traduction
+		Core_Loader::classLoader("Core_Translate");
+		Core_Translate::makeInstance();
+		
+		// Chargement du traitement HTML
+		Core_Loader::classLoader("Core_TextEditor");
+		
+		// Vérification des bannissements
+		Core_Loader::classLoader("Core_BlackBan");
+		Core_BlackBan::checkBlackBan();
+		
+		// Chargement du gestionnaire HTML
+		Core_Loader::classLoader("Core_Html");
+		Core_Html::getInstance();
+		
+		// Configure les informations de page demandées
+		$this->loadLayout();
+		$this->loadModule();
+		$this->loadMakeStyle();
+		
+		if (!self::$statisticMarker) $this->compressionOpen();
+		
+		// Comportement different en fonction du type de client
+		if (!Core_BlackBan::isBlackUser()) {
+			// Chargement du gestionnaire d'autorisation
+			Core_Loader::classLoader("Core_Acces");
+			
+			// Chargement des blocks
+			Core_Loader::classLoader("Libs_Block");
+			
+			// Chargement de la réécriture d'URL
+			if (self::doUrlRewriting()) {
+				Core_Loader::classLoader("Core_UrlRewriting");
+				Core_UrlRewriting::test();
+			}
+			
+			if (self::isFullScreen() && Core_Loader::isCallable("Libs_Block") && Core_Loader::isCallable("Libs_Module")) {
+				// Traduction du module
+				Core_Translate::translate("modules/" . Libs_Module::$module);
+				
+				// Chargement et construction du fil d'ariane
+				Core_Loader::classLoader("Libs_Breadcrumb");
+				Libs_Breadcrumb::getInstance();
+				
+				Libs_Block::getInstance()->launch();
+				Libs_Module::getInstance()->launch();
+				
+				Exec_Marker::stopTimer("main");
+				$libsMakeStyle = new Libs_MakeStyle();
+				$libsMakeStyle->display("index.tpl");
+			} else {
+				// Affichage autonome des modules et blocks
+				if (self::isModuleScreen() && Core_Loader::isCallable("Libs_Module")) {
+					Core_Translate::translate("modules/" . Libs_Module::$module);
+					Libs_Module::getInstance()->launch();
+					echo Libs_Module::getInstance()->getModule();
+				} else if (self::isBlockScreen() && Core_Loader::isCallable("Libs_Block")) {
+					Libs_Block::getInstance()->launch();
+					echo Libs_Block::getInstance()->getBlock();
+				}
+				// Execute la commande de récupération d'erreur
+				Core_Exception::getMinorError();
+				// Javascript autonome
+				Core_Html::getInstance()->selfJavascript();
+			}
+			
+			// Validation du cache / Routine du cache
+			Core_CacheBuffer::valideCacheBuffer();
+			// Assemble tous les messages d'erreurs dans un fichier log
+			Core_Exception::logException();
+		} else {
+			Core_BlackBan::displayBlackPage();
+		}
+		
+		if (self::$statisticMarker) {
+			Exec_Marker::stopTimer("launcher");
+		} else {
+			$this->compressionClose();
+		}
+	}
+	
+	/**
+	 * Lance le tampon de sortie
+	 * Entête & tamporisation de sortie
+	 */
+	private function compressionOpen() {
+		header("Vary: Cookie, Accept-Encoding");
+		if (extension_loaded('zlib') 
+				&& !ini_get('zlib.output_compression') 
+				&& function_exists("ob_gzhandler") 
+				&& !self::doUrlRewriting()) {
+			ob_start("ob_gzhandler");
+		} else {
+			ob_start();
+		}
+	}
+	
+	/**
+	 * Relachement des tampons de sortie
+	 */
+	private function compressionClose() {
+		while (ob_end_flush());
+	}
+	
+	/**
+	 * Assignation et vérification de fonction layout
+	 */
+	private function loadLayout() {
+		// Assignation et vérification de fonction layout
+		$layout = strtolower(Core_Request::getWord("layout"));
+		
+		// Configuration du layout
+		if ($layout != "default" && $layout != "modulepage"	&& $layout != "blockpage" 
+				&& (($layout != "block" && $layout != "module") || (!Core_Html::getInstance()->isJavascriptEnabled()))) {
+			$layout = "default";
+		}
+		self::$layout = $layout;
+	}
+	
+	/**
+	 * Création de l'instance du module
+	 */
+	private function loadModule() {
+		Core_Loader::classLoader("Libs_Module");	
+		Libs_Module::getInstance(
+			Core_Request::getWord("mod"), 
+			Core_Request::getWord("page"), 
+			Core_Request::getWord("view")
+		);
+	}
+	
+	/**
+	 * Assignation et vérification du template
+	 */
+	private function loadMakeStyle() {		
+		$template = (!Core_Session::$userTemplate) ? self::$coreConfig['defaultTemplate'] : Core_Session::$userTemplate;
+		Core_Loader::classLoader("Libs_MakeStyle");		
+		Libs_MakeStyle::getCurrentTemplate($template);
+	}
+		
+	/**
+	 * Vérifie si l'affichage se fait en écran complet
+	 * 
+	 * @return boolean true c'est en plein écran
+	 */
+	public static function isFullScreen() {
+		return ((self::$layout == "default") ? true : false);
+	}
+	
+	/**
+	 * Vérifie si l'affichage se fait en écran minimal ciblé module
+	 * 
+	 * @return boolean true c'est un affichage de module uniquement
+	 */
+	public static function isModuleScreen() {
+		return ((self::$layout == "module" || self::$layout == "modulepage") ? true : false);
+	}
+	
+	/**
+	 * Vérifie si l'affichage se fait en écran minimal ciblé block
+	 * 
+	 * @return boolean true c'est un affichage de block uniquement
+	 */
+	public static function isBlockScreen() {
+		return ((self::$layout == "block" || self::$layout == "blockpage") ? true : false);
+	}
+	
+	/**
+	 * Vérifie si l'url rewriting est activé
+	 * 
+	 * @return boolean
+	 */
+	public static function doUrlRewriting() {
+		return (self::$coreConfig['urlRewriting'] == 1) ? true : false;
+	}
+	
+	/**
+	 * Etat des inscriptions au site
+	 * 
+	 * @return boolean
+	 */
+	public static function isRegistrationAllowed() {
+		return (self::$coreConfig['registrationAllowed'] == 1) ? true : false;
+	}
+	
+	/**
+	 * Vérifie si le mode de statistique et de debug est actif
+	 * 
+	 * @return boolean
+	 */
+	public static function &statisticMarker() {
+		return self::$statisticMarker;
+	}
 }
+?>
