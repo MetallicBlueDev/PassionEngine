@@ -179,7 +179,7 @@ class Libs_BlockData {
      * @return boolean true block valide
      */
     public function isValid() {
-        return is_file(TR_ENGINE_DIR . DIRECTORY_SEPARATOR . "blocks" . DIRECTORY_SEPARATOR . $this->getType() . ".block.php");
+        return is_file(TR_ENGINE_DIR . "/blocks/" . $this->getType() . ".block.php");
     }
 
     /**
@@ -195,7 +195,7 @@ class Libs_BlockData {
             if ($checkModule) {
                 if (Core_Loader::isCallable("Libs_Module")) {
                     foreach ($this->getTargetModules() as $modSelected) {
-                        if ($modSelected === "all" || Libs_Module::isSelected($modSelected)) {
+                        if ($modSelected == "all" || Libs_Module::isSelected($modSelected)) {
                             $rslt = true;
                             break;
                         }

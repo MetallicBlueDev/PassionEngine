@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -54,14 +54,14 @@ class Core_Main {
      */
     public static function checkInstance() {
         if (self::$coreMain === null) {
-            if (Core_Secure::debuggingMode()) {
+            if (Core_Secure::isDebuggingMode()) {
                 Exec_Marker::startTimer("core");
             }
 
             self::$coreMain = new self();
             self::$coreMain->prepare();
 
-            if (Core_Secure::debuggingMode()) {
+            if (Core_Secure::isDebuggingMode()) {
                 Exec_Marker::stopTimer("core");
             }
         }
@@ -137,7 +137,7 @@ class Core_Main {
      * @return boolean
      */
     public function doUrlRewriting() {
-        return ($this->getConfigValue("urlRewriting") === "1") ? true : false;
+        return ($this->getConfigValue("urlRewriting") == 1) ? true : false;
     }
 
     /**
@@ -155,7 +155,7 @@ class Core_Main {
      * @return boolean
      */
     public function doOpening() {
-        return ($this->getDefaultSiteStatut() === "open");
+        return ($this->getDefaultSiteStatut() == "open");
     }
 
     /**
@@ -164,7 +164,7 @@ class Core_Main {
      * @return boolean
      */
     public function registrationAllowed() {
-        return ($this->getConfigValue("registrationAllowed") === "1") ? true : false;
+        return ($this->getConfigValue("registrationAllowed") == 1) ? true : false;
     }
 
     /**
@@ -319,7 +319,7 @@ class Core_Main {
      * @return boolean true c'est en plein écran.
      */
     public function isDefaultLayout() {
-        return (($this->layout === "default") ? true : false);
+        return (($this->layout == "default") ? true : false);
     }
 
     /**
@@ -328,7 +328,7 @@ class Core_Main {
      * @return boolean true c'est un affichage de module uniquement.
      */
     public function isModuleLayout() {
-        return (($this->layout === "module" || $this->layout === "modulepage") ? true : false);
+        return (($this->layout == "module" || $this->layout == "modulepage") ? true : false);
     }
 
     /**
@@ -337,14 +337,14 @@ class Core_Main {
      * @return boolean true c'est un affichage de block uniquement.
      */
     public function isBlockLayout() {
-        return (($this->layout === "block" || $this->layout == "blockpage") ? true : false);
+        return (($this->layout == "block" || $this->layout == "blockpage") ? true : false);
     }
 
     /**
      * Démarrage TR ENGINE.
      */
     public function start() {
-        if (Core_Secure::debuggingMode()) {
+        if (Core_Secure::isDebuggingMode()) {
             Exec_Marker::startTimer("launcher");
         }
 
@@ -357,7 +357,7 @@ class Core_Main {
         $this->checkLayout();
         $this->checkMakeStyle();
 
-        if (!Core_Secure::debuggingMode()) {
+        if (!Core_Secure::isDebuggingMode()) {
             $this->compressionOpen();
         }
 
@@ -419,7 +419,7 @@ class Core_Main {
             // Validation du cache / Routine du cache
             Core_CacheBuffer::valideCacheBuffer();
 
-            if (Core_Secure::debuggingMode()) {
+            if (Core_Secure::isDebuggingMode()) {
                 // Assemble tous les messages d'erreurs dans un fichier log
                 Core_Logger::logException();
             }
@@ -429,7 +429,7 @@ class Core_Main {
             Core_BlackBan::displayBlackPage();
         }
 
-        if (Core_Secure::debuggingMode()) {
+        if (Core_Secure::isDebuggingMode()) {
             Exec_Marker::stopTimer("launcher");
         } else {
             $this->compressionClose();
@@ -483,7 +483,7 @@ class Core_Main {
         $layout = strtolower(Core_Request::getWord("layout"));
 
         // Configuration du layout
-        if ($layout !== "default" && $layout !== "modulepage" && $layout !== "blockpage" && (($layout !== "block" && $layout !== "module") || (!Core_Html::getInstance()->javascriptEnabled()))) {
+        if ($layout != "default" && $layout != "modulepage" && $layout != "blockpage" && (($layout != "block" && $layout != "module") || (!Core_Html::getInstance()->javascriptEnabled()))) {
             $layout = "default";
         }
 
@@ -677,7 +677,7 @@ class Core_Main {
             if ($canUse) {
                 // Chargement de la configuration via la cache
                 $newConfig = array();
-                Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_TMP);
+                Core_CacheBuffer::setSectionName("tmp");
 
                 // Si le cache est disponible
                 if (Core_CacheBuffer::cached("configs.php")) {

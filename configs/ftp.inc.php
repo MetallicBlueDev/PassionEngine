@@ -1,6 +1,6 @@
 <?php
 // -------------------------------------------------------------------------//
-// Informations sur le cache
+// Informations sur le FTP
 //
 // Adresse de l'hôte du FTP
 $inc['host'] = "127.0.0.1";
@@ -19,4 +19,5 @@ $inc['root'] = "";
 //
 // Type de transaction à utiliser (php / ftp / sftp)
 $inc['type'] = "";
+//
 // -------------------------------------------------------------------------//

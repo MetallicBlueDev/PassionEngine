@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -49,7 +49,7 @@ class Libs_Menu {
         $this->identifier = $identifier;
         $this->itemActive = Core_Request::getInteger("item", 0);
 
-        Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_MENUS);
+        Core_CacheBuffer::setSectionName("menus");
 
         if ($this->isCached()) {
             $this->loadFromCache();

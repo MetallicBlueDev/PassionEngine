@@ -2,16 +2,17 @@
 // On est passé dans l'index
 define("TR_ENGINE_INDEX", true);
 
-// Vérification de la version PHP 
-require("engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "info.class.php");
+// Vérification de la version PHP
+// Classe compatible PHP 4
+require("engine/core/info.class.php");
 
 // Inclusion du chargeur
-require("engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "loader.class.php");
+require("engine/core/loader.class.php");
 
 // Chargement du système de sécurité
-Core_Secure::checkInstance();
+Core_Secure::checkInstance(true);
 
-if (Core_Secure::debuggingMode()) {
+if (Core_Secure::isDebuggingMode()) {
     Exec_Marker::startTimer("all");
 }
 
@@ -28,7 +29,7 @@ if (Core_Main::getInstance()->newComponentDetected()) {
     Core_Main::getInstance()->start();
 }
 
-if (Core_Secure::debuggingMode()) {
+if (Core_Secure::isDebuggingMode()) {
     Exec_Marker::stopTimer("all");
     Core_Logger::displayDebugInformations();
 }

@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
     require("secure.class.php");
-    Core_Secure::checkInstance();
+    new Core_Secure();
 }
 
 /**
@@ -255,7 +255,7 @@ class Core_Translate {
 
                 // Pour la sélection dans le cache
                 if (Core_Loader::isCallable("Core_CacheBuffer")) {
-                    Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_TRANSLATE);
+                    Core_CacheBuffer::setSectionName("lang");
                 }
 
                 // Chargement du fichier de traduction
@@ -321,7 +321,7 @@ class Core_Translate {
     public static function removeCache($pathLang = "") {
         $langCacheFileName = self::getLangCacheFileName($pathLang);
 
-        Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_TRANSLATE);
+        Core_CacheBuffer::setSectionName("lang");
 
         $langues = self::listLanguages();
         foreach ($langues as $langue) {
@@ -336,10 +336,10 @@ class Core_Translate {
      * @return string
      */
     private static function getLangCacheFileName($pathLang = "") {
-        if (!empty($pathLang) && substr($pathLang, -1) !== DIRECTORY_SEPARATOR) {
-            $pathLang .= DIRECTORY_SEPARATOR;
+        if (!empty($pathLang) && substr($pathLang, -1) != "/") {
+            $pathLang .= "/";
         }
-        return str_replace(DIRECTORY_SEPARATOR, "_", $pathLang) . "lang_";
+        return str_replace("/", "_", $pathLang) . "_lang_";
     }
 
     /**
@@ -426,7 +426,7 @@ class Core_Translate {
      * @return boolean true langue disponible.
      */
     private static function isValid($language) {
-        return is_file(TR_ENGINE_DIR . DIRECTORY_SEPARATOR . "lang" . DIRECTORY_SEPARATOR . $language . ".lang.php");
+        return is_file(TR_ENGINE_DIR . "/lang/" . $language . ".lang.php");
     }
 
     /**
@@ -435,11 +435,11 @@ class Core_Translate {
      * @param string $extension l'extension de la langue détectée
      */
     private function configureLocale($extension) {
-        if ($this->languageUsed === "french" && TR_ENGINE_PHP_OS === "WIN") {
+        if ($this->languageUsed == "french" && TR_ENGINE_PHP_OS == "WIN") {
             setlocale(LC_TIME, "french");
-        } else if ($this->languageUsed === "french" && TR_ENGINE_PHP_OS === "BSD") {
+        } else if ($this->languageUsed == "french" && TR_ENGINE_PHP_OS == "BSD") {
             setlocale(LC_TIME, "fr_FR.ISO8859-1");
-        } else if ($this->languageUsed === "french") {
+        } else if ($this->languageUsed == "french") {
             setlocale(LC_TIME, 'fr_FR');
         } else {
             // Tentative de formatage via le nom de la langue

@@ -87,40 +87,37 @@ class Core_Info {
         // Recherche du chemin absolu depuis n'importe quel fichier
         if (defined("TR_ENGINE_INDEX")) {
             // Nous sommes dans l'index
-            $baseDir = getcwd();
+            $baseDir = str_replace('\\', '/', getcwd());
         } else {
             // Chemin de base
             $baseName = str_replace($_SERVER['SCRIPT_NAME'], "", $_SERVER['SCRIPT_FILENAME']);
-            $baseName = str_replace("/", DIRECTORY_SEPARATOR, $baseName);
             $workingDirectory = getcwd();
 
             if (!empty($workingDirectory)) {
+                // Chemin jusqu'au fichier
+                $currentPath = str_replace('\\', '/', $workingDirectory);
                 // On isole le chemin en plus jusqu'au fichier
-                $path = str_replace($baseName, "", $workingDirectory);
+                $path = str_replace($baseName, "", $currentPath);
+            }
 
-                if (!empty($path)) {
-                    // Suppression du slash
-                    if ($path[0] === DIRECTORY_SEPARATOR) {
-                        $path = substr($path, 1);
-                    }
+            $path = substr($path, 1); // Suppression du slash
 
-                    // Vérification en se reperant sur l'emplacement du fichier de configuration
-                    while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
-                        // On remonte d'un cran
-                        $path = dirname($path);
-
-                        // La recherche n'aboutira pas
-                        if ($path === ".") {
-                            break;
-                        }
+            if (!empty($path)) { // Recherche du chemin complet
+                // Vérification en se reperant sur l'emplacement du fichier de configuration
+                while (!is_file($baseName . "/" . $path . "/configs/config.inc.php")) {
+                    // On remonte d'un cran
+                    $path = dirname($path);
+                    // La recherche n'aboutira pas
+                    if ($path == ".") {
+                        break;
                     }
                 }
             }
 
             // Verification du résultat
-            if (!empty($path) && is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
-                $baseDir = $baseName . DIRECTORY_SEPARATOR . $path;
-            } else if (is_file($baseName . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+            if (!empty($path) && is_file($baseName . "/" . $path . "/configs/config.inc.php")) {
+                $baseDir = $baseName . "/" . $path;
+            } else if (is_file($baseName . "/configs/config.inc.php")) {
                 $baseDir = $baseName;
             } else {
                 $baseDir = $baseName;
@@ -138,31 +135,28 @@ class Core_Info {
         // Recherche de l'URL courante
         $urlTmp = $_SERVER["REQUEST_URI"];
 
-        if (substr($urlTmp, -1) === "/") {
-            $urlTmp = substr($urlTmp, 0, -1);
+        if (substr($urlTmp, -1) == "/") {
+            $urlTmp = substr($urlTmp, 0, strlen($urlTmp) - 1);
         }
 
-        if ($urlTmp[0] === "/") {
+        if ($urlTmp[0] == "/") {
             $urlTmp = substr($urlTmp, 1);
         }
 
         $urlTmp = explode("/", $urlTmp);
 
         // Recherche du dossier courant
-        $urlBase = explode(DIRECTORY_SEPARATOR, TR_ENGINE_DIR);
+        $urlBase = explode("/", TR_ENGINE_DIR);
 
         // Construction du lien
         $urlFinal = "";
-        $urlTmpCounter = count($urlTmp);
-        $urlBaseCounter = count($urlBase);
-
-        for ($i = $urlTmpCounter - 1; $i >= 0; $i--) {
-            for ($j = $urlBaseCounter - 1; $j >= 0; $j--) {
+        for ($i = count($urlTmp) - 1; $i >= 0; $i--) {
+            for ($j = count($urlBase) - 1; $j >= 0; $j--) {
                 if (empty($urlBase[$j])) {
                     continue;
                 }
 
-                if ($urlTmp[$i] !== $urlBase[$j]) {
+                if ($urlTmp[$i] != $urlBase[$j]) {
                     break;
                 }
 
@@ -171,7 +165,6 @@ class Core_Info {
                 } else {
                     $urlFinal = $urlTmp[$i] . "/" . $urlFinal;
                 }
-
                 $urlBase[$j] = "";
             }
         }

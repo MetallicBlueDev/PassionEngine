@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -52,7 +52,7 @@ class Exec_FileBuilder {
         . "?>\n";
 
         if (Core_Loader::isCallable("Core_CacheBuffer")) {
-            Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_CONFIGS);
+            Core_CacheBuffer::setSectionName(Core_CacheBuffer::SECTION_CONFIGS);
             Core_CacheBuffer::writingCache("configs.inc.php", $content, true);
         }
     }
@@ -103,7 +103,7 @@ class Exec_FileBuilder {
         . "?>\n";
 
         if (Core_Loader::isCallable("Core_CacheBuffer")) {
-            Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_CONFIGS);
+            Core_CacheBuffer::setSectionName("configs");
             Core_CacheBuffer::writingCache("ftp.inc.php", $content, true);
         }
     }
@@ -150,7 +150,7 @@ class Exec_FileBuilder {
         . "?>\n";
 
         if (Core_Loader::isCallable("Core_CacheBuffer")) {
-            Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_CONFIGS);
+            Core_CacheBuffer::setSectionName("configs");
             Core_CacheBuffer::writingCache("database.inc.php", $content, true);
         }
     }

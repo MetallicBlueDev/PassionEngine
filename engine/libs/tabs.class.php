@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -88,19 +88,17 @@ class Libs_Tabs {
         // Un lien complet sans le javascript window.location = ""#" . $idTab";
         $queryString = Core_Request::getString("QUERY_STRING", "", "SERVER");
         $queryString = str_replace("selectedTab = " . $this->selected, "", $queryString);
-        $queryString = (substr($queryString, -1) !== "&") ? $queryString . "&" : $queryString;
+        $queryString = (substr($queryString, -1) != "&") ? $queryString . "&" : $queryString;
         $queryString = "index.php?" . $queryString . "selectedTab = " . $idTab;
 
-        $tabSelected = ($this->selected === $idTab);
-
         // TODO A Vérifier
-        $this->tabs .= Core_Html::getLinkWithAjax($queryString, "#" . $idTab, $idTab, Exec_Entities::textDisplay($title), ($tabSelected ? "class=\"selected\"" : "display=\"none;\""));
-//        $this->tabs .= Core_Html::getLink($queryString, false, Exec_Entities::textDisplay($title), "window.location=\"#" . $idTab . "\";", $tabSelected ? "class=\"selected\"" : "display=\"none;\""));
+        $this->tabs .= Core_Html::getLinkWithAjax($queryString, "#" . $idTab, $idTab, Exec_Entities::textDisplay($title), (($this->selected == $idTab) ? "class=\"selected\"" : "display=\"none;\""));
+//        $this->tabs .= Core_Html::getLink($queryString, false, Exec_Entities::textDisplay($title), "window.location=\"#" . $idTab . "\";", (($this->selected == $idTab) ? "class=\"selected\"" : "display=\"none;\""));
 
         $this->tabs .= "</li>";
 
         // Si le javascript est actif ou que nous sommes dans l'onget courant
-        if (Core_Html::getInstance()->javascriptEnabled() || $tabSelected) {
+        if (Core_Html::getInstance()->javascriptEnabled() || $this->selected == $idTab) {
             $this->tabsContent .= "<div id=\"" . $idTab . "\">" . $htmlContent . "</div>";
         }
     }

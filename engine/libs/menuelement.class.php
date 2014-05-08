@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -14,7 +14,7 @@ class Libs_MenuElement {
     /**
      * Item info du menu.
      *
-     * @var array
+     * @var array - object
      */
     private $data = array();
 
@@ -49,10 +49,10 @@ class Libs_MenuElement {
     /**
      * Construction de l'élément du menu
      *
-     * @param array $item
-     * @param array $items
+     * @param array - object $item
+     * @param array - object $items
      */
-    public function __construct(array $item, array &$items) {
+    public function __construct($item, &$items) {
         // Ajout des infos de l'item
         $this->data = $item;
         $this->addTags("li");
@@ -121,11 +121,11 @@ class Libs_MenuElement {
             }
 
             // Vérification des valeurs déjà enregistrées
-            if (!Exec_Utils::inArray($value, $this->attributs[$name])) {
-                if ($value === "parent") {
+            if (Exec_Utils::inArray($value, $this->attributs[$name]) == false) {
+                if ($value == "parent") {
                     array_unshift($this->attributs[$name], $value);
-                } else if ($value === "active") {
-                    if ($this->attributs[$name][0] === "parent") {
+                } else if ($value == "active") {
+                    if ($this->attributs[$name][0] == "parent") {
                         // Remplace parent par active
                         $this->attributs[$name][0] = $value;
                         // Ajoute a nouveau parent en 1er
@@ -217,9 +217,15 @@ class Libs_MenuElement {
     /**
      * Ajoute un enfant à l'item courant.
      *
-     * @param Libs_MenuElement  $child
+     * @param Libs_MenuElement or array - object $child
+     * @param array - object $items
      */
-    public function addChild(Libs_MenuElement &$child) {
+    public function addChild(&$child, &$items = array()) {
+        // Création de l'enfant si besoin
+        if (!is_object($child)) {
+            $child = new Libs_MenuElement($child, $items);
+        }
+
         // Ajout du tag UL si c'est un nouveau parent
         if (empty($this->child)) {
             $this->addTags("ul");
@@ -239,14 +245,19 @@ class Libs_MenuElement {
     /**
      * Supprime un enfant.
      *
-     * @param Libs_MenuElement $child
+     * @param Libs_MenuElement or array - object $child
+     * @param array - object $items
      */
-    public function removeChild(Libs_MenuElement &$child = null) {
+    public function removeChild(&$child = null, &$items = array()) {
         if ($child === null) {
-            foreach (array_keys($this->child) as $key) {
+            foreach ($this->child as $key => $child) {
                 unset($this->child[$key]);
             }
         } else {
+            // TODO A REVOIR - transtypage dégoutant
+            if (!is_object($child)) {
+                $child = &$items[$child->menu_id];
+            }
             unset($this->child[$child->getMenuId()]);
         }
     }

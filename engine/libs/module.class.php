@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -120,8 +120,8 @@ class Libs_Module {
     public static function &isSelected($moduleName) {
         $selected = false;
 
-        if (self::$libsModule !== null) {
-            $selected = self::$libsModule->module === $moduleName;
+        if (self::$libsModule != null) {
+            $selected = self::$libsModule->module == $moduleName;
         }
         return $selected;
     }
@@ -145,7 +145,7 @@ class Libs_Module {
             $moduleData = array();
 
             // Recherche dans le cache
-            Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_MODULES);
+            Core_CacheBuffer::setSectionName("modules");
 
             if (!Core_CacheBuffer::cached($moduleName . ".php")) {
                 $coreSql = Core_Sql::getInstance();
@@ -203,7 +203,7 @@ class Libs_Module {
 
                     // TODO A MODIFIER
                     // Juste une petite exception pour le module management qui est different
-                    if ($moduleInfo->getName() !== "management") {
+                    if ($moduleInfo->getName() != "management") {
                         $libsBreadcrumb->addTrail($this->view, "?mod=" . $moduleInfo->getName() . "&view=" . $this->view);
                     }
                 }
@@ -264,7 +264,7 @@ class Libs_Module {
         // Nom de la page cible
         $page = empty($page) ? $this->page : $page;
 
-        return is_file(TR_ENGINE_DIR . DIRECTORY_SEPARATOR . "modules" . DIRECTORY_SEPARATOR . $moduleName . DIRECTORY_SEPARATOR . $page . ".module.php");
+        return is_file(TR_ENGINE_DIR . "/modules/" . $moduleName . "/" . $page . ".module.php");
     }
 
     /**
@@ -294,22 +294,22 @@ class Libs_Module {
         $default = "display";
 
         if (Core_Loader::isCallable($pageInfo[0], $pageInfo[1])) {
-            if ($pageInfo[1] === "install" && ($this->getInfoModule()->installed() || Core_Session::getInstance()->userRank < 2)) {
+            if ($pageInfo[1] == "install" && ($this->getInfoModule()->installed() || Core_Session::getInstance()->userRank < 2)) {
                 $rslt = $this->viewPage(array(
                     $pageInfo[0],
                     $default), false);
-            } else if ($pageInfo[1] === "uninstall" && (!$this->getInfoModule()->installed() || !Core_Access::moderate($this->module))) {
+            } else if ($pageInfo[1] == "uninstall" && (!$this->getInfoModule()->installed() || !Core_Access::moderate($this->module))) {
                 $rslt = $this->viewPage(array(
                     $pageInfo[0],
                     $default), false);
-            } else if ($pageInfo[1] === "setting" && (!$this->getInfoModule()->installed() || !Core_Access::moderate($this->module))) {
+            } else if ($pageInfo[1] == "setting" && (!$this->getInfoModule()->installed() || !Core_Access::moderate($this->module))) {
                 $rslt = $this->viewPage(array(
                     $pageInfo[0],
                     $default), false);
             } else {
                 $rslt = $pageInfo[1];
             }
-        } else if ($setAlternative && $pageInfo[1] !== $default) {
+        } else if ($setAlternative && $pageInfo[1] != $default) {
             $rslt = $this->viewPage(array(
                 $pageInfo[0],
                 $default), false);

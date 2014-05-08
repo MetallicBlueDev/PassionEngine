@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
 
 /**
@@ -19,15 +19,6 @@ class Base_Mysql extends Base_Model {
      * @var string
      */
     private $lastSqlCommand = "";
-
-    protected function canUse() {
-        $rslt = function_exists("mysql_connect");
-
-        if (!$rslt) {
-            Core_Logger::addException("MySql function not found");
-        }
-        return $rslt;
-    }
 
     public function dbConnect() {
         $link = mysql_connect($this->getDatabaseHost(), $this->getDatabaseUser(), $this->getDatabasePass());
@@ -109,7 +100,7 @@ class Base_Mysql extends Base_Model {
     public function &affectedRows() {
         $rslt = -1;
 
-        if ($this->lastSqlCommand === "SELECT" || $this->lastSqlCommand === "SHOW") {
+        if ($this->lastSqlCommand == "SELECT" || $this->lastSqlCommand == "SHOW") {
             $rslt = mysql_num_rows($this->queries);
         } else {
             $rslt = mysql_affected_rows($this->connId);
@@ -120,6 +111,15 @@ class Base_Mysql extends Base_Model {
     public function &insertId() {
         $lastId = mysql_insert_id($this->connId);
         return $lastId;
+    }
+
+    protected function &test() {
+        $rslt = function_exists("mysql_connect");
+
+        if (!$rslt) {
+            Core_Logger::addException("MySql function not found");
+        }
+        return $rslt;
     }
 
     public function &getLastError() {

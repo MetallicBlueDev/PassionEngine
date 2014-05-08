@@ -2,7 +2,7 @@
 // Attention au double instances de Core_Secure...
 if (preg_match("/secure.class.php/ie", $_SERVER['PHP_SELF'])) {
     if (!defined("TR_ENGINE_INDEX")) {
-        Core_Secure::checkInstance();
+        new Core_Secure();
     }
 }
 
@@ -24,13 +24,6 @@ class Core_Secure {
     private static $secure = null;
 
     /**
-     * Verrouillage de la sécurité (exception, erreur critique).
-     *
-     * @var boolean
-     */
-    private $locked = false;
-
-    /**
      * Stats et debug mode.
      *
      * @var boolean
@@ -40,29 +33,25 @@ class Core_Secure {
     /**
      * Routine de sécurisation.
      */
-    private function __construct() {
+    private function __construct($debuggingMode) {
+        $this->debuggingMode = $debuggingMode;
+
         $this->checkError();
         $this->checkQueryString();
         $this->checkRequestReferer();
-        $this->checkGPC();
 
-        if (!class_exists("Core_Info")) {
-            $this->locked = true;
-            require("info.class.php");
-        }
-
-        // Attention: il ne faut pas définir l'index avant Core_Info mais avant Core_Loader
+        // Si nous ne sommes pas passé par l'index
         if (!defined("TR_ENGINE_INDEX")) {
-            $this->locked = true;
+            if (!class_exists("Core_Info")) {
+                require("info.class.php");
+            }
+
             define("TR_ENGINE_INDEX", true);
+            $this->throwException("badUrl");
         }
 
-        if (!class_exists("Core_Loader")) {
-            $this->locked = true;
-            require("loader.class.php");
-        }
-
-        $this->debuggingMode = Core_Request::getBoolean("debuggingMode", false, "GET");
+        // A exécuter uniquement après avoir vérifié l'index et le numéro de version
+        $this->checkGPC();
     }
 
     /**
@@ -77,15 +66,12 @@ class Core_Secure {
 
     /**
      * Vérification de l'instance du gestionnaire de sécurité.
+     *
+     * @param boolean $debuggingMode
      */
-    public static function checkInstance() {
+    public static function checkInstance($debuggingMode = false) {
         if (self::$secure === null) {
-            self::$secure = new self();
-
-            // Si nous ne sommes pas passé par l'index
-            if (self::$secure->locked()) {
-                self::$secure->throwException("badUrl");
-            }
+            self::$secure = new self($debuggingMode);
         }
     }
 
@@ -94,22 +80,13 @@ class Core_Secure {
      *
      * @return boolean
      */
-    public static function &debuggingMode() {
+    public static function &isDebuggingMode() {
         $rslt = false;
 
         if (self::$secure !== null) {
             $rslt = self::$secure->debuggingMode;
         }
         return $rslt;
-    }
-
-    /**
-     * Détermine si il y a verrouillage de la sécurité (risque potentiel).
-     *
-     * @return boolean
-     */
-    public function &locked() {
-        return $this->locked;
     }
 
     /**
@@ -121,7 +98,9 @@ class Core_Secure {
      * @param array $argv Argument suplementaire d'information sur l'erreur.
      */
     public function throwException($customMessage, Exception $ex = null, array $argv = array()) {
-        $this->locked = true;
+        if (!class_exists("Core_Loader")) {
+            require(TR_ENGINE_DIR . "/engine/core/loader.class.php");
+        }
 
         if ($ex === null) {
             $ex = new Fail_Engine($customMessage);
@@ -152,11 +131,15 @@ class Core_Secure {
         if (defined($errorMessageTitle)) {
             $errorMessageTitle = Exec_Entities::entitiesUtf8(constant($errorMessageTitle));
         } else {
-            $errorMessageTitle = "Stop loading";
+            $errorMessageTitle = "Stop loading (";
 
             if ($this->debuggingMode) {
-                $errorMessageTitle .= ": " . $customMessage;
+                $errorMessageTitle .= $customMessage;
+            } else {
+                $errorMessageTitle .= "Fatal error unknown";
             }
+
+            $errorMessageTitle .= ").";
         }
         return $errorMessageTitle;
     }
@@ -187,10 +170,10 @@ class Core_Secure {
 
                 if (is_array($traceValue)) {
                     foreach ($traceValue as $key => $value) {
-                        if ($key === "file" || $key === "function") {
+                        if ($key == "file" || $key == "function") {
                             $value = preg_replace("/([a-zA-Z0-9._]+).php/", "<b>\\1</b>.php", $value);
                             $errorLine .= " <b>" . $key . "</b> " . $value;
-                        } else if ($key === "line" || $key == "class") {
+                        } else if ($key == "line" || $key == "class") {
                             $errorLine .= " in <b>" . $key . "</b> " . $value;
                         }
                     }
@@ -240,7 +223,13 @@ class Core_Secure {
      */
     private function checkError() {
         // Réglages des sorties d'erreur
-        error_reporting(defined("E_ALL") ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
+        $errorReporting = E_ERROR | E_WARNING | E_PARSE;
+
+        if ($this->debuggingMode) {
+            $errorReporting = E_ALL;
+        }
+
+        error_reporting($errorReporting);
     }
 
     /**
@@ -284,7 +273,7 @@ class Core_Secure {
      * Vérification des envois POST.
      */
     private function checkRequestReferer() {
-        if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (!empty($_SERVER['HTTP_REFERER'])) {
                 if (!preg_match("/" . $_SERVER['HTTP_HOST'] . "/", $_SERVER['HTTP_REFERER'])) {
                     $this->throwException("badRequestReferer");
@@ -297,9 +286,8 @@ class Core_Secure {
      * Fonction de substitution pour MAGIC_QUOTES_GPC.
      */
     private function checkGPC() {
-        // Désactivation de MAGIC_QUOTES_GPC
-        if (function_exists("set_magic_quotes_runtime") && function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
-            set_magic_quotes_runtime(false);
+        if (TR_ENGINE_PHP_VERSION < "5.3.0" && function_exists("set_magic_quotes_runtime")) {
+            set_magic_quotes_runtime(0);
         }
 
         $this->addSlashesForQuotes($_GET);

@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
     require("secure.class.php");
-    Core_Secure::checkInstance();
+    new Core_Secure();
 }
 
 /**
@@ -55,7 +55,7 @@ class Core_BlackBan {
     private static function checkOldBlackBan() {
         $deleteOldBlackBan = false;
 
-        Core_CacheBuffer::changeCurrentSection(Core_CacheBuffer::SECTION_TMP);
+        Core_CacheBuffer::setSectionName("tmp");
         // Vérification du fichier cache
         if (!Core_CacheBuffer::cached("deleteOldBlackBan.txt")) {
             $deleteOldBlackBan = true;
@@ -133,7 +133,7 @@ class Core_BlackBan {
                 }
 
                 // Vérification du client
-                if ($searchIp === $banList) {
+                if ($searchIp == $banList) {
                     // IP bannis !
                     Core_Session::getInstance()->userIpBan = $blackBanIp;
                 } else if (!empty(Core_Session::getInstance()->userName) && Core_Session::getInstance()->userName = $blackBanName) {

@@ -1,7 +1,7 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
     require("secure.class.php");
-    Core_Secure::checkInstance();
+    new Core_Secure();
 }
 
 /**
@@ -59,7 +59,7 @@ class Core_Sql extends Base_Model {
         }
     }
 
-    public function initializeBase(array &$database) {
+    public function initializeBase(array $database) {
         // NE RIEN FAIRE
         unset($database);
     }
@@ -115,11 +115,6 @@ class Core_Sql extends Base_Model {
             }
         }
         return $baseList;
-    }
-
-    protected function canUse() {
-        // NE RIEN FAIRE
-        return false;
     }
 
     /**
@@ -286,7 +281,7 @@ class Core_Sql extends Base_Model {
         $this->selectedBase->resetQuoted();
 
         // Ajout la requête au log
-        if (Core_Secure::debuggingMode()) {
+        if (Core_Secure::isDebuggingMode()) {
             Core_Logger::addSqlRequest($sql);
         }
 
@@ -398,7 +393,7 @@ class Core_Sql extends Base_Model {
      * Retourne le buffer courant puis l'incremente.
      *
      * @param string $name
-     * @return array or object
+     * @return array / array - object
      */
     public function &fetchBuffer($name) {
         return $this->selectedBase->fetchBuffer($name);
@@ -408,10 +403,16 @@ class Core_Sql extends Base_Model {
      * Retourne le buffer complet choisi.
      *
      * @param string $name
-     * @return array or object
+     * @return array / array - object
      */
     public function &getBuffer($name) {
         return $this->selectedBase->getBuffer($name);
+    }
+
+    protected function &test() {
+        // NE RIEN FAIRE
+        $rslt = false;
+        return $rslt;
     }
 
     /**

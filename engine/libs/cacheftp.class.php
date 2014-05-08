@@ -1,16 +1,15 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-    Core_Secure::checkInstance();
+    require("../core/secure.class.php");
+    new Core_Secure();
 }
-// TODO il faut verifier entierement les paths de la classe
 
 /**
- * Gestionnaire de fichier via FTP.
+ * Gestionnaire des connexions vers le FTP.
  *
  * @author Sébastien Villemain
  */
-class Cache_Ftp extends Cache_Model {
+class Libs_CacheFtp extends Libs_CacheModel {
 
     /**
      * Utilisation du mode natif avec extension.
@@ -82,9 +81,35 @@ class Cache_Ftp extends Cache_Model {
      */
     private $passiveData = "";
 
-    public function initializeCache(array &$ftp) {
+    // TODO il faut verifier entierement les paths de la classe
+
+    /**
+     * Création de la connexion.
+     * Paramètrage de la connexion.
+     */
+    public function __construct() {
+        // Ajout des informations du FTP
         $ftp = Core_Main::getInstance()->getConfigFtp();
-        parent::initializeCache($ftp);
+
+        // Pré-configuration
+        if (preg_match("/(ftp:\/\/)(.+)/", $ftp['host'], $matches)) {
+            $ftp['host'] = $matches[2];
+        }
+
+        if (preg_match("/(.+)(\/)/", $ftp['host'], $matches)) {
+            $ftp['host'] = $matches[1];
+        }
+
+        // Réglage de configuration
+        $ftp['host'] = (empty($ftp['host'])) ? "127.0.0.1" : $ftp['host'];
+        $ftp['port'] = (is_numeric($ftp['port'])) ? $ftp['port'] : 21;
+        $ftp['user'] = (empty($ftp['user'])) ? "root" : $ftp['user'];
+        $ftp['pass'] = (empty($ftp['pass'])) ? "" : $ftp['pass'];
+
+        // Le dossier root sera redéfinie après être logué
+        $ftp['root'] = (empty($ftp['root'])) ? "/" : $ftp['root'];
+
+        $this->ftp = $ftp;
 
         // Recherche de l'extension FTP
         if (extension_loaded("ftp") && function_exists('ftp_connect')) {
@@ -114,26 +139,36 @@ class Cache_Ftp extends Cache_Model {
         $this->disconnect();
     }
 
-    public function canUse() {
-        return $this->connected();
-    }
-
-    public function writingCache($path, $content, $overWrite = true) {
-        if (!is_file($this->getRootPath($path))) {
-            // Soit le fichier n'exite pas, soit tout le dossier n'existe pas
-            // On commence par vérifier et si besoin écrire le dossier
-            $this->writingDirectory($path);
-        }
-
-        // Réécriture rapide sur un fichier
-        $this->writingFile($path, $content, $overWrite);
-    }
-
     public function touchCache($path, $updateTime = 0) {
         // TODO mise a jour de la date de modif a coder
         parent::touchCache($path, $updateTime);
     }
 
+    /**
+     * Etat de la connexion FTP.
+     *
+     * @return boolean
+     */
+    public function canUse() {
+        return $this->connected();
+    }
+
+    /**
+     * Vérifie si la connexion est établie.
+     *
+     * @return boolean true succès
+     */
+    public function connected() {
+        // Stockage pour passage par référence
+        return is_resource($this->connId);
+    }
+
+    /**
+     * Supprime un fichier ou supprime tout fichier trop vieux.
+     *
+     * @param string $dir chemin vers le fichier ou le dossier
+     * @param string $timeLimit limite de temps
+     */
     public function removeCache($dir = "", $timeLimit = 0) {
         if (!empty($dir) && is_file($this->getRootPath($dir))) {
             // C'est un fichier a supprimer
@@ -144,7 +179,13 @@ class Cache_Ftp extends Cache_Model {
         }
     }
 
-    public function &getFileNames($path = "") {
+    /**
+     * Récupération de la liste des dossiers et fichiers au chemin path.
+     *
+     * @param string $path : chemin où doit être listé les dossiers
+     * @return array liste des dossiers trouvés
+     */
+    public function &listNames($path = "") {
         $dirList = array();
 
         if ($this->connected()) {
@@ -205,17 +246,41 @@ class Cache_Ftp extends Cache_Model {
         return $dirList;
     }
 
-    public function &getCacheMTime($path) {
+    /**
+     * Ecriture du ficher cache.
+     *
+     * @param string $path chemin vers le fichier cache
+     * @param string $content contenu du fichier cache
+     * @param boolean $overWrite écrasement du fichier
+     */
+    public function writingCache($path, $content, $overWrite = true) {
+        if (!is_file($this->getRootPath($path))) {
+            // Soit le fichier n'exite pas, soit tout le dossier n'existe pas
+            // On commence par vérifier et si besoin écrire le dossier
+            $this->writingDirectory($path);
+        }
+
+        // Réécriture rapide sur un fichier
+        $this->writingFile($path, $content, $overWrite);
+    }
+
+    /**
+     * Recherche la date de dernière modification du fichier.
+     *
+     * @param string $path
+     * @return int date de dernière modification
+     */
+    private function &getMTime($path) {
         $mTime = 0;
 
         if ($this->connected()) {
             if ($this->nativeMode) {
                 $rslt = ftp_mdtm($this->connId, $this->getRootPath($path));
 
-                if ($rslt === -1) { // Une erreur est survenue
+                if ($rslt == -1) { // Une erreur est survenue
                     $this->nativeMode = false;
 
-                    Core_Logger::addException("Bad response for ftp_mdtm command. Path : " . $path
+                    Core_Logger::addException("bad response for ftp_mdtm command. Path : " . $path
                     . " Turn off the native command.");
 
                     $mTime = $this->getMTime($path);
@@ -225,23 +290,13 @@ class Cache_Ftp extends Cache_Model {
             } else {
                 if (!$this->setCommand("MDTM " . $this->getRootPath($path), array(
                     250))) {
-                    Core_Logger::addException("Bad response for MDTM command. Path : " . $path);
+                    Core_Logger::addException("bad response for MDTM command. Path : " . $path);
                 }
 
                 $mTime = $this->responseMsg;
             }
         }
         return $mTime;
-    }
-
-    /**
-     * Vérifie si la connexion est établie.
-     *
-     * @return boolean true succès
-     */
-    public function connected() {
-        // Stockage pour passage par référence
-        return is_resource($this->connId);
     }
 
     /**
@@ -265,18 +320,18 @@ class Cache_Ftp extends Cache_Model {
 
         if ($this->connected()) {
             if ($this->nativeMode) {
-                $rslt = ftp_login($this->connId, $this->getFtpUser(), $this->getFtpPass());
+                $rslt = ftp_login($this->connId, $this->ftp['user'], $this->ftp['pass']);
             } else {
                 // Envoi user
-                if ($this->setCommand("USER " . $this->getFtpUser(), array(
+                if ($this->setCommand("USER " . $this->ftp['user'], array(
                     331,
                     503))) {
-                    if ($this->responseCode === 503) {
+                    if ($this->responseCode == 503) {
                         // Désolé, déjà identifié
                         $rslt = true;
                     } else {
                         // Envoi du mot de passe
-                        $rslt = $this->setCommand("PASS " . $this->getFtpPass(), array(
+                        $rslt = $this->setCommand("PASS " . $this->ftp['pass'], array(
                             230));
                     }
                 }
@@ -290,28 +345,28 @@ class Cache_Ftp extends Cache_Model {
      */
     private function rootConfig() {
         // Si aucun root n'est précisé
-        if ($this->getFtpRoot() === DIRECTORY_SEPARATOR) {
+        if ($this->ftp['root'] == "/") {
             // On commence la recherche
             $pathFound = "";
-            $listNames = $this->getFileNames();
+            $listNames = $this->listNames();
 
             if (is_array($listNames)) {
                 // On décompose les dossiers
-                $listNamesSearch = explode(DIRECTORY_SEPARATOR, TR_ENGINE_DIR);
+                $listNamesSearch = explode("/", TR_ENGINE_DIR);
 
                 // On recherche des correspondances
                 foreach ($listNames as $dirName) {
                     foreach ($listNamesSearch as $dirNameSearch) {
                         // On construit le lien
-                        if (($dirNameSearch === $dirName) || !empty($pathFound)) {
-                            $pathFound = (!empty($pathFound)) ? $pathFound . DIRECTORY_SEPARATOR . $dirNameSearch : $dirNameSearch;
+                        if (($dirNameSearch == $dirName) || !empty($pathFound)) {
+                            $pathFound = (!empty($pathFound)) ? $pathFound . "/" . $dirNameSearch : $dirNameSearch;
                         } else {
-                            $pathRebuild = (!empty($pathRebuild)) ? $pathRebuild . DIRECTORY_SEPARATOR . $dirNameSearch : $dirNameSearch;
+                            $pathRebuild = (!empty($pathRebuild)) ? $pathRebuild . "/" . $dirNameSearch : $dirNameSearch;
                         }
                     }
 
                     // On verifie si c'est bon et on arrete si c'est trouvé
-                    if (!empty($pathFound) && is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . "engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php")) {
+                    if (!empty($pathFound) && is_file("/" . $pathRebuild . "/" . $pathFound . "/engine/core/secure.class.php")) {
                         break;
                     } else {
                         // Resets
@@ -322,9 +377,9 @@ class Cache_Ftp extends Cache_Model {
         }
 
         // Vérification du root path
-        if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . "engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php")) {
-            $this->setFtpRoot($pathFound);
-        } else if (empty($this->getFtpRoot())) {
+        if (is_file("/" . $pathRebuild . "/" . $pathFound . "/engine/core/secure.class.php")) {
+            $this->ftp['root'] = $pathFound;
+        } else if (empty($this->ftp['root'])) {
             Core_Logger::addException("Unable to configure root path.");
         }
     }
@@ -339,14 +394,14 @@ class Cache_Ftp extends Cache_Model {
         if ($this->connected()) {
             if ($this->nativeMode) {
                 if (ftp_site($this->connId, "CHMOD " . $mode . " " . $this->getRootPath($path))) {
-                    Core_Logger::addException("Bad response for ftp_site CHMOD command. Path : " . $path);
+                    Core_Logger::addException("bad response for ftp_site CHMOD command. Path : " . $path);
                 }
             } else {
                 // Envoie de la commande CHMOD
                 if ($this->setCommand("SITE CHMOD " . $mode . " " . $path, array(
                     200,
                     250))) {
-                    Core_Logger::addException("Bad response for SITE CHMOD command. Path : " . $path);
+                    Core_Logger::addException("bad response for SITE CHMOD command. Path : " . $path);
                 }
             }
         }
@@ -373,7 +428,7 @@ class Cache_Ftp extends Cache_Model {
 
                     // Ecriture du fichier
                     if (!ftp_fget($this->connId, $buffer, $this->getRootPath($path), FTP_ASCII)) {// TODO il faut mettre une path remote ici !
-                        Core_Logger::addException("Bad response for ftp_fget command. Path : " . $path);
+                        Core_Logger::addException("bad response for ftp_fget command. Path : " . $path);
                     }
 
                     fclose($buffer);
@@ -408,7 +463,7 @@ class Cache_Ftp extends Cache_Model {
                     // Verification
                     if (!$this->responseCode(array(
                         226))) {
-                        Core_Logger::addException("Bad response for STOR|APPE|fwrite command. Path : " . $path);
+                        Core_Logger::addException("bad response for STOR|APPE|fwrite command. Path : " . $path);
                     }
                 }
             }
@@ -425,7 +480,7 @@ class Cache_Ftp extends Cache_Model {
         $pathIsDir = Core_CacheBuffer::isDir($path);
 
         // Information sur les dossiers
-        $dirs = explode(DIRECTORY_SEPARATOR, $this->getPath($path));
+        $dirs = explode("/", $this->getPath($path));
         $nbDir = count($dirs);
         $currentPath = "";
         $count = 0;
@@ -435,24 +490,24 @@ class Cache_Ftp extends Cache_Model {
                 $count++;
 
                 // Si le dernier élèment est un fichier ou simplement vide
-                if (($count === $nbDir && !$pathIsDir) || empty($dir)) {
+                if (($count == $nbDir && !$pathIsDir) || empty($dir)) {
                     break; // on passe a la suite...
                 }
 
                 // Mise à jour du dossier courant
-                $currentPath = ($count === 1) ? $currentPath = $dir : $currentPath . DIRECTORY_SEPARATOR . $dir;
+                $currentPath = ($count == 1) ? $currentPath = $dir : $currentPath . "/" . $dir;
 
                 if (!is_dir($currentPath)) {
                     // Création du dossier
                     if ($this->connected()) {
                         if ($this->nativeMode) {
                             if (!ftp_mkdir($this->connId, $path)) {
-                                Core_Logger::addException("Bad response for ftp_mkdir command. Path : " . $path);
+                                Core_Logger::addException("bad response for ftp_mkdir command. Path : " . $path);
                             }
                         } else {
                             if (!$this->setCommand("MKD " . $path, array(
                                 257))) {
-                                Core_Logger::addException("Bad response for MKD command. Path : " . $path);
+                                Core_Logger::addException("bad response for MKD command. Path : " . $path);
                             }
                         }
 
@@ -461,10 +516,10 @@ class Cache_Ftp extends Cache_Model {
                     }
 
                     // Des petites fichiers bonus...
-                    if ($dir === "tmp") {
-                        $this->writingFile($currentPath . DIRECTORY_SEPARATOR . "index.php", "header(\"Location: .." . DIRECTORY_SEPARATOR . "index.php\");");
+                    if ($dir == "tmp") {
+                        $this->writingFile($currentPath . "/index.php", "header(\"Location: ../index.php\");");
                     } else {
-                        $this->writingFile($currentPath . DIRECTORY_SEPARATOR . ".htaccess", "deny from all");
+                        $this->writingFile($currentPath . "/.htaccess", "deny from all");
                     }
                 }
             }
@@ -497,13 +552,13 @@ class Cache_Ftp extends Cache_Model {
             if ($this->nativeMode) {
                 // On efface le fichier, si c'est un fichier
                 if (!ftp_delete($this->connId, $this->getRootPath($path))) {
-                    Core_Logger::addException("Bad response for ftp_delete command. Path : " . $path);
+                    Core_Logger::addException("bad response for ftp_delete command. Path : " . $path);
                 }
             } else {
                 // Envoie de la commande de suppression du fichier
                 if (!$this->setCommand("DELE " . $this->getRootPath($path), array(
                     250))) {
-                    Core_Logger::addException("Bad response for DELE command. Path : " . $path);
+                    Core_Logger::addException("bad response for DELE command. Path : " . $path);
                 }
             }
         }
@@ -517,15 +572,15 @@ class Cache_Ftp extends Cache_Model {
      */
     private function removeDirectory($path, $timeLimit) {
         // Récuperation des éléments présents
-        $dirList = $this->getFileNames($path);
+        $dirList = $this->listNames($path);
 
-        if (empty($dirList)) {
+        if (is_array($dirList) && count($dirList) > 0) {
             foreach ($dirList as $dirPath) {
                 // Vérification avant suppression
                 if ($timeLimit > 0) {
-                    if (is_file($this->getRootPath($path . DIRECTORY_SEPARATOR . $dirPath))) {
+                    if (is_file($this->getRootPath($path . "/" . $dirPath))) {
                         // Si le fichier n'est pas périmé, on passe au suivant
-                        if ($timeLimit < $this->getMTime($path . DIRECTORY_SEPARATOR . $dirPath)) {
+                        if ($timeLimit < $this->getMTime($path . "/" . $dirPath)) {
                             continue;
                         }
                     } else {
@@ -535,27 +590,27 @@ class Cache_Ftp extends Cache_Model {
                     }
                 }
 
-                if (is_file($this->getRootPath($path . DIRECTORY_SEPARATOR . $dirPath))) {
+                if (is_file($this->getRootPath($path . "/" . $dirPath))) {
                     // Suppression du fichier
-                    $this->removeFile($path . DIRECTORY_SEPARATOR . $dirPath, $timeLimit);
+                    $this->removeFile($path . "/" . $dirPath, $timeLimit);
                 } else {
                     // Suppression du dossier
-                    $this->removeDirectory($path . DIRECTORY_SEPARATOR . $dirPath, $timeLimit);
+                    $this->removeDirectory($path . "/" . $dirPath, $timeLimit);
                 }
             }
         }
 
         // Suppression du dernière dossier
-        if ($timeLimit === 0 && $this->connected()) {
+        if ($timeLimit == 0 && $this->connected()) {
             if ($this->nativeMode) {
                 if (!ftp_rmdir($this->connId, $this->getRootPath($path))) {
-                    Core_Logger::addException("Bad response for ftp_rmdir command. Path : " . $path);
+                    Core_Logger::addException("bad response for ftp_rmdir command. Path : " . $path);
                 }
             } else {
                 // Envoi de la commande de suppression du fichier
                 if ($this->setCommand("RMD " . $this->getRootPath($path), array(
                     250))) {
-                    Core_Logger::addException("Bad response for RMD command. Path : " . $path);
+                    Core_Logger::addException("bad response for RMD command. Path : " . $path);
                 }
             }
         }
@@ -574,7 +629,7 @@ class Cache_Ftp extends Cache_Model {
         if ($this->connected()) {
             // Envoie de la commande au serveur
             if (!fwrite($this->connId, $cmd . $this->CRLF)) {
-                Core_Logger::addException("Unable to send command: " . $cmd);
+                Core_Logger::addException("unable to send command: " . $cmd);
             }
 
             $rslt = $this->responseCode($expectedResponse);
@@ -614,7 +669,7 @@ class Cache_Ftp extends Cache_Model {
                     $rslt = true;
                 }
             } else {
-                Core_Logger::addException("Timeout or unrecognized response while waiting for a response from the server. Full response : " . $this->response);
+                Core_Logger::addException("timeout or unrecognized response while waiting for a response from the server. Full response : " . $this->response);
             }
         }
         return $rslt;
@@ -646,12 +701,12 @@ class Cache_Ftp extends Cache_Model {
                         // Tentative de connexion
                         $this->passiveData = fsockopen($this->passiveIp, $this->passivePort, $socket_error_number, $socket_error_message, $this->timeOut);
 
-                        if ($this->passiveData !== false) {
+                        if ($this->passiveData != false) {
                             // On définie le timeout, si possible
                             $this->setTimeOut();
                             $rslt = true;
                         } else {
-                            Core_Logger::addException("Could not connect to host " . $this->passiveIp . " on port " . $this->passivePort
+                            Core_Logger::addException("could not connect to host " . $this->passiveIp . " on port " . $this->passivePort
                             . ". Socket error number " . $$socket_error_number . " and error message: " . $socket_error_message);
                         }
                     }
@@ -688,9 +743,9 @@ class Cache_Ftp extends Cache_Model {
         // Si aucune connexion engagé
         if (!$this->connected()) {
             if ($this->nativeMode) {
-                $this->connId = ftp_connect($this->getFtpHost(), $this->getFtpPort(), $this->timeOut);
+                $this->connId = ftp_connect($this->ftp['host'], $this->ftp['port'], $this->timeOut);
             } else {
-                $this->connId = fsockopen($this->getFtpHost(), $this->getFtpPort(), $socket_error_number, $socket_error_message, $this->timeOut);
+                $this->connId = fsockopen($this->ftp['host'], $this->ftp['port'], $socket_error_number, $socket_error_message, $this->timeOut);
             }
 
             // On définie le timeout, si possible
@@ -704,7 +759,7 @@ class Cache_Ftp extends Cache_Model {
             220))) || $this->connected()) {
             $rslt = true;
         } else {
-            Core_Logger::addException("Could not connect to host " . $this->getFtpHost() . " on port " . $this->getFtpPort());
+            Core_Logger::addException("could not connect to host " . $this->ftp['host'] . " on port " . $this->ftp['port']);
         }
         return $rslt;
     }
