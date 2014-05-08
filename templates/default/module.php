@@ -1,19 +1,19 @@
-<?php echo Libs_Block::getInstance()->getBlocksBySideName("moduletop"); ?>
+<?php echo Libs_Block::getInstance()->getBlocks("moduletop"); ?>
 
-<?php
+<?php 
 $renderModule = Libs_Module::getInstance()->getModule();
-
+	
 if (!empty($renderModule)) {
-    ?>
-    <div id="module_top"></div>
-    <div id="module_middle">
-        <div id="module_middle_content">
-            <?php echo $renderModule; ?>
-        </div>
-    </div>
-    <div id="module_bottom"></div>
-    <?php
+?>
+<div id="module_top"></div>
+<div id="module_middle">
+	<div id="module_middle_content">
+		<?php echo $renderModule; ?>
+	</div>
+</div>
+<div id="module_bottom"></div>
+<?php
 }
 ?>
 
-<?php echo Libs_Block::getInstance()->getBlocksBySideName("modulebottom"); ?>
+<?php echo Libs_Block::getInstance()->getBlocks("modulebottom"); ?>

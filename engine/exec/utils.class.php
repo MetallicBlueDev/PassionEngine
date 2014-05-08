@@ -1,18 +1,19 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Fonction optimisÃ© et utilitaire
+ * Fonction optimisé et utilitaire
  * 
- * @author SÃ©bastien Villemain
+ * @author Sebastien Villemain
+ *
  */
 class Exec_Utils {
 	
 	/**
-	 * Indique si une valeur appartient Ã  un tableau
+	 * Indique si une valeur appartient à un tableau
 	 * in_array optimized function
 	 * 
 	 * @author robin at robinnixon dot com
@@ -20,7 +21,7 @@ class Exec_Utils {
 	 * 
 	 * @param $needle mixed
 	 * @param $haystack array
-	 * @return boolean si needle est trouvÃ©
+	 * @return boolean si needle est trouvé
 	 */
 	public static function inArray($needle, $haystack) {
 		$top = sizeof($haystack) -1;
@@ -36,13 +37,13 @@ class Exec_Utils {
 	}
 	
 	/**
-	 * Indique si une valeur appartient Ã  un tableau (tableau multiple)
+	 * Indique si une valeur appartient à un tableau (tableau multiple)
 	 * Tableau a dimension multiple
 	 * in_array multi array function
 	 * 
 	 * @param $needle mixed
 	 * @param $haystack array
-	 * @return boolean si needle est trouvÃ©
+	 * @return boolean si needle est trouvé
 	 */
 	public static function inMultiArray($needle, $haystack) {
 		foreach ($haystack as $value) {

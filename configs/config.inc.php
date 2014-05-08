@@ -1,28 +1,42 @@
 <?php
 // ----------------------------------------------------------------------- //
-// -- TR ENGINE = PUISSANCE + SIMPLICITE + EVOLUTIVITE					-- //
+// -- TR ENGINE = PUISSANCE + SIMPLICITÉ + ÉVOLUTIVITÉ					-- //
 // -- Puissance par un codage efficace									-- //
-// -- SimplicitÃ© par une interface intuitive							-- //
-// -- EvolutivitÃ© par une grande souplesse d'adaptation du moteur		-- //
+// -- Simplicité par une interface intuitive							-- //
+// -- Évolutivité par une grande souplesse d'adaptation du moteur		-- //
+// ----------------------------------------------------------------------- //
+// -- Une création de Trancer-Studio.net [www.trancer-studio.net]		-- //
+// ----------------------------------------------------------------------- //
+// Donnée : par require_once()
 // ----------------------------------------------------------------------- //
 // ----------------------------------------------------------------------- //
-// Informations gÃ©nÃ©rales
+// -- Fichier de configuration du site
+// -- http://www.trancer-studio.net
+// ----------------------------------------------------------------------- //
+
+// ----------------------------------------------------------------------- //
+// Informations générales
 //
-// Adresse email du webmaster
-$inc["TR_ENGINE_MAIL"] = "villemain.sebastien@trancer-studio.net";
+// Adresse email du webmaster (principal)
+$config["TR_ENGINE_MAIL"] = "villemain.sebastien@trancer-studio.net";
 //
-// Statut du site ("open" = ouvert | "close" = fermÃ©)
-$inc["TR_ENGINE_STATUT"] = "open";
+// Statut du site ("open" = ouvert | "close" = fermé)
+$config["TR_ENGINE_STATUT"] = "open";
 // ----------------------------------------------------------------------- //
+
+
 // -------------------------------------------------------------------------//
-// DonnÃ©es des sessions
+// Données des sessions
 //
-// DurÃ©e en jours de validitÃ© des fichiers de sessions mise en cache
-$inc['cacheTimeLimit'] = 7;
+// Durée en jours de validité des fichiers de sessions mise en cache
+$config['cacheTimeLimit'] = 7;
 //
-// PrÃ©fixe des noms des cookies
-$inc['cookiePrefix'] = "tr";
+// Préfixe des noms des cookies
+$config['cookiePrefix'] = "tr";
 //
-// ClÃ© de cryptage unique (gÃ©nÃ©rÃ© alÃ©atoirement Ã  l'installation)
-$inc['cryptKey'] = "A4bT9D4V";
+// Cles de décriptage UNIQUE (généré aleatoirement a l'installation)
+$config['cryptKey'] = "A4bT9D4V";
 // -------------------------------------------------------------------------//
+
+
+?>

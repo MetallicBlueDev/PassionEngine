@@ -1,13 +1,13 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 class Exec_Marker {
 	
 	/**
-	 * Marqueur de dÃ©but
+	 * Marqueur de début
 	 * 
 	 * @var array
 	 */
@@ -21,14 +21,14 @@ class Exec_Marker {
 	private static $finishTime = array();
 	
 	/**
-	 * Marque le temps de dÃ©but de gÃ©nÃ©ration
+	 * Marque le temps de début de génération
 	 */
 	public static function startTimer($name) {
 		self::$startTime[$name] = self::maker();
 	}
 	
 	/**
-	 * Marque le temps de fin de gÃ©nÃ©ration
+	 * Marque le temps de fin de génération
 	 */
 	public static function stopTimer($name) {
 		self::$finishTime[$name] = self::maker();
@@ -44,9 +44,9 @@ class Exec_Marker {
 	}
 	
 	/**
-	 * Retourne le temps qui a Ã©tÃ© mis pour gÃ©nÃ©rÃ© la page en ms
+	 * Retourne le temps qui a été mis pour généré la page en ms
 	 * 
-	 * @return int le temps de gÃ©nÃ©ration en milliseconde (ms)
+	 * @return int le temps de génération en milliseconde (ms)
 	 */
 	public static function &getTime($name) {
 		if (isset(self::$startTime[$name]) 

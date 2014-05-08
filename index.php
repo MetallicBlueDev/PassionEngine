@@ -1,34 +1,43 @@
 <?php
-// On est passÃ© dans l'index
-define("TR_ENGINE_INDEX", true);
+// On est passé dans l'index
+define("TR_ENGINE_INDEX", 1);
 
-// VÃ©rification de la version PHP 
-require("engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "info.class.php");
+// Vérification de la version PHP
+// Classe compatible PHP 4
+require("engine/core/info.class.php");
 
 // Inclusion du chargeur
-require("engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "loader.class.php");
+require("engine/core/loader.class.php");
 
-// Chargement du systÃ¨me de sÃ©curitÃ©
-Core_Secure::checkInstance();
+// Chargement du système de sécurité
+Core_Loader::classLoader("Core_Secure");
+Core_Secure::getInstance(true); // true = mode debug activé
 
-if (Core_Secure::debuggingMode()) {
-    Exec_Marker::startTimer("all");
+// Chargement du Marker
+Core_Loader::classLoader("Exec_Marker");
+
+if (Core_Secure::isDebuggingMode()) {
+	Exec_Marker::startTimer("all");
 }
-
 Exec_Marker::startTimer("main");
 
-// PrÃ©paration du moteur
-Core_Main::checkInstance();
+// Chargement de la classe principal
+Core_Loader::classLoader("Core_Main");
+
+// Préparation du moteur
+$TR_ENGINE = new Core_Main();
 
 // Recherche de nouveau composant
-if (Core_Main::getInstance()->newComponentDetected()) {
-    // Installtion des nouveaux composants
-    Core_Main::getInstance()->install();
+if ($TR_ENGINE->newComponentDetected()) {
+	// Installtion des nouveaux composants
+	$TR_ENGINE->install();
 } else {
-    Core_Main::getInstance()->start();
+	$TR_ENGINE->start();
 }
 
-if (Core_Secure::debuggingMode()) {
-    Exec_Marker::stopTimer("all");
-    Core_Logger::displayDebugInformations();
+if (Core_Secure::isDebuggingMode()) {
+	Exec_Marker::stopTimer("all");
+	Core_Exception::displayException();
 }
+
+?>

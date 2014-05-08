@@ -1,588 +1,615 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require("secure.class.php");
-    Core_Secure::checkInstance();
+	require("secure.class.php");
+	new Core_Secure();
 }
 
 class Core_CacheBuffer {
+	
+	/**
+	 * Instance d'un protocole dÈj‡ initialisÈ
+	 * 
+	 * @var Cache_Model
+	 */
+	private static $protocol = null;
+	
+	/**
+	 * RÈÈcriture du cache
+	 * 
+	 * @var array
+	 */
+	private static $writingCache = array();
+	
+	/**
+	 * Ecriture du cache a la suite
+	 * 
+	 * @var array
+	 */
+	private static $addCache = array();
+	
+	/**
+	 * Suppression du cache
+	 * 
+	 * @var array
+	 */
+	private static $removeCache = array();
+	
+	/**
+	 * Mise ‡ jour de derniere modification du cache
+	 * 
+	 * @var array
+	 */
+	private static $updateCache = array();
+	
+	/**
+	 * Tableau avec les chemins des differentes rubriques
+	 * 
+	 * @var array
+	 */
+	private static $sectionDir = array(
+		"configs" => "configs/",
+		"tmp" => "tmp",
+		"log" => "tmp/log",
+		"sessions" => "tmp/sessions",
+		"lang" => "tmp/lang",
+		"menus" => "tmp/menus",
+		"modules" => "tmp/modules",
+		"fileList" => "tmp/fileList",
+		"form" => "tmp/form"
+	);
+	
+	/**
+	 * Nom de la section courante
+	 * 
+	 * @var String
+	 */
+	private static $sectionName = "";
+	
+	/**
+	 * Etat des modes de gestion des fichiers
+	 * 
+	 * @var arry
+	 */
+	private static $modeActived = array (
+		"php" => false,
+		"ftp" => false,
+		"sftp" => false
+	);
+	
+	/**
+	 * DonnÈe du ftp
+	 * 
+	 * @var array
+	 */
+	private static $ftp = array();
+	
+	/**
+	 * Modifier le nom de la section courante
+	 * 
+	 * @param $sectionName
+	 */
+	public static function setSectionName($sectionName = "") {
+		if (!empty($sectionName) && isset(self::$sectionDir[$sectionName])) {
+			self::$sectionName = $sectionName;
+		} else {
+			self::$sectionName = "tmp";
+		}
+	}
+	
+	/**
+	 * Retourne le chemin de la section courante
+	 * 
+	 * @return String
+	 */
+	private static function &getSectionPath() {
+		// Si pas de section, on met par dÈfaut
+		if (empty(self::$sectionName)) self::setSectionName();
+		// Chemin de la section courante
+		return self::$sectionDir[self::$sectionName];
+	}
+	
+	/**
+	 * Nom de la section courante
+	 * 
+	 * @return String Section courante
+	 */
+	public static function &getSectionName() {
+		return self::$sectionName;
+	}
+	
+	/**
+	 * Ecriture du fichier cache
+	 * 
+	 * @param $path chemin complet
+	 * @param $content donnÈe a Ècrire
+	 * @param $overWrite boolean true rÈÈcriture complete, false Ècriture a la suite
+	 */
+	public static function writingCache($path, $content, $overWrite = true) {
+		if (is_array($content)) {
+			$content = self::serializeData($content);
+		}
+		// Mise en forme de la cles
+		$key = self::encodePath(self::getSectionPath(). "/" . $path);
+		// Ajout dans le cache
+		if ($overWrite) self::$writingCache[$key] = $content;
+		else self::$addCache[$key] = $content;
+	}
+	
+	/**
+	 * Supprime un fichier ou supprime tout fichier trop vieux
+	 * 
+	 * @param $dir chemin vers le fichier ou le dossier
+	 * @param $timeLimit limite de temps
+	 */
+	public static function removeCache($dir, $timeLimit = 0) {
+		// Configuration du path
+		if (!empty($dir)) $dir = "/" . $dir;
+		$dir = self::encodePath(self::getSectionPath() . $dir);
+		self::$removeCache[$dir] = $timeLimit;
+	}
+	
+	/**
+	 * Parcours rÈcursivement le dossier cache courant afin de supprimer les fichiers trop vieux
+	 * Nettoie le dossier courant du cache
+	 * 
+	 * @param $timeLimit La limite de temps
+	 */
+	public static function cleanCache($timeLimit) {
+		// VÈrification de la validitÈ du checker
+		if (!self::checked($timeLimit)) {
+			// Mise ‡ jour ou creation du fichier checker
+			self::touchChecker();
+			// Suppression du cache pÈrimÈ
+			self::removeCache("", $timeLimit);
+		}
+	}
+	
+	/**
+	 * Mise ‡ jour de la date de derniËre modification
+	 * 
+	 * @param $path chemin vers le fichier cache
+	 */
+	public static function touchCache($path) {
+		self::$updateCache[self::encodePath(self::getSectionPath() . "/" . $path)] = time();
+	}
+	
+	/**
+	 * VÈrifie si le fichier est en cache
+	 * 
+	 * @param $path chemin vers le fichier cache
+	 * @return boolean true le fichier est en cache
+	 */
+	public static function cached($path) {
+		return is_file(self::getPath($path));
+	}
+	
+	/**
+	 * Date de derniËre modification
+	 * 
+	 * @param $path chemin vers le fichier cache
+	 * @return int Unix timestamp ou false
+	 */
+	public static function cacheMTime($path) {
+		return filemtime(self::getPath($path));
+	}
+	
+	/**
+	 * VÈrifie la prÈsence du checker et sa validitÈ
+	 * 
+	 * @return boolean true le checker est valide
+	 */
+	public static function checked($timeLimit = 0) {
+		if (self::cached("checker.txt")) {
+			// Si on a demandÈ un comparaison de temps
+			if ($timeLimit > 0) {
+				if ($timeLimit < self::checkerMTime()) return true;
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Serialize la variable en chaine de caractËres pour une mise en cache
+	 * 
+	 * @param String $data ($data = "data") or array $data ($data = array("name" => "data"))
+	 * @param String $lastKey clËs supplementaire
+	 * @return String
+	 */
+	public static function &serializeData($data, $lastKey = "") {
+		$content = "";
+		if (is_array($data)) {
+			foreach($data as $key => $value) {
+				if (is_array($value)) {
+					$lastKey .= "['" . $key . "']";
+					$content .= self::serializeData($value, $lastKey);
+				} else {
+					$content .= self::serializeVariable($lastKey . "['" . $key . "']", $value);
+				}
+			}
+		} else {
+			if (!empty($lastKey)) $lastKey = "['" . $lastKey . "']";
+			$content .= self::serializeVariable($lastKey, $data);
+		}
+		return $content;
+	}
+	
+	/**
+	 * Serialize la variable en chaine de caractËres pour une mise en cache
+	 * 
+	 * @param String $key
+	 * @param String $value
+	 * @return String
+	 */
+	private static function &serializeVariable($key, $value) {
+		$content .= "$" . self::getSectionName() . $key . " = \"" . Exec_Entities::addSlashes($value) . "\"; ";
+		return $content;
+	}
+	
+	/**
+	 * Ecriture du checker
+	 */
+	private static function writingChecker() {
+		self::writingCache("checker.txt", "1");
+	}
+	
+	/**
+	 * Mise ‡ jour du checker
+	 */
+	public static function touchChecker() {
+		if (!self::cached("checker.txt")) self::writingChecker();
+		else self::touchCache("checker.txt");
+	}
+	
+	/**
+	 * Date de derniËre modification du checker
+	 * 
+	 * @return int Unix timestamp ou false
+	 */
+	public static function checkerMTime() {
+		return self::cacheMTime("checker.txt");
+	}
+	
+	/**
+	 * Encode un chemin
+	 * 
+	 * @param String $path
+	 * @return String
+	 */
+	private static function &encodePath($path) {
+		return $path;
+	}
+	
+	/**
+	 * DÈcode un chemin
+	 * 
+	 * @param String $encodePath
+	 * @return String
+	 */
+	private static function &decodePath($encodePath) {
+		return $encodePath;
+	}
+	
+	/**
+	 * Retourne le chemin complet vers le fichier cache
+	 * 
+	 * @param $path chemin du fichier
+	 * @return String chemin complet
+	 */
+	public static function &getPath($path) {
+		$path = TR_ENGINE_DIR . "/" . self::getSectionPath() . "/" . $path;
+		return $path;
+	}
+	
+	/**
+	 * Capture le cache ciblÈ dans un tableau
+	 * 
+	 * @param $path Chemin du cache
+	 * @param $vars array tableau supplementaire contenant des variables pour rÈsoudre les problËmes de visiblilitÈ (par exemple)
+	 * @return String
+	 */
+	public static function &getCache($path, $vars = array()) {
+		// RÈglage avant capture
+		$variableName = self::$sectionName;
+		// Rend la variable global a la fonction
+		${$variableName} = "";
+		
+		// Capture du fichier
+		if (self::cached($path)) {
+			require(self::getPath($path));
+		}
+		return ${$variableName};
+	}
+	
+	/**
+	 * Recherche si le cache a besoin de gÈnÈre une action
+	 * 
+	 * @param array $required
+	 * @return boolean true action demandÈe
+	 */
+	private static function cacheRequired($required) {
+		return (is_array($required) && count($required) > 0);
+	}
+	
+	/**
+	 * Test si le chemin est celui d'un dossier
+	 * 
+	 * @param $path
+	 * @return boolean true c'est un dossier
+	 */
+	public static function &isDir($path) {
+		$pathIsDir = false;
+		
+		if (substr($path, -1) == "/") {
+			// Nettoyage du path qui est enfaite un dir
+			$path = substr($path, 0, -1);
+			$pathIsDir = true;
+		} else {
+			// Recherche du bout du path
+			$last = "";
+			$pos = strrpos("/", $path);
+			if (!is_bool($pos)) {
+				$last = substr($path, $pos);
+			} else {
+				$last = $path;
+			}
+			
+			// Si ce n'est pas un fichier (avec ext.)
+			if (strpos($last, ".") === false) {
+				$pathIsDir = true;
+			}
+		}
+		return $pathIsDir;
+	}
+	
+	/**
+	 * Ecriture des entÍtes de fichier
+	 * 
+	 * @param $pathFile
+	 * @param $content
+	 * @return String $content
+	 */
+	public static function &getHeader($pathFile, $content) {
+		$ext = substr($pathFile, -3);
+		// EntÍte des fichier PHP
+		if ($ext == "php") {
+			// Recherche du dossier parent
+			$dirBase = "";
+			$nbDir = count(explode("/", $pathFile));
+			for($i = 1; $i < $nbDir; $i++) { $dirBase .= "../"; }
+			
+			// Ecriture de l'entÍte
+			$content = "<?php\n"
+			. "if (!defined(\"TR_ENGINE_INDEX\")){"
+			. "if(!class_exists(\"Core_Secure\")){"
+			. "include(\"" . $dirBase . "engine/core/secure.class.php\");"
+			. "}new Core_Secure();}"
+			. "// Generated on " . date('Y-m-d H:i:s') . "\n"
+			. $content
+			. "\n?>";
+		}
+		return $content;
+	}
+	
+	/**
+	 * Active les modes de cache disponible
+	 * 
+	 * @param $modes array
+	 */
+	public static function setModeActived($modes = array()) {
+		if (!is_array($modes)) $modes = array($modes);
 
-    /**
-     * Section de configuration.
-     *
-     * @var string
-     */
-    const SECTION_CONFIGS = "configs";
-
-    /**
-     * Section temporaire (branche principal).
-     *
-     * @var string
-     */
-    const SECTION_TMP = "tmp";
-
-    /**
-     * Section temporaire des fichiers de journaux.
-     *
-     * @var string
-     */
-    const SECTION_LOGGER = "tmp/logger";
-
-    /**
-     * Section temporaire pour le cache des sessions.
-     *
-     * @var string
-     */
-    const SECTION_SESSIONS = "tmp/sessions";
-
-    /**
-     * Section temporaire pour le cache de traduction.
-     *
-     * @var string
-     */
-    const SECTION_TRANSLATE = "tmp/translate";
-
-    /**
-     * Section temporaire pour le cache des menus.
-     *
-     * @var string
-     */
-    const SECTION_MENUS = "tmp/menus";
-
-    /**
-     * Section temporaire pour le cache des modules.
-     *
-     * @var string
-     */
-    const SECTION_MODULES = "tmp/modules";
-
-    /**
-     * Section temporaire pour le cache des listes de fichiers.
-     *
-     * @var string
-     */
-    const SECTION_FILELISTER = "tmp/fileLister";
-
-    /**
-     * Section temporaire pour le cache des formulaires.
-     *
-     * @var string
-     */
-    const SECTION_FORMS = "tmp/forms";
-
-    /**
-     * Section temporaire pour le cache des blocks.
-     *
-     * @var string
-     */
-    const SECTION_BLOCKS = "tmp/blocks";
-
-    /**
-     * Utilisation des m√©thodes PHP.
-     *
-     * @var string
-     */
-    const MODE_PHP = "php";
-
-    /**
-     * Utilisation des transactions FTP.
-     *
-     * @var string
-     */
-    const MODE_FTP = "ftp";
-
-    /**
-     * Utilisation des transactions FTP s√©curis√©es.
-     *
-     * @var string
-     */
-    const MODE_SFTP = "sftp";
-
-    /**
-     * Gestionnaire de fichier.
-     *
-     * @var Cache_Model
-     */
-    private static $selectedCache = null;
-
-    /**
-     * Chemin de la section actuelle.
-     *
-     * @var string
-     */
-    private static $currentSection = self::SECTION_TMP;
-
-    /**
-     * Etat des modes de gestion des fichiers.
-     *
-     * @var array
-     */
-    private static $modeActived = array(
-        self::MODE_PHP => false,
-        self::MODE_FTP => false,
-        self::MODE_SFTP => false
-    );
-
-    /**
-     * R√©√©criture du cache
-     *
-     * @var array
-     */
-    private static $writingCache = array();
-
-    /**
-     * Ecriture du cache a la suite
-     *
-     * @var array
-     */
-    private static $addCache = array();
-
-    /**
-     * Suppression du cache
-     *
-     * @var array
-     */
-    private static $removeCache = array();
-
-    /**
-     * Mise √† jour de derni√®re modification du cache
-     *
-     * @var array
-     */
-    private static $updateCache = array();
-
-    /**
-     * Change le chemin de la section.
-     *
-     * @param string $newSectionPath
-     */
-    public static function changeCurrentSection($newSectionPath = self::SECTION_TMP) {
-        $newSectionPath = empty($newSectionPath) ? self::SECTION_TMP : $newSectionPath;
-        $newSectionPath = str_replace("/", DIRECTORY_SEPARATOR, $newSectionPath);
-
-        if (substr($newSectionPath, -1) === DIRECTORY_SEPARATOR) {
-            $newSectionPath = substr($newSectionPath, 0, -1);
-        }
-
-        self::$currentSection = $newSectionPath;
-    }
-
-    /**
-     * Retourne le chemin de la section actuel.
-     *
-     * @return string Section courante
-     */
-    public static function &getCurrentSectionName() {
-        if (empty(self::$currentSection)) {
-            self::changeCurrentSection();
-        }
-        return self::$currentSection;
-    }
-
-    /**
-     * Execute la routine du cache
-     */
-    public static function valideCacheBuffer() {
-        // Si le cache a besoin de g√©n√©rer une action
-        if (self::cacheRequired(self::$removeCache) || self::cacheRequired(self::$writingCache) || self::cacheRequired(self::$addCache) || self::cacheRequired(self::$updateCache)) {
-            // Protocole a utiliser
-            $protocol = self::getExecProtocol();
-
-            if ($protocol !== null) {
-                // Suppression de cache demand√©e
-                if (self::cacheRequired(self::$removeCache)) {
-                    foreach (self::$removeCache as $dir => $timeLimit) {
-                        $protocol->removeCache($dir, $timeLimit);
-                    }
-                }
-
-                // Ecriture de cache demand√©e
-                if (self::cacheRequired(self::$writingCache)) {
-                    foreach (self::$writingCache as $path => $content) {
-                        $protocol->writingCache($path, $content, true);
-                    }
-                }
-
-                // Ecriture √† la suite de cache demand√©e
-                if (self::cacheRequired(self::$addCache)) {
-                    foreach (self::$addCache as $path => $content) {
-                        $protocol->writingCache($path, $content, false);
-                    }
-                }
-
-                // Mise √† jour de cache demand√©e
-                if (self::cacheRequired(self::$updateCache)) {
-                    foreach (self::$updateCache as $path => $updateTime) {
-                        $protocol->touchCache($path, $updateTime);
-                    }
-                }
-            }
-            // Destruction du gestionnaire
-            unset($protocol);
-        }
-    }
-
-    /**
-     * Ecriture du fichier cache
-     *
-     * @param $path chemin complet
-     * @param $content donn√©e a √©crire
-     * @param $overWrite boolean true r√©√©criture complete, false √©criture a la suite
-     */
-    public static function writingCache($path, $content, $overWrite = true) {
-        if (is_array($content)) {
-            $content = self::serializeData($content);
-        }
-        // Mise en forme de la cl√©
-        $key = self::encodePath(self::getCurrentSectionPath() . DIRECTORY_SEPARATOR . $path);
-        // Ajout dans le cache
-        if ($overWrite) {
-            self::$writingCache[$key] = $content;
-        } else {
-            self::$addCache[$key] = $content;
-        }
-    }
-
-    /**
-     * Supprime un fichier ou supprime tout fichier trop vieux
-     *
-     * @param $dir chemin vers le fichier ou le dossier
-     * @param $timeLimit limite de temps
-     */
-    public static function removeCache($dir, $timeLimit = 0) {
-        // Configuration du path
-        if (!empty($dir)) {
-            $dir = "/" . $dir;
-        }
-        $dir = self::encodePath(self::getCurrentSectionPath() . $dir);
-        self::$removeCache[$dir] = $timeLimit;
-    }
-
-    /**
-     * Parcours r√©cursivement le dossier cache courant afin de supprimer les fichiers trop vieux
-     * Nettoie le dossier courant du cache
-     *
-     * @param $timeLimit La limite de temps
-     */
-    public static function cleanCache($timeLimit) {
-        // V√©rification de la validit√© du checker
-        if (!self::checked($timeLimit)) {
-            // Mise √† jour ou creation du fichier checker
-            self::touchChecker();
-            // Suppression du cache p√©rim√©
-            self::removeCache("", $timeLimit);
-        }
-    }
-
-    /**
-     * Mise √† jour de la date de derni√®re modification
-     *
-     * @param $path chemin vers le fichier cache
-     */
-    public static function touchCache($path) {
-        self::$updateCache[self::encodePath(self::getCurrentSectionPath() . DIRECTORY_SEPARATOR . $path)] = time();
-    }
-
-    /**
-     * V√©rifie si le fichier est en cache
-     *
-     * @param $path chemin vers le fichier cache
-     * @return boolean true le fichier est en cache
-     */
-    public static function cached($path) {
-        return is_file(self::getPath($path));
-    }
-
-    /**
-     * Date de derni√®re modification
-     *
-     * @param $path chemin vers le fichier cache
-     * @return int Unix timestamp ou false
-     */
-    public static function cacheMTime($path) {
-        return filemtime(self::getPath($path));
-    }
-
-    /**
-     * V√©rifie la pr√©sence du checker et sa validit√©
-     *
-     * @return boolean true le checker est valide
-     */
-    public static function checked($timeLimit = 0) {
-        $rslt = false;
-
-        if (self::cached("checker.txt")) {
-            // Si on a demand√© un comparaison de temps
-            if ($timeLimit > 0) {
-                if ($timeLimit < self::checkerMTime()) {
-                    $rslt = true;
-                }
-            } else {
-                $rslt = true;
-            }
-        }
-        return $rslt;
-    }
-
-    /**
-     * Serialize la variable en chaine de caract√®res pour une mise en cache
-     *
-     * @param string $data ($data = "data") or array $data ($data = array("name" => "data"))
-     * @param string $lastKey cl√®s supplementaire
-     * @return string
-     */
-    public static function &serializeData($data, $lastKey = "") {
-        $content = "";
-        if (is_array($data)) {
-            foreach ($data as $key => $value) {
-                if (is_array($value)) {
-                    $lastKey .= "['" . $key . "']";
-                    $content .= self::serializeData($value, $lastKey);
-                } else {
-                    $content .= self::serializeVariable($lastKey . "['" . $key . "']", $value);
-                }
-            }
-        } else {
-            if (!empty($lastKey)) {
-                $lastKey = "['" . $lastKey . "']";
-            }
-            $content .= self::serializeVariable($lastKey, $data);
-        }
-        return $content;
-    }
-
-    /**
-     * Mise √† jour du checker
-     */
-    public static function touchChecker() {
-        if (!self::cached("checker.txt")) {
-            self::writingChecker();
-        } else {
-            self::touchCache("checker.txt");
-        }
-    }
-
-    /**
-     * Date de derni√®re modification du checker
-     *
-     * @return int Unix timestamp ou false
-     */
-    public static function checkerMTime() {
-        return self::cacheMTime("checker.txt");
-    }
-
-    /**
-     * Retourne le chemin complet vers le fichier cache
-     *
-     * @param $path chemin du fichier
-     * @return string chemin complet
-     */
-    public static function &getPath($path) {
-        $path = TR_ENGINE_DIR . DIRECTORY_SEPARATOR . self::$currentSection . DIRECTORY_SEPARATOR . $path;
-        return $path;
-    }
-
-    /**
-     * Capture le cache cibl√© dans un tableau
-     *
-     * @param $path Chemin du cache
-     * @param $vars array tableau supplementaire contenant des variables pour r√©soudre les probl√®mes de visiblilit√© (par exemple)
-     * @return string
-     */
-    public static function &getCache($path, $vars = array()) {
-        // R√©glage avant capture
-        $variableName = self::$currentSection;
-        // Rend la variable global a la fonction
-        ${$variableName} = "";
-
-        // Capture du fichier
-        if (self::cached($path)) {
-            require(self::getPath($path));
-        }
-        return ${$variableName};
-    }
-
-    /**
-     * Test si le chemin est celui d'un dossier
-     *
-     * @param $path
-     * @return boolean true c'est un dossier
-     */
-    public static function &isDir($path) {
-        $pathIsDir = false;
-
-        if (substr($path, -1) === DIRECTORY_SEPARATOR) {
-            // Nettoyage du path qui est enfaite un dir
-            $path = substr($path, 0, -1);
-            $pathIsDir = true;
-        } else {
-            // Recherche du bout du path
-            $last = "";
-            $pos = strrpos(DIRECTORY_SEPARATOR, $path);
-            if (!is_bool($pos)) {
-                $last = substr($path, $pos);
-            } else {
-                $last = $path;
-            }
-
-            // Si ce n'est pas un fichier (avec ext.)
-            if (strpos($last, ".") === false) {
-                $pathIsDir = true;
-            }
-        }
-        return $pathIsDir;
-    }
-
-    /**
-     * Ecriture des ent√™tes de fichier
-     *
-     * @param $pathFile
-     * @param $content
-     * @return string $content
-     */
-    public static function &getHeader($pathFile, $content) {
-        $ext = substr($pathFile, -3);
-        // Ent√™te des fichier PHP
-        if ($ext === "php") {
-            // Recherche du dossier parent
-            $dirBase = "";
-            $nbDir = count(explode(DIRECTORY_SEPARATOR, $pathFile));
-            for ($i = 1; $i < $nbDir; $i++) {
-                $dirBase .= ".." . DIRECTORY_SEPARATOR;
-            }
-
-            // Ecriture de l'ent√™te
-            $content = "<?php\n"
-            . "if (!defined(\"TR_ENGINE_INDEX\")){"
-            . "if(!class_exists(\"Core_Secure\")){"
-            . "include(\"" . $dirBase . "engine" . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php\");"
-            . "}Core_Secure::checkInstance();}"
-            . "// Generated on " . date('Y-m-d H:i:s') . "\n"
-            . $content
-            . "\n?>";
-        }
-        return $content;
-    }
-
-    /**
-     * Active les modes de cache disponible
-     *
-     * @param $modes array
-     */
-    public static function setModeActived(array $modes = array()) {
-        foreach ($modes as $mode) {
-            if (isset(self::$modeActived[$mode])) {
-                self::$modeActived[$mode] = true;
-            }
-        }
-    }
-
-    /**
-     * Retourne les modes d'√©criture actif
-     *
-     * @return array sous la forme array('php' => true, 'ftp' => false)
-     */
-    public static function getModeActived() {
-        return self::$modeActived;
-    }
-
-    /**
-     * R√©cup√©ration des donn√©es du FTP
-     *
-     * @param array
-     */
-    public static function getFtp() {
-        return self::$ftp;
-    }
-
-    /**
-     * Retourne le listing avec uniquement les fichiers et dossiers pr√©sent
-     * Un filtre automatique est appliqu√© sur les √©l√©ments tel que "..", "." ou encore "index.html"...
-     *
-     * @param $dirPath
-     * @return array
-     */
-    public static function &listNames($dirPath) {
-        $dirList = array();
-
-        self::changeCurrentSection(self::SECTION_FILELISTER);
-        $fileName = str_replace(DIRECTORY_SEPARATOR, "_", $dirPath) . ".php";
-
-        if (Core_CacheBuffer::cached($fileName)) {
-            $dirList = self::getCache($fileName);
-        } else {
-            $protocol = self::getExecProtocol();
-            if ($protocol !== null) {
-                $dirList = $protocol->getFileNames($dirPath);
-                self::writingCache($fileName, $dirList);
-            }
-        }
-        return $dirList;
-    }
-
-    /**
-     * D√©marre et retourne le protocole du cache
-     *
-     * @return Cache_Model
-     */
-    private static function &getExecProtocol() {
-        if (self::$selectedCache === null) {
-            if (self::$modeActived['ftp']) {
-                // D√©marrage du gestionnaire FTP
-                self::$selectedCache = new Cache_Ftp();
-            } else if (self::$modeActived['sftp']) {
-                // D√©marrage du gestionnaire SFTP
-                self::$selectedCache = new Cache_Sftp();
-            } else {
-                // D√©marrage du gestionnaire de fichier
-                self::$selectedCache = new Cache_Php();
-            }
-
-            // Si il y a un souci, on d√©marre par d√©faut le gestionnaire de fichier
-            if (!self::$selectedCache->canUse()) {
-                // D√©marrage du gestionnaire de fichier
-                self::$selectedCache = new Cache_Php();
-            }
-        }
-        return self::$selectedCache;
-    }
-
-    /**
-     * Retourne le chemin de la section courante
-     *
-     * @return string
-     */
-    private static function &getCurrentSectionPath($dir) {
-        $dir = self::$currentSection . DIRECTORY_SEPARATOR . $dir;
-        return $dir;
-    }
-
-    /**
-     * Recherche si le cache a besoin de g√©n√©re une action
-     *
-     * @param array $required
-     * @return boolean true action demand√©e
-     */
-    private static function cacheRequired(array $required) {
-        return !empty($required);
-    }
-
-    /**
-     * Serialize la variable en chaine de caract√®res pour une mise en cache
-     *
-     * @param string $key
-     * @param string $value
-     * @return string
-     */
-    private static function &serializeVariable($key, $value) {
-        $content .= "$" . self::getCurrentSectionName() . $key . " = \"" . Exec_Entities::addSlashes($value) . "\"; ";
-        return $content;
-    }
-
-    /**
-     * Ecriture du checker
-     */
-    private static function writingChecker() {
-        self::writingCache("checker.txt", "1");
-    }
-
+		foreach($modes as $mode) {
+			if (isset(self::$modeActived[$mode])) {
+				self::$modeActived[$mode] = true;
+			}
+		}
+	}
+	
+	/**
+	 * Retourne les modes d'Ècriture actif
+	 * 
+	 * @return array sous la forme array('php' => true, 'ftp' => false)
+	 */
+	public static function getModeActived() {
+		return self::$modeActived;
+	}
+	
+	/**
+	 * Injecter les donnÈes du FTP
+	 * 
+	 * @param array
+	 */
+	public static function setFtp($ftp = array()) {
+		self::$ftp = $ftp;
+	}
+	
+	/**
+	 * RÈcupÈration des donnÈes du FTP
+	 * 
+	 * @param array
+	 */
+	public static function getFtp() {
+		return self::$ftp;
+	}
+	
+	/**
+	 * Retourne le listing avec uniquement les fichiers et dossiers prÈsent
+	 * Un filtre automatique est appliquÈ sur les elements tel que "..", "." ou encore "index.html"...
+	 * 
+	 * @param $dirPath
+	 * @return array
+	 */
+	public static function &listNames($dirPath) {
+		$dirList = array();
+		
+		self::setSectionName("fileList");
+		$fileName = str_replace("/", "_", $dirPath) . ".php";
+		
+		if (Core_CacheBuffer::cached($fileName)) {
+			$dirList = self::getCache($fileName);
+		} else {
+			$protocol = self::getExecProtocol();
+			if ($protocol != null) {
+				$dirList = $protocol->listNames($dirPath);
+				self::writingCache($fileName, $dirList);
+			}
+		}
+		return $dirList;
+	}
+	
+	/**
+	 * DÈmarre et retourne le protocole du cache
+	 * 
+	 * @return Cache_Model
+	 */
+	private static function &getExecProtocol() {
+		if (self::$protocol == null) {
+			if (self::$modeActived['ftp']) {
+				// DÈmarrage du gestionnaire FTP
+				Core_Loader::classLoader("Libs_FtpManager");
+				self::$protocol = new Libs_FtpManager();
+			} else if (self::$modeActived['sftp']) {
+				// DÈmarrage du gestionnaire SFTP
+				Core_Loader::classLoader("Libs_SftpManager");
+				self::$protocol = new Libs_SftpManager();
+			} else {
+				// DÈmarrage du gestionnaire de fichier
+				Core_Loader::classLoader("Libs_FileManager");
+				self::$protocol = new Libs_FileManager();
+			}
+			
+			// Si il y a un souci, on dÈmarre par dÈfaut le gestionnaire de fichier
+			if (!self::$protocol->isReady()) {
+				// DÈmarrage du gestionnaire de fichier
+				Core_Loader::classLoader("Libs_FileManager");
+				self::$protocol = new Libs_FileManager();
+			}
+		}
+		return self::$protocol;
+	}
+	
+	/**
+	 * Execute la routine du cache
+	 */
+	public static function valideCacheBuffer() {
+		// Si le cache a besoin de gÈnÈrer une action
+		if (self::cacheRequired(self::$removeCache)
+			|| self::cacheRequired(self::$writingCache)
+			|| self::cacheRequired(self::$addCache)
+			|| self::cacheRequired(self::$updateCache)) {
+			// Protocole a utiliser
+			$protocol = self::getExecProtocol();
+			
+			if ($protocol != null) {
+				// Suppression de cache demandÈe
+				if (self::cacheRequired(self::$removeCache)) {
+					foreach(self::$removeCache as $dir => $timeLimit) {
+						$protocol->removeCache($dir, $timeLimit);
+					}
+				}
+				
+				// Ecriture de cache demandÈe
+				if (self::cacheRequired(self::$writingCache)) {
+					foreach(self::$writingCache as $path => $content) {
+						$protocol->writingCache($path, $content, true);
+					}
+				}
+				
+				// Ecriture ‡ la suite de cache demandÈe
+				if (self::cacheRequired(self::$addCache)) {
+					foreach(self::$addCache as $path => $content) {
+						$protocol->writingCache($path, $content, false);
+					}
+				}
+				
+				// Mise ‡ jour de cache demandÈe
+				if (self::cacheRequired(self::$updateCache)) {
+					foreach(self::$updateCache as $path => $updateTime) {
+						$protocol->touchCache($path, $updateTime);
+					}
+				}
+			}
+			// Destruction du gestionnaire
+			unset($protocol);
+		}
+	}
 }
+
+/**
+ * ModËle de classe pour un gestionnaire de fichier
+ * 
+ * @author Sebastien Villemain
+ *
+ */
+abstract class Cache_Model {
+	
+	/**
+	 * Droit d'Ècriture CHMOD
+	 * Sous forme de 4 octets
+	 * Exemple : 0777
+	 * 
+	 * @var int
+	 */
+	protected $chmod = 0777;
+	
+	/**
+	 * Configuration du FTP
+	 * 
+	 * @var array
+	 */
+	protected $ftp = array(
+		"host" => "",
+		"port" => "",
+		"user" => "",
+		"pass" => "",
+		"root" => ""
+	);
+	
+	/**
+	 * Ecriture du fichier cache
+	 * 
+	 * @param $path String
+	 * @param $content String
+	 * @param $overWrite boolean
+	 */
+	public function writingCache($path, $content, $overWrite = true) {}
+	
+	/**
+	 * Mise ‡ jour de la date de derniËre modification
+	 * 
+	 * @param $path String
+	 * @param $updateTime int
+	 */
+	public function touchCache($path, $updateTime = 0) {}
+	
+	/**
+	 * Supprime un fichier ou supprime tout fichier trop vieux
+	 * 
+	 * @param $dir String
+	 * @param $timeLimit int
+	 */
+	public function removeCache($dir = "", $timeLimit = 0) {}
+	
+	/**
+	 * Retourne le listing avec uniquement les fichiers prÈsent
+	 * 
+	 * @param $dirPath String
+	 * @return array
+	 */
+	public function &listNames($dirPath = "") {
+		$list = array();
+		return $list;
+	}
+	
+	/**
+	 * Retourne l'Ètat du gestionnaire
+	 * 
+	 * @return boolean true ready
+	 */
+	public function isReady() {
+		return false;
+	}
+}
+?>

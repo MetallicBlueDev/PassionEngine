@@ -1,63 +1,32 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-    require("secure.class.php");
-    Core_Secure::checkInstance();
+	require("secure.class.php");
+	new Core_Secure();
 }
 
 /**
- * Nom des tables de base de donnÃ©es utilisÃ©e par le moteur.
- *
- * @author SÃ©bastien Villemain
+ * Constantes pour les noms des tables de base de donnée
+ * Utilisabe via Core_Table::MaTable
+ * 
+ * @author Sébastien Villemain
  */
 class Core_Table {
+	
+	/**
+	 * Prefix de chaque table
+	 */ 
+	private static $prefix = "";
+	
+	// Nom des tables
+	public static $BANNED_TABLE = "banned";
+	public static $BLOCKS_TABLE = "blocks";
+	public static $CONFIG_TABLE = "configs";
+	public static $MENUS_TABLES = "menus";
+	public static $MODULES_TABLE = "modules";
+	public static $USERS_TABLE = "users";
+	public static $USERS_ADMIN_TABLE = "users_admin";
 
-    /**
-     * Table des bannissements.
-     *
-     * @var string
-     */
-    const BANNED_TABLE = "banned";
-
-    /**
-     * Table des blocks.
-     *
-     * @var string
-     */
-    const BLOCKS_TABLE = "blocks";
-
-    /**
-     * Table de la configuration du moteur.
-     *
-     * @var string
-     */
-    const CONFIG_TABLE = "configs";
-
-    /**
-     * Table des menus.
-     *
-     * @var string
-     */
-    const MENUS_TABLES = "menus";
-
-    /**
-     * Table des modules.
-     *
-     * @var string
-     */
-    const MODULES_TABLE = "modules";
-
-    /**
-     * Table des utilisateurs.
-     *
-     * @var string
-     */
-    const USERS_TABLE = "users";
-
-    /**
-     * Table des administrateurs.
-     *
-     * @var string
-     */
-    const USERS_ADMIN_TABLE = "users_admin";
-
+	// Tables additionnelles pour les modules
+	public static $PROJECT_TABLE = "project";
 }
+?>

@@ -1,13 +1,13 @@
 <?php
 if (!defined("TR_ENGINE_INDEX")) {
-	require(".." . DIRECTORY_SEPARATOR . "core" . DIRECTORY_SEPARATOR . "secure.class.php");
-	Core_Secure::checkInstance();
+	require("../core/secure.class.php");
+	new Core_Secure();
 }
 
 /**
  * Constructeur de fichier
  *
- * @author Sébastien Villemain
+ * @author Sebastien Villemain
  *
  */
 class Exec_JQuery {

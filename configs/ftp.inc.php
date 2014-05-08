@@ -1,22 +1,26 @@
 <?php
 // -------------------------------------------------------------------------//
-// Informations sur le cache
+// Informations sur le FTP
 //
-// Adresse de l'hôte du FTP
-$inc['host'] = "127.0.0.1";
+// Adresse de host du FTP
+$ftp['host'] = "localhost";
 //
-// Numéro de port d'écoute
-$inc['port'] = "21";
+// Num�ro de port de l'host
+$ftp['port'] = "21";
 //
 // Nom d'utilisateur du FTP
-$inc['user'] = "root";
+$ftp['user'] = "root";
 //
 // Mot de passe de l'utilisateur du FTP
-$inc['pass'] = "";
+$ftp['pass'] = "";
 //
-// Chemin racine du FTP
-$inc['root'] = "";
+// Chemin Root du FTP
+$ftp['root'] = "";
 //
-// Type de transaction à utiliser (php / ftp / sftp)
-$inc['type'] = "";
+// Type de FTP (ftp / sftp)
+$ftp['type'] = "";
+//
 // -------------------------------------------------------------------------//
+
+
+?>
