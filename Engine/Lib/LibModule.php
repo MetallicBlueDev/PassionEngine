@@ -177,12 +177,12 @@ class LibModule {
             $moduleData = array();
 
             // Recherche dans le cache
-            $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_MODULES);
+            $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
 
             if (!$coreCache->cached($moduleName . ".php")) {
                 $coreSql = CoreSql::getInstance();
 
-                $coreSql->select(CoreTable::MODULES_TABLE, array(
+                $coreSql->select(CoreTable::MODULES, array(
                     "mod_id",
                     "name",
                     "rank",
@@ -344,7 +344,7 @@ class LibModule {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->addQuotedValue("count + 1");
-        $coreSql->update(CoreTable::MODULES_TABLE, array(
+        $coreSql->update(CoreTable::MODULES, array(
             "count" => "count + 1"
                 ), array(
             "mod_id = '" . $modId . "'"

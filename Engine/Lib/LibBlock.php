@@ -182,7 +182,7 @@ class LibBlock {
         $blocksIndexer = $this->getBlocksIndexer();
 
         foreach ($blocksIndexer as $blockRawInfo) {
-            if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::RANK_NONE) {
+            if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::NONE) {
                 $this->launchBlockById($blockRawInfo['block_id'], true);
             }
         }
@@ -338,12 +338,12 @@ class LibBlock {
         $blockData = array();
 
         // Recherche dans le cache
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_BLOCKS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
 
         if (!$coreCache->cached($blockId . ".php")) {
             $coreSql = CoreSql::getInstance();
 
-            $coreSql->select(CoreTable::BLOCKS_TABLE, array(
+            $coreSql->select(CoreTable::BLOCKS, array(
                 "block_id",
                 "side",
                 "position",
@@ -385,12 +385,12 @@ class LibBlock {
      */
     private function getBlocksIndexer(): array {
         $blocksIndexer = array();
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_BLOCKS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
 
         if (!$coreCache->cached(self::BLOCKS_INDEXER_FILENAME)) {
             $coreSql = CoreSql::getInstance();
 
-            $coreSql->select(CoreTable::BLOCKS_TABLE, array(
+            $coreSql->select(CoreTable::BLOCKS, array(
                 "block_id",
                 "side",
                 "type",

@@ -93,7 +93,7 @@ class LibForm {
     public function __construct(string $name, string $urlAction = "") {
         $this->name = $name;
         $this->urlAction = !empty($urlAction) ? $urlAction : "index.php";
-        $this->cached = CoreCache::getInstance(CoreCacheSection::SECTION_FORMS)->cached($name . ".php");
+        $this->cached = CoreCache::getInstance(CoreCacheSection::FORMS)->cached($name . ".php");
     }
 
     /**
@@ -418,7 +418,7 @@ class LibForm {
         $title = $this->getTitle($this->title);
         $description = $this->getDescription($this->description);
 
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_FORMS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
         $content = "";
 
         if ($this->cached) { // Récupèration des données mise en cache

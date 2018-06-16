@@ -271,7 +271,7 @@ class LibMenu {
      * Chargement du menu via le cache.
      */
     private function loadFromCache() {
-        $this->items = CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->readCacheWithUnserialize($this->identifier . ".php");
+        $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheWithUnserialize($this->identifier . ".php");
     }
 
     /**
@@ -280,7 +280,7 @@ class LibMenu {
      * @return bool
      */
     private function isCached(): bool {
-        return (CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->cached($this->identifier . ".php"));
+        return (CoreCache::getInstance(CoreCacheSection::MENUS)->cached($this->identifier . ".php"));
     }
 
     /**
@@ -323,7 +323,7 @@ class LibMenu {
                 $item->setTree($tree);
             }
 
-            CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->writeCacheWithSerialize($this->identifier . ".php", $this->items);
+            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheWithSerialize($this->identifier . ".php", $this->items);
         }
     }
 }
