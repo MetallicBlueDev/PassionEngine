@@ -19,7 +19,7 @@ class LibForm {
     /**
      * Nom de la variable en cache.
      */
-    const CACHE_VARIABLE_NAME = "vars";
+    private const CACHE_VARIABLE_NAME = "vars";
 
     /**
      * Nom du formulaire.

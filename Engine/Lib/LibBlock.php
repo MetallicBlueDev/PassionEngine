@@ -29,84 +29,84 @@ class LibBlock {
      *
      * @var string
      */
-    const BLOCKS_INDEXER_FILENAME = "blocks_indexer.php";
+    private const BLOCKS_INDEXER_FILENAME = "blocks_indexer.php";
 
     /**
      * Demande le premier block compilé (toute position confondu).
      *
      * @var int
      */
-    const SIDE_FIRST_BLOCK = -1;
+    private const SIDE_FIRST_BLOCK = -1;
 
     /**
      * Postion inconnue (cas de désactivation).
      *
      * @var int
      */
-    const SIDE_NONE = 0;
+    private const SIDE_NONE = 0;
 
     /**
      * Postion le plus à droite.
      *
      * @var int
      */
-    const SIDE_RIGHT = 1;
+    private const SIDE_RIGHT = 1;
 
     /**
      * Position le plus à gauche.
      *
      * @var int
      */
-    const SIDE_LEFT = 2;
+    private const SIDE_LEFT = 2;
 
     /**
      * Position le plus en haut.
      *
      * @var int
      */
-    const SIDE_TOP = 3;
+    private const SIDE_TOP = 3;
 
     /**
      * Position le plus en bas.
      *
      * @var int
      */
-    const SIDE_BOTTOM = 4;
+    private const SIDE_BOTTOM = 4;
 
     /**
      * Position dans le module à droite.
      *
      * @var int
      */
-    const SIDE_MODULE_RIGHT = 5;
+    private const SIDE_MODULE_RIGHT = 5;
 
     /**
      * Position dans le module à gauche.
      *
      * @var int
      */
-    const SIDE_MODULE_LEFT = 6;
+    private const SIDE_MODULE_LEFT = 6;
 
     /**
      * Position dans le module en haut.
      *
      * @var int
      */
-    const SIDE_MODULE_TOP = 7;
+    private const SIDE_MODULE_TOP = 7;
 
     /**
      * Position dans le module en bas.
      *
      * @var int
      */
-    const SIDE_MODULE_BOTTOM = 8;
+    private const SIDE_MODULE_BOTTOM = 8;
 
     /**
      * Liste des positions valides.
      *
      * @var array array("name" => 0)
      */
-    const SIDE_LIST = array(
+    private const SIDE_LIST = array(
         "right" => self::SIDE_RIGHT,
         "left" => self::SIDE_LEFT,
         "top" => self::SIDE_TOP,

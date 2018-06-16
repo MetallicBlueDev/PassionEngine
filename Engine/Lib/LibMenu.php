@@ -26,7 +26,7 @@ class LibMenu {
      *
      * @var string
      */
-    const OPTIONS_TAG = "__OPTIONS__";
+    private const OPTIONS_TAG = "__OPTIONS__";
 
     /**
      * Identifiant du menu.
