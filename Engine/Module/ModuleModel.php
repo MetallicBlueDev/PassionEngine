@@ -75,7 +75,7 @@ abstract class ModuleModel {
      *
      * @param LibModuleData $data
      */
-    public function setModuleData(&$data) {
+    public function setModuleData(LibModuleData &$data) {
         $this->data = $data;
     }
 
@@ -84,7 +84,7 @@ abstract class ModuleModel {
      *
      * @return LibModuleData
      */
-    public function &getModuleData() {
+    public function &getModuleData(): LibModuleData {
         if ($this->data === null) {
             $empty = array();
             $this->data = new LibModuleData($empty);
@@ -97,7 +97,7 @@ abstract class ModuleModel {
      *
      * @return CoreAccessType
      */
-    public function &getAccessType() {
+    public function &getAccessType(): CoreAccessType {
         return CoreAccessType::getTypeFromToken($this->getModuleData());
     }
 }

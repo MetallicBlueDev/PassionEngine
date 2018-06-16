@@ -12,6 +12,13 @@ if (CoreInfo::invalidPhpSelf()) {
  *
  * Attention, il faut faire en sorte que cette classe soit compatible PHP 5.6 (date minimale 08/2014).
  *
+ * http://php.net/supported-versions.php
+ * 5.6 : 31 Dec 2018 -> INCOMPATIBLE
+ * 7.0 : 3 Dec 2018 -> INCOMPATIBLE
+ * 7.1 : 1 Dec 2019 <- Version minimale
+ * 7.2 : 30 Nov 2020 <- Compatible (vérifié)
+ * 7.3 : ???
+ *
  * @author Sébastien Villemain
  */
 class CoreInfo {
@@ -37,7 +44,7 @@ class CoreInfo {
      * @return bool
      */
     public static function compatibleVersion() {
-        return (TR_ENGINE_PHP_VERSION >= "7.0.0");
+        return (TR_ENGINE_PHP_VERSION >= "7.1.0");
     }
 
     /**
@@ -246,5 +253,4 @@ class CoreInfo {
     private static function getGlobalServer($keyName) {
         return ${"_" . "SERVER"}[$keyName];
     }
-
 }

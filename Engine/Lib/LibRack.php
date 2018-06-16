@@ -61,9 +61,9 @@ class LibRack {
      * @param string $class
      * @return string
      */
-    public function &render($class = "") {
+    public function &render(string $class = ""): string {
         $content = "<table class=\"" . ((!empty($class)) ? $class : "table") . "\">"
-        . "<tbody><tr class=\"first\">";
+                . "<tbody><tr class=\"first\">";
 
         // Création de la 1ère lignes
         foreach ($this->firstLine as $column) {
@@ -86,5 +86,4 @@ class LibRack {
         $content .= "</tbody></table>";
         return $content;
     }
-
 }

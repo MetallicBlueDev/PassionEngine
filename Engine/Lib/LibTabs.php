@@ -49,7 +49,7 @@ class LibTabs {
      *
      * @param string $name Nom du groupe d'onglet
      */
-    public function __construct($name) {
+    public function __construct(string $name) {
         $this->name = $name;
         $this->selected = CoreRequest::getString("selectedTab");
 
@@ -72,17 +72,17 @@ class LibTabs {
      * @param string $title Le titre de l'onglet
      * @param string $htmlContent Le contenu de l'onglet
      */
-    public function addTab($title, $htmlContent) {
+    public function addTab(string $title, string $htmlContent) {
         $tabId = $this->getTabId();
         $tabSelected = ($this->selected === $tabId);
 
         $this->tabsBuffer .= "<li>"
-        . "<input type=\"radio\" name=\"" . $this->getTabsName() . "\" id=\"" . $tabId . "\""
-        . ($tabSelected ? " checked" : "") . ">"
-        . "<label for=\"" . $tabId . "\">"
-        . ExecString::textDisplay($title)
-        . "</label>"
-        . "</li>";
+                . "<input type=\"radio\" name=\"" . $this->getTabsName() . "\" id=\"" . $tabId . "\""
+                . ($tabSelected ? " checked" : "") . ">"
+                . "<label for=\"" . $tabId . "\">"
+                . ExecString::textDisplay($title)
+                . "</label>"
+                . "</li>";
 
         $purHtml = "";
 
@@ -99,13 +99,13 @@ class LibTabs {
      * @param string $class
      * @return string
      */
-    public function &render($class = "") {
+    public function &render(string $class = ""): string {
         $content = "<div id=\"" . $this->name . "\" class=\"" . ((!empty($class)) ? $class : "tabs") . "\">"
-        . "<ul>"
-        . $this->tabsBuffer
-        . "</ul>"
-        . $this->tabsContentBuffer
-        . "</div>";
+                . "<ul>"
+                . $this->tabsBuffer
+                . "</ul>"
+                . $this->tabsContentBuffer
+                . "</div>";
         return $content;
     }
 
@@ -114,7 +114,7 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabsName() {
+    private function getTabsName(): string {
         return "tabs_" . $this->name;
     }
 
@@ -123,7 +123,7 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabId() {
+    private function getTabId(): string {
         return "tab_" . $this->name . "_" . $this->tabCounter;
     }
 
@@ -132,8 +132,7 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabContentId() {
+    private function getTabContentId(): string {
         return "tab_content_" . $this->name . "_" . $this->tabCounter;
     }
-
 }
