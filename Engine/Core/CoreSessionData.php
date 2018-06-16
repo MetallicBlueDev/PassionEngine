@@ -87,7 +87,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken {
      * @return bool
      */
     public function hasRank(): bool {
-        return $this->getRank() > CoreAccessRank::RANK_PUBLIC;
+        return $this->getRank() > CoreAccessRank::PUBLIC;
     }
 
     /**
@@ -96,7 +96,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken {
      * @return bool
      */
     public function hasRegisteredRank(): bool {
-        return $this->getRank() >= CoreAccessRank::RANK_REGISTRED;
+        return $this->getRank() >= CoreAccessRank::REGISTRED;
     }
 
     /**
@@ -105,7 +105,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken {
      * @return bool
      */
     public function hasAdminRank(): bool {
-        return $this->getRank() >= CoreAccessRank::RANK_ADMIN;
+        return $this->getRank() >= CoreAccessRank::ADMIN;
     }
 
     /**
@@ -246,7 +246,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken {
             $coreSql = CoreSql::getInstance();
 
             $coreSql->select(
-                    CoreTable::USERS_RIGHTS_TABLE, array(
+                    CoreTable::USERS_RIGHTS, array(
                 "zone",
                 "page",
                 "identifiant"), array(

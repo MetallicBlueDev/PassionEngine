@@ -374,7 +374,7 @@ abstract class BaseModel extends CoreTransaction {
      * @return string
      */
     public function &getCollation(): string {
-        $this->query("SHOW FULL COLUMNS FROM " . $this->getTableName(CoreTable::CONFIG_TABLE));
+        $this->query("SHOW FULL COLUMNS FROM " . $this->getTableName(CoreTable::CONFIG));
         $info = $this->fetchArray();
         return !empty($info['Collation']) ? $info['Collation'] : "?";
     }

@@ -60,7 +60,7 @@ class CoreCache extends CacheModel {
      *
      * @var string
      */
-    private $currentSection = CoreCacheSection::SECTION_TMP;
+    private $currentSection = CoreCacheSection::TMP;
 
     /**
      * Réécriture du complète du cache.
@@ -457,7 +457,7 @@ class CoreCache extends CacheModel {
     public function &getNameList(string $path): array {
         $dirList = array();
 
-        $this->changeCurrentSection(CoreCacheSection::SECTION_FILELISTER);
+        $this->changeCurrentSection(CoreCacheSection::FILELISTER);
         $fileName = str_replace(DIRECTORY_SEPARATOR, "_", $path) . ".php";
 
         if ($this->cached($fileName)) {
@@ -505,8 +505,8 @@ class CoreCache extends CacheModel {
      *
      * @param string $newSectionPath
      */
-    public function changeCurrentSection(string $newSectionPath = CoreCacheSection::SECTION_TMP) {
-        $newSectionPath = empty($newSectionPath) ? CoreCacheSection::SECTION_TMP : $newSectionPath;
+    public function changeCurrentSection(string $newSectionPath = CoreCacheSection::TMP) {
+        $newSectionPath = empty($newSectionPath) ? CoreCacheSection::TMP : $newSectionPath;
         $newSectionPath = str_replace("/", DIRECTORY_SEPARATOR, $newSectionPath);
 
         if (substr($newSectionPath, -1) === DIRECTORY_SEPARATOR) {

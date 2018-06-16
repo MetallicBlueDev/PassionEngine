@@ -48,7 +48,7 @@ class CoreAccess {
             $userInfos = CoreSession::getInstance()->getUserInfos();
 
             if ($userInfos->getRank() >= $accessType->getRank()) {
-                if ($accessType->getRank() === CoreAccessRank::RANK_SPECIFIC_RIGHT || $forceSpecificRank) {
+                if ($accessType->getRank() === CoreAccessRank::SPECIFIC_RIGHT || $forceSpecificRank) {
                     $rslt = self::autorizeSpecific($accessType, $userInfos);
                 } else {
                     $rslt = true;

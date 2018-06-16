@@ -17,7 +17,6 @@ class FailSql extends FailBase {
      * @param string $message
      */
     public function __construct(string $message) {
-        parent::__construct($message, FailBase::FROM_SQL);
+        parent::__construct($message, FailFrom::SQL);
     }
-
 }

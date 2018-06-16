@@ -83,7 +83,7 @@ class ModuleIndex extends ModuleModel {
             $coreSession = CoreSession::getInstance();
 
             $coreSql->update(
-            CoreTable::USERS_TABLE, $values, array(
+            CoreTable::USERS, $values, array(
                 "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
             );
 
@@ -166,7 +166,7 @@ class ModuleIndex extends ModuleModel {
                     $name = ExecString::secureText($name);
 
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS_TABLE, array(
+                    CoreTable::USERS, array(
                         "user_id"), array(
                         "name = '" . $name . "'")
                     );
@@ -195,7 +195,7 @@ class ModuleIndex extends ModuleModel {
                         $values['langue'] = $langue;
                         $values['template'] = $template;
                         CoreSql::getInstance()->update(
-                        CoreTable::USERS_TABLE, $values, array(
+                        CoreTable::USERS, $values, array(
                             "user_id = '" . $userInfos->getId() . "'")
                         );
 
@@ -361,7 +361,7 @@ class ModuleIndex extends ModuleModel {
             if (!empty($mail)) {
                 if (ExecMailer::isValidMail($mail)) {
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS_TABLE, array(
+                    CoreTable::USERS, array(
                         "name"), array(
                         "mail = '" . $mail . "'")
                     );
@@ -421,7 +421,7 @@ class ModuleIndex extends ModuleModel {
             if (!empty($login)) {
                 if (CoreSession::validLogin($login)) {
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS_TABLE, array(
+                    CoreTable::USERS, array(
                         "name, mail"), array(
                         "name = '" . $login . "'")
                     );

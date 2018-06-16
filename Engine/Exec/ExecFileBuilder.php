@@ -66,7 +66,7 @@ class ExecFileBuilder {
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS)->writeCache("config.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("config.inc.php", $content);
     }
 
     /**
@@ -80,7 +80,7 @@ class ExecFileBuilder {
      * @param string $root
      */
     public static function buildCacheFile(string $type, string $host, int $port, string $user, string $pass, string $root) {
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS);
 
         if (empty($type) || !ExecUtils::inArray($type, CoreCache::getCacheList())) {
             $type = $coreCache->getTransactionType();
@@ -177,6 +177,6 @@ class ExecFileBuilder {
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS)->writeCache("database.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("database.inc.php", $content);
     }
 }

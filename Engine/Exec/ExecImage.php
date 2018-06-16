@@ -16,7 +16,7 @@ class ExecImage {
      *
      * @var array
      */
-    const TYPE_LIST = array(
+    private const TYPE_LIST = array(
         "IMAGETYPE_GIF",
         "IMAGETYPE_JPEG",
         "IMAGETYPE_JPG",
@@ -86,5 +86,4 @@ class ExecImage {
         }
         return $type;
     }
-
 }

@@ -14,32 +14,12 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 abstract class FailBase extends Exception {
 
     /**
-     * Une erreur généré par une couche basse du moteur.
-     */
-    const FROM_ENGINE = -1;
-
-    /**
-     * Une erreur généré la couche SQL du moteur.
-     */
-    const FROM_SQL = 10;
-
-    /**
-     * Une erreur généré le chargeur de classe.
-     */
-    const FROM_LOADER = 20;
-
-    /**
-     * Une erreur généré la couche du cache du moteur.
-     */
-    const FROM_CACHE = 30;
-
-    /**
      * Création d'une nouvelle exception.
-     * 
+     *
      * @param string $message
      * @param int $failSourceNumber
      */
-    public function __construct(string $message, int $failSourceNumber = self::FROM_ENGINE) {
+    public function __construct(string $message, int $failSourceNumber = FailFrom::ENGINE) {
         parent::__construct($message, $failSourceNumber, null);
     }
 
@@ -72,5 +52,4 @@ abstract class FailBase extends Exception {
     public function getFailInformation(): string {
         return "Exception " . $this->getFailSourceName() . " (" . $this->getCode() . ") : " . $this->getMessage();
     }
-
 }

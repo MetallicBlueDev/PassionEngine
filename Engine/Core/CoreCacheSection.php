@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Core;
 
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
+
 /**
  * Référence le nom des sections de cache utilisées par le moteur.
  *
@@ -14,69 +16,69 @@ class CoreCacheSection {
      *
      * @var string
      */
-    const SECTION_CONFIGS = "configs";
+    const CONFIGS = "configs";
 
     /**
      * Section temporaire (branche principal).
      *
      * @var string
      */
-    const SECTION_TMP = "tmp";
+    const TMP = "tmp";
 
     /**
      * Section temporaire des fichiers de journaux.
      *
      * @var string
      */
-    const SECTION_LOGGER = self::SECTION_TMP . "/logger";
+    const LOGGER = self::TMP . "/logger";
 
     /**
      * Section temporaire pour le cache des sessions.
      *
      * @var string
      */
-    const SECTION_SESSIONS = self::SECTION_TMP . "/sessions";
+    const SESSIONS = self::TMP . "/sessions";
 
     /**
      * Section temporaire pour le cache de traduction.
      *
      * @var string
      */
-    const SECTION_TRANSLATE = self::SECTION_TMP . "/translate";
+    const TRANSLATE = self::TMP . "/translate";
 
     /**
      * Section temporaire pour le cache des menus.
      *
      * @var string
      */
-    const SECTION_MENUS = self::SECTION_TMP . "/menus";
+    const MENUS = self::TMP . "/menus";
 
     /**
      * Section temporaire pour le cache des modules.
      *
      * @var string
      */
-    const SECTION_MODULES = self::SECTION_TMP . "/modules";
+    const MODULES = self::TMP . "/modules";
 
     /**
      * Section temporaire pour le cache des listes de fichiers.
      *
      * @var string
      */
-    const SECTION_FILELISTER = self::SECTION_TMP . "/fileLister";
+    const FILELISTER = self::TMP . "/fileLister";
 
     /**
      * Section temporaire pour le cache des formulaires.
      *
      * @var string
      */
-    const SECTION_FORMS = self::SECTION_TMP . "/forms";
+    const FORMS = self::TMP . "/forms";
 
     /**
      * Section temporaire pour le cache des blocks.
      *
      * @var string
      */
-    const SECTION_BLOCKS = self::SECTION_TMP . "/blocks";
+    const BLOCKS = self::TMP . "/blocks";
 
 }

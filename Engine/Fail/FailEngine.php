@@ -17,7 +17,6 @@ class FailEngine extends FailBase {
      * @param string $message
      */
     public function __construct(string $message) {
-        parent::__construct($message, FailBase::FROM_ENGINE);
+        parent::__construct($message, FailFrom::ENGINE);
     }
-
 }

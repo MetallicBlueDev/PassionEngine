@@ -32,13 +32,13 @@ class BlockMenu extends BlockModel {
     }
 
     public function uninstall() {
-        CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
+        CoreCache::getInstance(CoreCacheSection::MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
     }
 
     protected function getMenu() {
         $menus = new LibMenu(
                 "block" . $this->getBlockData()->getId(), array(
-            "table" => CoreTable::MENUS_TABLES,
+            "table" => CoreTable::MENUS,
             "select" => array(
                 "menu_id",
                 "block_id",

@@ -70,7 +70,7 @@ class BlockLogin extends BlockModel {
     }
 
     public function uninstall() {
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_FORMS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
         $coreCache->removeCache("login-logonblock.php");
         $coreCache->removeCache("login-forgetloginblock.php");
         $coreCache->removeCache("login-forgetpassblock.php");

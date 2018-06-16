@@ -733,7 +733,7 @@ class CoreMain {
      */
     private function loadGenericConfig() {
         $newConfig = array();
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TMP);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::TMP);
 
         // Si le cache est disponible
         if ($coreCache->cached("configs.php")) {
@@ -744,7 +744,7 @@ class CoreMain {
             $coreSql = CoreSql::getInstance();
 
             // Requête vers la base de données de configs
-            $coreSql->select(CoreTable::CONFIG_TABLE, array(
+            $coreSql->select(CoreTable::CONFIG, array(
                 "name",
                 "value"));
 

@@ -17,7 +17,6 @@ class FailLoader extends FailBase {
      * @param string $message
      */
     public function __construct(string $message) {
-        parent::__construct($message, FailBase::FROM_LOADER);
+        parent::__construct($message, FailFrom::LOADER);
     }
-
 }

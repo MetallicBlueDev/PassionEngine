@@ -287,7 +287,7 @@ class CoreTranslate {
      * @param string $pathLang
      */
     public static function removeCache(string $pathLang = "") {
-        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
         $langCacheFileName = self::getLangCachePrefixFileName($pathLang);
         $langues = self::getLangList();
 
@@ -341,7 +341,7 @@ class CoreTranslate {
         $translated = false;
 
         if (CoreLoader::isCallable("CoreCache")) {
-            $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE);
+            $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
 
             if ($coreCache->cached($langCacheFileName)) {
@@ -412,7 +412,7 @@ class CoreTranslate {
     private function createTranslationCache(string $pathLang, string $content) {
         if (CoreLoader::isCallable("CoreCache")) {
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
-            CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE)->writeCache($langCacheFileName, $content);
+            CoreCache::getInstance(CoreCacheSection::TRANSLATE)->writeCache($langCacheFileName, $content);
         }
     }
 
