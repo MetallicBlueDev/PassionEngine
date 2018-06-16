@@ -1,5 +1,5 @@
 # TR Engine
-*Sébastien Villemain (trancer)*test
+*Sébastien Villemain (trancer)*
 
 **TR Engine** is an Easy PHP CMC.
 
