@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Lib;
 
+use TREngine\Engine\Core\CoreAccessZone;
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 /**
@@ -29,8 +31,9 @@ class LibModuleData extends LibEntityData {
      * Nouvelle information de module.
      *
      * @param array $data
+     * @param bool $initializeConfig
      */
-    public function __construct(array &$data, $initializeConfig = false) {
+    public function __construct(array &$data, bool $initializeConfig = false) {
         parent::__construct();
 
         // Vérification des informations
@@ -51,7 +54,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getPage() {
+    public function &getPage(): string {
         return $this->page;
     }
 
@@ -60,7 +63,7 @@ class LibModuleData extends LibEntityData {
      *
      * @param string $page
      */
-    public function setPage($page) {
+    public function setPage(string $page) {
         $this->page = ucfirst($page);
     }
 
@@ -69,7 +72,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getView() {
+    public function &getView(): string {
         return $this->view;
     }
 
@@ -78,7 +81,7 @@ class LibModuleData extends LibEntityData {
      *
      * @param string $view
      */
-    public function setView($view) {
+    public function setView(string $view) {
         $this->view = $view;
     }
 
@@ -87,7 +90,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return string Le nom du module.
      */
-    public function &getName() {
+    public function &getName(): string {
         $dataValue = ucfirst($this->getStringValue("name"));
         return $dataValue;
     }
@@ -97,7 +100,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function getFolderName() {
+    public function getFolderName(): string {
         return "Module" . $this->getName();
     }
 
@@ -106,7 +109,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function getClassName() {
+    public function getClassName(): string {
         return "Module" . $this->getPage();
     }
 
@@ -115,7 +118,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return int
      */
-    public function &getId() {
+    public function &getId(): int {
         return $this->getIntValue("mod_id");
     }
 
@@ -124,7 +127,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return int
      */
-    public function &getRank() {
+    public function &getRank(): int {
         return $this->getIntValue("rank");
     }
 
@@ -134,7 +137,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return array
      */
-    public function &getConfigs() {
+    public function &getConfigs(): array {
         return $this->getDataValue("configs");
     }
 
@@ -145,7 +148,7 @@ class LibModuleData extends LibEntityData {
      * @param string $defaultValue
      * @return string
      */
-    public function &getConfigValue($key, $defaultValue = "") {
+    public function &getConfigValue(string $key, string $defaultValue = ""): string {
         $value = null;
 
         if ($this->hasValue("configs")) {
@@ -165,7 +168,7 @@ class LibModuleData extends LibEntityData {
      *
      * @return bool
      */
-    public function installed() {
+    public function installed(): bool {
         return $this->hasValue("mod_id");
     }
 
@@ -174,8 +177,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getZone() {
-        $zone = "MODULE";
+    public function &getZone(): string {
+        $zone = CoreAccessZone::MODULE;
         return $zone;
     }
 
@@ -185,7 +188,7 @@ class LibModuleData extends LibEntityData {
      * @param string $moduleConfigs
      * @return array
      */
-    private static function getModuleConfigs(&$moduleConfigs) {
+    private static function getModuleConfigs(string &$moduleConfigs): array {
         $moduleConfigs = explode("|", $moduleConfigs);
 
         foreach ($moduleConfigs as $config) {
@@ -204,5 +207,4 @@ class LibModuleData extends LibEntityData {
         }
         return $moduleConfigs;
     }
-
 }

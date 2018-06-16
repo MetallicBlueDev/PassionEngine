@@ -8,6 +8,7 @@ use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreAccessType;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Lib\LibModuleData;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -39,7 +40,7 @@ abstract class ModuleModel {
      */
     public function install() {
         CoreSql::getInstance()->insert(
-        CoreTable::MODULES_TABLE, array(
+                CoreTable::MODULES_TABLE, array(
             "name",
             "rank",
             "configs"), array(
@@ -54,11 +55,11 @@ abstract class ModuleModel {
      */
     public function uninstall() {
         CoreSql::getInstance()->delete(
-        CoreTable::MODULES_TABLE, array(
+                CoreTable::MODULES_TABLE, array(
             "mod_id = '" . $this->getModuleData()->getId() . "'")
         );
 
-        CoreCache::getInstance(CoreCache::SECTION_MODULES)->removeCache($this->getModuleData()->getName() . ".php");
+        CoreCache::getInstance(CoreCacheSection::SECTION_MODULES)->removeCache($this->getModuleData()->getName() . ".php");
         CoreTranslate::removeCache("modules" . DIRECTORY_SEPARATOR . $this->getModuleData()->getName());
     }
 
@@ -99,5 +100,4 @@ abstract class ModuleModel {
     public function &getAccessType() {
         return CoreAccessType::getTypeFromToken($this->getModuleData());
     }
-
 }

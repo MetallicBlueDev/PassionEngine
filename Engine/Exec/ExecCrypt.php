@@ -289,10 +289,10 @@ class ExecCrypt {
      * Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
      * http://fr2.php.net/manual/fr/function.md5.php
      *
-     * @param $ivLen
+     * @param int $ivLen
      * @return string
      */
-    private static function &getRandIv($ivLen) {
+    private static function &getRandIv(int $ivLen): string {
         $iv = "";
 
         while ($ivLen-- > 0) {
@@ -300,5 +300,4 @@ class ExecCrypt {
         }
         return $iv;
     }
-
 }

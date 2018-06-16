@@ -68,7 +68,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @return int
      */
-    public function &getParentId() {
+    public function &getParentId(): int {
         return $this->getIntValue("parent_id");
     }
 
@@ -77,7 +77,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @return int
      */
-    public function &getMenuId() {
+    public function &getMenuId(): int {
         return $this->getIntValue("menu_id");
     }
 
@@ -87,7 +87,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getContent() {
+    public function &getContent(): string {
         return $this->getStringValue("content");
     }
 
@@ -96,7 +96,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @return int
      */
-    public function &getRank() {
+    public function &getRank(): int {
         return $this->getIntValue("rank");
     }
 
@@ -114,7 +114,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @return array
      */
-    public function &getTree() {
+    public function &getTree(): array {
         return $this->tree;
     }
 
@@ -124,7 +124,7 @@ class LibMenuElement extends CoreDataStorage {
      * @param string $name nom de l'attribut
      * @param string $value valeur de l'attribut
      */
-    public function addAttributs($name, $value) {
+    public function addAttributs(string $name, string $value) {
         if (!isset($this->attributs[$name])) {
             $this->attributs[$name] = $value;
         } else {
@@ -160,7 +160,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @param string $name nom de l'attribut
      */
-    public function removeAttributs($name = "") {
+    public function removeAttributs(string $name = "") {
         if (!empty($name)) {
             unset($this->attributs[$name]);
         } else {
@@ -176,7 +176,7 @@ class LibMenuElement extends CoreDataStorage {
      * @param array $attributs
      * @return string
      */
-    public function &getAttributs(array $attributs = array()) {
+    public function &getAttributs(array $attributs = array()): string {
         $rslt = "";
         $attributs = empty($attributs) ? $this->attributs : $attributs;
 
@@ -209,7 +209,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @param bool $active
      */
-    public function setActive($active) {
+    public function setActive(bool $active) {
         $this->active = $active;
     }
 
@@ -218,7 +218,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @param string $tag
      */
-    public function addTags($tag) {
+    public function addTags(string $tag) {
         $this->tags[] = $tag;
     }
 
@@ -268,7 +268,7 @@ class LibMenuElement extends CoreDataStorage {
      *
      * @param string $callback
      */
-    public function &toString($callback = "") {
+    public function &toString(string $callback = "") {
         $text = $this->getContent();
 
         // Mise en forme du texte via la callback
@@ -315,5 +315,4 @@ class LibMenuElement extends CoreDataStorage {
         $this->removeAttributs();
         $this->removeChild();
     }
-
 }

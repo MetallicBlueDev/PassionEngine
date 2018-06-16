@@ -34,7 +34,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @return string
      */
-    public function &getBuffer() {
+    public function &getBuffer(): string {
         return $this->buffer;
     }
 
@@ -43,7 +43,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @param string $buffer
      */
-    public function setBuffer($buffer) {
+    public function setBuffer(string $buffer) {
         $this->buffer = $buffer;
     }
 
@@ -52,21 +52,21 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @return string
      */
-    abstract public function getFolderName();
+    abstract public function getFolderName(): string;
 
     /**
      * Retourne le nom de classe représentant l'entité.
      *
      * @return string
      */
-    abstract public function getClassName();
+    abstract public function getClassName(): string;
 
     /**
      * Détermine si l'entité est valide.
      *
      * @return bool
      */
-    public function isValid() {
+    public function isValid(): bool {
         $qualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(), $this->getFolderName());
         return is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
     }
@@ -76,5 +76,5 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @return bool
      */
-    abstract public function installed();
+    abstract public function installed(): bool;
 }

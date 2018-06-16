@@ -12,53 +12,6 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 class CoreAccess {
 
     /**
-     * Accès non défini (cas de désactivation).
-     *
-     * @var int
-     */
-    const RANK_NONE = 0;
-
-    /**
-     * Accès publique.
-     *
-     * @var int
-     */
-    const RANK_PUBLIC = 1;
-
-    /**
-     * Accès aux membres.
-     *
-     * @var int
-     */
-    const RANK_REGISTRED = 2;
-
-    /**
-     * Accès aux administrateurs.
-     *
-     * @var int
-     */
-    const RANK_ADMIN = 3;
-
-    /**
-     * Accès avec droit spécifique.
-     *
-     * @var int
-     */
-    const RANK_SPECIFIC_RIGHT = 4;
-
-    /**
-     * Liste des rangs valides.
-     *
-     * @var array array("name" => 0)
-     */
-    const RANK_LIST = array(
-        "ACCESS_NONE" => self::RANK_NONE,
-        "ACCESS_PUBLIC" => self::RANK_PUBLIC,
-        "ACCESS_REGISTRED" => self::RANK_REGISTRED,
-        "ACCESS_ADMIN" => self::RANK_ADMIN,
-        "ACCESS_SPECIFIC_RIGHT" => self::RANK_SPECIFIC_RIGHT);
-
-    /**
      * Retourne l'erreur d'accès liée au jeton.
      *
      * @param CoreAccessToken $token
@@ -95,7 +48,7 @@ class CoreAccess {
             $userInfos = CoreSession::getInstance()->getUserInfos();
 
             if ($userInfos->getRank() >= $accessType->getRank()) {
-                if ($accessType->getRank() === self::RANK_SPECIFIC_RIGHT || $forceSpecificRank) {
+                if ($accessType->getRank() === CoreAccessRank::RANK_SPECIFIC_RIGHT || $forceSpecificRank) {
                     $rslt = self::autorizeSpecific($accessType, $userInfos);
                 } else {
                     $rslt = true;
@@ -117,7 +70,7 @@ class CoreAccess {
                 "Invalid rank value: " . $rank));
         }
 
-        $rankLitteral = array_search($rank, self::RANK_LIST);
+        $rankLitteral = array_search($rank, CoreAccessRank::RANK_LIST);
 
         if ($rankLitteral === false) {
             CoreSecure::getInstance()->throwException("accessRank", null, array(
@@ -136,7 +89,7 @@ class CoreAccess {
     public static function &getRankList(): array {
         $rankList = array();
 
-        foreach (self::RANK_LIST as $rank) {
+        foreach (CoreAccessRank::RANK_LIST as $rank) {
             $rankList[] = array(
                 "numeric" => $rank,
                 "letters" => self::getRankAsLitteral($rank));
@@ -166,5 +119,4 @@ class CoreAccess {
         }
         return $rslt;
     }
-
 }

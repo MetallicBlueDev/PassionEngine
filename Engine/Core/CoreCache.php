@@ -16,76 +16,6 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 class CoreCache extends CacheModel {
 
     /**
-     * Section de configuration.
-     *
-     * @var string
-     */
-    const SECTION_CONFIGS = "configs";
-
-    /**
-     * Section temporaire (branche principal).
-     *
-     * @var string
-     */
-    const SECTION_TMP = "tmp";
-
-    /**
-     * Section temporaire des fichiers de journaux.
-     *
-     * @var string
-     */
-    const SECTION_LOGGER = "tmp/logger";
-
-    /**
-     * Section temporaire pour le cache des sessions.
-     *
-     * @var string
-     */
-    const SECTION_SESSIONS = "tmp/sessions";
-
-    /**
-     * Section temporaire pour le cache de traduction.
-     *
-     * @var string
-     */
-    const SECTION_TRANSLATE = "tmp/translate";
-
-    /**
-     * Section temporaire pour le cache des menus.
-     *
-     * @var string
-     */
-    const SECTION_MENUS = "tmp/menus";
-
-    /**
-     * Section temporaire pour le cache des modules.
-     *
-     * @var string
-     */
-    const SECTION_MODULES = "tmp/modules";
-
-    /**
-     * Section temporaire pour le cache des listes de fichiers.
-     *
-     * @var string
-     */
-    const SECTION_FILELISTER = "tmp/fileLister";
-
-    /**
-     * Section temporaire pour le cache des formulaires.
-     *
-     * @var string
-     */
-    const SECTION_FORMS = "tmp/forms";
-
-    /**
-     * Section temporaire pour le cache des blocks.
-     *
-     * @var string
-     */
-    const SECTION_BLOCKS = "tmp/blocks";
-
-    /**
      * Utilisation des méthodes PHP.
      *
      * @var string
@@ -109,7 +39,7 @@ class CoreCache extends CacheModel {
     /**
      * @var string
      */
-    const CHECKER_FILENAME = "checker.txt";
+    private const CHECKER_FILENAME = "checker.txt";
 
     /**
      * Gestionnnaire de cache.
@@ -130,7 +60,7 @@ class CoreCache extends CacheModel {
      *
      * @var string
      */
-    private $currentSection = self::SECTION_TMP;
+    private $currentSection = CoreCacheSection::SECTION_TMP;
 
     /**
      * Réécriture du complète du cache.
@@ -463,7 +393,7 @@ class CoreCache extends CacheModel {
      * @param array $cacheVariables
      * @return mixed
      */
-    public function &readCache(string $path, string $cacheVariableName = "", array $cacheVariables = array()) {
+    public function &readCache(string $path, string $cacheVariableName = "", array $cacheVariables = []) {
         // Ajout des valeurs en cache
         if (!empty($cacheVariableName)) {
             ${$cacheVariableName} = &$cacheVariables;
@@ -527,7 +457,7 @@ class CoreCache extends CacheModel {
     public function &getNameList(string $path): array {
         $dirList = array();
 
-        $this->changeCurrentSection(self::SECTION_FILELISTER);
+        $this->changeCurrentSection(CoreCacheSection::SECTION_FILELISTER);
         $fileName = str_replace(DIRECTORY_SEPARATOR, "_", $path) . ".php";
 
         if ($this->cached($fileName)) {
@@ -575,8 +505,8 @@ class CoreCache extends CacheModel {
      *
      * @param string $newSectionPath
      */
-    public function changeCurrentSection(string $newSectionPath = self::SECTION_TMP) {
-        $newSectionPath = empty($newSectionPath) ? self::SECTION_TMP : $newSectionPath;
+    public function changeCurrentSection(string $newSectionPath = CoreCacheSection::SECTION_TMP) {
+        $newSectionPath = empty($newSectionPath) ? CoreCacheSection::SECTION_TMP : $newSectionPath;
         $newSectionPath = str_replace("/", DIRECTORY_SEPARATOR, $newSectionPath);
 
         if (substr($newSectionPath, -1) === DIRECTORY_SEPARATOR) {
@@ -736,5 +666,4 @@ class CoreCache extends CacheModel {
         $variableName = str_replace(DIRECTORY_SEPARATOR, "_", $this->currentSection) . $key;
         return $variableName;
     }
-
 }

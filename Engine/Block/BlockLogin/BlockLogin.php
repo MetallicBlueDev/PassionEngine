@@ -4,6 +4,7 @@ namespace TREngine\Engine\Block\BlockLogin;
 
 use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
@@ -57,17 +58,19 @@ class BlockLogin extends BlockModel {
         } else {
             $libMakeStyle = new LibMakeStyle();
             $libMakeStyle->assign("blockTitle", $this->getBlockData()
-                ->getTitle());
+                            ->getTitle());
             $libMakeStyle->assign("blockContent", $this->render());
             $libMakeStyle->display($this->getBlockData()
-                ->getTemplateName());
+                            ->getTemplateName());
         }
     }
 
-    public function install() {}
+    public function install() {
+
+    }
 
     public function uninstall() {
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_FORMS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_FORMS);
         $coreCache->removeCache("login-logonblock.php");
         $coreCache->removeCache("login-forgetloginblock.php");
         $coreCache->removeCache("login-forgetpassblock.php");
@@ -213,5 +216,4 @@ class BlockLogin extends BlockModel {
         // CoreHtml::getInstance()->addJavascript("validForgetPass('#form-login-registrationblock', '#form-login-registrationblock-login-input');");
         return $form->render("login-registrationblock");
     }
-
 }

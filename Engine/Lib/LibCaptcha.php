@@ -90,7 +90,7 @@ class LibCaptcha {
      *
      * @return string le code HTML a incruster dans la page ou une chaine vide si un objet valide est utilisé
      */
-    public function &create() {
+    public function &create(): string {
         $rslt = "";
 
         if ($this->enabled) {
@@ -98,29 +98,7 @@ class LibCaptcha {
             $mini = (extension_loaded('gd')) ? 0 : 1;
             $mode = $this->randInt($mini, 5);
 
-            switch ($mode) {
-                case '0':
-                    $this->makePicture();
-                    break;
-                case '1':
-                    $this->makeSimpleCalculation();
-                    break;
-                case '2':
-                    $this->makeNumberMonth();
-                    break;
-                case '3':
-                    $this->makeLetter();
-                    break;
-                case '4':
-                    $this->makeLetters();
-                    break;
-                case '5':
-                    $this->makeNumbers();
-                    break;
-                default:
-                    $this->makeLetter();
-                    break;
-            }
+            $this->createMode($mode);
 
             if ($this->object !== null) {
                 // TODO A vérifier
@@ -130,7 +108,7 @@ class LibCaptcha {
                 }
             } else {
                 $rslt = $this->question . " <input name=\"cles\" type=\"text\" value=\"\" />"
-                . "<input name=\"" . $this->inputRobotName . "\" type=\"hidden\" value=\"\" />";
+                        . "<input name=\"" . $this->inputRobotName . "\" type=\"hidden\" value=\"\" />";
             }
         }
 
@@ -144,7 +122,7 @@ class LibCaptcha {
      * @param LibCaptcha $object
      * @return bool
      */
-    public static function &check($object = null) {
+    public static function &check($object = null): bool {
         $rslt = false;
 
         if ($object === null || !is_object($object)) {
@@ -162,11 +140,42 @@ class LibCaptcha {
     }
 
     /**
+     * Création du captcha en fonction du mode.
+     *
+     * @param int $mode
+     */
+    private function createMode(int &$mode) {
+        switch ($mode) {
+            case 0:
+                $this->makePicture();
+                break;
+            case 1:
+                $this->makeSimpleCalculation();
+                break;
+            case 2:
+                $this->makeNumberMonth();
+                break;
+            case 3:
+                $this->makeLetter();
+                break;
+            case 4:
+                $this->makeLetters();
+                break;
+            case 5:
+                $this->makeNumbers();
+                break;
+            default:
+                $this->makeLetter();
+                break;
+        }
+    }
+
+    /**
      * Vérifie la validité du captcha.
      *
      * @return bool
      */
-    private function &internalCheck() {
+    private function &internalCheck(): bool {
         $rslt = false;
 
         $code = CoreRequest::getString("cles", "", "POST");
@@ -189,7 +198,7 @@ class LibCaptcha {
      * @param int $max
      * @return int
      */
-    private function randInt($mini, $max) {
+    private function randInt(int $mini, int $max): int {
         if (!self::$iniRand) {
             self::initRand();
         }
@@ -278,43 +287,44 @@ class LibCaptcha {
 
         // Recherche du mois par rapport au chiffre
         switch ($number) {
-            case '1':
+            case 1:
                 $month = JANUARY;
                 break;
-            case '2':
+            case 2:
                 $month = FEBRUARY;
                 break;
-            case '3':
+            case 3:
                 $month = MARCH;
                 break;
-            case '4':
+            case 4:
                 $month = APRIL;
                 break;
-            case '5':
+            case 5:
                 $month = MAY;
                 break;
-            case '6':
+            case 6:
                 $month = JUNE;
                 break;
-            case '7':
+            case 7:
                 $month = JULY;
                 break;
-            case '8':
+            case 8:
                 $month = AUGUST;
                 break;
-            case '9':
+            case 9:
                 $month = SEPTEMBER;
                 break;
-            case '10':
+            case 10:
                 $month = OCTOBER;
                 break;
-            case '11':
+            case 11:
                 $month = NOVEMBER;
                 break;
-            case '12':
+            case 12:
                 $month = DECEMBER;
                 break;
-            default: $month = JANUARY;
+            default:
+                $month = JANUARY;
                 break;
         }
 
@@ -344,5 +354,4 @@ class LibCaptcha {
         mt_srand((double) microtime() * 1000000);
         self::$iniRand = true;
     }
-
 }

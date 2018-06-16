@@ -23,7 +23,7 @@ class CoreSecure {
      *
      * @var array
      */
-    const BAD_QUERY_STRINGS = array(
+    private const BAD_QUERY_STRINGS = array(
         "select",
         "union",
         "insert",
@@ -406,5 +406,4 @@ class CoreSecure {
     private static function getGlobalServer($keyName) {
         return ${"_" . "SERVER"}[$keyName];
     }
-
 }

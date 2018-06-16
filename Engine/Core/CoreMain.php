@@ -219,8 +219,8 @@ class CoreMain {
      */
     public function &getDefaultAdministratorMail(): string {
         return $this->getDefaultConfigValue("defaultAdministratorMail", function() {
-            return TR_ENGINE_MAIL;
-        });
+                    return TR_ENGINE_MAIL;
+                });
     }
 
     /**
@@ -230,8 +230,8 @@ class CoreMain {
      */
     public function &getDefaultSiteName(): string {
         return $this->getDefaultConfigValue("defaultSiteName", function() {
-            return CoreRequest::getString("SERVER_NAME", "", "SERVER");
-        });
+                    return CoreRequest::getString("SERVER_NAME", "", "SERVER");
+                });
     }
 
     /**
@@ -241,8 +241,8 @@ class CoreMain {
      */
     public function &getDefaultSiteSlogan(): string {
         return $this->getDefaultConfigValue("defaultSiteSlogan", function() {
-            return "TR ENGINE";
-        });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -252,8 +252,8 @@ class CoreMain {
      */
     public function &getDefaultSiteStatut(): string {
         return $this->getDefaultConfigValue("defaultSiteStatut", function() {
-            return "open";
-        });
+                    return "open";
+                });
     }
 
     /**
@@ -263,8 +263,8 @@ class CoreMain {
      */
     public function &getDefaultSiteCloseReason(): string {
         return $this->getDefaultConfigValue("defaultSiteCloseReason", function() {
-            return " ";
-        });
+                    return " ";
+                });
     }
 
     /**
@@ -274,8 +274,8 @@ class CoreMain {
      */
     public function &getDefaultDescription(): string {
         return $this->getDefaultConfigValue("defaultDescription", function() {
-            return "TR ENGINE";
-        });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -285,8 +285,8 @@ class CoreMain {
      */
     public function &getDefaultKeyWords(): string {
         return $this->getDefaultConfigValue("defaultKeyWords", function() {
-            return "TR ENGINE";
-        });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -296,8 +296,8 @@ class CoreMain {
      */
     public function &getDefaultLanguage(): string {
         return $this->getDefaultConfigValue("defaultLanguage", function() {
-            return "english";
-        });
+                    return "english";
+                });
     }
 
     /**
@@ -307,8 +307,8 @@ class CoreMain {
      */
     public function &getDefaultTemplate(): string {
         return $this->getDefaultConfigValue("defaultTemplate", function() {
-            return " ";
-        });
+                    return " ";
+                });
     }
 
     /**
@@ -318,8 +318,8 @@ class CoreMain {
      */
     public function &getDefaultMod(): string {
         return $this->getDefaultConfigValue("defaultMod", function() {
-            return "home";
-        });
+                    return "home";
+                });
     }
 
     /**
@@ -733,7 +733,7 @@ class CoreMain {
      */
     private function loadGenericConfig() {
         $newConfig = array();
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_TMP);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TMP);
 
         // Si le cache est disponible
         if ($coreCache->cached("configs.php")) {
@@ -761,5 +761,4 @@ class CoreMain {
         // Ajout a la configuration courante
         $this->addConfig($newConfig);
     }
-
 }

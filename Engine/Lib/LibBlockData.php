@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Lib;
 
+use TREngine\Engine\Core\CoreAccessZone;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreAccessType;
@@ -204,7 +205,7 @@ class LibBlockData extends LibEntityData {
      * @return string
      */
     public function &getZone(): string {
-        $zone = "BLOCK";
+        $zone = CoreAccessZone::BLOCK;
         return $zone;
     }
 
@@ -226,5 +227,4 @@ class LibBlockData extends LibEntityData {
         }
         return $rslt;
     }
-
 }

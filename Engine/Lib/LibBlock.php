@@ -2,7 +2,8 @@
 
 namespace TREngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreAccess;
+use TREngine\Engine\Core\CoreAccessRank;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
@@ -181,7 +182,7 @@ class LibBlock {
         $blocksIndexer = $this->getBlocksIndexer();
 
         foreach ($blocksIndexer as $blockRawInfo) {
-            if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccess::RANK_NONE) {
+            if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::RANK_NONE) {
                 $this->launchBlockById($blockRawInfo['block_id'], true);
             }
         }
@@ -337,7 +338,7 @@ class LibBlock {
         $blockData = array();
 
         // Recherche dans le cache
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_BLOCKS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_BLOCKS);
 
         if (!$coreCache->cached($blockId . ".php")) {
             $coreSql = CoreSql::getInstance();
@@ -351,7 +352,7 @@ class LibBlock {
                 "type",
                 "rank",
                 "mods"
-            ), array(
+                    ), array(
                 "block_id =  '" . $blockId . "'"
             ));
 
@@ -384,7 +385,7 @@ class LibBlock {
      */
     private function getBlocksIndexer(): array {
         $blocksIndexer = array();
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_BLOCKS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_BLOCKS);
 
         if (!$coreCache->cached(self::BLOCKS_INDEXER_FILENAME)) {
             $coreSql = CoreSql::getInstance();
@@ -394,7 +395,7 @@ class LibBlock {
                 "side",
                 "type",
                 "rank"
-            ), array(), array(
+                    ), array(), array(
                 "side",
                 "position"
             ));
@@ -516,5 +517,4 @@ class LibBlock {
         $sideNumeric = self::SIDE_LIST[$sideName];
         return $sideNumeric;
     }
-
 }

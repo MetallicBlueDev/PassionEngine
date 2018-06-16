@@ -92,7 +92,7 @@ class CoreAccessType implements CoreAccessToken {
      * @return int
      */
     public function &getRank(): int {
-        $rank = isset($this->rights['rank']) ? (int) $this->rights['rank'] : CoreAccess::RANK_NONE;
+        $rank = isset($this->rights['rank']) ? (int) $this->rights['rank'] : CoreAccessRank::RANK_NONE;
         return $rank;
     }
 
@@ -151,7 +151,7 @@ class CoreAccessType implements CoreAccessToken {
      * @return bool
      */
     public function isModuleZone(): bool {
-        return ($this->getZone() === "MODULE");
+        return ($this->getZone() === CoreAccessZone::MODULE);
     }
 
     /**
@@ -160,7 +160,7 @@ class CoreAccessType implements CoreAccessToken {
      * @return bool
      */
     public function isBlockZone(): bool {
-        return ($this->getZone() === "BLOCK");
+        return ($this->getZone() === CoreAccessZone::BLOCK);
     }
 
     /**
@@ -290,5 +290,4 @@ class CoreAccessType implements CoreAccessToken {
     private function alreadyChecked(): bool {
         return isset($this->rights['validity']);
     }
-
 }

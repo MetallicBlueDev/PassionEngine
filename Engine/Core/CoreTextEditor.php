@@ -9,12 +9,11 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  */
 class CoreTextEditor {
 
-    public static function &smilies($text) {
+    public static function &smilies(string $text): string {
         return $text;
     }
 
-    public static function &text($text) {
+    public static function &text(string $text): string {
         return $text;
     }
-
 }

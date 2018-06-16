@@ -5,6 +5,7 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreAccess;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreCache;
@@ -61,7 +62,7 @@ class LibMenu {
      * @param string $identifier Identifiant du menu par exemple "block22"
      * @param array $sql
      */
-    public function __construct($identifier, array $sql = array()) {
+    public function __construct(string $identifier, array $sql = array()) {
         $this->identifier = $identifier;
         $this->activeItemId = CoreRequest::getInteger("item", 0);
 
@@ -78,7 +79,7 @@ class LibMenu {
      * @param string $name
      * @param string $value
      */
-    public function addAttributs($name, $value) {
+    public function addAttributs(string $name, string $value) {
         $this->attribtus .= " " . $name . "=\"" . $value . "\"";
     }
 
@@ -88,7 +89,7 @@ class LibMenu {
      * @param string $callback
      * @return string
      */
-    public function &render($callback = "LibMenu::getLine") {
+    public function &render(string $callback = "LibMenu::getLine"): string {
         $activeTree = array();
         $activeItem = $this->getActiveItem();
 
@@ -126,10 +127,10 @@ class LibMenu {
      * Exemple :
      * Link example__OPTIONS__BOLD.ITALIC.UNDERLINE.A.?module=home__OPTIONS__
      *
-     * @param $line string
+     * @param string $line
      * @return string
      */
-    public static function getLine($line) {
+    public static function getLine(string $line): string {
         $output = "";
         $matches = array();
 
@@ -209,11 +210,11 @@ class LibMenu {
     /**
      * Retourne une ligne avec les TAGS
      *
-     * @param $text string Texte du menu
-     * @param $options array Options choisis
+     * @param string $text Texte du menu
+     * @param array $options Options choisis
      * @return string
      */
-    public static function setLine($text, $options = array()) {
+    public static function setLine(string $text, array $options = array()): string {
         $optionsString = "";
 
         // Formate les options
@@ -257,7 +258,7 @@ class LibMenu {
      *
      * @return LibMenuElement
      */
-    private function getActiveItem() {
+    private function getActiveItem(): LibMenuElement {
         $item = null;
 
         if (isset($this->items[$this->activeItemId]) && is_object($this->items[$this->activeItemId])) {
@@ -270,7 +271,7 @@ class LibMenu {
      * Chargement du menu via le cache.
      */
     private function loadFromCache() {
-        $this->items = CoreCache::getInstance(CoreCache::SECTION_MENUS)->readCacheWithUnserialize($this->identifier . ".php");
+        $this->items = CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->readCacheWithUnserialize($this->identifier . ".php");
     }
 
     /**
@@ -278,8 +279,8 @@ class LibMenu {
      *
      * @return bool
      */
-    private function isCached() {
-        return (CoreCache::getInstance(CoreCache::SECTION_MENUS)->cached($this->identifier . ".php"));
+    private function isCached(): bool {
+        return (CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->cached($this->identifier . ".php"));
     }
 
     /**
@@ -291,7 +292,7 @@ class LibMenu {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->select(
-        $sql['table'], $sql['select'], $sql['where'], $sql['orderby'], $sql['limit']
+                $sql['table'], $sql['select'], $sql['where'], $sql['orderby'], $sql['limit']
         );
 
         if ($coreSql->affectedRows() > 0) {
@@ -322,8 +323,7 @@ class LibMenu {
                 $item->setTree($tree);
             }
 
-            CoreCache::getInstance(CoreCache::SECTION_MENUS)->writeCacheWithSerialize($this->identifier . ".php", $this->items);
+            CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->writeCacheWithSerialize($this->identifier . ".php", $this->items);
         }
     }
-
 }

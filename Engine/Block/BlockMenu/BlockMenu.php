@@ -4,6 +4,7 @@ namespace TREngine\Engine\Block\BlockMenu;
 
 use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Lib\LibMenu;
@@ -31,12 +32,12 @@ class BlockMenu extends BlockModel {
     }
 
     public function uninstall() {
-        CoreCache::getInstance(CoreCache::SECTION_MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
+        CoreCache::getInstance(CoreCacheSection::SECTION_MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
     }
 
     protected function getMenu() {
         $menus = new LibMenu(
-        "block" . $this->getBlockData()->getId(), array(
+                "block" . $this->getBlockData()->getId(), array(
             "table" => CoreTable::MENUS_TABLES,
             "select" => array(
                 "menu_id",
@@ -53,9 +54,8 @@ class BlockMenu extends BlockModel {
                 "parent_id",
                 "position"),
             "limit" => array()
-        )
+                )
         );
         return $menus;
     }
-
 }

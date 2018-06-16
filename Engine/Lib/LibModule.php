@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreAccess;
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
@@ -51,7 +52,9 @@ class LibModule {
     /**
      * Création du gestionnaire.
      */
-    private function __construct() {}
+    private function __construct() {
+
+    }
 
     /**
      * Vérification de l'instance du gestionnaire des modules.
@@ -112,12 +115,9 @@ class LibModule {
     /**
      * Création et récuperation de l'instance du module.
      *
-     * @param string $module
-     * @param string $page
-     * @param string $view
      * @return LibModule
      */
-    public static function &getInstance() {
+    public static function &getInstance(): LibModule {
         self::checkInstance();
         return self::$libModule;
     }
@@ -127,7 +127,7 @@ class LibModule {
      *
      * @return array => array("value" => valeur du module, "name" => nom du module).
      */
-    public static function &getModuleList() {
+    public static function &getModuleList(): array {
         $moduleList = array();
         $modules = CoreCache::getInstance()->getNameList("Modules");
 
@@ -146,7 +146,7 @@ class LibModule {
      * @param string $moduleName
      * @return bool true le module est actuellement sélectionné
      */
-    public static function &isSelected($moduleName) {
+    public static function &isSelected(string $moduleName): bool {
         $selected = false;
 
         if (self::$libModule !== null) {
@@ -161,7 +161,7 @@ class LibModule {
      * @param string $moduleName Le nom du module, par défaut le module courant.
      * @return LibModuleData Informations sur le module.
      */
-    public function &getInfoModule($moduleName = "") {
+    public function &getInfoModule(string $moduleName = ""): LibModuleData {
         $moduleInfo = null;
 
         if (empty($moduleName)) {
@@ -177,7 +177,7 @@ class LibModule {
             $moduleData = array();
 
             // Recherche dans le cache
-            $coreCache = CoreCache::getInstance(CoreCache::SECTION_MODULES);
+            $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_MODULES);
 
             if (!$coreCache->cached($moduleName . ".php")) {
                 $coreSql = CoreSql::getInstance();
@@ -187,7 +187,7 @@ class LibModule {
                     "name",
                     "rank",
                     "configs"
-                ), array(
+                        ), array(
                     "name =  '" . $moduleName . "'"
                 ));
 
@@ -244,7 +244,7 @@ class LibModule {
      *
      * @return string
      */
-    public function &getModule() {
+    public function &getModule(): string {
         $buffer = $this->getInfoModule()->getBuffer();
         $configs = $this->getInfoModule()->getConfigs();
 
@@ -260,14 +260,14 @@ class LibModule {
      *
      * @param LibModuleData $moduleInfo
      */
-    private function get(&$moduleInfo) {
+    private function get(LibModuleData &$moduleInfo) {
         $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleInfo->getClassName(), $moduleInfo->getFolderName());
         $loaded = CoreLoader::classLoader($moduleClassName);
 
         // Vérification de la sous page
         $moduleInfo->setView($this->getValidViewPage(array(
-            $moduleClassName,
-            ($moduleInfo->installed()) ? $moduleInfo->getView() : "install"
+                    $moduleClassName,
+                    ($moduleInfo->installed()) ? $moduleInfo->getView() : "install"
         )));
 
         // Affichage du module si possible
@@ -301,7 +301,7 @@ class LibModule {
      * @param array $pageInfo
      * @return string
      */
-    private function &getValidViewPage(array $pageInfo) {
+    private function &getValidViewPage(array $pageInfo): string {
         $invalid = false;
 
         if (CoreLoader::isCallable($pageInfo[0], $pageInfo[1])) {
@@ -340,15 +340,14 @@ class LibModule {
      *
      * @param int $modId
      */
-    private function updateCount($modId) {
+    private function updateCount(int $modId) {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->addQuotedValue("count + 1");
         $coreSql->update(CoreTable::MODULES_TABLE, array(
             "count" => "count + 1"
-        ), array(
+                ), array(
             "mod_id = '" . $modId . "'"
         ));
     }
-
 }

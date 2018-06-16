@@ -38,7 +38,7 @@ class LibBreadcrumb {
      *
      * @return LibBreadcrumb
      */
-    public static function &getInstance() {
+    public static function &getInstance(): LibBreadcrumb {
         if (self::$libBreadcrumb === null) {
             self::$libBreadcrumb = new LibBreadcrumb();
         }
@@ -51,7 +51,7 @@ class LibBreadcrumb {
      * @param string $trail
      * @param string $link
      */
-    public function addTrail($trail, $link = "") {
+    public function addTrail(string $trail, string $link = "") {
         if (!empty($trail)) {
             $constant = "TRAIL_" . strtoupper($trail);
 
@@ -72,14 +72,13 @@ class LibBreadcrumb {
      *
      * @return string
      */
-    public function &getBreadcrumbTrail() {
+    public function &getBreadcrumbTrail(): string {
         $rslt = "<nav class=\"breadcrumbtrail\"><ul>";
 
         foreach ($this->breadcrumbTrail as $trail) {
             $rslt .= "<li>" . $trail . "</li>";
         }
-        $rslt.= "</ul></nav>";
+        $rslt .= "</ul></nav>";
         return $rslt;
     }
-
 }

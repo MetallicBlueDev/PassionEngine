@@ -22,14 +22,14 @@ class CoreSession {
      *
      * @var string
      */
-    const BANISHMENT_FILENAME = "banishment.txt";
+    private const BANISHMENT_FILENAME = "banishment.txt";
 
     /**
      * Durée (en jour) d'un bannissement.
      *
      * @var int
      */
-    const BANISHMENT_DURATION = 2;
+    private const BANISHMENT_DURATION = 2;
 
     /**
      * Instance de la session.
@@ -157,8 +157,8 @@ class CoreSession {
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
             $userInfos = self::getUserInfo(array(
-                "name = '" . $userName . "'",
-                "&& pass = '" . $userPass . "'"
+                        "name = '" . $userName . "'",
+                        "&& pass = '" . $userPass . "'"
             ));
 
             if (count($userInfos) > 1) {
@@ -298,12 +298,12 @@ class CoreSession {
         if ($this->userLogged()) {
             // Rafraichir le cache de session
             $userInfos = self::getUserInfo(array(
-                "user_id = '" . $this->userInfos->getId() . "'"
+                        "user_id = '" . $this->userInfos->getId() . "'"
             ));
 
             if (count($userInfos) > 1) {
                 $this->setUser($userInfos, true);
-                CoreCache::getInstance(CoreCache::SECTION_SESSIONS)->writeCache($this->sessionId . ".php", $this->serializeSession());
+                CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS)->writeCache($this->sessionId . ".php", $this->serializeSession());
             }
         }
     }
@@ -341,7 +341,7 @@ class CoreSession {
 
         $coreSql->select(CoreTable::BANNED_TABLE, array(
             "reason"
-        ), array(
+                ), array(
             "ip = '" . $this->userIpBan . "'"
         ));
 
@@ -363,7 +363,7 @@ class CoreSession {
      * Nettoyage des bannissements périmés.
      */
     private function cleanOldBanishment() {
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_TMP);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TMP);
         $cleanBanishment = false;
 
         // Vérification du fichier cache
@@ -398,7 +398,7 @@ class CoreSession {
             // Vérification en base (au cas ou il y aurait un débannissement)
             $coreSql->select(CoreTable::BANNED_TABLE, array(
                 "ban_id"
-            ), array(
+                    ), array(
                 "ip = '" . $this->userIpBan . "'"
             ));
 
@@ -409,7 +409,7 @@ class CoreSession {
                 // Mise à jour de l'ip
                 $coreSql->update(CoreTable::BANNED_TABLE, array(
                     "ip" => $userIp
-                ), array(
+                        ), array(
                     "ban_id = '" . $banId . "'"
                 ));
 
@@ -437,7 +437,7 @@ class CoreSession {
         $coreSql->select(CoreTable::BANNED_TABLE, array(
             "ip",
             "name"
-        ), array(), array(
+                ), array(), array(
             "ban_id"
         ));
 
@@ -475,7 +475,7 @@ class CoreSession {
      * Nettoyage du cache de session utilisateur.
      */
     private function cleanCache() {
-        CoreCache::getInstance(CoreCache::SECTION_SESSIONS)->cleanCache($this->timer - $this->sessionTimeLimit);
+        CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS)->cleanCache($this->timer - $this->sessionTimeLimit);
     }
 
     /**
@@ -517,7 +517,7 @@ class CoreSession {
     private function tryOpenSession(string $userId, string $sessionId): bool {
         // La session doit être entièrement re-validée
         $isValidSession = false;
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_SESSIONS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS);
 
         if ($coreCache->cached($sessionId . ".php")) {
             // Si fichier cache trouvé, on l'utilise
@@ -599,7 +599,7 @@ class CoreSession {
      */
     private function destroySession() {
         // Destruction du fichier de session
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_SESSIONS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS);
 
         if ($coreCache->cached($this->sessionId . ".php")) {
             $coreCache->removeCache($this->sessionId . ".php");
@@ -634,7 +634,7 @@ class CoreSession {
 
         if ($cookieUser && $cookieSession) {
             // Ecriture du cache
-            CoreCache::getInstance(CoreCache::SECTION_SESSIONS)->writeCache($this->sessionId . ".php", $this->serializeSession());
+            CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS)->writeCache($this->sessionId . ".php", $this->serializeSession());
             $rslt = true;
         } else {
             CoreLogger::addWarningMessage(ERROR_SESSION_COOKIE);
@@ -651,7 +651,7 @@ class CoreSession {
         $data = $this->userInfos->getData();
         $data['userIpBan'] = $this->userIpBan;
         $data['sessionId'] = $this->sessionId;
-        return CoreCache::getInstance(CoreCache::SECTION_SESSIONS)->serializeData($data);
+        return CoreCache::getInstance(CoreCacheSection::SECTION_SESSIONS)->serializeData($data);
     }
 
     /**
@@ -704,7 +704,7 @@ class CoreSession {
         // Envoi la requête Sql de mise à jour
         $coreSql->update(CoreTable::USERS_TABLE, array(
             "last_connect" => "NOW()"
-        ), array(
+                ), array(
             "user_id = '" . $userId . "'"
         ));
         return ($coreSql->affectedRows() === 1) ? true : false;
@@ -762,12 +762,11 @@ class CoreSession {
             "signature",
             "template",
             "langue"
-        ), $where);
+                ), $where);
 
         if ($coreSql->affectedRows() === 1) {
             $info = $coreSql->fetchArray()[0];
         }
         return $info;
     }
-
 }

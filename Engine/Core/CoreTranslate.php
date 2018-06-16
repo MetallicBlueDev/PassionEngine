@@ -18,7 +18,7 @@ class CoreTranslate {
      *
      * @var array
      */
-    const LANGUAGE_LIST = array(
+    private const LANGUAGE_LIST = array(
         "aa" => "Afar",
         "ab" => "Abkhazian",
         "af" => "Afrikaans",
@@ -287,7 +287,7 @@ class CoreTranslate {
      * @param string $pathLang
      */
     public static function removeCache(string $pathLang = "") {
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_TRANSLATE);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE);
         $langCacheFileName = self::getLangCachePrefixFileName($pathLang);
         $langues = self::getLangList();
 
@@ -341,7 +341,7 @@ class CoreTranslate {
         $translated = false;
 
         if (CoreLoader::isCallable("CoreCache")) {
-            $coreCache = CoreCache::getInstance(CoreCache::SECTION_TRANSLATE);
+            $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE);
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
 
             if ($coreCache->cached($langCacheFileName)) {
@@ -412,7 +412,7 @@ class CoreTranslate {
     private function createTranslationCache(string $pathLang, string $content) {
         if (CoreLoader::isCallable("CoreCache")) {
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
-            CoreCache::getInstance(CoreCache::SECTION_TRANSLATE)->writeCache($langCacheFileName, $content);
+            CoreCache::getInstance(CoreCacheSection::SECTION_TRANSLATE)->writeCache($langCacheFileName, $content);
         }
     }
 
@@ -600,5 +600,4 @@ class CoreTranslate {
     private static function canUseLanguage(string $language): bool {
         return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate("Engine", $language) . ".php");
     }
-
 }

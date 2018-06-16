@@ -19,103 +19,103 @@ class CoreLoader {
      *
      * @var string
      */
-    const TYPE_CLASS = "Class";
+    private const TYPE_CLASS = "Class";
 
     /**
      * Fichier de pilotage de base de données.
      *
      * @var string
      */
-    const TYPE_BASE = "Base";
+    private const TYPE_BASE = "Base";
 
     /**
      * Fichier de gestion du cache.
      *
      * @var string
      */
-    const TYPE_CACHE = "Cache";
+    private const TYPE_CACHE = "Cache";
 
     /**
      * Fichier du base du moteur.
      *
      * @var string
      */
-    const TYPE_CORE = "Core";
+    private const TYPE_CORE = "Core";
 
     /**
      * Fichier d'aide à la manipulation.
      *
      * @var string
      */
-    const TYPE_EXEC = "Exec";
+    private const TYPE_EXEC = "Exec";
 
     /**
      * Fichier d'erreur.
      *
      * @var string
      */
-    const TYPE_FAIL = "Fail";
+    private const TYPE_FAIL = "Fail";
 
     /**
      * Fichier de bibliothèque.
      *
      * @var string
      */
-    const TYPE_LIB = "Lib";
+    private const TYPE_LIB = "Lib";
 
     /**
      * Fichier représentant un block.
      *
      * @var string
      */
-    const TYPE_BLOCK = "Block";
+    private const TYPE_BLOCK = "Block";
 
     /**
      * Fichier représentant un module.
      *
      * @var string
      */
-    const TYPE_MODULE = "Module";
+    private const TYPE_MODULE = "Module";
 
     /**
      * Fichier représentant une traduction.
      *
      * @var string
      */
-    const TYPE_TRANSLATE = "Translate";
+    private const TYPE_TRANSLATE = "Translate";
 
     /**
      * Fichier représentant une inclusion spécifique.
      *
      * @var string
      */
-    const TYPE_INCLUDE = "inc";
+    private const TYPE_INCLUDE = "inc";
 
     /**
      * Fichier attaché au moteur.
      *
      * @var string
      */
-    const SUBTYPE_ENGINE = "Engine";
+    private const SUBTYPE_ENGINE = "Engine";
 
     /**
      * Fichier détaché du moteur.
      *
      * @var string
      */
-    const SUBTYPE_CUSTOM = "Custom";
+    private const SUBTYPE_CUSTOM = "Custom";
 
     /**
      * Namespace de base.
      *
      * @var string
      */
-    const NAMESPACE_PATTERN = "TREngine\{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
+    private const NAMESPACE_PATTERN = "TREngine\{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
 
     /**
      * Les types de namespace possible.
      */
-    const NAMESPACE_TYPES = array(
+    private const NAMESPACE_TYPES = array(
         self::TYPE_BASE,
         self::TYPE_CACHE,
         self::TYPE_CORE,
@@ -147,8 +147,8 @@ class CoreLoader {
             self::$loadedFiles = array();
 
             if (!spl_autoload_register(array(
-                'TREngine\Engine\Core\CoreLoader',
-                'classLoader'), true)) {
+                        'TREngine\Engine\Core\CoreLoader',
+                        'classLoader'), true)) {
                 throw new FailLoader("spl_autoload_register fail");
             }
         } catch (Exception $ex) {
@@ -555,5 +555,4 @@ class CoreLoader {
         }
         return $loaded;
     }
-
 }

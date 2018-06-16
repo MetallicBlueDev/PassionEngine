@@ -55,7 +55,7 @@ class LibMakeStyle {
      *
      * @param string $fileName nom du template
      */
-    public function __construct($fileName = "") {
+    public function __construct(string $fileName = "") {
         $this->setFileName($fileName);
     }
 
@@ -65,7 +65,7 @@ class LibMakeStyle {
      * @param string $key Nome de la variable
      * @param string or LibMakeStyle $value Valeur de la variable
      */
-    public function assign($key, $value) {
+    public function assign(string $key, string $value) {
         $this->fileVars[$key] = is_object($value) ? $value->display() : $value;
     }
 
@@ -74,9 +74,9 @@ class LibMakeStyle {
      *
      * @param string $fileName
      * @param bool $debugMode Si le fichier de template debug n'est pas trouvé, le fichier debug par défaut est utilisé.
-     * @return $output L'affichage finale du template
+     * @return string L'affichage finale du template
      */
-    public function display($fileName = "", $debugMode = false) {
+    public function display(string $fileName = "", bool $debugMode = false): string {
         if ($debugMode) {
             $this->setFileName($fileName);
 
@@ -96,7 +96,7 @@ class LibMakeStyle {
      * @param string $fileName
      * @return string
      */
-    public function &render($fileName = "") {
+    public function &render(string $fileName = ""): string {
         $this->setFileName($fileName);
 
         // Vérification du template
@@ -124,7 +124,7 @@ class LibMakeStyle {
      *
      * @param string $templateDir
      */
-    public static function setTemplateDir($templateDir) {
+    public static function setTemplateDir(string $templateDir) {
         if (!self::isTemplateDir($templateDir)) {
             CoreSecure::getInstance()->throwException("makeStyleConfig", null, array(
                 "templateDir = " . $templateDir));
@@ -138,7 +138,7 @@ class LibMakeStyle {
      *
      * @return string
      */
-    public static function &getTemplateDir() {
+    public static function &getTemplateDir(): string {
         return self::$templateDir;
     }
 
@@ -147,7 +147,7 @@ class LibMakeStyle {
      *
      * @return array
      */
-    public static function &getTemplateList() {
+    public static function &getTemplateList(): array {
         $templates = array();
         $templatesDir = array(
             "Custom" . DIRECTORY_SEPARATOR . "Template",
@@ -176,7 +176,7 @@ class LibMakeStyle {
      *
      * @param string $fileName Nom du fichier
      */
-    private function setFileName($fileName) {
+    private function setFileName(string $fileName) {
         if (!empty($fileName) && $this->fileName !== $fileName) {
             if (substr($fileName, -4) !== ".php") {
                 $fileName .= ".php";
@@ -196,11 +196,11 @@ class LibMakeStyle {
     }
 
     /**
-     * Retourne le chemin jusqu'au template
+     * Retourne le chemin jusqu'au template.
      *
      * @return string path
      */
-    private function &getTemplatePath() {
+    private function &getTemplatePath(): string {
         $path = "";
 
         if ($this->debugMode) {
@@ -213,15 +213,14 @@ class LibMakeStyle {
     }
 
     /**
-     * Vérifie la validité du template
+     * Vérifie la validité du template.
      *
      * @return bool true si le chemin du template est valide
      */
-    private function isTemplate() {
+    private function isTemplate(): bool {
         if ($this->valid === null) {
             $this->valid = is_file($this->getTemplatePath());
         }
         return $this->valid;
     }
-
 }

@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Exec;
 
+use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreSql;
 
@@ -43,29 +44,29 @@ class ExecFileBuilder {
         }
 
         $content = "<?php \n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "// Engine settings\n"
-        . "//\n"
-        . "// Webmaster email address\n"
-        . "$" . "inc['TR_ENGINE_MAIL'] = \"" . $mail . "\";\n"
-        . "//\n"
-        . "// Status of the site (open | close)\n"
-        . "$" . "inc['TR_ENGINE_STATUT'] = \"" . $statut . "\";\n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "// Data sessions\n"
-        . "//\n"
-        . "// Duration in days of the validity of sessions files cached.\n"
-        . "$" . "inc['sessionTimeLimit'] = " . $sessionTimeLimit . ";\n"
-        . "//\n"
-        . "// Cookies names prefix\n"
-        . "$" . "inc['cookiePrefix'] = \"" . $cookiePrefix . "\";\n"
-        . "//\n"
-        . "// Unique decryption key (generated randomly during installation)\n"
-        . "$" . "inc['cryptKey'] = \"" . $cryptKey . "\";\n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "?>\n";
+                . "// -------------------------------------------------------------------------//\n"
+                . "// Engine settings\n"
+                . "//\n"
+                . "// Webmaster email address\n"
+                . "$" . "inc['TR_ENGINE_MAIL'] = \"" . $mail . "\";\n"
+                . "//\n"
+                . "// Status of the site (open | close)\n"
+                . "$" . "inc['TR_ENGINE_STATUT'] = \"" . $statut . "\";\n"
+                . "// -------------------------------------------------------------------------//\n"
+                . "// Data sessions\n"
+                . "//\n"
+                . "// Duration in days of the validity of sessions files cached.\n"
+                . "$" . "inc['sessionTimeLimit'] = " . $sessionTimeLimit . ";\n"
+                . "//\n"
+                . "// Cookies names prefix\n"
+                . "$" . "inc['cookiePrefix'] = \"" . $cookiePrefix . "\";\n"
+                . "//\n"
+                . "// Unique decryption key (generated randomly during installation)\n"
+                . "$" . "inc['cryptKey'] = \"" . $cryptKey . "\";\n"
+                . "// -------------------------------------------------------------------------//\n"
+                . "?>\n";
 
-        CoreCache::getInstance(CoreCache::SECTION_CONFIGS)->writeCache("config.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS)->writeCache("config.inc.php", $content);
     }
 
     /**
@@ -79,7 +80,7 @@ class ExecFileBuilder {
      * @param string $root
      */
     public static function buildCacheFile(string $type, string $host, int $port, string $user, string $pass, string $root) {
-        $coreCache = CoreCache::getInstance(CoreCache::SECTION_CONFIGS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS);
 
         if (empty($type) || !ExecUtils::inArray($type, CoreCache::getCacheList())) {
             $type = $coreCache->getTransactionType();
@@ -98,28 +99,28 @@ class ExecFileBuilder {
         }
 
         $content = "<?php \n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "// Cache settings\n"
-        . "//\n"
-        . "// Transaction type to use (php | ftp | sftp | socket)\n"
-        . "$" . "inc['type'] = \"" . $type . "\";\n"
-        . "//\n"
-        . "// Host address\n"
-        . "$" . "inc['host'] = \"" . $host . "\";\n"
-        . "//\n"
-        . "// Listening port number\n"
-        . "$" . "inc['port'] = " . $port . ";\n"
-        . "//\n"
-        . "// Username FTP\n"
-        . "$" . "inc['user'] = \"" . $user . "\";\n"
-        . "//\n"
-        . "// Password\n"
-        . "$" . "inc['pass'] = \"" . $pass . "\";\n"
-        . "//\n"
-        . "// Root Path\n"
-        . "$" . "inc['root'] = \"" . $root . "\";\n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "?>\n";
+                . "// -------------------------------------------------------------------------//\n"
+                . "// Cache settings\n"
+                . "//\n"
+                . "// Transaction type to use (php | ftp | sftp | socket)\n"
+                . "$" . "inc['type'] = \"" . $type . "\";\n"
+                . "//\n"
+                . "// Host address\n"
+                . "$" . "inc['host'] = \"" . $host . "\";\n"
+                . "//\n"
+                . "// Listening port number\n"
+                . "$" . "inc['port'] = " . $port . ";\n"
+                . "//\n"
+                . "// Username FTP\n"
+                . "$" . "inc['user'] = \"" . $user . "\";\n"
+                . "//\n"
+                . "// Password\n"
+                . "$" . "inc['pass'] = \"" . $pass . "\";\n"
+                . "//\n"
+                . "// Root Path\n"
+                . "$" . "inc['root'] = \"" . $root . "\";\n"
+                . "// -------------------------------------------------------------------------//\n"
+                . "?>\n";
 
         $coreCache->writeCache("cache.inc.php", $content);
     }
@@ -152,31 +153,30 @@ class ExecFileBuilder {
         }
 
         $content = "<?php \n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "// Database settings\n"
-        . "//\n"
-        . "// Transaction type to use (mysql / mysqli / pdo)\n"
-        . "$" . "inc['type'] = \"" . $type . "\";\n"
-        . "//\n"
-        . "// Host address of the base or the complete chain of DSN (Data Source Name)\n"
-        . "// Example for PDO DSN : mysql:host=127.0.0.1\n"
-        . "$" . "inc['host'] = \"" . $host . "\";\n"
-        . "//\n"
-        . "// Username\n"
-        . "$" . "inc['user'] = \"" . $user . "\";\n"
-        . "//\n"
-        . "// Password\n"
-        . "$" . "inc['pass'] = \"" . $pass . "\";\n"
-        . "//\n"
-        . "// Database name\n"
-        . "$" . "inc['name'] = \"" . $name . "\";\n"
-        . "//\n"
-        . "// Table prefix\n"
-        . "$" . "inc['prefix'] = \"" . $prefix . "\";\n"
-        . "// -------------------------------------------------------------------------//\n"
-        . "?>\n";
+                . "// -------------------------------------------------------------------------//\n"
+                . "// Database settings\n"
+                . "//\n"
+                . "// Transaction type to use (mysql / mysqli / pdo)\n"
+                . "$" . "inc['type'] = \"" . $type . "\";\n"
+                . "//\n"
+                . "// Host address of the base or the complete chain of DSN (Data Source Name)\n"
+                . "// Example for PDO DSN : mysql:host=127.0.0.1\n"
+                . "$" . "inc['host'] = \"" . $host . "\";\n"
+                . "//\n"
+                . "// Username\n"
+                . "$" . "inc['user'] = \"" . $user . "\";\n"
+                . "//\n"
+                . "// Password\n"
+                . "$" . "inc['pass'] = \"" . $pass . "\";\n"
+                . "//\n"
+                . "// Database name\n"
+                . "$" . "inc['name'] = \"" . $name . "\";\n"
+                . "//\n"
+                . "// Table prefix\n"
+                . "$" . "inc['prefix'] = \"" . $prefix . "\";\n"
+                . "// -------------------------------------------------------------------------//\n"
+                . "?>\n";
 
-        CoreCache::getInstance(CoreCache::SECTION_CONFIGS)->writeCache("database.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::SECTION_CONFIGS)->writeCache("database.inc.php", $content);
     }
-
 }

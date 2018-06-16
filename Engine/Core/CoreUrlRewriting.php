@@ -39,21 +39,21 @@ class CoreUrlRewriting {
      *
      * @return CoreUrlRewriting
      */
-    public static function &getInstance() {
+    public static function &getInstance(): CoreUrlRewriting {
         if (self::$coreUrlRewriting === null) {
             self::$coreUrlRewriting = new CoreUrlRewriting();
         }
         return self::$coreUrlRewriting;
     }
 
-    public function &rewriteLink($link) {
+    public function &rewriteLink(string $link): string {
         if ($this->canUse) {
 
         }
         return $link;
     }
 
-    public function &rewriteBuffer($buffer) {
+    public function &rewriteBuffer(string $buffer): string {
         if ($this->canUse) {
 
         }
@@ -67,7 +67,7 @@ class CoreUrlRewriting {
      * @param bool $layout true ajouter le layout.
      * @return string
      */
-    public static function &getLink($link, $layout = false) {
+    public static function &getLink(string $link, bool $layout = false): string {
         if ($link[0] !== "#") {
             // Configuration du layout
             if ($layout) {
@@ -102,7 +102,7 @@ class CoreUrlRewriting {
      *
      * @return bool
      */
-    private function &testPassed() {
+    private function &testPassed(): bool {
         $rslt = false;
         // TODO vérifie si fichier tmp de test est OK
         // si pas OK et pas de fichier tmp pour signaler la désactivation
@@ -110,5 +110,4 @@ class CoreUrlRewriting {
         // si déjà fichier tmp de décastivation ajouter erreur dans CoreLogger
         return $rslt;
     }
-
 }

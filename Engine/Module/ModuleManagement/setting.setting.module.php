@@ -1,4 +1,5 @@
 <?php
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 use TREngine\Engine\Core\CoreCache;
@@ -32,7 +33,7 @@ class Module_Management_Setting extends ModuleModel {
      * Supprime le cache
      */
     private function deleteCache() {
-        CoreCache::getInstance(CoreCache::SECTION_TMP)->removeCache("configs.php");
+        CoreCache::getInstance(CoreCacheSection::SECTION_TMP)->removeCache("configs.php");
     }
 
     /**
@@ -43,7 +44,7 @@ class Module_Management_Setting extends ModuleModel {
      */
     private function updateTable($key, $value) {
         CoreSql::getInstance()->update(
-        CoreTable::CONFIG_TABLE, array(
+                CoreTable::CONFIG_TABLE, array(
             "value" => $value), array(
             "name = '" . $key . "'")
         );
@@ -445,7 +446,5 @@ class Module_Management_Setting extends ModuleModel {
             CoreHtml::getInstance()->redirect("index.php?module=management&manage=setting&selectedTab=settingtabidTab1", 1);
         }
     }
-
 }
-
 ?>

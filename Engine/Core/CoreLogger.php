@@ -18,21 +18,21 @@ class CoreLogger {
      *
      * @var string
      */
-    const TYPE_ALERT = "alert";
+    private const TYPE_ALERT = "alert";
 
     /**
      * Message d'avertissement ou note d'information demandant une action.
      *
      * @var string
      */
-    const TYPE_NOTE = "note";
+    private const TYPE_NOTE = "note";
 
     /**
      * Message d'information sans action attendue.
      *
      * @var string
      */
-    const TYPE_INFO = "info";
+    private const TYPE_INFO = "info";
 
     /**
      * Exceptions destinées au développeur.
@@ -193,7 +193,7 @@ class CoreLogger {
         if (CoreLoader::isCallable("CoreCache")) {
             if (self::hasExceptions()) {
                 // Ecriture à la suite du rapport
-                CoreCache::getInstance(CoreCache::SECTION_LOGGER)->writeCache("exception_" . date('Y-m-d') . ".log.php", self::serializeData(self::$exceptions), false);
+                CoreCache::getInstance(CoreCacheSection::SECTION_LOGGER)->writeCache("exception_" . date('Y-m-d') . ".log.php", self::serializeData(self::$exceptions), false);
             }
         }
     }
@@ -240,5 +240,4 @@ class CoreLogger {
         }
         return $content;
     }
-
 }
