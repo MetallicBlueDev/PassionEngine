@@ -80,7 +80,7 @@ class CoreLogger {
      *
      * @param string $msg
      */
-    public static function addErrorMessage(string $msg) {
+    public static function addError(string $msg) {
         self::addMessage($msg, self::TYPE_ALERT);
     }
 
@@ -89,7 +89,7 @@ class CoreLogger {
      *
      * @param string $msg
      */
-    public static function addWarningMessage(string $msg) {
+    public static function addWarning(string $msg) {
         self::addMessage($msg, self::TYPE_INFO);
     }
 
@@ -98,7 +98,7 @@ class CoreLogger {
      *
      * @param string $msg
      */
-    public static function addInformationMessage(string $msg) {
+    public static function addInfo(string $msg) {
         self::addMessage($msg, self::TYPE_NOTE);
     }
 

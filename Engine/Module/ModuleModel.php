@@ -32,7 +32,7 @@ abstract class ModuleModel {
      * Fonction d'affichage par défaut.
      */
     public function display() {
-        CoreLogger::addErrorMessage(ERROR_MODULE_IMPLEMENT . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
+        CoreLogger::addError(ERROR_MODULE_IMPLEMENT . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
     }
 
     /**

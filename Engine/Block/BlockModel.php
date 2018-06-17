@@ -27,7 +27,7 @@ abstract class BlockModel {
      * Affichage par défaut.
      */
     public function display() {
-        CoreLogger::addErrorMessage(ERROR_BLOCK_IMPLEMENT . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
+        CoreLogger::addError(ERROR_BLOCK_IMPLEMENT . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
     }
 
     /**

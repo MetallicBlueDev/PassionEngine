@@ -95,7 +95,7 @@ class LibModule {
             if (!$infoModule->isValid() && $moduleName !== $defaultModuleName) {
                 // Afficher une erreur 404
                 if (!empty($moduleName) || !empty($page)) {
-                    CoreLogger::addInformationMessage(ERROR_404);
+                    CoreLogger::addInfo(ERROR_404);
                 }
 
                 // Utilisation du module par défaut
@@ -235,7 +235,7 @@ class LibModule {
                 $this->get($moduleInfo);
             }
         } else {
-            CoreLogger::addErrorMessage(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleInfo));
+            CoreLogger::addError(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleInfo));
         }
     }
 
@@ -291,7 +291,7 @@ class LibModule {
                 CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
             }
         } else {
-            CoreLogger::addErrorMessage(ERROR_MODULE_CODE . " (" . $moduleInfo->getName() . ")");
+            CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleInfo->getName() . ")");
         }
     }
 

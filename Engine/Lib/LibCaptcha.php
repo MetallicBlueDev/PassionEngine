@@ -134,7 +134,7 @@ class LibCaptcha {
         }
 
         if (!$rslt) {
-            CoreLogger::addWarningMessage(CAPTCHA_INVALID);
+            CoreLogger::addWarning(CAPTCHA_INVALID);
         }
         return $rslt;
     }
@@ -186,7 +186,7 @@ class LibCaptcha {
             $rslt = true;
         } else {
             // TODO A VERIFIER
-            CoreLogger::addWarningMessage(CAPTCHA_INVALID);
+            CoreLogger::addWarning(CAPTCHA_INVALID);
         }
         return $rslt;
     }

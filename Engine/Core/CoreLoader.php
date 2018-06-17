@@ -412,10 +412,10 @@ class CoreLoader {
         } else {
             switch ($fileType) {
                 case self::TYPE_BLOCK:
-                    CoreLogger::addErrorMessage(ERROR_BLOCK_NO_FILE);
+                    CoreLogger::addError(ERROR_BLOCK_NO_FILE);
                     break;
                 case self::TYPE_MODULE:
-                    CoreLogger::addErrorMessage(ERROR_MODULE_NO_FILE);
+                    CoreLogger::addError(ERROR_MODULE_NO_FILE);
                     break;
                 case self::TYPE_TRANSLATE:
                     // Aucune traduction disponible

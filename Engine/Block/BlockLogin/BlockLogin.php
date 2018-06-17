@@ -102,7 +102,7 @@ class BlockLogin extends BlockModel {
     private function &render() {
         $content = "";
 
-        if (CoreSession::hasConnection()) {
+        if (CoreSession::connected()) {
             $userInfos = CoreSession::getInstance()->getUserInfos();
 
             if ($this->displayText) {

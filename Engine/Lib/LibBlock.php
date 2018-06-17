@@ -497,7 +497,7 @@ class LibBlock {
                 CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
             }
         } else {
-            CoreLogger::addErrorMessage(ERROR_BLOCK_CODE . " (" . $blockInfo->getType() . ")");
+            CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockInfo->getType() . ")");
         }
     }
 
