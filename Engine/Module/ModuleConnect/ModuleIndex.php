@@ -21,14 +21,14 @@ use TREngine\Engine\Exec\ExecMailer;
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 /**
- * Module d'interface et de traitement entre le site et le client
+ * Module d'identification.
  *
  * @author Sébastien Villemain
  */
 class ModuleIndex extends ModuleModel {
 
     public function display() {
-        if (CoreSession::hasConnection()) {
+        if (CoreSession::connected()) {
             $this->account();
         } else {
             $this->logon();
@@ -36,7 +36,7 @@ class ModuleIndex extends ModuleModel {
     }
 
     public function account() {
-        if (CoreSession::hasConnection()) {
+        if (CoreSession::connected()) {
             // Ajout des formulaires dans les onglets
             $accountTabs = new LibTabs("accounttabs");
             $accountTabs->addTab(ACCOUNT_PROFILE, $this->tabProfile());
@@ -52,7 +52,7 @@ class ModuleIndex extends ModuleModel {
         }
     }
 
-    private function tabProfile() {
+    private function tabProfile(): string {
         $form = new LibForm("account-profile");
         $form->setTitle(ACCOUNT_PROFILE_TITLE);
         $form->setDescription(ACCOUNT_PROFILE_DESCRIPTION);
@@ -83,13 +83,13 @@ class ModuleIndex extends ModuleModel {
             $coreSession = CoreSession::getInstance();
 
             $coreSql->update(
-            CoreTable::USERS, $values, array(
+                    CoreTable::USERS, $values, array(
                 "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
                 $coreSession->refreshSession();
-                CoreLogger::addInformationMessage(DATA_SAVED);
+                CoreLogger::addInfo(DATA_SAVED);
             }
         }
         if (CoreMain::getInstance()->isDefaultLayout()) {
@@ -97,7 +97,7 @@ class ModuleIndex extends ModuleModel {
         }
     }
 
-    private function tabAccount() {
+    private function tabAccount(): string {
         $userInfos = CoreSession::getInstance()->getUserInfos();
 
         $form = new LibForm("account-accountprivate");
@@ -166,14 +166,14 @@ class ModuleIndex extends ModuleModel {
                     $name = ExecString::secureText($name);
 
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS, array(
+                            CoreTable::USERS, array(
                         "user_id"), array(
                         "name = '" . $name . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() > 0) {
                         $validName = false;
-                        CoreLogger::addWarningMessage(ACCOUNT_PRIVATE_LOGIN_IS_ALLOWED);
+                        CoreLogger::addWarning(ACCOUNT_PRIVATE_LOGIN_IS_ALLOWED);
                     }
                 }
                 if ($validName) {
@@ -187,7 +187,7 @@ class ModuleIndex extends ModuleModel {
                                     $this->errorBox();
                                 }
                             } else {
-                                CoreLogger::addWarningMessage(ACCOUNT_PRIVATE_PASSWORD_INVALID_CONFIRME);
+                                CoreLogger::addWarning(ACCOUNT_PRIVATE_PASSWORD_INVALID_CONFIRME);
                             }
                         }
                         $values['name'] = $name;
@@ -195,16 +195,16 @@ class ModuleIndex extends ModuleModel {
                         $values['langue'] = $langue;
                         $values['template'] = $template;
                         CoreSql::getInstance()->update(
-                        CoreTable::USERS, $values, array(
+                                CoreTable::USERS, $values, array(
                             "user_id = '" . $userInfos->getId() . "'")
                         );
 
                         if (CoreSql::getInstance()->affectedRows() > 0) {
                             CoreSession::getInstance()->refreshSession();
-                            CoreLogger::addInformationMessage(DATA_SAVED);
+                            CoreLogger::addInfo(DATA_SAVED);
                         }
                     } else {
-                        CoreLogger::addWarningMessage(INVALID_MAIL);
+                        CoreLogger::addWarning(INVALID_MAIL);
                     }
                 }
             } else {
@@ -216,7 +216,7 @@ class ModuleIndex extends ModuleModel {
         }
     }
 
-    private function tabAvatar() {
+    private function tabAvatar(): string {
         $form = new LibForm("account-avatar");
         $form->setTitle(ACCOUNT_AVATAR_TITLE);
         $form->setDescription(ACCOUNT_AVATAR_DESCRIPTION);
@@ -228,7 +228,7 @@ class ModuleIndex extends ModuleModel {
         return $form->render();
     }
 
-    private function tabAdmin() {
+    private function tabAdmin(): string {
         $userInfos = CoreSession::getInstance()->getUserInfos();
 
         $form = new LibForm("account-admin");
@@ -283,12 +283,12 @@ class ModuleIndex extends ModuleModel {
      * Formulaire de connexion
      */
     public function logon() {
-        if (!CoreSession::hasConnection()) {
+        if (!CoreSession::connected()) {
             $login = CoreRequest::getString("login", "", "POST");
             $password = CoreRequest::getString("password", "", "POST");
 
             if (!empty($login) || !empty($password)) {
-                if (CoreSession::startConnection($login, $password)) {
+                if (CoreSession::openSession($login, $password)) {
                     // Redirection de la page
                     $url = "";
                     $referer = base64_decode(urldecode(CoreRequest::getString("referer", "", "POST")));
@@ -320,7 +320,7 @@ class ModuleIndex extends ModuleModel {
                     $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                 }
                 $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin", LINK_TO_FORGET_LOGIN) . "</li>"
-                . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass", LINK_TO_FORGET_PASS) . "</li></ul>";
+                        . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass", LINK_TO_FORGET_PASS) . "</li></ul>";
 
                 $form->addHtmlInFieldset($moreLink);
 
@@ -337,7 +337,7 @@ class ModuleIndex extends ModuleModel {
      */
     private function errorBox() {
         foreach (CoreSession::getErrorMessage() as $errorMessage) {
-            CoreLogger::addWarningMessage($errorMessage);
+            CoreLogger::addWarning($errorMessage);
         }
     }
 
@@ -345,7 +345,7 @@ class ModuleIndex extends ModuleModel {
      * Déconnexion du client
      */
     public function logout() {
-        CoreSession::stopConnection();
+        CoreSession::closeSession();
         CoreHtml::getInstance()->redirect();
     }
 
@@ -353,7 +353,7 @@ class ModuleIndex extends ModuleModel {
      * Formulaire d'identifiant oublié
      */
     public function forgetlogin() {
-        if (!CoreSession::hasConnection()) {
+        if (!CoreSession::connected()) {
             $login = "";
             $ok = false;
             $mail = CoreRequest::getString("mail", "", "POST");
@@ -361,7 +361,7 @@ class ModuleIndex extends ModuleModel {
             if (!empty($mail)) {
                 if (ExecMailer::isValidMail($mail)) {
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS, array(
+                            CoreTable::USERS, array(
                         "name"), array(
                         "mail = '" . $mail . "'")
                     );
@@ -371,15 +371,15 @@ class ModuleIndex extends ModuleModel {
                         $ok = ExecMailer::sendMail(); // TODO envoyer un mail
                     }
                     if (!$ok) {
-                        CoreLogger::addWarningMessage(FORGET_LOGIN_INVALID_MAIL_ACCOUNT);
+                        CoreLogger::addWarning(FORGET_LOGIN_INVALID_MAIL_ACCOUNT);
                     }
                 } else {
-                    CoreLogger::addWarningMessage(INVALID_MAIL);
+                    CoreLogger::addWarning(INVALID_MAIL);
                 }
             }
 
             if ($ok) {
-                CoreLogger::addInformationMessage(FORGET_LOGIN_IS_SUBMIT_TO . " " . $mail);
+                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . " " . $mail);
             } else {
                 if (CoreMain::getInstance()->isDefaultLayout() || empty($mail)) {
                     $form = new LibForm("login-forgetlogin");
@@ -396,7 +396,7 @@ class ModuleIndex extends ModuleModel {
                         $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
                     $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon", LINK_TO_LOGON) . "</li>"
-                    . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass", LINK_TO_FORGET_PASS) . "</li></ul>";
+                            . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass", LINK_TO_FORGET_PASS) . "</li></ul>";
 
                     $form->addHtmlInFieldset($moreLink);
 
@@ -413,7 +413,7 @@ class ModuleIndex extends ModuleModel {
      * Formulaire de mot de passe oublié
      */
     public function forgetpass() {
-        if (!CoreSession::hasConnection()) {
+        if (!CoreSession::connected()) {
             $ok = false;
             $mail = "";
             $login = CoreRequest::getString("login", "", "POST");
@@ -421,7 +421,7 @@ class ModuleIndex extends ModuleModel {
             if (!empty($login)) {
                 if (CoreSession::validLogin($login)) {
                     CoreSql::getInstance()->select(
-                    CoreTable::USERS, array(
+                            CoreTable::USERS, array(
                         "name, mail"), array(
                         "name = '" . $login . "'")
                     );
@@ -434,7 +434,7 @@ class ModuleIndex extends ModuleModel {
                         }
                     }
                     if (!$ok) {
-                        CoreLogger::addWarningMessage(FORGET_PASSWORD_INVALID_LOGIN_ACCOUNT);
+                        CoreLogger::addWarning(FORGET_PASSWORD_INVALID_LOGIN_ACCOUNT);
                     }
                 } else {
                     $this->errorBox();
@@ -442,7 +442,7 @@ class ModuleIndex extends ModuleModel {
             }
 
             if ($ok) {
-                CoreLogger::addInformationMessage(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $mail);
+                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $mail);
             } else {
                 if (CoreMain::getInstance()->isDefaultLayout() || empty($login)) {
                     $form = new LibForm("login-forgetpass");
@@ -459,7 +459,7 @@ class ModuleIndex extends ModuleModel {
                         $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
                     $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon", LINK_TO_LOGON) . "</li>"
-                    . "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin", LINK_TO_FORGET_LOGIN) . "</li></ul>";
+                            . "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin", LINK_TO_FORGET_LOGIN) . "</li></ul>";
 
                     $form->addHtmlInFieldset($moreLink);
 
@@ -475,5 +475,4 @@ class ModuleIndex extends ModuleModel {
     public function registration() {
 
     }
-
 }
