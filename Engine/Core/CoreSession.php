@@ -133,7 +133,7 @@ class CoreSession {
             // Lanceur de session
             if (!self::$coreSession->searchSession()) {
                 // La session est potentiellement corrompue
-                self::stopConnection();
+                self::closeSession();
 
                 // Nouvelle instance vierge
                 self::$coreSession = new CoreSession();
@@ -148,11 +148,11 @@ class CoreSession {
      * @param string $userPass Mot de passe du compte
      * @return bool true succès
      */
-    public static function &startConnection(string $userName, string $userPass): bool {
+    public static function &openSession(string $userName, string $userPass): bool {
         $rslt = false;
 
         // Arrête de la session courante si besoin
-        self::stopConnection();
+        self::closeSession();
 
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
@@ -171,7 +171,7 @@ class CoreSession {
                 $rslt = $newSession->createSession();
 
                 if (!$rslt) {
-                    self::stopConnection();
+                    self::closeSession();
                 }
             } else {
                 self::$errorMessage['login'] = ERROR_LOGIN_OR_PASSWORD_INVALID;
@@ -185,15 +185,15 @@ class CoreSession {
      *
      * @return bool
      */
-    public static function hasConnection(): bool {
+    public static function connected(): bool {
         return (self::$coreSession !== null && self::$coreSession->userLogged());
     }
 
     /**
      * Coupe proprement une session ouverte.
      */
-    public static function stopConnection() {
-        if (self::hasConnection()) {
+    public static function closeSession() {
+        if (self::connected()) {
             self::$coreSession->destroySession();
         }
 
@@ -637,7 +637,7 @@ class CoreSession {
             CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php", $this->serializeSession());
             $rslt = true;
         } else {
-            CoreLogger::addWarningMessage(ERROR_SESSION_COOKIE);
+            CoreLogger::addWarning(ERROR_SESSION_COOKIE);
         }
         return $rslt;
     }
