@@ -100,6 +100,25 @@ class CoreRequest {
     }
 
     /**
+     * Retourne la chaîne de requête utilisée pour accéder à la page.
+     *
+     * @return string
+     */
+    public static function &getQueryString(): string {
+        return self::getString("QUERY_STRING", "", CoreRequestType::SERVER);
+    }
+
+    /**
+     * Retourne le lien référent.
+     * 
+     * @return string
+     */
+    public static function getRefererQueryString(): string {
+        $queryString = self::getQueryString();
+        return !empty($queryString) ? urlencode(base64_encode($queryString)) : "";
+    }
+
+    /**
      * Récupère, analyse et vérifie une variable URL.
      *
      * @param string $name Nom de la variable

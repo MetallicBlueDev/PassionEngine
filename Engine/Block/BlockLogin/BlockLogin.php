@@ -160,7 +160,7 @@ class BlockLogin extends BlockModel {
         $form = new LibForm("login-logonblock");
         $form->addInputText("login", LOGIN, "", "maxlength=\"180\"");
         $form->addInputPassword("password", PASSWORD, "maxlength=\"180\"");
-        $form->addInputHidden("referer", urlencode(base64_encode(CoreRequest::getString("QUERY_STRING", "", CoreRequestType::SERVER))));
+        $form->addInputHidden("referer", CoreRequest::getRefererQueryString());
         $form->addInputHidden("module", "connect");
         $form->addInputHidden("view", "logon");
         $form->addInputHidden("layout", "module");
