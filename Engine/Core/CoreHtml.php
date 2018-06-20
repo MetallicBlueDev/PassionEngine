@@ -100,7 +100,7 @@ class CoreHtml {
 
         // Composition du nom du cookie de test
         $this->cookieTestName = ExecCrypt::cryptByStandard(
-        $prefix . "_" . $this->cookieTestName, self::getSalt()
+                        $prefix . "_" . $this->cookieTestName, self::getSalt()
         );
 
         // Vérification du javascript du client
@@ -249,7 +249,7 @@ class CoreHtml {
             }
         } else {
             // Titre en mode dégradé
-            $title .= CoreRequest::getString("SERVER_NAME", "", "SERVER");
+            $title .= CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
 
             if (!empty($this->title)) {
                 $title .= " - " . $this->title;
@@ -266,13 +266,13 @@ class CoreHtml {
     public function getMetaHeaders(): string {
         // TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-        . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
-        . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
-        . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-        . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-        . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDir() . "/favicon.ico\" />\n"
-        . $this->getMetaIncludeJavascript()
-        . $this->getMetaIncludeCss();
+                . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
+                . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
+                . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
+                . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
+                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDir() . "/favicon.ico\" />\n"
+                . $this->getMetaIncludeJavascript()
+                . $this->getMetaIncludeCss();
     }
 
     /**
@@ -386,7 +386,7 @@ class CoreHtml {
 
         // Redirection
         if ($this->javascriptEnabled() && ($tps > 0 || $method !== "windows")) {
-            if (CoreRequest::getString("REQUEST_METHOD", "", "SERVER") === "POST" && $method !== "window") {
+            if (CoreRequest::getRequestMethod() === CoreRequestType::POST && $method !== "window") {
                 // Commande ajax pour la redirection
                 $this->addJavascriptCode("setTimeout(function(){ $('" . $method . "').load('" . $url . "'); }, $tps);");
             } else {
@@ -491,7 +491,7 @@ class CoreHtml {
         $keywords = (strlen($keywords) > 500) ? substr($keywords, 0, 500) : $keywords;
 
         return "<meta name=\"description\" content=\"" . ExecString::textDisplay($this->description) . "\" />\n"
-        . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
+                . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
     }
 
     /**
@@ -501,7 +501,7 @@ class CoreHtml {
      * @return string
      */
     private function &getMetaIncludeJavascript(bool $forceIncludes = false): string {
-        if (CoreRequest::getRequestMethod() !== "POST" || $forceIncludes) {
+        if (CoreRequest::getRequestMethod() !== CoreRequestType::POST || $forceIncludes) {
             $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->isDefaultLayout() : true;
 
             if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
@@ -594,5 +594,4 @@ class CoreHtml {
         $script .= "</script>\n";
         return $script;
     }
-
 }

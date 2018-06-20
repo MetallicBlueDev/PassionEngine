@@ -18,10 +18,7 @@ class ExecUrl {
      * @return string
      */
     public static function &cleanUrl(string $url): string {
-        if (substr($url, 0, 7) == "http://") {
-            $url = substr($url, 7, strlen($url));
-        }
+        $url = preg_replace("/https*:\/\//i", "", $url);
         return $url;
     }
-
 }

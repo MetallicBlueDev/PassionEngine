@@ -96,7 +96,7 @@ class CoreRequest {
      * @return string
      */
     public static function &getRequestMethod(): string {
-        return self::getString("REQUEST_METHOD", "", "SERVER");
+        return self::getString("REQUEST_METHOD", "", CoreRequestType::SERVER);
     }
 
     /**
@@ -138,22 +138,22 @@ class CoreRequest {
         $input = array();
 
         switch ($hash) {
-            case 'GET':
+            case CoreRequestType::GET:
                 $input = self::getGlobalGet();
                 break;
-            case 'POST':
+            case CoreRequestType::POST:
                 $input = self::getGlobalPost();
                 break;
-            case 'FILES':
+            case CoreRequestType::FILES:
                 $input = self::getGlobalFiles();
                 break;
-            case 'COOKIE':
+            case CoreRequestType::COOKIE:
                 $input = self::getGlobalCookie();
                 break;
-            case 'ENV':
+            case CoreRequestType::ENV:
                 $input = self::getGlobalEnv();
                 break;
-            case 'SERVER':
+            case CoreRequestType::SERVER:
                 $input = self::getGlobalServer();
                 break;
             default:
@@ -307,7 +307,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalGet(): array {
-        $globalVars = ${"_" . "GET"};
+        $globalVars = ${"_" . CoreRequestType::GET};
         return $globalVars;
     }
 
@@ -317,7 +317,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalPost(): array {
-        $globalVars = ${"_" . "POST"};
+        $globalVars = ${"_" . CoreRequestType::POST};
         return $globalVars;
     }
 
@@ -327,7 +327,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalFiles(): array {
-        $globalVars = ${"_" . "FILES"};
+        $globalVars = ${"_" . CoreRequestType::FILES};
         return $globalVars;
     }
 
@@ -337,7 +337,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalCookie(): array {
-        $globalVars = ${"_" . "COOKIE"};
+        $globalVars = ${"_" . CoreRequestType::COOKIE};
         return $globalVars;
     }
 
@@ -347,7 +347,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalEnv(): array {
-        $globalVars = ${"_" . "ENV"};
+        $globalVars = ${"_" . CoreRequestType::ENV};
         return $globalVars;
     }
 
@@ -357,8 +357,7 @@ class CoreRequest {
      * @return array
      */
     private static function &getGlobalServer(): array {
-        $globalVars = ${"_" . "SERVER"};
+        $globalVars = ${"_" . CoreRequestType::SERVER};
         return $globalVars;
     }
-
 }

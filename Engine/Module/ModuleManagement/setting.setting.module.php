@@ -3,11 +3,13 @@
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 
 class Module_Management_Setting extends ModuleModel {
 
     public function setting() {
-        $localView = CoreRequest::getWord("localView", "", "POST");
+        $localView = CoreRequest::getWord("localView", "", CoreRequestType::POST);
 
         switch ($localView) {
             case "sendGeneral":
@@ -136,20 +138,20 @@ class Module_Management_Setting extends ModuleModel {
         $coreMain = CoreMain::getInstance();
 
         // état du site
-        $defaultSiteStatut = CoreRequest::getWord("defaultSiteStatut", "", "POST");
+        $defaultSiteStatut = CoreRequest::getWord("defaultSiteStatut", "", CoreRequestType::POST);
         if ($coreMain->getDefaultSiteStatut() != $defaultSiteStatut) {
             $defaultSiteStatut = ($defaultSiteStatut == "close") ? "close" : "open";
             $this->updateTable("defaultSiteStatut", $defaultSiteStatut);
             $deleteCache = true;
         }
         // Raison de femeture
-        $defaultSiteCloseReason = CoreRequest::getString("defaultSiteCloseReason", "", "POST");
+        $defaultSiteCloseReason = CoreRequest::getString("defaultSiteCloseReason", "", CoreRequestType::POST);
         if ($coreMain->getDefaultSiteCloseReason() != $defaultSiteCloseReason) {
             $this->updateTable("defaultSiteCloseReason", $defaultSiteCloseReason);
             $deleteCache = true;
         }
         // Nom du site
-        $defaultSiteName = CoreRequest::getString("defaultSiteName", "", "POST");
+        $defaultSiteName = CoreRequest::getString("defaultSiteName", "", CoreRequestType::POST);
         if ($coreMain->getDefaultSiteName() != $defaultSiteName) {
             if (!empty($defaultSiteName)) {
                 $this->updateTable("defaultSiteName", $defaultSiteName);
@@ -159,13 +161,13 @@ class Module_Management_Setting extends ModuleModel {
             }
         }
         // Slogan du site
-        $defaultSiteSlogan = CoreRequest::getString("defaultSiteSlogan", "", "POST");
+        $defaultSiteSlogan = CoreRequest::getString("defaultSiteSlogan", "", CoreRequestType::POST);
         if ($coreMain->getDefaultSiteSlogan() != $defaultSiteSlogan) {
             $this->updateTable("defaultSiteSlogan", $defaultSiteSlogan);
             $deleteCache = true;
         }
         // Email du site
-        $defaultAdministratorMail = CoreRequest::getString("defaultAdministratorMail", "", "POST");
+        $defaultAdministratorMail = CoreRequest::getString("defaultAdministratorMail", "", CoreRequestType::POST);
         if ($coreMain->getDefaultAdministratorMail() != $defaultAdministratorMail) {
             if (!empty($defaultAdministratorMail) && ExecMailer::validMail($defaultAdministratorMail)) {
                 $this->updateTable("defaultAdministratorMail", $defaultAdministratorMail);
@@ -175,7 +177,7 @@ class Module_Management_Setting extends ModuleModel {
             }
         }
         // Langue par défaut
-        $defaultLanguage = CoreRequest::getString("defaultLanguage", "", "POST");
+        $defaultLanguage = CoreRequest::getString("defaultLanguage", "", CoreRequestType::POST);
         if ($coreMain->getDefaultLanguage() != $defaultLanguage) {
             $langues = CoreTranslate::getLangList();
             if (!empty($defaultLanguage) && ExecUtils::inArray($defaultLanguage, $langues)) {
@@ -186,7 +188,7 @@ class Module_Management_Setting extends ModuleModel {
             }
         }
         // Template par défaut
-        $defaultTemplate = CoreRequest::getString("defaultTemplate", "", "POST");
+        $defaultTemplate = CoreRequest::getString("defaultTemplate", "", CoreRequestType::POST);
         if ($coreMain->getDefaultTemplate() != $defaultTemplate) {
             $templates = LibMakeStylegetTemplateListes();
             if (!empty($defaultTemplate) && ExecUtils::inArray($defaultTemplate, $templates)) {
@@ -197,7 +199,7 @@ class Module_Management_Setting extends ModuleModel {
             }
         }
         // Module par défaut
-        $defaultMod = CoreRequest::getString("defaultMod", "", "POST");
+        $defaultMod = CoreRequest::getString("defaultMod", "", CoreRequestType::POST);
         if ($coreMain->getDefaultMod() != $defaultMod) {
             if (!empty($defaultMod)) {
                 $this->updateTable("defaultMod", $defaultMod);
@@ -207,19 +209,19 @@ class Module_Management_Setting extends ModuleModel {
             }
         }
         // Description du site
-        $defaultDescription = CoreRequest::getString("defaultDescription", "", "POST");
+        $defaultDescription = CoreRequest::getString("defaultDescription", "", CoreRequestType::POST);
         if ($coreMain->getDefaultDescription() != $defaultDescription) {
             $this->updateTable("defaultDescription", $defaultDescription);
             $deleteCache = true;
         }
         // Mot clès du site
-        $defaultKeyWords = CoreRequest::getString("defaultKeyWords", "", "POST");
+        $defaultKeyWords = CoreRequest::getString("defaultKeyWords", "", CoreRequestType::POST);
         if ($coreMain->getDefaultKeyWords() != $defaultKeyWords) {
             $this->updateTable("defaultKeyWords", $defaultKeyWords);
             $deleteCache = true;
         }
         // état de la réécriture des URLs
-        $urlRewriting = CoreRequest::getBoolean("urlRewriting", "", "POST");
+        $urlRewriting = CoreRequest::getBoolean("urlRewriting", "", CoreRequestType::POST);
         if ($coreMain->doUrlRewriting() != $urlRewriting) {
             $urlRewriting = $urlRewriting ? 1 : 0;
             $this->updateTable("urlRewriting", $urlRewriting);
@@ -304,7 +306,7 @@ class Module_Management_Setting extends ModuleModel {
         $updateConfigFile = false;
         $coreMain = CoreMain::getInstance();
 
-        $sessionTimeLimit = CoreRequest::getInteger("sessionTimeLimit", 7, "POST");
+        $sessionTimeLimit = CoreRequest::getInteger("sessionTimeLimit", 7, CoreRequestType::POST);
         if ($sessionTimeLimit != $coreMain->getSessionTimeLimit()) {
             if ($sessionTimeLimit >= 1)
                 $updateConfigFile = true;
@@ -312,7 +314,7 @@ class Module_Management_Setting extends ModuleModel {
                 $sessionTimeLimit = $coreMain->getSessionTimeLimit();
         }
 
-        $cryptKey = CoreRequest::getString("cryptKey", $coreMain->getCryptKey(), "POST");
+        $cryptKey = CoreRequest::getString("cryptKey", $coreMain->getCryptKey(), CoreRequestType::POST);
         if ($cryptKey != $coreMain->getCryptKey()) {
             if (!empty($cryptKey))
                 $updateConfigFile = true;
@@ -320,7 +322,7 @@ class Module_Management_Setting extends ModuleModel {
                 $cryptKey = $coreMain->getCryptKey();
         }
 
-        $cookiePrefix = CoreRequest::getString("cookiePrefix", $coreMain->getCookiePrefix(), "POST");
+        $cookiePrefix = CoreRequest::getString("cookiePrefix", $coreMain->getCookiePrefix(), CoreRequestType::POST);
         if ($cookiePrefix != $coreMain->getCookiePrefix()) {
             if (!empty($cookiePrefix))
                 $updateConfigFile = true;
@@ -335,7 +337,7 @@ class Module_Management_Setting extends ModuleModel {
         $ftp = $coreMain->getConfigCache();
         $updateFtpFile = false;
 
-        $ftpType = CoreRequest::getWord("ftpType", $ftp['type'], "POST");
+        $ftpType = CoreRequest::getWord("ftpType", $ftp['type'], CoreRequestType::POST);
         if ($ftpType != $ftp['type']) {
             if (!empty($ftpType))
                 $updateFtpFile = true;
@@ -343,7 +345,7 @@ class Module_Management_Setting extends ModuleModel {
                 $ftpType = $ftp['type'];
         }
 
-        $ftpHost = CoreRequest::getString("ftpHost", $ftp['host'], "POST");
+        $ftpHost = CoreRequest::getString("ftpHost", $ftp['host'], CoreRequestType::POST);
         if ($ftpHost != $ftp['host']) {
             if (!empty($ftpHost))
                 $updateFtpFile = true;
@@ -351,7 +353,7 @@ class Module_Management_Setting extends ModuleModel {
                 $ftpHost = $ftp['host'];
         }
 
-        $ftpPort = CoreRequest::getInteger("ftpPort", 21, "POST");
+        $ftpPort = CoreRequest::getInteger("ftpPort", 21, CoreRequestType::POST);
         if ($ftpPort != $ftp['port']) {
             if (is_int($ftpPort))
                 $updateFtpFile = true;
@@ -359,7 +361,7 @@ class Module_Management_Setting extends ModuleModel {
                 $ftpPort = $ftp['port'];
         }
 
-        $ftpUser = CoreRequest::getString("ftpUser", $ftp['user'], "POST");
+        $ftpUser = CoreRequest::getString("ftpUser", $ftp['user'], CoreRequestType::POST);
         if ($ftpUser != $ftp['user']) {
             if (!empty($ftpUser))
                 $updateFtpFile = true;
@@ -367,7 +369,7 @@ class Module_Management_Setting extends ModuleModel {
                 $ftpUser = $ftp['user'];
         }
 
-        $ftpPass = CoreRequest::getString("ftpPass", $ftp['pass'], "POST");
+        $ftpPass = CoreRequest::getString("ftpPass", $ftp['pass'], CoreRequestType::POST);
         if ($ftpPass != $ftp['pass']) {
             if (!empty($ftpPass))
                 $updateFtpFile = true;
@@ -375,7 +377,7 @@ class Module_Management_Setting extends ModuleModel {
                 $ftpPass = $ftp['pass'];
         }
 
-        $ftpRoot = CoreRequest::getString("ftpRoot", $ftp['root'], "POST");
+        $ftpRoot = CoreRequest::getString("ftpRoot", $ftp['root'], CoreRequestType::POST);
         if ($ftpRoot != $ftp['root']) {
             if (!empty($ftpRoot))
                 $updateFtpFile = true;
@@ -390,7 +392,7 @@ class Module_Management_Setting extends ModuleModel {
         $coreSql = CoreSql::getInstance();
         $updateDatabaseFile = false;
 
-        $dbHost = CoreRequest::getString("dbHost", $coreSql->getTransactionHost(), "POST");
+        $dbHost = CoreRequest::getString("dbHost", $coreSql->getTransactionHost(), CoreRequestType::POST);
         if ($dbHost != $coreSql->getTransactionHost()) {
             if (!empty($dbHost))
                 $updateDatabaseFile = true;
@@ -398,7 +400,7 @@ class Module_Management_Setting extends ModuleModel {
                 $dbHost = $coreSql->getTransactionHost();
         }
 
-        $dbName = CoreRequest::getString("dbName", $coreSql->getDatabaseName(), "POST");
+        $dbName = CoreRequest::getString("dbName", $coreSql->getDatabaseName(), CoreRequestType::POST);
         if ($dbName != $coreSql->getDatabaseName()) {
             if (!empty($dbName))
                 $updateDatabaseFile = true;
@@ -406,7 +408,7 @@ class Module_Management_Setting extends ModuleModel {
                 $dbName = $coreSql->getDatabaseName();
         }
 
-        $dbPrefix = CoreRequest::getString("dbPrefix", $coreSql->getDatabasePrefix(), "POST");
+        $dbPrefix = CoreRequest::getString("dbPrefix", $coreSql->getDatabasePrefix(), CoreRequestType::POST);
         if ($dbPrefix != $coreSql->getDatabasePrefix()) {
             if (!empty($dbPrefix))
                 $updateDatabaseFile = true;
@@ -414,7 +416,7 @@ class Module_Management_Setting extends ModuleModel {
                 $dbPrefix = $coreSql->getDatabasePrefix();
         }
 
-        $dbUser = CoreRequest::getString("dbUser", $coreSql->getTransactionUser(), "POST");
+        $dbUser = CoreRequest::getString("dbUser", $coreSql->getTransactionUser(), CoreRequestType::POST);
         if ($dbUser != $coreSql->getTransactionUser()) {
             if (!empty($dbUser))
                 $updateDatabaseFile = true;
@@ -422,7 +424,7 @@ class Module_Management_Setting extends ModuleModel {
                 $dbUser = $coreSql->getTransactionUser();
         }
 
-        $dbPass = CoreRequest::getString("dbPass", $coreSql->getTransactionPass(), "POST");
+        $dbPass = CoreRequest::getString("dbPass", $coreSql->getTransactionPass(), CoreRequestType::POST);
         if ($dbPass != $coreSql->getTransactionPass()) {
             if (!empty($dbPass))
                 $updateDatabaseFile = true;
@@ -430,7 +432,7 @@ class Module_Management_Setting extends ModuleModel {
                 $dbPass = $coreSql->getTransactionPass();
         }
 
-        $dbType = CoreRequest::getWord("dbType", $coreSql->getTransactionType(), "POST");
+        $dbType = CoreRequest::getWord("dbType", $coreSql->getTransactionType(), CoreRequestType::POST);
         if ($dbType != $coreSql->getTransactionType()) {
             if (!empty($dbType))
                 $updateDatabaseFile = true;

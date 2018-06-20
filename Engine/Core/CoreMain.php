@@ -230,7 +230,7 @@ class CoreMain {
      */
     public function &getDefaultSiteName(): string {
         return $this->getDefaultConfigValue("defaultSiteName", function() {
-                    return CoreRequest::getString("SERVER_NAME", "", "SERVER");
+                    return CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
                 });
     }
 

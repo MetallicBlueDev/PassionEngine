@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Exec;
 
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
@@ -291,13 +292,13 @@ class ExecUserAgent {
      * @return string
      */
     public static function &getAddressIp(): string {
-        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP", "", "SERVER");
+        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP", "", CoreRequestType::SERVER);
 
         if (empty($currentIp)) {
-            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR", "", "SERVER");
+            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR", "", CoreRequestType::SERVER);
 
             if (empty($currentIp)) {
-                $currentIp = CoreRequest::getString("REMOTE_ADDR", "", "SERVER");
+                $currentIp = CoreRequest::getString("REMOTE_ADDR", "", CoreRequestType::SERVER);
             }
         }
         return $currentIp;
@@ -332,7 +333,7 @@ class ExecUserAgent {
      * @return string
      */
     public static function &getRawUserAgent(): string {
-        $currentUserAgent = CoreRequest::getString("HTTP_USER_AGENT", "", "SERVER");
+        $currentUserAgent = CoreRequest::getString("HTTP_USER_AGENT", "", CoreRequestType::SERVER);
         return $currentUserAgent;
     }
 
@@ -395,7 +396,7 @@ class ExecUserAgent {
      * @return string
      */
     public static function &getReferer(): string {
-        $currentReferer = htmlentities(CoreRequest::getString("HTTP_REFERER", "", "SERVER"), ENT_QUOTES);
+        $currentReferer = htmlentities(CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER), ENT_QUOTES);
         return $currentReferer;
     }
 }

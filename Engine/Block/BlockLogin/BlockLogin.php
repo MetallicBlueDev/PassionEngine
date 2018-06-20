@@ -8,6 +8,7 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Exec\ExecImage;
 use TREngine\Engine\Lib\LibForm;
@@ -95,7 +96,7 @@ class BlockLogin extends BlockModel {
         }
 
         if (CoreMain::getInstance()->isBlockLayout()) { // Si nous sommes dans un affichage type block
-            $this->localView = CoreRequest::getString("localView", "", "GET");
+            $this->localView = CoreRequest::getString("localView", "", CoreRequestType::GET);
         }
     }
 
@@ -159,7 +160,7 @@ class BlockLogin extends BlockModel {
         $form = new LibForm("login-logonblock");
         $form->addInputText("login", LOGIN, "", "maxlength=\"180\"");
         $form->addInputPassword("password", PASSWORD, "maxlength=\"180\"");
-        $form->addInputHidden("referer", urlencode(base64_encode(CoreRequest::getString("QUERY_STRING", "", "SERVER"))));
+        $form->addInputHidden("referer", urlencode(base64_encode(CoreRequest::getString("QUERY_STRING", "", CoreRequestType::SERVER))));
         $form->addInputHidden("module", "connect");
         $form->addInputHidden("view", "logon");
         $form->addInputHidden("layout", "module");

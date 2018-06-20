@@ -4,6 +4,7 @@ namespace TREngine\Custom\Module\ModuleCustomProject;
 
 use TREngine\Engine\Module\ModuleModel;
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreUrlRewriting;
@@ -50,7 +51,7 @@ class ModuleIndex extends ModuleModel {
 
     public function displayProject() {
         // Identifiant du projet
-        $projectId = CoreRequest::getInteger("projectId", -1, "GET");
+        $projectId = CoreRequest::getInteger("projectId", -1, CoreRequestType::GET);
 
         if ($projectId >= 0) {
             $values = array(
@@ -77,7 +78,7 @@ class ModuleIndex extends ModuleModel {
 
                 // Création de la page
                 $form = new LibForm(
-                "project_description", CoreUrlRewriting::getLink("?module=project&view=download&&projectId=" . $projectInfo['projectid'])
+                        "project_description", CoreUrlRewriting::getLink("?module=project&view=download&&projectId=" . $projectInfo['projectid'])
                 );
                 $form->setTitle($projectInfo['name']);
 
@@ -114,12 +115,11 @@ class ModuleIndex extends ModuleModel {
     }
 
     public function download() {
-//        $projectId = CoreRequest::getInteger("projectId", -1, "POST");
-//        $type = CoreRequest::getInteger("type", -1, "POST");
+//        $projectId = CoreRequest::getInteger("projectId", -1, CoreRequestType::POST);
+//        $type = CoreRequest::getInteger("type", -1, CoreRequestType::POST);
     }
 
     public function setting() {
         return "Pas de setting...";
     }
-
 }

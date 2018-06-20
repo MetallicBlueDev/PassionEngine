@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Exec;
 
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
@@ -16,18 +17,18 @@ class ExecCookie {
     /**
      * Création d'un cookie.
      *
-     * @param string $cookieName
-     * @param string $cookieContent
-     * @param int $cookieTimeLimit
+     * @param string $name
+     * @param string $content
+     * @param int $timeLimit
      * @return bool true succès
      */
-    public static function &createCookie(string $cookieName, string $cookieContent, int $cookieTimeLimit = 0): bool {
+    public static function &createCookie(string $name, string $content, int $timeLimit = 0): bool {
         $rslt = false;
 
-        if ($cookieTimeLimit >= 0) {
-            $cookieName = urlencode($cookieName);
-            $cookieContent = urlencode($cookieContent);
-            $rslt = setcookie($cookieName, $cookieContent, $cookieTimeLimit);
+        if ($timeLimit >= 0) {
+            $name = urlencode($name);
+            $content = urlencode($content);
+            $rslt = setcookie($name, $content, $timeLimit);
         }
         return $rslt;
     }
@@ -35,15 +36,15 @@ class ExecCookie {
     /**
      * Destruction d'un cookie.
      *
-     * @param string $cookieName
+     * @param string $name
      * @return bool true succès
      */
-    public static function &destroyCookie(string $cookieName): bool {
+    public static function &destroyCookie(string $name): bool {
         $rslt = true;
-        $cookieName = urlencode($cookieName);
+        $name = urlencode($name);
 
-        if (!empty(self::requestCookie($cookieName))) {
-            $rslt = setcookie($cookieName, "");
+        if (!empty(self::requestCookie($name))) {
+            $rslt = setcookie($name, "");
         }
         return $rslt;
     }
@@ -51,24 +52,23 @@ class ExecCookie {
     /**
      * Retourne le contenu du cookie.
      *
-     * @param string $cookieName
+     * @param string $name
      * @return string
      */
-    public static function &getCookie(string $cookieName): string {
-        $cookieName = urlencode($cookieName);
-        $cookieContent = self::requestCookie($cookieName);
-        $cookieContent = urldecode($cookieContent);
-        return $cookieContent;
+    public static function &getCookie(string $name): string {
+        $name = urlencode($name);
+        $content = self::requestCookie($name);
+        $content = urldecode($content);
+        return $content;
     }
 
     /**
      * Retourne le contenu brut du cookie.
      *
-     * @param string $cookieEncodeName
+     * @param string $encodeName
      * @return string
      */
-    private static function &requestCookie(string $cookieEncodeName): string {
-        return CoreRequest::getString($cookieEncodeName, "", "COOKIE");
+    private static function &requestCookie(string $encodeName): string {
+        return CoreRequest::getString($encodeName, "", CoreRequestType::COOKIE);
     }
-
 }

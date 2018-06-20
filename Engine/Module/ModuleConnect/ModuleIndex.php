@@ -6,6 +6,7 @@ use TREngine\Engine\Module\ModuleModel;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
@@ -68,8 +69,8 @@ class ModuleIndex extends ModuleModel {
 
     public function sendProfile() {
         $values = array();
-        $website = CoreRequest::getString("website", "", "POST");
-        $signature = CoreRequest::getString("signature", "", "POST");
+        $website = CoreRequest::getString("website", "", CoreRequestType::POST);
+        $signature = CoreRequest::getString("signature", "", CoreRequestType::POST);
 
         if (!empty($website)) {
             $values['website'] = ExecUrl::cleanUrl($website);
@@ -151,12 +152,12 @@ class ModuleIndex extends ModuleModel {
     public function sendAccount() {
         $userInfos = CoreSession::getInstance()->getUserInfos();
 
-        $name = CoreRequest::getWord("name", "", "POST");
-        $pass = CoreRequest::getString("pass", "", "POST");
-        $pass2 = CoreRequest::getString("pass2", "", "POST");
-        $mail = CoreRequest::getString("mail", "", "POST");
-        $langue = CoreRequest::getString("langue", "", "POST");
-        $template = CoreRequest::getString("template", "", "POST");
+        $name = CoreRequest::getWord("name", "", CoreRequestType::POST);
+        $pass = CoreRequest::getString("pass", "", CoreRequestType::POST);
+        $pass2 = CoreRequest::getString("pass2", "", CoreRequestType::POST);
+        $mail = CoreRequest::getString("mail", "", CoreRequestType::POST);
+        $langue = CoreRequest::getString("langue", "", CoreRequestType::POST);
+        $template = CoreRequest::getString("template", "", CoreRequestType::POST);
 
         if ($userInfos->getName() != $name || $userInfos->getMail() != $mail || $userInfos->getLangue() != $langue || $userInfos->getTemplate() != $template) {
             if (CoreSession::validLogin($name)) {
@@ -284,14 +285,14 @@ class ModuleIndex extends ModuleModel {
      */
     public function logon() {
         if (!CoreSession::connected()) {
-            $login = CoreRequest::getString("login", "", "POST");
-            $password = CoreRequest::getString("password", "", "POST");
+            $login = CoreRequest::getString("login", "", CoreRequestType::POST);
+            $password = CoreRequest::getString("password", "", CoreRequestType::POST);
 
             if (!empty($login) || !empty($password)) {
                 if (CoreSession::openSession($login, $password)) {
                     // Redirection de la page
                     $url = "";
-                    $referer = base64_decode(urldecode(CoreRequest::getString("referer", "", "POST")));
+                    $referer = base64_decode(urldecode(CoreRequest::getString("referer", "", CoreRequestType::POST)));
                     if (!empty($referer)) {
                         $url = $referer;
                     } else {
@@ -309,7 +310,7 @@ class ModuleIndex extends ModuleModel {
                 $form->setDescription(LOGIN_FORM_DESCRIPTION);
                 $form->addInputText("login", LOGIN, "", "maxlength=\"180\" value=\"" . $login . "\"");
                 $form->addInputPassword("password", PASSWORD, "maxlength=\"180\"");
-                $form->addInputHidden("referer", urlencode(base64_encode(CoreRequest::getString("QUERY_STRING", "", "SERVER"))));
+                $form->addInputHidden("referer", urlencode(base64_encode(CoreRequest::getString("QUERY_STRING", "", CoreRequestType::SERVER))));
                 $form->addInputHidden("module", "connect");
                 $form->addInputHidden("view", "logon");
                 $form->addInputHidden("layout", "module");
@@ -356,7 +357,7 @@ class ModuleIndex extends ModuleModel {
         if (!CoreSession::connected()) {
             $login = "";
             $ok = false;
-            $mail = CoreRequest::getString("mail", "", "POST");
+            $mail = CoreRequest::getString("mail", "", CoreRequestType::POST);
 
             if (!empty($mail)) {
                 if (ExecMailer::isValidMail($mail)) {
@@ -416,7 +417,7 @@ class ModuleIndex extends ModuleModel {
         if (!CoreSession::connected()) {
             $ok = false;
             $mail = "";
-            $login = CoreRequest::getString("login", "", "POST");
+            $login = CoreRequest::getString("login", "", CoreRequestType::POST);
 
             if (!empty($login)) {
                 if (CoreSession::validLogin($login)) {

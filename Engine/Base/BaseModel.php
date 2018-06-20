@@ -439,7 +439,7 @@ abstract class BaseModel extends CoreTransaction {
             $key = $this->addQuote($key);
         }
         // Converti les multiples espaces (tabulation, espace en trop) en espace simple
-        $key = preg_replace("/[\t ]+/", " ", $key);
+        $key = preg_replace("/[\s]+/", " ", $key);
         return $key;
     }
 
@@ -461,5 +461,4 @@ abstract class BaseModel extends CoreTransaction {
     protected function getTableName(string $table): string {
         return $this->getDatabasePrefix() . "_" . $table;
     }
-
 }

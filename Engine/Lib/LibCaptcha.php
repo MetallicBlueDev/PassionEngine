@@ -6,6 +6,7 @@ use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Exec\ExecCrypt;
 use TREngine\Engine\Exec\ExecCookie;
 
@@ -178,8 +179,8 @@ class LibCaptcha {
     private function &internalCheck(): bool {
         $rslt = false;
 
-        $code = CoreRequest::getString("cles", "", "POST");
-        $inputRobot = CoreRequest::getString($this->inputRobotName, "", "POST");
+        $code = CoreRequest::getString("cles", "", CoreRequestType::POST);
+        $inputRobot = CoreRequest::getString($this->inputRobotName, "", CoreRequestType::POST);
 
         // Vérification du formulaire
         if (empty($inputRobot) && $code === $this->response) {

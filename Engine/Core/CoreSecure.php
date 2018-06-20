@@ -88,7 +88,7 @@ class CoreSecure {
             define("TR_ENGINE_INDEX", true);
         }
 
-        $this->debuggingMode = CoreRequest::getBoolean("debuggingMode", false, "GET");
+        $this->debuggingMode = CoreRequest::getBoolean("debuggingMode", false, CoreRequestType::GET);
     }
 
     /**
@@ -373,7 +373,7 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalGet(): array {
-        $globalGet = &${"_" . "GET"};
+        $globalGet = &${"_" . CoreRequestType::GET};
         return $globalGet;
     }
 
@@ -383,7 +383,7 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalPost(): array {
-        $globalPost = &${"_" . "POST"};
+        $globalPost = &${"_" . CoreRequestType::POST};
         return $globalPost;
     }
 
@@ -393,7 +393,7 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalCookie(): array {
-        $globalCookie = &${"_" . "COOKIE"};
+        $globalCookie = &${"_" . CoreRequestType::COOKIE};
         return $globalCookie;
     }
 
@@ -404,6 +404,6 @@ class CoreSecure {
      * @return string
      */
     private static function getGlobalServer($keyName) {
-        return ${"_" . "SERVER"}[$keyName];
+        return ${"_" . CoreRequestType::SERVER}[$keyName];
     }
 }

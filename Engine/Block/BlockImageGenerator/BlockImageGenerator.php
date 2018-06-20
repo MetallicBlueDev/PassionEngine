@@ -5,6 +5,7 @@ namespace TREngine\Engine\Block\BlockImageGenerator;
 use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
+use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSecure;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -20,7 +21,7 @@ class BlockImageGenerator extends BlockModel {
         $mode = null;
 
         if (CoreMain::getInstance()->isBlockLayout()) {
-            $mode = CoreRequest::getString("mode", "", "GET");
+            $mode = CoreRequest::getString("mode", "", CoreRequestType::GET);
         }
 
         // Type d'affichage demandé
@@ -50,7 +51,7 @@ class BlockImageGenerator extends BlockModel {
      * Methode captcha code.
      */
     private function renderCode() {
-        $code = CoreRequest::getString("code", "", "GET");
+        $code = CoreRequest::getString("code", "", CoreRequestType::GET);
 
         if (empty($code)) {
             CoreSecure::getInstance()->throwException("code", null, array(
@@ -89,7 +90,7 @@ class BlockImageGenerator extends BlockModel {
      * Methode text & mail.
      */
     private function renderText() {
-        $text = CoreRequest::getString("text", "", "GET");
+        $text = CoreRequest::getString("text", "", CoreRequestType::GET);
 
         if (empty($text)) {
             CoreSecure::getInstance()->throwException("text", null, array(
@@ -135,5 +136,4 @@ class BlockImageGenerator extends BlockModel {
         imagepng($image);
         imagedestroy($image);
     }
-
 }

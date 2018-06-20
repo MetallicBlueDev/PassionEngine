@@ -450,7 +450,7 @@ class CoreTranslate {
         $validExtension = "";
 
         // Recherche de la langue du client
-        $acceptedLanguages = explode(',', CoreRequest::getString("HTTP_ACCEPT_LANGUAGE", "", "SERVER"));
+        $acceptedLanguages = explode(',', CoreRequest::getString("HTTP_ACCEPT_LANGUAGE", "", CoreRequestType::SERVER));
         $extension = strtolower(substr(trim($acceptedLanguages[0]), 0, 2));
 
         if (self::canUseExtension($extension)) {
@@ -458,7 +458,7 @@ class CoreTranslate {
         } else {
             // Recherche de l'URL
             if (!defined("TR_ENGINE_URL")) {
-                $url = CoreRequest::getString("SERVER_NAME", "", "SERVER");
+                $url = CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
             } else {
                 $url = TR_ENGINE_URL;
             }
