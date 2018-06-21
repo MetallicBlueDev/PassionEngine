@@ -19,7 +19,7 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @var string
      */
-    const FULL_ACCESS = "all";
+    private const FULL_ACCESS = "all";
 
     /**
      * Cache d'accès typé.

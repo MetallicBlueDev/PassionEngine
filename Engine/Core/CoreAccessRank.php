@@ -16,42 +16,42 @@ class CoreAccessRank {
      *
      * @var int
      */
-    const NONE = 0;
+    public const NONE = 0;
 
     /**
      * Accès publique.
      *
      * @var int
      */
-    const PUBLIC = 1;
+    public const PUBLIC = 1;
 
     /**
      * Accès aux membres.
      *
      * @var int
      */
-    const REGISTRED = 2;
+    public const REGISTRED = 2;
 
     /**
      * Accès aux administrateurs.
      *
      * @var int
      */
-    const ADMIN = 3;
+    public const ADMIN = 3;
 
     /**
      * Accès avec droit spécifique.
      *
      * @var int
      */
-    const SPECIFIC_RIGHT = 4;
+    public const SPECIFIC_RIGHT = 4;
 
     /**
      * Liste des rangs valides.
      *
      * @var array array("name" => 0)
      */
-    const RANK_LIST = array(
+    public const RANK_LIST = array(
         "ACCESS_NONE" => self::NONE,
         "ACCESS_PUBLIC" => self::PUBLIC,
         "ACCESS_REGISTRED" => self::REGISTRED,

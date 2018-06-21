@@ -16,13 +16,13 @@ class CoreAccessZone {
      *
      * @var string
      */
-    const MODULE = "MODULE";
+    public const MODULE = "MODULE";
 
     /**
      * Zone pour un block.
      *
      * @var string
      */
-    const BLOCK = "BLOCK";
+    public const BLOCK = "BLOCK";
 
 }
