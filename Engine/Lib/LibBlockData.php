@@ -135,11 +135,7 @@ class LibBlockData extends LibEntityData {
      * @return array
      */
     public function &getTargetModules(): array {
-        $rslt = $this->getDataValue("mods");
-
-        if (empty($rslt)) {
-            $rslt = array("all");
-        }
+        $rslt = $this->getArrayValues("mods", array("all"));
         return $rslt;
     }
 

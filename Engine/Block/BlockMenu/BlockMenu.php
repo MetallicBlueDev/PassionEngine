@@ -22,8 +22,8 @@ class BlockMenu extends BlockModel {
         $menus = $this->getMenu();
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assign("blockTitle", $this->getBlockData()->getTitle());
-        $libMakeStyle->assign("blockContent", "<nav class=\"menu\">" . $menus->render() . "</nav>");
+        $libMakeStyle->assignString("blockTitle", $this->getBlockData()->getTitle());
+        $libMakeStyle->assignString("blockContent", "<nav class=\"menu\">" . $menus->render() . "</nav>");
         $libMakeStyle->display($this->getBlockData()->getTemplateName());
     }
 

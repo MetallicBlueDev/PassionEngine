@@ -58,9 +58,9 @@ class BlockLogin extends BlockModel {
             echo $this->render();
         } else {
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assign("blockTitle", $this->getBlockData()
+            $libMakeStyle->assignString("blockTitle", $this->getBlockData()
                             ->getTitle());
-            $libMakeStyle->assign("blockContent", $this->render());
+            $libMakeStyle->assignString("blockContent", $this->render());
             $libMakeStyle->display($this->getBlockData()
                             ->getTemplateName());
         }
@@ -120,7 +120,7 @@ class BlockLogin extends BlockModel {
         } else {
             $moreLink = "<ul>";
 
-            if (CoreMain::getInstance()->registrationAllowed()) {
+            if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
                 $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLinkWithAjax("module=connect&view=registration", "blockType=" . $this->getBlockData()->getType() . "&localView=registration", "#login-logonblock", BLOCKLOGIN_GET_ACCOUNT) . "</span></li>";
             }
 

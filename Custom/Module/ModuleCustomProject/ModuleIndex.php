@@ -35,16 +35,16 @@ class ModuleIndex extends ModuleModel {
 
         CoreHtml::getInstance()->addCssTemplateFile("module_project.css");
         $libMakeStyle = new LibMakeStyle("module_project_list");
-        $libMakeStyle->assign("title", PROJECTS_LIST_TITLE);
-        $libMakeStyle->assign("description", PROJECTS_LIST_DESCRIPTION);
+        $libMakeStyle->assignString("title", PROJECTS_LIST_TITLE);
+        $libMakeStyle->assignString("description", PROJECTS_LIST_DESCRIPTION);
 
         if (CoreSql::getInstance()->affectedRows() > 0) {
             CoreSql::getInstance()->addArrayBuffer("projectList");
             $projects = CoreSql::getInstance()->getBuffer("projectList");
-            $libMakeStyle->assign("projects", $projects);
-            $libMakeStyle->assign("nbProjects", count($projects) . " " . NB_PROJECT);
+            $libMakeStyle->assignString("projects", $projects);
+            $libMakeStyle->assignString("nbProjects", count($projects) . " " . NB_PROJECT);
         } else {
-            $libMakeStyle->assign("nbProjects", NO_PROJECT);
+            $libMakeStyle->assignString("nbProjects", NO_PROJECT);
         }
         $libMakeStyle->display();
     }
@@ -83,7 +83,7 @@ class ModuleIndex extends ModuleModel {
                 $form->setTitle($projectInfo['name']);
 
                 $libMakeStyle = new LibMakeStyle("module_project_description");
-                $libMakeStyle->assign("projectInfo", $projectInfo);
+                $libMakeStyle->assignArray("projectInfo", $projectInfo);
 
                 $form->addHtmlInFieldset($libMakeStyle->render());
                 $form->addFieldset(PROJECT_DESCRIPTION);

@@ -68,7 +68,7 @@ class LibCaptcha {
      */
     public function __construct(&$object = null) {
         // Mode du captcha
-        $captchaMode = CoreMain::getInstance()->getCaptchaMode();
+        $captchaMode = CoreMain::getInstance()->getConfigs()->getCaptchaMode();
         $captchaMode = ($captchaMode === "off" || $captchaMode === "auto" || $captchaMode === "manu") ? $captchaMode : "auto";
 
         $userInfos = CoreSession::getInstance()->getUserInfos();

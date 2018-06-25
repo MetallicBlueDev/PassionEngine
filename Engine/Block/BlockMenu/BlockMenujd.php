@@ -22,22 +22,23 @@ class BlockMenujd extends BlockMenu {
         $menus = $this->getMenu();
         if (CoreHtml::getInstance()->javascriptEnabled()) {
             $menus->addAttributs("class", "jd_menu" . (($this->getBlockData()
-                ->getSide() == 1 || $this->getBlockData()
-                ->getSide() == 2) ? " jd_menu_vertical" : ""));
+                            ->getSide() == 1 || $this->getBlockData()
+                            ->getSide() == 2) ? " jd_menu_vertical" : ""));
         }
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assign("blockTitle", $this->getBlockData()
-            ->getTitle());
-        $libMakeStyle->assign("blockContent", $menus->render());
+        $libMakeStyle->assignString("blockTitle", $this->getBlockData()
+                        ->getTitle());
+        $libMakeStyle->assignString("blockContent", $menus->render());
         $libMakeStyle->display($this->getBlockData()
-            ->getTemplateName());
+                        ->getTemplateName());
     }
 
-    public function install() {}
+    public function install() {
+
+    }
 
     public function uninstall() {
         parent::uninstall();
     }
-
 }

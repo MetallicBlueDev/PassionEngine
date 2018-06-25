@@ -1,4 +1,5 @@
 <?php
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 use TREngine\Engine\Core\CoreCache;
@@ -30,7 +31,7 @@ class Module_Management_Systeminfo extends ModuleModel {
         foreach ($modeActived as $mode) {
             $actived = ($currentMode === $mode);
             $modeActivedContent .= " " . $mode . "="
-            . (($actived) ? "yes" : "no");
+                    . (($actived) ? "yes" : "no");
         }
 
         $coreMain = CoreMain::getInstance();
@@ -42,8 +43,8 @@ class Module_Management_Systeminfo extends ModuleModel {
             "TR ENGINE DIR" => TR_ENGINE_INDEXDIR,
             "TR ENGINE URL" => TR_ENGINE_URL,
             "TR ENGINE MAIL" => TR_ENGINE_MAIL,
-            "TR ENGINE valid session cache time" => $coreMain->getSessionTimeLimit() . " days",
-            "TR ENGINE UrlRewriting" => (($coreMain->doUrlRewriting()) ? "on" : "off"),
+            "TR ENGINE valid session cache time" => $coreMain->getConfigs()->getSessionTimeLimit() . " days",
+            "TR ENGINE UrlRewriting" => ($coreMain->getConfigs()->doUrlRewriting() ? "on" : "off"),
             "PHP built on" => php_uname(),
             "PHP version" => phpversion(),
             "WebServer to PHP interface" => php_sapi_name(),
@@ -80,7 +81,5 @@ class Module_Management_Systeminfo extends ModuleModel {
 
         return $output;
     }
-
 }
-
 ?>

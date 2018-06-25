@@ -98,7 +98,7 @@ class CoreCache extends CacheModel {
 
         $cacheClassName = "";
         $loaded = false;
-        $cacheConfig = CoreMain::getInstance()->getConfigCache();
+        $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
 
         // Mode par défaut
         if (empty($cacheConfig) || !isset($cacheConfig['type'])) {

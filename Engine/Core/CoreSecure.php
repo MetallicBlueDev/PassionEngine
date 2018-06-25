@@ -155,8 +155,8 @@ class CoreSecure {
 
         // Préparation du template debug
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assign("errorMessageTitle", $this->getErrorMessageTitle($customMessage));
-        $libMakeStyle->assign("errorMessage", $this->getDebugMessage($ex, $argv));
+        $libMakeStyle->assignString("errorMessageTitle", $this->getErrorMessageTitle($customMessage));
+        $libMakeStyle->assignArray("errorMessage", $this->getDebugMessage($ex, $argv));
 
         // Affichage du template en debug si problème
         $libMakeStyle->display("debug", true);

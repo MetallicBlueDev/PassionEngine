@@ -1,4 +1,5 @@
 <?php
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 /**
@@ -27,8 +28,8 @@ class Module_Management_Index extends ModuleModel {
         $moduleList = LibModule::getModuleList(); // Liste des modules
         // Préparation de la mise en page
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assign("pageList", $pageList);
-        $libMakeStyle->assign("moduleList", $moduleList);
+        $libMakeStyle->assignArray("pageList", $pageList);
+        $libMakeStyle->assignArray("moduleList", $moduleList);
 
         // Affichage de la page d'administration
         $managementScreen = "module_management_index";
@@ -55,12 +56,12 @@ class Module_Management_Index extends ModuleModel {
                 if (CoreLoader::classLoader($moduleClassPage)) {
                     // Nom de la page courane
                     $currentPageName = self::getManagementPageName($pageSelected);
-                    $libMakeStyle->assign("currentPageName", $currentPageName);
+                    $libMakeStyle->assignString("currentPageName", $currentPageName);
 
                     // Ajout du repere au fil d'ariane
                     if (CoreMain::getInstance()->isDefaultLayout()) {
                         LibBreadcrumb::getInstance()->addTrail(
-                        $currentPageName, "?module=management&manage=" . $pageSelected
+                                $currentPageName, "?module=management&manage=" . $pageSelected
                         );
                     }
 
@@ -70,12 +71,12 @@ class Module_Management_Index extends ModuleModel {
                         $content = $ModuleClass->setting();
                     }
 
-                    $libMakeStyle->assign("content", $content);
+                    $libMakeStyle->assignString("content", $content);
                 }
             }
         }
-        $libMakeStyle->assign("toolbar", self::$toolbar);
-        $libMakeStyle->assign("pageSelected", $pageSelected);
+        $libMakeStyle->assignArray("toolbar", self::$toolbar);
+        $libMakeStyle->assignString("pageSelected", $pageSelected);
         $libMakeStyle->display($managementScreen);
     }
 
@@ -160,7 +161,5 @@ class Module_Management_Index extends ModuleModel {
             $description = ADD;
         self::addButtonInToolbar("add", $description, $link);
     }
-
 }
-
 ?>

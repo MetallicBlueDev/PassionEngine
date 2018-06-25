@@ -28,9 +28,11 @@ class CoreMain {
     private static $coreMain = null;
 
     /**
-     * Tableau de configuration.
+     * Information sur la configuration.
+     *
+     * @var CoreMainConfig
      */
-    private $configs;
+    private $configs = null;
 
     /**
      * Mode de mise en page courante.
@@ -96,6 +98,15 @@ class CoreMain {
     }
 
     /**
+     * Retourne les informations sur la configuration.
+     *
+     * @return CoreMainConfig
+     */
+    public function getConfigs(): CoreMainConfig {
+        return $this->configs;
+    }
+
+    /**
      * Ajoute les données à la configuration.
      *
      * @param array
@@ -119,152 +130,6 @@ class CoreMain {
     public function addInclude(string $name, array $include) {
         $this->addConfig(array(
             $name => $include));
-    }
-
-    /**
-     * Retourne la configuration du cache.
-     *
-     * @return array
-     */
-    public function &getConfigCache(): array {
-        return $this->getConfigValue("configs_cache");
-    }
-
-    /**
-     * Retourne la configuration de la base de données.
-     *
-     * @return array
-     */
-    public function &getConfigDatabase(): array {
-        return $this->getConfigValue("configs_database");
-    }
-
-    /**
-     * Détermine si l'url rewriting est activé.
-     *
-     * @return bool
-     */
-    public function doUrlRewriting(): bool {
-        return ($this->getConfigValue("urlRewriting") === "1") ? true : false;
-    }
-
-    /**
-     * Vérifie l'état de maintenance.
-     *
-     * @return bool
-     */
-    public function doDumb(): bool {
-        return (!$this->doOpening() && !CoreSession::getInstance()->getUserInfos()->hasAdminRank());
-    }
-
-    /**
-     * Vérifie l'état du site (ouvert/fermé).
-     *
-     * @return bool
-     */
-    public function doOpening(): bool {
-        return ($this->getDefaultSiteStatut() === "open");
-    }
-
-    /**
-     * Détermine l'état des inscriptions au site.
-     *
-     * @return bool
-     */
-    public function registrationAllowed(): bool {
-        return ($this->getConfigValue("registrationAllowed") === "1") ? true : false;
-    }
-
-    /**
-     * Retourne le préfixe des cookies.
-     *
-     * @return string
-     */
-    public function &getCookiePrefix(): string {
-        return $this->getConfigValue("cookiePrefix");
-    }
-
-    /**
-     * Retourne la durée de validité du cache des sessions.
-     *
-     * @return int
-     */
-    public function &getSessionTimeLimit(): int {
-        $limit = (int) $this->getConfigValue("sessionTimeLimit");
-        return $limit;
-    }
-
-    /**
-     * Retourne la clé de cryptage.
-     *
-     * @return string
-     */
-    public function &getCryptKey(): string {
-        return $this->getConfigValue("cryptKey");
-    }
-
-    /**
-     * Retourne le mode du captcha.
-     *
-     * @return string
-     */
-    public function &getCaptchaMode(): string {
-        return $this->getConfigValue("captchaMode");
-    }
-
-    /**
-     * Retourne l'adresse email de l'administrateur.
-     *
-     * @return string
-     */
-    public function &getDefaultAdministratorMail(): string {
-        return $this->getDefaultConfigValue("defaultAdministratorMail", function() {
-                    return TR_ENGINE_MAIL;
-                });
-    }
-
-    /**
-     * Retourne le nom du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteName(): string {
-        return $this->getDefaultConfigValue("defaultSiteName", function() {
-                    return CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
-                });
-    }
-
-    /**
-     * Retourne le slogan du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteSlogan(): string {
-        return $this->getDefaultConfigValue("defaultSiteSlogan", function() {
-                    return "TR ENGINE";
-                });
-    }
-
-    /**
-     * Retourne le status du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteStatut(): string {
-        return $this->getDefaultConfigValue("defaultSiteStatut", function() {
-                    return "open";
-                });
-    }
-
-    /**
-     * Retourne la raison de la fermeture du site.
-     *
-     * @return string
-     */
-    public function &getDefaultSiteCloseReason(): string {
-        return $this->getDefaultConfigValue("defaultSiteCloseReason", function() {
-                    return " ";
-                });
     }
 
     /**
@@ -449,7 +314,7 @@ class CoreMain {
      * @return mixed
      */
     private function &getConfigValue(string $key, string $subKey = "") {
-        $rslt = array();
+        $rslt = null;
 
         if (isset($this->configs[$key])) {
             $rslt = $this->configs[$key];
@@ -465,14 +330,14 @@ class CoreMain {
      * Affichage classique du site.
      */
     private function displayDefaultLayout() {
-        if ($this->doDumb()) {
+        if ($this->getConfigs()->doDumb()) {
             // Mode maintenance: possibilité de s'identifier
             LibBlock::getInstance()->launchStandaloneBlockType("Login");
 
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assign("closeText", ERROR_DEBUG_CLOSE);
-            $libMakeStyle->assign("closeReason", $this->getDefaultSiteCloseReason());
+            $libMakeStyle->assignString("closeText", ERROR_DEBUG_CLOSE);
+            $libMakeStyle->assignString("closeReason", $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");
         } else {
             // Mode normal: exécution général
@@ -563,7 +428,7 @@ class CoreMain {
     private function compressionOpen() {
         header("Vary: Cookie, Accept-Encoding");
         // HTTP_ACCEPT_ENCODING => gzip
-        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== "1" && function_exists("ob_gzhandler") && !$this->doUrlRewriting()) {
+        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== "1" && function_exists("ob_gzhandler") && !$this->getConfigs()->doUrlRewriting()) {
             ob_start("ob_gzhandler");
         } else {
             ob_start();

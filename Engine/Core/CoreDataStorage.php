@@ -71,6 +71,56 @@ abstract class CoreDataStorage {
     }
 
     /**
+     * Retourne la valeur de la clé sous forme de tableau.
+     *
+     * @param string $keyName
+     * @param array $defaultValue
+     * @param bool $testIfEmpty
+     * @return array
+     */
+    protected function &getArrayValues(string $keyName, array $defaultValue = null, bool $testIfEmpty = false): array {
+        $value = (array) $this->getDataValue($keyName, $defaultValue);
+
+        if ($testIfEmpty && empty($value)) {
+            $value = $defaultValue;
+        }
+        return $value;
+    }
+
+    /**
+     * Retourne la valeur de la clé de configuration du module.
+     *
+     * @param string $key
+     * @param string $subKey
+     * @param string $defaultValue
+     * @return string
+     */
+    public function &getStringSubValue(string $key, string $subKey, string $defaultValue = ""): string {
+        $value = $this->getArrayValues($key);
+
+        if ($value !== null && isset($value[$subKey])) {
+            $value = $value[$subKey];
+        }
+
+        if (empty($value)) {
+            $value = $defaultValue;
+        }
+        return $value;
+    }
+
+    /**
+     * Retourne la valeur de la clé sous forme booléenne.
+     *
+     * @param string $keyName
+     * @param bool $defaultValue
+     * @return bool
+     */
+    protected function &getBoolValue(string $keyName, bool $defaultValue = false): bool {
+        $value = (bool) $this->getDataValue($keyName, $defaultValue);
+        return $value;
+    }
+
+    /**
      * Retourne la valeur de la clé sous forme de chaine de caractères.
      *
      * @param string $keyName
@@ -147,5 +197,4 @@ abstract class CoreDataStorage {
             $this->setDataValue($keyName, $value);
         }
     }
-
 }

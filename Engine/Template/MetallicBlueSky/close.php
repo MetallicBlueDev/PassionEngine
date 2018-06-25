@@ -10,8 +10,8 @@
         <div id="metallic_blue_sky">
             <div id="metallic_blue_sky_background"></div>
             <div style="display: none;">
-                <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getDefaultSiteName(); ?>
-                <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getDefaultSiteSlogan(); ?>
+                <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteName(); ?>
+                <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteSlogan(); ?>
             </div>
             <div id="close_block">
                 <div id="close_image"><a href="<?php echo "http://" . TR_ENGINE_URL; ?>"></a></div>

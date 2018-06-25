@@ -30,7 +30,7 @@ class LibBreadcrumb {
 
     private function __construct() {
         // Ajoute la page principal
-        $this->addTrail(CoreMain::getInstance()->getDefaultSiteName(), "index.php");
+        $this->addTrail(CoreMain::getInstance()->getConfigs()->getDefaultSiteName(), "index.php");
     }
 
     /**

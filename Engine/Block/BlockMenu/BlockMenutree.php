@@ -21,17 +21,17 @@ class BlockMenutree extends BlockMenu {
         $menus->addAttributs("class", "treeview");
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assign("blockTitle", $this->getBlockData()
-            ->getTitle());
-        $libMakeStyle->assign("blockContent", $menus->render());
+        $libMakeStyle->assignString("blockTitle", $this->getBlockData()
+                        ->getTitle());
+        $libMakeStyle->assignString("blockContent", $menus->render());
         $libMakeStyle->display($this->getBlockData()
-            ->getTemplateName());
+                        ->getTemplateName());
     }
 
     private function configure() {
         // Configure le style pour la classe
         $this->getBlockData()->setContent(strtolower($this->getBlockData()
-            ->getContent()));
+                                ->getContent()));
 
         switch ($this->getBlockData()->getContent()) {
             case "black":
@@ -46,10 +46,11 @@ class BlockMenutree extends BlockMenu {
         ExecJQuery::checkTreeView("#block" . $this->getBlockData()->getId());
     }
 
-    public function install() {}
+    public function install() {
+
+    }
 
     public function uninstall() {
         parent::uninstall();
     }
-
 }

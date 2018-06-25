@@ -37,7 +37,7 @@ class CoreSql extends BaseModel {
 
         $baseClassName = "";
         $loaded = false;
-        $databaseConfig = CoreMain::getInstance()->getConfigDatabase();
+        $databaseConfig = CoreMain::getInstance()->getConfigs()->getConfigDatabase();
 
         if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
             // Chargement des drivers pour la base
@@ -493,5 +493,4 @@ class CoreSql extends BaseModel {
     public function &getCollation(): string {
         return $this->selectedBase->getCollation();
     }
-
 }

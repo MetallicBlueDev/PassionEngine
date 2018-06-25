@@ -103,11 +103,11 @@ class CoreSession {
         $coreMain = CoreMain::getInstance();
 
         // Durée de validité du cache en jours
-        $this->sessionTimeLimit = $coreMain->getSessionTimeLimit() * 86400;
+        $this->sessionTimeLimit = $coreMain->getConfigs()->getSessionTimeLimit() * 86400;
 
         // Complète le nom des cookies
         foreach ($this->cookieName as $key => $name) {
-            $this->cookieName[$key] = $coreMain->getCookiePrefix() . $name;
+            $this->cookieName[$key] = $coreMain->getConfigs()->getCookiePrefix() . $name;
         }
     }
 
@@ -347,14 +347,14 @@ class CoreSession {
 
         if ($coreSql->affectedRows() > 0) {
             $coreMain = CoreMain::getInstance();
-            $mail = $coreMain->getDefaultAdministratorMail();
-            $mail = ExecMailer::displayMail($mail, $coreMain->getDefaultSiteName());
+            $mail = $coreMain->getConfigs()->getDefaultAdministratorMail();
+            $mail = ExecMailer::displayMail($mail, $coreMain->getConfigs()->getDefaultSiteName());
             $reason = $coreSql->fetchArray()['reason'];
 
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assign("mail", $mail);
-            $libMakeStyle->assign("reason", ExecString::textDisplay($reason));
-            $libMakeStyle->assign("ip", $this->userIpBan);
+            $libMakeStyle->assignString("mail", $mail);
+            $libMakeStyle->assignString("reason", ExecString::textDisplay($reason));
+            $libMakeStyle->assignString("ip", $this->userIpBan);
             $libMakeStyle->display("banishment");
         }
     }
@@ -739,7 +739,7 @@ class CoreSession {
      */
     private static function getSalt(): string {
         $coreMain = CoreMain::getInstance();
-        return $coreMain->getCryptKey() . $coreMain->getAgentInfos()->getBrowserName();
+        return $coreMain->getConfigs()->getCryptKey() . $coreMain->getAgentInfos()->getBrowserName();
     }
 
     /**

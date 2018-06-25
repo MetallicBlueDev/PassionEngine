@@ -317,7 +317,7 @@ class ModuleIndex extends ModuleModel {
                 $form->addInputSubmit("submit", CONNECT);
 
                 $moreLink = "<ul>";
-                if (CoreMain::getInstance()->registrationAllowed()) {
+                if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
                     $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                 }
                 $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin", LINK_TO_FORGET_LOGIN) . "</li>"
@@ -393,7 +393,7 @@ class ModuleIndex extends ModuleModel {
                     $form->addInputSubmit("submit", FORGET_LOGIN_SUBMIT);
 
                     $moreLink = "<ul>";
-                    if (CoreMain::getInstance()->registrationAllowed()) {
+                    if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
                         $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
                     $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon", LINK_TO_LOGON) . "</li>"
@@ -456,7 +456,7 @@ class ModuleIndex extends ModuleModel {
                     $form->addInputSubmit("submit", FORGET_PASSWORD_SUBMIT);
 
                     $moreLink = "<ul>";
-                    if (CoreMain::getInstance()->registrationAllowed()) {
+                    if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
                         $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration", LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
                     $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon", LINK_TO_LOGON) . "</li>"

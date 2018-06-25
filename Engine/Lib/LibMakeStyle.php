@@ -63,10 +63,30 @@ class LibMakeStyle {
      * Assigne une valeur au template.
      *
      * @param string $key Nome de la variable
-     * @param string or LibMakeStyle $value Valeur de la variable
+     * @param LibMakeStyle $value Valeur de la variable
      */
-    public function assign(string $key, string $value) {
-        $this->fileVars[$key] = is_object($value) ? $value->display() : $value;
+    public function assignStyle(string $key, LibMakeStyle $value) {
+        $this->fileVars[$key] = $value->display();
+    }
+
+    /**
+     * Assigne une chaine de caractères au template.
+     *
+     * @param string $key Nome de la variable
+     * @param string $value Valeur de la variable
+     */
+    public function assignString(string $key, string $value) {
+        $this->fileVars[$key] = $value;
+    }
+
+    /**
+     * Assigne un tableau au template.
+     *
+     * @param string $key Nome de la variable
+     * @param string $value Valeur de la variable
+     */
+    public function assignArray(string $key, array $value) {
+        $this->fileVars[$key] = $value;
     }
 
     /**
@@ -177,13 +197,15 @@ class LibMakeStyle {
      * @param string $fileName Nom du fichier
      */
     private function setFileName(string $fileName) {
-        if (!empty($fileName) && $this->fileName !== $fileName) {
+        if (!empty($fileName)) {
             if (substr($fileName, -4) !== ".php") {
                 $fileName .= ".php";
             }
 
-            $this->fileName = $fileName;
-            $this->valid = null;
+            if ($this->fileName !== $fileName) {
+                $this->fileName = $fileName;
+                $this->valid = null;
+            }
         }
     }
 

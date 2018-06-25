@@ -138,7 +138,7 @@ class LibModuleData extends LibEntityData {
      * @return array
      */
     public function &getConfigs(): array {
-        return $this->getDataValue("configs");
+        return $this->getArrayValues("configs");
     }
 
     /**
@@ -149,18 +149,7 @@ class LibModuleData extends LibEntityData {
      * @return string
      */
     public function &getConfigValue(string $key, string $defaultValue = ""): string {
-        $value = null;
-
-        if ($this->hasValue("configs")) {
-            if (isset($this->hasValue("configs")[$key])) {
-                $value = $this->getDataValue("configs")[$key];
-            }
-        }
-
-        if ($value === null || empty($value)) {
-            $value = $defaultValue;
-        }
-        return $value;
+        return $this->getStringSubValue("configs", $key, $defaultValue);
     }
 
     /**

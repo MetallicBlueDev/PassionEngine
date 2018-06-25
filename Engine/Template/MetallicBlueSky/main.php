@@ -11,15 +11,15 @@
             <div id="metallic_blue_sky_background"></div>
             <div id="metallic_blue_sky_screen">
                 <header id="header">
-                    <div style="display: none;"><?php echo TREngine\Engine\Core\CoreMain::getInstance()->getDefaultSiteName(); ?></div>
+                    <div style="display: none;"><?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteName(); ?></div>
                     <div id="header_left">
                         <div class="header_wire_harness wire_harness_left">
                             <div class="wire_harness_object wire_harness_anim1"></div>
                             <div class="wire_harness_object wire_harness_anim2"></div>
                             <div class="wire_harness_object wire_harness_anim1"></div>
                         </div>
-                        <a href="index.php" title="<?php echo TREngine\Engine\Core\CoreMain::getInstance()->getDefaultSiteName(); ?>"></a>
-                        <h3><?php echo TREngine\Engine\Core\CoreMain::getInstance()->getDefaultSiteSlogan(); ?></h3>
+                        <a href="index.php" title="<?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteName(); ?>"></a>
+                        <h3><?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteSlogan(); ?></h3>
                     </div>
                     <div id="header_middle"></div>
                     <div id="header_right">

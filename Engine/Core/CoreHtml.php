@@ -93,7 +93,7 @@ class CoreHtml {
     private function __construct() {
         // Configuration du préfixe accessible
         if (CoreLoader::isCallable("CoreMain")) {
-            $prefix = CoreMain::getInstance()->getCookiePrefix();
+            $prefix = CoreMain::getInstance()->getConfigs()->getCookiePrefix();
         } else {
             $prefix = "tr";
         }
@@ -234,11 +234,11 @@ class CoreHtml {
 
         if (CoreLoader::isCallable("CoreMain")) {
             $coreMain = CoreMain::getInstance();
-            $title = $coreMain->getDefaultSiteName();
+            $title = $coreMain->getConfigs()->getDefaultSiteName();
 
             if (empty($this->title)) {
                 // Titre automatique
-                $title .= " - " . $coreMain->getDefaultSiteSlogan();
+                $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable("LibModule")) {
                     $title .= " / " . LibModule::getInstance()->getInfoModule()->getName();
@@ -429,7 +429,7 @@ class CoreHtml {
     private function &getSalt(): string {
         // Configuration de la clès si accessible
         if (CoreLoader::isCallable("CoreMain")) {
-            $key = CoreMain::getInstance()->getCryptKey();
+            $key = CoreMain::getInstance()->getConfigs()->getCryptKey();
         } else {
             $key = "A4bT9D4V";
         }
