@@ -11,7 +11,7 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 
 /**
  * Gestionnaire de transaction utilisant l'extension PHP Data Objects.
- * 
+ *
  * Supporte de nombreuse type base de données :
  * Firebird,
  * Informix,
@@ -314,5 +314,4 @@ class BasePdo extends BaseModel {
         }
         return $message;
     }
-
 }

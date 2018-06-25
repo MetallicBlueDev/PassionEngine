@@ -94,9 +94,8 @@ class LibMakeStyle {
      *
      * @param string $fileName
      * @param bool $debugMode Si le fichier de template debug n'est pas trouvé, le fichier debug par défaut est utilisé.
-     * @return string L'affichage finale du template
      */
-    public function display(string $fileName = "", bool $debugMode = false): string {
+    public function display(string $fileName = "", bool $debugMode = false) {
         if ($debugMode) {
             $this->setFileName($fileName);
 
