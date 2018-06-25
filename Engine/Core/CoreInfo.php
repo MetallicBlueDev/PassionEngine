@@ -2,10 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
-// Exceptionnellement, NE PAS inclure SecurityCheck
-if (CoreInfo::invalidPhpSelf()) {
-    exit();
-}
+// Exceptionnellement, ne PAS vérifier la sécurité ici (SecurityCheck)
 
 /**
  * Recherche d'information rapide sur le moteur d'exécution et son environnement coté serveur.
@@ -23,19 +20,51 @@ if (CoreInfo::invalidPhpSelf()) {
  */
 class CoreInfo {
 
+    /**
+     * Indique si la classe a été initialisée.
+     *
+     * @var bool
+     */
     private static $initialized = false;
+
+    /**
+     * Tableau temporaire contenant les pointeurs des variables mémorisées.
+     *
+     * @var array
+     */
+    private static $unsafeGlobalVars = array();
 
     private function __construct() {
 
     }
 
     /**
-     * Détermine si l'accès à ce fichier est invalide.
+     * Mémorise les variables.
+     * Utilisé pour mémoriser les contenus des Superglobales.
      *
-     * @return bool
+     * Les Superglobales ne peuvent pas être appelées directement dans une classe.
+     * http://php.net/manual/fr/language.variables.variable.php
+     * http://php.net/manual/fr/language.variables.superglobals.php
+     *
+     * @param string $name Pointeur vers le nom de la variable.
+     * @param array $value Pointeur vers le contenu de la variable.
      */
-    public static function invalidPhpSelf() {
-        return preg_match("/CoreInfo.php/ie", self::getGlobalServer("PHP_SELF"));
+    public static function addGlobalVars(&$name, &$value) {
+        if (!self::$initialized) {
+            self::$unsafeGlobalVars[$name] = $value;
+        } else {
+            exit("Invalid access.");
+        }
+    }
+
+    /**
+     * Retourne le tableau contenant les pointeurs des variables précédemment mémorisées.
+     * Attention, données brutes, non sécurisées.
+     *
+     * @return array
+     */
+    public static function &getGlobalVars($name) {
+        return self::$unsafeGlobalVars[$name];
     }
 
     /**
@@ -44,7 +73,7 @@ class CoreInfo {
      * @return bool
      */
     public static function compatibleVersion() {
-        return (TR_ENGINE_PHP_VERSION >= "7.1.0");
+        return (TR_ENGINE_PHP_VERSION >= TR_ENGINE_PHP_MINIMUM_VERSION);
     }
 
     /**
@@ -55,6 +84,11 @@ class CoreInfo {
             self::$initialized = true;
 
             $info = new CoreInfo();
+
+            /**
+             * Version php sous forme x.x.x.x (exemple : 7.1.0).
+             */
+            define("TR_ENGINE_PHP_MINIMUM_VERSION", "7.1.0");
 
             /**
              * Version php sous forme x.x.x.x (exemple : 5.2.9.2).
@@ -251,6 +285,6 @@ class CoreInfo {
      * @return string
      */
     private static function getGlobalServer($keyName) {
-        return ${"_" . "SERVER"}[$keyName];
+        return self::$unsafeGlobalVars["_SERVER"][$keyName];
     }
 }

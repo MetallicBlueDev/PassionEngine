@@ -20,13 +20,28 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
     // Vérification du serveur et de la version PHP
     if (!class_exists("CoreInfo", false)) {
         require 'Core' . DIRECTORY_SEPARATOR . 'CoreInfo.php';
+
+        // Les Superglobales ne peuvent pas être appelées directement dans une classe.
+        // http://php.net/manual/fr/language.variables.variable.php
+        // http://php.net/manual/fr/language.variables.superglobals.php
+        foreach ($GLOBALS as $gvName => $gvValue) {
+            if (substr($gvName, 0, 1) === "_") {
+                CoreInfo::addGlobalVars($gvName, $gvValue);
+            }
+        }
+
+        unset($GLOBALS);
+        unset($gvName);
+        unset($gvValue);
+
         CoreInfo::initialize();
 
         // Si une version PHP OO moderne n'est pas détectée, c'est la fin
         if (!CoreInfo::compatibleVersion()) {
             echo"<h1>Sorry, but the PHP version currently running is too old to understand TR ENGINE.</h1>"
             . "<br />Please, seriously consider updating your system."
-            . "<br />Your PHP version: " . TR_ENGINE_PHP_VERSION;
+            . "<br />Your PHP version: " . TR_ENGINE_PHP_VERSION
+            . "<br />Minimum PHP version: " . TR_ENGINE_PHP_MINIMUM_VERSION;
             exit();
         }
     }

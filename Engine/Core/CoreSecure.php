@@ -217,7 +217,7 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function &appendException(Exception $ex, array &$errorMessages) {
+    private function appendException(Exception $ex, array &$errorMessages) {
         if ($ex !== null) {
             $this->appendExceptionMessage($ex, $errorMessages);
             $errorMessages[] = "";
@@ -231,7 +231,7 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function &appendExceptionMessage(Exception $ex, array &$errorMessages) {
+    private function appendExceptionMessage(Exception $ex, array &$errorMessages) {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
                 $errorMessages[] = $ex->getFailInformation();
@@ -247,7 +247,7 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function &appendExceptionTrace(Exception $ex, array &$errorMessages) {
+    private function appendExceptionTrace(Exception $ex, array &$errorMessages) {
         foreach ($ex->getTrace() as $traceValue) {
             $errorLine = "";
 
@@ -273,7 +273,7 @@ class CoreSecure {
      *
      * @param array $errorMessages
      */
-    private function &appendSqlErrors(array &$errorMessages) {
+    private function appendSqlErrors(array &$errorMessages) {
         if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
             if (CoreSql::hasConnection()) {
                 $sqlErrors = CoreSql::getInstance()->getLastError();
@@ -292,7 +292,7 @@ class CoreSecure {
      *
      * @param array $errorMessages
      */
-    private function &appendLoggerErrors(array &$errorMessages) {
+    private function appendLoggerErrors(array &$errorMessages) {
         if (CoreLoader::isCallable("CoreLogger")) {
             $loggerExceptions = CoreLogger::getExceptions();
 
@@ -316,11 +316,15 @@ class CoreSecure {
      * Vérification des données reçues (depuis QUERY_STRING).
      */
     private function checkServerQueryString() {
-        $queryString = strtolower(rawurldecode(self::getGlobalServer("QUERY_STRING")));
+        $query = CoreRequest::getQueryString();
 
-        foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
-            if (strpos($queryString, $badStringValue)) {
-                $this->throwException("badQueryString");
+        if (!empty($query)) {
+            $queryString = strtolower(rawurldecode($query));
+
+            foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
+                if (strpos($queryString, $badStringValue)) {
+                    $this->throwException("badQueryString");
+                }
             }
         }
     }
@@ -329,9 +333,9 @@ class CoreSecure {
      * Vérification de la provenance des requêtes.
      */
     private function checkServerRequest() {
-        if (self::getGlobalServer("REQUEST_METHOD") === "POST" && !empty(self::getGlobalServer("HTTP_REFERER"))) {
+        if (CoreRequest::getRequestMethod() === "POST" && !empty(CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
             // Vérification du demandeur de la méthode POST
-            if (!preg_match("/" . self::getGlobalServer("HTTP_HOST") . "/", self::getGlobalServer("HTTP_REFERER"))) {
+            if (!preg_match("/" . CoreRequest::getString("HTTP_HOST", "", CoreRequestType::SERVER) . "/", CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
                 $this->throwException("badRequestReferer");
             }
         }
@@ -373,8 +377,8 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalGet(): array {
-        $globalGet = &${"_" . CoreRequestType::GET};
-        return $globalGet;
+        $vars = &CoreInfo::getGlobalVars(CoreRequestType::GET);
+        return $vars;
     }
 
     /**
@@ -383,8 +387,8 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalPost(): array {
-        $globalPost = &${"_" . CoreRequestType::POST};
-        return $globalPost;
+        $vars = &CoreInfo::getGlobalVars(CoreRequestType::POST);
+        return $vars;
     }
 
     /**
@@ -393,17 +397,7 @@ class CoreSecure {
      * @return array
      */
     private static function &getGlobalCookie(): array {
-        $globalCookie = &${"_" . CoreRequestType::COOKIE};
-        return $globalCookie;
-    }
-
-    /**
-     * Classe autorisée à manipuler $_SERVER (lecture seule).
-     *
-     * @param string $keyName
-     * @return string
-     */
-    private static function getGlobalServer($keyName) {
-        return ${"_" . CoreRequestType::SERVER}[$keyName];
+        $vars = &CoreInfo::getGlobalVars(CoreRequestType::COOKIE);
+        return $vars;
     }
 }

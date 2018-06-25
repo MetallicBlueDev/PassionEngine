@@ -110,7 +110,7 @@ class CoreRequest {
 
     /**
      * Retourne le lien référent.
-     * 
+     *
      * @return string
      */
     public static function getRefererQueryString(): string {
@@ -129,6 +129,11 @@ class CoreRequest {
      */
     private static function &getVars(string $name, string $type, $default = "", string $hash = "default") {
         $rslt = null;
+
+        if ($name === "HTTP_REFERER") {
+            // TODO Vérifier si c'est opérationnel avec HTTP_REFERER
+            $rslt = null;
+        }
 
         if (isset(self::$buffer[$name])) {
             $rslt = self::$buffer[$name];
@@ -158,22 +163,12 @@ class CoreRequest {
 
         switch ($hash) {
             case CoreRequestType::GET:
-                $input = self::getGlobalGet();
-                break;
             case CoreRequestType::POST:
-                $input = self::getGlobalPost();
-                break;
             case CoreRequestType::FILES:
-                $input = self::getGlobalFiles();
-                break;
             case CoreRequestType::COOKIE:
-                $input = self::getGlobalCookie();
-                break;
             case CoreRequestType::ENV:
-                $input = self::getGlobalEnv();
-                break;
             case CoreRequestType::SERVER:
-                $input = self::getGlobalServer();
+                $input = CoreInfo::getGlobalVars($hash);
                 break;
             default:
                 $input = self::getDefaultRequest($hash, $useDefault);
@@ -318,65 +313,5 @@ class CoreRequest {
             $content = "";
         }
         return $content;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_GET (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalGet(): array {
-        $globalVars = ${"_" . CoreRequestType::GET};
-        return $globalVars;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_POST (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalPost(): array {
-        $globalVars = ${"_" . CoreRequestType::POST};
-        return $globalVars;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_FILES (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalFiles(): array {
-        $globalVars = ${"_" . CoreRequestType::FILES};
-        return $globalVars;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_COOKIE (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalCookie(): array {
-        $globalVars = ${"_" . CoreRequestType::COOKIE};
-        return $globalVars;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_ENV (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalEnv(): array {
-        $globalVars = ${"_" . CoreRequestType::ENV};
-        return $globalVars;
-    }
-
-    /**
-     * Classe autorisée à manipuler les $_SERVER (lecture seule).
-     *
-     * @return array
-     */
-    private static function &getGlobalServer(): array {
-        $globalVars = ${"_" . CoreRequestType::SERVER};
-        return $globalVars;
     }
 }
