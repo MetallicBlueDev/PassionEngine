@@ -581,7 +581,7 @@ class CoreTranslate {
 
         if (CoreLoader::isCallable("CoreMain")) {
             // Utilisation de la langue par défaut du site
-            $language = CoreMain::getInstance()->getDefaultLanguage();
+            $language = CoreMain::getInstance()->getConfigs()->getDefaultLanguage();
         }
 
         // Malheureusement la langue par défaut est aussi invalide

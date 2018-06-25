@@ -197,4 +197,15 @@ abstract class CoreDataStorage {
             $this->setDataValue($keyName, $value);
         }
     }
+
+    /**
+     * Nettoyage de la variable.
+     * 
+     * @param string $keyName
+     */
+    protected function unsetValue(string $keyName) {
+        if ($this->exist($keyName)) {
+            unset($this->data[$keyName]);
+        }
+    }
 }

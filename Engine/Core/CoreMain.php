@@ -8,7 +8,6 @@ use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecMailer;
 use TREngine\Engine\Exec\ExecTimeMarker;
 use TREngine\Engine\Exec\ExecString;
-use Closure;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
@@ -35,6 +34,13 @@ class CoreMain {
     private $configs = null;
 
     /**
+     * Informations sur l'agent.
+     *
+     * @var CoreUserAgentData
+     */
+    private $agentInfos = null;
+
+    /**
      * Mode de mise en page courante.
      * default : affichage normale et complet
      * module : affichage uniquement du module si javascript activé
@@ -46,15 +52,8 @@ class CoreMain {
      */
     private $layout = "default";
 
-    /**
-     * Informations sur l'agent.
-     *
-     * @var CoreUserAgentData
-     */
-    private $agentInfos = null;
-
     private function __construct() {
-        // NE RIEN FAIRE
+        $this->configs = new CoreMainConfig();
     }
 
     /**
@@ -104,87 +103,6 @@ class CoreMain {
      */
     public function getConfigs(): CoreMainConfig {
         return $this->configs;
-    }
-
-    /**
-     * Ajoute les données à la configuration.
-     *
-     * @param array
-     */
-    public function addConfig(array $configuration) {
-        foreach ($configuration as $key => $value) {
-            if (is_array($value)) {
-                $this->configs[$key] = $value;
-            } else {
-                $this->configs[$key] = ExecString::stripSlashes($value);
-            }
-        }
-    }
-
-    /**
-     * Ajoute les données d'inclusion à la configuration.
-     *
-     * @param string $name
-     * @param array $include
-     */
-    public function addInclude(string $name, array $include) {
-        $this->addConfig(array(
-            $name => $include));
-    }
-
-    /**
-     * Retourne la description du site.
-     *
-     * @return string
-     */
-    public function &getDefaultDescription(): string {
-        return $this->getDefaultConfigValue("defaultDescription", function() {
-                    return "TR ENGINE";
-                });
-    }
-
-    /**
-     * Retourne les mots clés du site.
-     *
-     * @return string
-     */
-    public function &getDefaultKeyWords(): string {
-        return $this->getDefaultConfigValue("defaultKeyWords", function() {
-                    return "TR ENGINE";
-                });
-    }
-
-    /**
-     * Retourne la langue par défaut.
-     *
-     * @return string
-     */
-    public function &getDefaultLanguage(): string {
-        return $this->getDefaultConfigValue("defaultLanguage", function() {
-                    return "english";
-                });
-    }
-
-    /**
-     * Retourne le template par défaut.
-     *
-     * @return string
-     */
-    public function &getDefaultTemplate(): string {
-        return $this->getDefaultConfigValue("defaultTemplate", function() {
-                    return " ";
-                });
-    }
-
-    /**
-     * Retourne le nom du module par défaut.
-     *
-     * @return string
-     */
-    public function &getDefaultMod(): string {
-        return $this->getDefaultConfigValue("defaultMod", function() {
-                    return "home";
-                });
     }
 
     /**
@@ -307,26 +225,6 @@ class CoreMain {
     }
 
     /**
-     * Retourne le contenu de la configuration.
-     *
-     * @param string $key
-     * @param string $subKey
-     * @return mixed
-     */
-    private function &getConfigValue(string $key, string $subKey = "") {
-        $rslt = null;
-
-        if (isset($this->configs[$key])) {
-            $rslt = $this->configs[$key];
-
-            if (isset($rslt[$subKey])) {
-                $rslt = $rslt[$subKey];
-            }
-        }
-        return $rslt;
-    }
-
-    /**
      * Affichage classique du site.
      */
     private function displayDefaultLayout() {
@@ -370,24 +268,6 @@ class CoreMain {
     }
 
     /**
-     * Retourne la valeur par défaut de la configuration.
-     *
-     * @param string $keyName
-     * @param Closure $callback
-     * @return string
-     */
-    private function &getDefaultConfigValue(string $keyName, Closure $callback): string {
-        $value = $this->getConfigValue($keyName);
-
-        if (empty($value)) {
-            $value = $callback();
-            $this->addConfig(array(
-                $keyName => $value));
-        }
-        return $value;
-    }
-
-    /**
      * Vérification et assignation du layout.
      */
     private function checkLayout() {
@@ -415,7 +295,7 @@ class CoreMain {
 
         // Tentative d'utilisation du template du site
         if (empty($templateName)) {
-            $templateName = $this->getDefaultTemplate();
+            $templateName = $this->getConfigs()->getDefaultTemplate();
         }
 
         LibMakeStyle::setTemplateDir($templateName);
@@ -521,18 +401,11 @@ class CoreMain {
         $canUse = CoreLoader::includeLoader("configs_config");
 
         if ($canUse) {
-            // Tentative d'utilisation de la configuration
-            $rawConfig = $this->getConfigValue("configs_config");
+            $canUse = $this->getConfigs()->initialize();
 
-            if (!empty($rawConfig)) {
-                $this->loadSpecificConfig($rawConfig);
-            } else {
-                // Il n'est pas normale de n'avoir aucune information
-                $canUse = false;
+            if (defined("TR_ENGINE_STATUT") && TR_ENGINE_STATUT == "close") {
+                CoreSecure::getInstance()->throwException("close");
             }
-
-            // Nettoyage des clés temporaires
-            unset($this->configs['configs_config']);
 
             // Si tout semble en ordre, nous continuons le chargement
             if ($canUse) {
@@ -540,57 +413,6 @@ class CoreMain {
             }
         }
         return $canUse;
-    }
-
-    /**
-     * Chargement de la configuration spécifique (via fichier).
-     *
-     * @param array $rawConfig
-     */
-    private function loadSpecificConfig(array $rawConfig) {
-        $newConfig = array();
-
-        // Vérification de l'adresse email du webmaster
-        if (!ExecMailer::isValidMail($rawConfig["TR_ENGINE_MAIL"])) {
-            CoreLogger::addException("Default mail isn't valide");
-        }
-
-        define("TR_ENGINE_MAIL", $rawConfig["TR_ENGINE_MAIL"]);
-
-        // Vérification du statut
-        $rawConfig["TR_ENGINE_STATUT"] = strtolower($rawConfig["TR_ENGINE_STATUT"]);
-
-        if ($rawConfig["TR_ENGINE_STATUT"] !== "close" && $rawConfig["TR_ENGINE_STATUT"] !== "open") {
-            $rawConfig["TR_ENGINE_STATUT"] = "open";
-        }
-
-        define("TR_ENGINE_STATUT", $rawConfig["TR_ENGINE_STATUT"]);
-
-        if (TR_ENGINE_STATUT == "close") {
-            CoreSecure::getInstance()->throwException("close");
-        }
-
-        // Vérification de la durée de validité du cache
-        if (!is_int($rawConfig['sessionTimeLimit']) || $rawConfig['sessionTimeLimit'] < 1) {
-            $rawConfig['sessionTimeLimit'] = 7;
-        }
-
-        $newConfig['sessionTimeLimit'] = (int) $rawConfig['sessionTimeLimit'];
-
-        // Vérification du préfixage des cookies
-        if (empty($rawConfig['cookiePrefix'])) {
-            $rawConfig['cookiePrefix'] = "tr";
-        }
-
-        $newConfig['cookiePrefix'] = $rawConfig['cookiePrefix'];
-
-        // Vérification de la clé de cryptage
-        if (!empty($rawConfig['cryptKey'])) {
-            $newConfig['cryptKey'] = $rawConfig['cryptKey'];
-        }
-
-        // Ajout à la configuration courante
-        $this->addConfig($newConfig);
     }
 
     /**
@@ -624,6 +446,6 @@ class CoreMain {
         }
 
         // Ajout a la configuration courante
-        $this->addConfig($newConfig);
+        $this->getConfigs()->addConfig($newConfig);
     }
 }

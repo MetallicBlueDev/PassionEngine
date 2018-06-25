@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Core;
 
+use Closure;
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 /**
@@ -13,13 +15,33 @@ class CoreMainConfig extends CoreDataStorage {
 
     /**
      * Nouvelle information de configuration.
-     *
-     * @param array $data
      */
-    public function __construct(array &$data) {
+    public function __construct() {
         parent::__construct();
 
+        $data = array();
         $this->newStorage($data);
+    }
+
+    /**
+     * Initialisation de la configuration principale.
+     *
+     * @return bool
+     */
+    public function initialize(): bool {
+        $canUse = false;
+
+        // Tentative d'utilisation de la configuration
+        $rawConfig = $this->getArrayValues("configs_config");
+
+        if (!empty($rawConfig)) {
+            $this->loadSpecificConfig($rawConfig);
+            $canUse = true;
+        }
+
+        // Nettoyage des clés temporaires
+        $this->unsetValue("configs_config");
+        return $canUse;
     }
 
     /**
@@ -35,6 +57,17 @@ class CoreMainConfig extends CoreDataStorage {
                 $this->setDataValue($key, ExecString::stripSlashes($value));
             }
         }
+    }
+
+    /**
+     * Ajoute les données d'inclusion à la configuration.
+     *
+     * @param string $name
+     * @param array $include
+     */
+    public function addInclude(string $name, array $include) {
+        $this->addConfig(array(
+            $name => $include));
     }
 
     /**
@@ -235,6 +268,53 @@ class CoreMainConfig extends CoreDataStorage {
         return $this->getStringValueWithDefault("defaultMod", function() {
                     return "home";
                 });
+    }
+
+    /**
+     * Chargement de la configuration spécifique (via fichier).
+     *
+     * @param array $rawConfig
+     */
+    private function loadSpecificConfig(array $rawConfig) {
+        $newConfig = array();
+
+        // Vérification de l'adresse email du webmaster
+        if (!ExecMailer::isValidMail($rawConfig["TR_ENGINE_MAIL"])) {
+            CoreLogger::addException("Default mail isn't valide");
+        }
+
+        define("TR_ENGINE_MAIL", $rawConfig["TR_ENGINE_MAIL"]);
+
+        // Vérification du statut
+        $rawConfig["TR_ENGINE_STATUT"] = strtolower($rawConfig["TR_ENGINE_STATUT"]);
+
+        if ($rawConfig["TR_ENGINE_STATUT"] !== "close" && $rawConfig["TR_ENGINE_STATUT"] !== "open") {
+            $rawConfig["TR_ENGINE_STATUT"] = "open";
+        }
+
+        define("TR_ENGINE_STATUT", $rawConfig["TR_ENGINE_STATUT"]);
+
+        // Vérification de la durée de validité du cache
+        if (!is_int($rawConfig['sessionTimeLimit']) || $rawConfig['sessionTimeLimit'] < 1) {
+            $rawConfig['sessionTimeLimit'] = 7;
+        }
+
+        $newConfig['sessionTimeLimit'] = (int) $rawConfig['sessionTimeLimit'];
+
+        // Vérification du préfixage des cookies
+        if (empty($rawConfig['cookiePrefix'])) {
+            $rawConfig['cookiePrefix'] = "tr";
+        }
+
+        $newConfig['cookiePrefix'] = $rawConfig['cookiePrefix'];
+
+        // Vérification de la clé de cryptage
+        if (!empty($rawConfig['cryptKey'])) {
+            $newConfig['cryptKey'] = $rawConfig['cryptKey'];
+        }
+
+        // Ajout à la configuration courante
+        addConfig($newConfig);
     }
 
     /**

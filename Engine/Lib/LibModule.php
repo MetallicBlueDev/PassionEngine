@@ -66,7 +66,7 @@ class LibModule {
 
             // Nom du module courant
             $moduleName = CoreRequest::getWord("module");
-            $defaultModuleName = CoreMain::getInstance()->getDefaultMod();
+            $defaultModuleName = CoreMain::getInstance()->getConfigs()->getDefaultMod();
 
             if (empty($moduleName)) {
                 $moduleName = $defaultModuleName;

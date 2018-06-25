@@ -76,7 +76,7 @@ class Module_Management_Setting extends ModuleModel {
 
         $form->addSelectOpenTag("defaultLanguage", SETTING_GENERAL_DEFAULT_LANGUAGE);
         $langues = CoreTranslate::getLangList();
-        $currentLanguage = $coreMain->getDefaultLanguage();
+        $currentLanguage = $coreMain->getConfigs()->getDefaultLanguage();
         $form->addSelectItemTag($currentLanguage, "", true);
         foreach ($langues as $langue) {
             if ($langue == $currentLanguage)
@@ -87,7 +87,7 @@ class Module_Management_Setting extends ModuleModel {
 
         $form->addSelectOpenTag("defaultTemplate", SETTING_GENERAL_DEFAULT_TEMPLATE);
         $templates = LibMakeStyle::getTemplateList();
-        $currentTemplate = $coreMain->getDefaultTemplate();
+        $currentTemplate = $coreMain->getConfigs()->getDefaultTemplate();
         $form->addSelectItemTag($currentTemplate, "", true);
         foreach ($templates as $template) {
             if ($template == $currentTemplate)
@@ -98,7 +98,7 @@ class Module_Management_Setting extends ModuleModel {
 
         $form->addSelectOpenTag("defaultMod", SETTING_GENERAL_DEFAULT_MODULE);
         $modules = LibModule::getModuleList();
-        $currentModule = $coreMain->getDefaultMod();
+        $currentModule = $coreMain->getConfigs()->getDefaultMod();
         $currentModuleName = "";
         foreach ($modules as $module) {
             if ($module['value'] == $currentModule) {
@@ -114,9 +114,9 @@ class Module_Management_Setting extends ModuleModel {
         $form->addFieldset(SETTING_GENERAL_METADATA_TITLE, SETTING_GENERAL_METADATA_DESCRIPTION);
         $form->addSpace();
 
-        $form->addTextarea("defaultDescription", SETTING_GENERAL_METADATA_DEFAULT_DESCRIPTION, $coreMain->getDefaultDescription(), "style=\"display: block;\" cols=\"50\"");
+        $form->addTextarea("defaultDescription", SETTING_GENERAL_METADATA_DEFAULT_DESCRIPTION, $coreMain->getConfigs()->getDefaultDescription(), "style=\"display: block;\" cols=\"50\"");
         $form->addSpace();
-        $form->addTextarea("defaultKeyWords", SETTING_GENERAL_METADATA_DEFAULT_KEYWORDS, $coreMain->getDefaultKeyWords(), "style=\"display: block;\" cols=\"50\"");
+        $form->addTextarea("defaultKeyWords", SETTING_GENERAL_METADATA_DEFAULT_KEYWORDS, $coreMain->getConfigs()->getDefaultKeyWords(), "style=\"display: block;\" cols=\"50\"");
         $form->addSpace();
 
         $rewriting = $coreMain->getConfigs()->doUrlRewriting();
@@ -179,7 +179,7 @@ class Module_Management_Setting extends ModuleModel {
         }
         // Langue par défaut
         $defaultLanguage = CoreRequest::getString("defaultLanguage", "", CoreRequestType::POST);
-        if ($coreMain->getDefaultLanguage() != $defaultLanguage) {
+        if ($coreMain->getConfigs()->getDefaultLanguage() != $defaultLanguage) {
             $langues = CoreTranslate::getLangList();
             if (!empty($defaultLanguage) && ExecUtils::inArray($defaultLanguage, $langues)) {
                 $this->updateTable("defaultLanguage", $defaultLanguage);
@@ -190,7 +190,7 @@ class Module_Management_Setting extends ModuleModel {
         }
         // Template par défaut
         $defaultTemplate = CoreRequest::getString("defaultTemplate", "", CoreRequestType::POST);
-        if ($coreMain->getDefaultTemplate() != $defaultTemplate) {
+        if ($coreMain->getConfigs()->getDefaultTemplate() != $defaultTemplate) {
             $templates = LibMakeStylegetTemplateListes();
             if (!empty($defaultTemplate) && ExecUtils::inArray($defaultTemplate, $templates)) {
                 $this->updateTable("defaultTemplate", $defaultTemplate);
@@ -201,7 +201,7 @@ class Module_Management_Setting extends ModuleModel {
         }
         // Module par défaut
         $defaultMod = CoreRequest::getString("defaultMod", "", CoreRequestType::POST);
-        if ($coreMain->getDefaultMod() != $defaultMod) {
+        if ($coreMain->getConfigs()->getDefaultMod() != $defaultMod) {
             if (!empty($defaultMod)) {
                 $this->updateTable("defaultMod", $defaultMod);
                 $deleteCache = true;
@@ -211,13 +211,13 @@ class Module_Management_Setting extends ModuleModel {
         }
         // Description du site
         $defaultDescription = CoreRequest::getString("defaultDescription", "", CoreRequestType::POST);
-        if ($coreMain->getDefaultDescription() != $defaultDescription) {
+        if ($coreMain->getConfigs()->getDefaultDescription() != $defaultDescription) {
             $this->updateTable("defaultDescription", $defaultDescription);
             $deleteCache = true;
         }
         // Mot clès du site
         $defaultKeyWords = CoreRequest::getString("defaultKeyWords", "", CoreRequestType::POST);
-        if ($coreMain->getDefaultKeyWords() != $defaultKeyWords) {
+        if ($coreMain->getConfigs()->getDefaultKeyWords() != $defaultKeyWords) {
             $this->updateTable("defaultKeyWords", $defaultKeyWords);
             $deleteCache = true;
         }

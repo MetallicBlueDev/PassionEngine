@@ -477,11 +477,11 @@ class CoreHtml {
 
         if (CoreLoader::isCallable("CoreMain")) {
             if (empty($this->description)) {
-                $this->description = CoreMain::getInstance()->getDefaultDescription();
+                $this->description = CoreMain::getInstance()->getConfigs()->getDefaultDescription();
             }
 
             if (empty($keywords)) {
-                $keywords = CoreMain::getInstance()->getDefaultKeyWords();
+                $keywords = CoreMain::getInstance()->getConfigs()->getDefaultKeyWords();
             }
         }
 

@@ -550,7 +550,7 @@ class CoreLoader {
                 }
                 break;
             case self::TYPE_INCLUDE:
-                CoreMain::getInstance()->addInclude($keyName, $inc);
+                CoreMain::getInstance()->getConfigs()->addInclude($keyName, $inc);
                 break;
         }
         return $loaded;
