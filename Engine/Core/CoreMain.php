@@ -5,7 +5,6 @@ namespace TREngine\Engine\Core;
 use TREngine\Engine\Lib\LibBlock;
 use TREngine\Engine\Lib\LibModule;
 use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecMailer;
 use TREngine\Engine\Exec\ExecTimeMarker;
 use TREngine\Engine\Exec\ExecString;
 
@@ -29,7 +28,7 @@ class CoreMain {
     /**
      * Information sur la configuration.
      *
-     * @var CoreMainConfig
+     * @var CoreMainData
      */
     private $configs = null;
 
@@ -53,7 +52,7 @@ class CoreMain {
     private $layout = "default";
 
     private function __construct() {
-        $this->configs = new CoreMainConfig();
+        $this->configs = new CoreMainData();
     }
 
     /**
@@ -99,9 +98,9 @@ class CoreMain {
     /**
      * Retourne les informations sur la configuration.
      *
-     * @return CoreMainConfig
+     * @return CoreMainData
      */
-    public function getConfigs(): CoreMainConfig {
+    public function getConfigs(): CoreMainData {
         return $this->configs;
     }
 

@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Exec\ExecMailer;
 use Closure;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -11,7 +12,7 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class CoreMainConfig extends CoreDataStorage {
+class CoreMainData extends CoreDataStorage {
 
     /**
      * Nouvelle information de configuration.
@@ -280,7 +281,7 @@ class CoreMainConfig extends CoreDataStorage {
 
         // Vérification de l'adresse email du webmaster
         if (!ExecMailer::isValidMail($rawConfig["TR_ENGINE_MAIL"])) {
-            CoreLogger::addException("Default mail isn't valide");
+            CoreLogger::addException("Default mail isn't valid");
         }
 
         define("TR_ENGINE_MAIL", $rawConfig["TR_ENGINE_MAIL"]);
