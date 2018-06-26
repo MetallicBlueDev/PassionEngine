@@ -109,13 +109,19 @@ abstract class FailBase extends Exception {
     }
 
     /**
-     * Retourne le code d'erreur complet (constantes).
+     * Retourne la description du code d'erreur (constantes).
      *
      * @param string $shortCodeName
      * @return string
      */
-    public static function getFullErrorCodeName(string $shortCodeName): string {
-        return "ERROR_CODE_" . strtoupper($shortCodeName);
+    public static function &getErrorCodeDescription(string $shortCodeName): string {
+        $rslt = "";
+        $fullCodeName = "ERROR_CODE_" . strtoupper($shortCodeName);
+
+        if (defined($fullCodeName)) {
+            $rslt = constant($fullCodeName);
+        }
+        return $rslt;
     }
 
     /**

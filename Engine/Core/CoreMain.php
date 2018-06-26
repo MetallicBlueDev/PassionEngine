@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Lib\LibBlock;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Lib\LibModule;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecTimeMarker;
@@ -233,7 +234,7 @@ class CoreMain {
 
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assignString("closeText", constant(FailBase::getFullErrorCodeName("siteClosed")));
+            $libMakeStyle->assignString("closeText", FailBase::getErrorCodeDescription("siteClosed"));
             $libMakeStyle->assignString("closeReason", $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");
         } else {

@@ -183,11 +183,9 @@ class CoreSecure {
      */
     private function &getErrorMessageTitle(string $customMessage): string {
         // Message d'erreur depuis une constante
-        $errorMessageTitle = FailBase::getFullErrorCodeName($customMessage);
+        $errorMessageTitle = FailBase::getErrorCodeDescription($customMessage);
 
-        if (defined($errorMessageTitle)) {
-            $errorMessageTitle = ExecString::entitiesUtf8(constant($errorMessageTitle));
-        } else {
+        if (empty($errorMessageTitle)) {
             $errorMessageTitle = "Stop loading";
 
             if ($this->debuggingMode) {
