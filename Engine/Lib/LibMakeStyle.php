@@ -28,7 +28,7 @@ class LibMakeStyle {
      *
      * @var string
      */
-    private static $templateDir = CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
+    private static $templateDir = CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
 
     /**
      * Nom du fichier template.
@@ -177,8 +177,8 @@ class LibMakeStyle {
     public static function &getTemplateList(): array {
         $templates = array();
         $templatesDir = array(
-            CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY,
-            CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY);
+            CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY,
+            CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY);
 
         foreach ($templatesDir as $templateDir) {
             if (self::isTemplateDir($templateDir)) {
@@ -234,7 +234,7 @@ class LibMakeStyle {
 
         if ($this->debugMode) {
             // En debug mode, on utilise le fichier par défaut
-            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
+            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
         } else {
             $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . self::$templateDir . DIRECTORY_SEPARATOR . $this->fileName;
         }
