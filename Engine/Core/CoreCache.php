@@ -106,7 +106,7 @@ class CoreCache extends CacheModel {
         }
 
         // Chargement des drivers pour le cache
-        $cacheClassName = CoreLoader::getFullQualifiedClassName("Cache" . ucfirst($cacheConfig['type']));
+        $cacheClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
         $loaded = CoreLoader::classLoader($cacheClassName);
 
         if (!$loaded) {
@@ -175,7 +175,7 @@ class CoreCache extends CacheModel {
      * @return array
      */
     public static function &getCacheList(): array {
-        return self::getInstance()->getFileList("Engine/Cache", "Cache");
+        return self::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::CACHE_FILE, CoreLoader::CACHE_FILE);
     }
 
     /**

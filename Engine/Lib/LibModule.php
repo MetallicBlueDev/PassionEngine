@@ -29,6 +29,13 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 class LibModule {
 
     /**
+     * Nom du fichier listant les modules.
+     *
+     * @var string
+     */
+    private const MODULES_FILELISTER = CoreLoader::MODULE_FILE . "s";
+
+    /**
      * Instance du gestionnaire de module.
      *
      * @var LibModule
@@ -129,7 +136,7 @@ class LibModule {
      */
     public static function &getModuleList(): array {
         $moduleList = array();
-        $modules = CoreCache::getInstance()->getNameList("Modules");
+        $modules = CoreCache::getInstance()->getNameList(self::MODULES_FILELISTER);
 
         foreach ($modules as $module) {
             $moduleList[] = array(

@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Cache;
 
 use TREngine\Engine\Core\CoreLogger;
+use TREngine\Engine\Core\CoreLoader;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 // TODO il faut verifier entierement les paths de la classe
@@ -234,7 +235,7 @@ class CacheFtp extends CacheModel {
                     }
 
                     // On verifie si c'est bon et on arrete si c'est trouvé
-                    if (!empty($pathFound) && is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . "Engine" . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
+                    if (!empty($pathFound) && is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
                         break;
                     } else {
                         // Resets
@@ -245,7 +246,7 @@ class CacheFtp extends CacheModel {
         }
 
         // Vérification du root path
-        if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . "Engine" . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
+        if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
             $this->setServerRoot($pathFound);
         } else if (empty($this->getServerRoot())) {
             CoreLogger::addException("Unable to configure root path.");
@@ -278,7 +279,7 @@ class CacheFtp extends CacheModel {
             // Demarrage du mode passif
             if ($this->setPassiveMode()) {
                 // Tentative de création du fichier
-                $buffer = @fopen($this->getRootPath($path), "a"); // TODO il faut mettre un path local ici !
+                $buffer = fopen($this->getRootPath($path), "a"); // TODO il faut mettre un path local ici !
                 fwrite($buffer, $content);
                 rewind($buffer);
 
@@ -455,5 +456,4 @@ class CacheFtp extends CacheModel {
         }
         return $rslt;
     }
-
 }

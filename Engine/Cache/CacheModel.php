@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Cache;
 
 use TREngine\Engine\Core\CoreTransaction;
+use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Fail\FailCache;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -210,7 +211,7 @@ abstract class CacheModel extends CoreTransaction {
             // Ecriture de l'entête
             $content = "<?php\n"
                     . "if (!defined(\"TR_ENGINE_INDEX\")){"
-                    . "require '" . $dirBase . "Engine" . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
+                    . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
                     . "}"
                     . "// Generated on " . date('Y-m-d H:i:s') . "\n"
                     . $content
@@ -218,5 +219,4 @@ abstract class CacheModel extends CoreTransaction {
         }
         return $content;
     }
-
 }

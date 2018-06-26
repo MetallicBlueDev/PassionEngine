@@ -270,7 +270,7 @@ class CachePhp extends CacheModel {
      */
     private function removeFile(string $path, int $timeLimit) {
         if ($this->canRemoveFile($path, $timeLimit)) {
-            $fp = @fopen(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path, 'a');
+            $fp = fopen(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path, 'a');
 
             if ($fp) {
                 // Verrouiller le fichier destination
@@ -385,5 +385,4 @@ class CachePhp extends CacheModel {
         }
         return $rslt;
     }
-
 }

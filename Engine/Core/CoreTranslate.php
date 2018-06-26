@@ -227,7 +227,7 @@ class CoreTranslate {
     public static function checkInstance() {
         if (self::$coreTranslate === null) {
             self::$coreTranslate = new CoreTranslate();
-            self::$coreTranslate->translate("Engine");
+            self::$coreTranslate->translate(CoreLoader::ENGINE_SUBTYPE);
         }
     }
 
@@ -278,7 +278,7 @@ class CoreTranslate {
      * @return array
      */
     public static function &getLangList(): array {
-        return CoreCache::getInstance()->getFileList("Engine\Translate", ".lang");
+        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::TRANSLATE_FILE, "." . CoreLoader::TRANSLATE_EXTENSION);
     }
 
     /**
@@ -292,7 +292,7 @@ class CoreTranslate {
         $langues = self::getLangList();
 
         foreach ($langues as $langue) {
-            $coreCache->removeCache($langCacheFileName . $langue . ".lang.php");
+            $coreCache->removeCache($langCacheFileName . $langue . "." . CoreLoader::TRANSLATE_EXTENSION . ".php");
         }
     }
 
@@ -438,7 +438,7 @@ class CoreTranslate {
         if (!empty($pathLang) && substr($pathLang, -1) !== DIRECTORY_SEPARATOR) {
             $pathLang .= DIRECTORY_SEPARATOR;
         }
-        return str_replace(DIRECTORY_SEPARATOR, "_", $pathLang) . "lang_";
+        return str_replace(DIRECTORY_SEPARATOR, "_", $pathLang) . CoreLoader::TRANSLATE_EXTENSION . "_";
     }
 
     /**
@@ -598,6 +598,6 @@ class CoreTranslate {
      * @return bool true langue disponible.
      */
     private static function canUseLanguage(string $language): bool {
-        return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate("Engine", $language) . ".php");
+        return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE, $language) . ".php");
     }
 }

@@ -32,6 +32,13 @@ class LibBlock {
     private const BLOCKS_INDEXER_FILENAME = "blocks_indexer.php";
 
     /**
+     * Nom du fichier listant les blocks.
+     * 
+     * @var string
+     */
+    private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . "s";
+
+    /**
      * Demande le premier block compilé (toute position confondu).
      *
      * @var int
@@ -304,7 +311,7 @@ class LibBlock {
      * @return array
      */
     public static function &getBlockList(): array {
-        return CoreCache::getInstance()->getFileList("Blocks", "Block");
+        return CoreCache::getInstance()->getFileList(self::BLOCKS_FILELISTER, CoreLoader::BLOCK_FILE);
     }
 
     /**

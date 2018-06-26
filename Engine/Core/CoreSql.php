@@ -41,7 +41,7 @@ class CoreSql extends BaseModel {
 
         if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
             // Chargement des drivers pour la base
-            $baseClassName = CoreLoader::getFullQualifiedClassName("Base" . ucfirst($databaseConfig['type']));
+            $baseClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::BASE_FILE . ucfirst($databaseConfig['type']));
             $loaded = CoreLoader::classLoader($baseClassName);
         }
 
@@ -112,12 +112,12 @@ class CoreSql extends BaseModel {
     }
 
     /**
-     * Retourne la liste des types de base supporté
+     * Retourne la liste des types de base supporté.
      *
      * @return array
      */
     public static function &getBaseList(): array {
-        return CoreCache::getInstance()->getFileList("Engine/Base", "Base");
+        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::BASE_FILE, CoreLoader::BASE_FILE);
     }
 
     /**

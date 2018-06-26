@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Lib;
 
+use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreAccessZone;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -101,7 +102,7 @@ class LibModuleData extends LibEntityData {
      * @return string
      */
     public function getFolderName(): string {
-        return "Module" . $this->getName();
+        return CoreLoader::MODULE_FILE . $this->getName();
     }
 
     /**
@@ -110,7 +111,7 @@ class LibModuleData extends LibEntityData {
      * @return string
      */
     public function getClassName(): string {
-        return "Module" . $this->getPage();
+        return CoreLoader::MODULE_FILE . $this->getPage();
     }
 
     /**

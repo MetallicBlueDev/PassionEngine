@@ -155,7 +155,7 @@ class LibBlockData extends LibEntityData {
      * @return string
      */
     public function getFolderName(): string {
-        return "Block" . $this->getType();
+        return CoreLoader::BLOCK_FILE . $this->getType();
     }
 
     /**
@@ -164,7 +164,7 @@ class LibBlockData extends LibEntityData {
      * @return string
      */
     public function getClassName(): string {
-        return "Block" . $this->getType();
+        return CoreLoader::BLOCK_FILE . $this->getType();
     }
 
     /**

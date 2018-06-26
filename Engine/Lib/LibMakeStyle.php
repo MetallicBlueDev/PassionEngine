@@ -4,6 +4,7 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Core\CoreLoader;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
@@ -16,11 +17,18 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 class LibMakeStyle {
 
     /**
-     * Dossier contenant le template.
+     * Dossier contenant les templates.
      *
      * @var string
      */
-    private static $templateDir = "Engine/Template/MetallicBlueSky";
+    private const TEMPLATE_DIRECTORY = "Template";
+
+    /**
+     * Dossier contenant le template en cours d'utilisation.
+     *
+     * @var string
+     */
+    private static $templateDir = CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
 
     /**
      * Nom du fichier template.
@@ -169,8 +177,8 @@ class LibMakeStyle {
     public static function &getTemplateList(): array {
         $templates = array();
         $templatesDir = array(
-            "Custom" . DIRECTORY_SEPARATOR . "Template",
-            "Engine" . DIRECTORY_SEPARATOR . "Template");
+            CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY,
+            CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY);
 
         foreach ($templatesDir as $templateDir) {
             if (self::isTemplateDir($templateDir)) {
@@ -226,7 +234,7 @@ class LibMakeStyle {
 
         if ($this->debugMode) {
             // En debug mode, on utilise le fichier par défaut
-            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . "Engine" . DIRECTORY_SEPARATOR . "Template" . DIRECTORY_SEPARATOR . "makestyle.debug.php";
+            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
         } else {
             $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . self::$templateDir . DIRECTORY_SEPARATOR . $this->fileName;
         }

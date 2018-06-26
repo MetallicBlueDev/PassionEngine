@@ -19,91 +19,112 @@ class CoreLoader {
      *
      * @var string
      */
-    private const TYPE_CLASS = "Class";
+    public const CLASS_FILE = "Class";
 
     /**
      * Fichier de pilotage de base de données.
      *
      * @var string
      */
-    private const TYPE_BASE = "Base";
+    public const BASE_FILE = "Base";
 
     /**
      * Fichier de gestion du cache.
      *
      * @var string
      */
-    private const TYPE_CACHE = "Cache";
+    public const CACHE_FILE = "Cache";
 
     /**
      * Fichier du base du moteur.
      *
      * @var string
      */
-    private const TYPE_CORE = "Core";
+    public const CORE_FILE = "Core";
 
     /**
      * Fichier d'aide à la manipulation.
      *
      * @var string
      */
-    private const TYPE_EXEC = "Exec";
+    public const EXEC_FILE = "Exec";
 
     /**
      * Fichier d'erreur.
      *
      * @var string
      */
-    private const TYPE_FAIL = "Fail";
+    public const FAIL_FILE = "Fail";
 
     /**
      * Fichier de bibliothèque.
      *
      * @var string
      */
-    private const TYPE_LIB = "Lib";
+    public const LIBRARY_FILE = "Lib";
 
     /**
      * Fichier représentant un block.
      *
      * @var string
      */
-    private const TYPE_BLOCK = "Block";
+    public const BLOCK_FILE = "Block";
 
     /**
      * Fichier représentant un module.
      *
      * @var string
      */
-    private const TYPE_MODULE = "Module";
+    public const MODULE_FILE = "Module";
 
     /**
      * Fichier représentant une traduction.
      *
      * @var string
      */
-    private const TYPE_TRANSLATE = "Translate";
+    public const TRANSLATE_FILE = "Translate";
+
+    /**
+     * Extension spécifique pour la traduction.
+     *
+     * @var string
+     */
+    public const TRANSLATE_EXTENSION = "lang";
 
     /**
      * Fichier représentant une inclusion spécifique.
      *
      * @var string
      */
-    private const TYPE_INCLUDE = "inc";
+    public const INCLUDE_FILE = "inc";
 
     /**
      * Fichier attaché au moteur.
      *
      * @var string
      */
-    private const SUBTYPE_ENGINE = "Engine";
+    public const ENGINE_SUBTYPE = "Engine";
 
     /**
      * Fichier détaché du moteur.
      *
      * @var string
      */
-    private const SUBTYPE_CUSTOM = "Custom";
+    public const CUSTOM_SUBTYPE = "Custom";
+
+    /**
+     * Les types de namespace possible.
+     */
+    private const NAMESPACE_TYPES = array(
+        self::BASE_FILE,
+        self::CACHE_FILE,
+        self::CORE_FILE,
+        self::EXEC_FILE,
+        self::FAIL_FILE,
+        self::LIBRARY_FILE,
+        self::BLOCK_FILE,
+        self::MODULE_FILE
+    );
 
     /**
      * Namespace de base.
@@ -111,20 +132,6 @@ class CoreLoader {
      * @var string
      */
     private const NAMESPACE_PATTERN = "TREngine\{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
-
-    /**
-     * Les types de namespace possible.
-     */
-    private const NAMESPACE_TYPES = array(
-        self::TYPE_BASE,
-        self::TYPE_CACHE,
-        self::TYPE_CORE,
-        self::TYPE_EXEC,
-        self::TYPE_FAIL,
-        self::TYPE_LIB,
-        self::TYPE_BLOCK,
-        self::TYPE_MODULE
-    );
 
     /**
      * Tableau des classes chargées.
@@ -163,7 +170,8 @@ class CoreLoader {
      * @return bool true chargé.
      */
     public static function &classLoader(string $class): bool {
-        return self::manageLoad($class, ""); // Type indéterminé
+        // Type indéterminé
+        return self::manageLoad($class, "");
     }
 
     /**
@@ -173,7 +181,7 @@ class CoreLoader {
      * @return bool true chargé.
      */
     public static function &translateLoader(string $plugin): bool {
-        return self::manageLoad($plugin, self::TYPE_TRANSLATE);
+        return self::manageLoad($plugin, self::TRANSLATE_FILE);
     }
 
     /**
@@ -183,7 +191,7 @@ class CoreLoader {
      * @return bool true chargé.
      */
     public static function &includeLoader(string $include): bool {
-        return self::manageLoad($include, self::TYPE_INCLUDE);
+        return self::manageLoad($include, self::INCLUDE_FILE);
     }
 
     /**
@@ -256,7 +264,7 @@ class CoreLoader {
      * @return string chemin absolu ou nulle.
      */
     public static function &getIncludeAbsolutePath(string $keyName): string {
-        return self::getAbsolutePath($keyName, CoreLoader::TYPE_INCLUDE);
+        return self::getAbsolutePath($keyName, self::INCLUDE_FILE);
     }
 
     /**
@@ -266,7 +274,7 @@ class CoreLoader {
      * @return string chemin absolu ou nulle.
      */
     public static function &getTranslateAbsolutePath(string $keyName): string {
-        return self::getAbsolutePath($keyName, CoreLoader::TYPE_TRANSLATE);
+        return self::getAbsolutePath($keyName, self::TRANSLATE_FILE);
     }
 
     /**
@@ -310,7 +318,7 @@ class CoreLoader {
      * @return string
      */
     public static function &getFilePathFromTranslate(string $keyName, string $currentLanguage = ""): string {
-        $path = $keyName . DIRECTORY_SEPARATOR . self::TYPE_TRANSLATE . DIRECTORY_SEPARATOR;
+        $path = $keyName . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
 
         if (!empty($currentLanguage)) {
             $path .= $currentLanguage;
@@ -318,7 +326,7 @@ class CoreLoader {
             $path .= CoreTranslate::getInstance()->getCurrentLanguage();
         }
 
-        $path .= ".lang";
+        $path .= "." . self::TRANSLATE_EXTENSION;
         return $path;
     }
 
@@ -345,8 +353,8 @@ class CoreLoader {
         $loadKeyName = $keyName;
 
         switch ($fileType) {
-            case self::TYPE_TRANSLATE:
-                $loadKeyName .= ".lang";
+            case self::TRANSLATE_FILE:
+                $loadKeyName .= "." . self::TRANSLATE_EXTENSION;
                 break;
         }
 
@@ -411,13 +419,13 @@ class CoreLoader {
             $loaded = self::loadFilePath($keyName, $fileType, $path);
         } else {
             switch ($fileType) {
-                case self::TYPE_BLOCK:
+                case self::BLOCK_FILE:
                     CoreLogger::addError(ERROR_BLOCK_NO_FILE);
                     break;
-                case self::TYPE_MODULE:
+                case self::MODULE_FILE:
                     CoreLogger::addError(ERROR_MODULE_NO_FILE);
                     break;
-                case self::TYPE_TRANSLATE:
+                case self::TRANSLATE_FILE:
                     // Aucune traduction disponible
                     break;
                 default:
@@ -439,7 +447,7 @@ class CoreLoader {
             self::buildGenericKeyNameAndFileType($keyName, $fileType, $prefixName);
         }
 
-        if ($fileType === self::TYPE_TRANSLATE) {
+        if ($fileType === self::TRANSLATE_FILE) {
             $fakeFileType = "";
             self::buildGenericKeyNameAndFileType($keyName, $fakeFileType, $prefixName);
 
@@ -458,9 +466,9 @@ class CoreLoader {
      */
     private static function buildGenericKeyNameAndFileType(string &$keyName, string &$fileType, string $prefixName) {
         if (strpos($keyName, "\Block\Block") !== false) {
-            $fileType = self::TYPE_BLOCK;
+            $fileType = self::BLOCK_FILE;
         } else if (strpos($keyName, "Module\Module") !== false) {
-            $fileType = self::TYPE_MODULE;
+            $fileType = self::MODULE_FILE;
         } else if (strpos($keyName, "\\") === false) {
             foreach (self::NAMESPACE_TYPES as $namespaceType) {
                 if (strrpos($keyName, $namespaceType, -strlen($keyName)) !== false) {
@@ -470,7 +478,7 @@ class CoreLoader {
                     $keyName = str_replace("{PREFIX}", $prefixName, $keyName);
                     $keyName = str_replace("{TYPE}", $namespaceType, $keyName);
 
-                    $namespaceOrigin = (strrpos($keyName, $namespaceType . self::SUBTYPE_CUSTOM) !== false) ? self::SUBTYPE_CUSTOM : self::SUBTYPE_ENGINE;
+                    $namespaceOrigin = (strrpos($keyName, $namespaceType . self::CUSTOM_SUBTYPE) !== false) ? self::CUSTOM_SUBTYPE : self::ENGINE_SUBTYPE;
                     $keyName = str_replace("{ORIGIN}", $namespaceOrigin, $keyName);
                     break;
                 }
@@ -479,7 +487,7 @@ class CoreLoader {
 
         if (empty($fileType)) {
             // Type par défaut
-            $fileType = self::TYPE_CLASS;
+            $fileType = self::CLASS_FILE;
         }
     }
 
@@ -494,21 +502,21 @@ class CoreLoader {
         $path = "";
 
         switch ($fileType) {
-            case self::TYPE_BASE:
-            case self::TYPE_CACHE:
-            case self::TYPE_CORE:
-            case self::TYPE_EXEC:
-            case self::TYPE_FAIL:
-            case self::TYPE_LIB :
-            case self::TYPE_CLASS:
-            case self::TYPE_BLOCK:
-            case self::TYPE_MODULE:
+            case self::BASE_FILE:
+            case self::CACHE_FILE:
+            case self::CORE_FILE:
+            case self::EXEC_FILE:
+            case self::FAIL_FILE:
+            case self::LIBRARY_FILE :
+            case self::CLASS_FILE:
+            case self::BLOCK_FILE:
+            case self::MODULE_FILE:
                 $path = self::getFilePathFromNamespace($keyName);
                 break;
-            case self::TYPE_TRANSLATE:
+            case self::TRANSLATE_FILE:
                 $path = self::getFilePathFromTranslate($keyName);
                 break;
-            case self::TYPE_INCLUDE:
+            case self::INCLUDE_FILE:
                 $path = str_replace("_", DIRECTORY_SEPARATOR, $keyName) . "." . $fileType;
                 break;
             default:
@@ -531,11 +539,11 @@ class CoreLoader {
         $loaded = false;
 
         switch ($fileType) {
-            case self::TYPE_TRANSLATE:
-                $lang = array();
+            case self::TRANSLATE_FILE:
+                ${self::TRANSLATE_EXTENSION} = array();
                 break;
-            case self::TYPE_INCLUDE:
-                $inc = array();
+            case self::INCLUDE_FILE:
+                ${self::INCLUDE_FILE} = array();
                 break;
         }
 
@@ -544,12 +552,12 @@ class CoreLoader {
         $loaded = true;
 
         switch ($fileType) {
-            case self::TYPE_TRANSLATE:
+            case self::TRANSLATE_FILE:
                 if (!empty($lang) && is_array($lang)) {
                     CoreTranslate::getInstance()->affectCache($lang);
                 }
                 break;
-            case self::TYPE_INCLUDE:
+            case self::INCLUDE_FILE:
                 CoreMain::getInstance()->getConfigs()->addInclude($keyName, $inc);
                 break;
         }
