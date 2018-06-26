@@ -183,7 +183,7 @@ class CoreSecure {
      */
     private function &getErrorMessageTitle(string $customMessage): string {
         // Message d'erreur depuis une constante
-        $errorMessageTitle = "ERROR_DEBUG_" . strtoupper($customMessage);
+        $errorMessageTitle = FailBase::getFullErrorCodeName($customMessage);
 
         if (defined($errorMessageTitle)) {
             $errorMessageTitle = ExecString::entitiesUtf8(constant($errorMessageTitle));

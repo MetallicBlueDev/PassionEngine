@@ -14,6 +14,40 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
 abstract class FailBase extends Exception {
 
     /**
+     * Liste des codes d'erreur.
+     * Ne pas changer le numéro d'une erreur.
+     *
+     *
+     * @var array
+     */
+    private const ERROR_CODES = array(
+        0 => "genericErrorCode",
+        1 => "accessRank",
+        2 => "cacheType",
+        3 => "cacheCode",
+        4 => "loader",
+        5 => "cachePath",
+        6 => "sqlPath",
+        7 => "configPath",
+        8 => "siteClosed",
+        9 => "requestHash",
+        10 => "badUrl",
+        11 => "badQueryString",
+        12 => "badRequestReferer",
+        13 => "sqlType",
+        14 => "sqlCode",
+        15 => "blockType",
+        16 => "blockSide",
+        17 => "makeStyle",
+        18 => "makeStyleConfig",
+        19 => "sqlReq",
+        20 => "netConnect",
+        21 => "netSelect",
+        22 => "netCanUse",
+        9999 => "??"
+    );
+
+    /**
      * Nom de la source de l'exception.
      *
      * @var string
@@ -48,10 +82,10 @@ abstract class FailBase extends Exception {
     public function getFailCodeName(): string {
         $codeName = "";
 
-        if (isset(FailFrom::ERROR_CODES[$this->getCode()])) {
-            $codeName = FailFrom::ERROR_CODES[$this->getCode()];
+        if (isset(self::ERROR_CODES[$this->getCode()])) {
+            $codeName = self::ERROR_CODES[$this->getCode()];
         } else {
-            $codeName = FailFrom::ERROR_CODES[0];
+            $codeName = self::ERROR_CODES[0];
         }
         return $codeName;
     }
@@ -72,6 +106,16 @@ abstract class FailBase extends Exception {
      */
     public function getFailArgs(): array {
         return $this->failArgs;
+    }
+
+    /**
+     * Retourne le code d'erreur complet (constantes).
+     *
+     * @param string $shortCodeName
+     * @return string
+     */
+    public static function getFullErrorCodeName(string $shortCodeName): string {
+        return "ERROR_CODE_" . strtoupper($shortCodeName);
     }
 
     /**
