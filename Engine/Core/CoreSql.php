@@ -46,13 +46,13 @@ class CoreSql extends BaseModel {
         }
 
         if (!$loaded) {
-            CoreSecure::getInstance()->throwException("sqlType", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("sqlType", null, array(
                 $databaseConfig['type']
             ));
         }
 
         if (!CoreLoader::isCallable($baseClassName, "initialize")) {
-            CoreSecure::getInstance()->throwException("sqlCode", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("sqlCode", null, array(
                 $baseClassName
             ));
         }
@@ -62,7 +62,7 @@ class CoreSql extends BaseModel {
             $this->selectedBase->initialize($databaseConfig);
         } catch (Exception $ex) {
             $this->selectedBase = null;
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
         }
     }
 
@@ -242,7 +242,7 @@ class CoreSql extends BaseModel {
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
         }
     }
 
@@ -281,7 +281,7 @@ class CoreSql extends BaseModel {
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
         }
     }
 
@@ -300,7 +300,7 @@ class CoreSql extends BaseModel {
      * {@inheritdoc}
      *
      * @param string $sql
-     * @throws Exception
+     * @throws FailSql
      */
     public function query(string $sql = "") {
         $sql = (!empty($sql)) ? $sql : $this->getSql();
@@ -315,7 +315,7 @@ class CoreSql extends BaseModel {
 
         // Création d'une exception si une réponse est négative (false)
         if ($this->getQueries() === false) {
-            throw new FailSql("sqlReq");
+            throw new FailSql("bad query", 19, array($sql));
         }
     }
 
@@ -335,7 +335,7 @@ class CoreSql extends BaseModel {
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
         }
     }
 
@@ -355,7 +355,7 @@ class CoreSql extends BaseModel {
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
         }
     }
 

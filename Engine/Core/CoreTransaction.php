@@ -42,15 +42,15 @@ abstract class CoreTransaction extends CoreDataStorage {
                 $this->netConnect();
 
                 if (!$this->netConnected()) {
-                    $this->throwException("Connect");
+                    $this->throwException("connection error", 20);
                 }
 
                 // Sélection d'une base de données
                 if (!$this->netSelect()) {
-                    $this->throwException("Select");
+                    $this->throwException("can not select a node", 21);
                 }
             } else {
-                $this->throwException("CanUse");
+                $this->throwException("transaction can not be used", 22);
             }
         }
     }
@@ -65,7 +65,9 @@ abstract class CoreTransaction extends CoreDataStorage {
     /**
      * Etablie une connexion au serveur.
      */
-    public function netConnect() {}
+    public function netConnect() {
+
+    }
 
     /**
      * Retourne l'état de la connexion.
@@ -79,7 +81,9 @@ abstract class CoreTransaction extends CoreDataStorage {
     /**
      * Déconnexion du serveur.
      */
-    public function netDeconnect() {}
+    public function netDeconnect() {
+
+    }
 
     /**
      * Sélectionne un noeud dans la transaction.
@@ -140,10 +144,11 @@ abstract class CoreTransaction extends CoreDataStorage {
      * Lance une exception gérant ce type de transaction.
      *
      * @param string $message
+     * @param int $failCode
+     * @param array $failArgs
      * @throws FailEngine
      */
-    protected function throwException(string $message) {
-        throw new FailEngine($message);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
+        throw new FailEngine($message, $failCode, $failArgs);
     }
-
 }

@@ -332,17 +332,17 @@ class CoreMain {
      */
     private function prepare() {
         if (!$this->loadCache()) {
-            CoreSecure::getInstance()->throwException("cachePath", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("cachePath", null, array(
                 CoreLoader::getIncludeAbsolutePath("configs_cache")));
         }
 
         if (!$this->loadSql()) {
-            CoreSecure::getInstance()->throwException("sqlPath", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("sqlPath", null, array(
                 CoreLoader::getIncludeAbsolutePath("configs_database")));
         }
 
         if (!$this->loadConfig()) {
-            CoreSecure::getInstance()->throwException("configPath", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("configPath", null, array(
                 CoreLoader::getIncludeAbsolutePath("configs_config")));
         }
 
@@ -403,7 +403,7 @@ class CoreMain {
             $canUse = $this->getConfigs()->initialize();
 
             if (defined("TR_ENGINE_STATUT") && TR_ENGINE_STATUT == "close") {
-                CoreSecure::getInstance()->throwException("close");
+                CoreSecure::getInstance()->throwExceptionOLD("close", 8);
             }
 
             // Si tout semble en ordre, nous continuons le chargement

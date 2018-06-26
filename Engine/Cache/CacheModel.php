@@ -25,13 +25,15 @@ abstract class CacheModel extends CoreTransaction {
     protected $chmod = 0777;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      *
      * @param string $message
+     * @param int $failCode
+     * @param array $failArgs
      * @throws FailCache
      */
-    protected function throwException(string $message) {
-        throw new FailCache("cache" . $message);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
+        throw new FailCache($message, $failCode, $failArgs);
     }
 
     /**

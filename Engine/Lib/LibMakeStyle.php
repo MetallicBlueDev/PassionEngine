@@ -132,7 +132,7 @@ class LibMakeStyle {
                 exit("CRITICAL ERROR: DEBUG TEMPLATE NOT FOUND.");
             }
 
-            CoreSecure::getInstance()->throwException("makeStyle", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("makeStyle", null, array(
                 $this->getTemplatePath()));
         }
 
@@ -153,7 +153,7 @@ class LibMakeStyle {
      */
     public static function setTemplateDir(string $templateDir) {
         if (!self::isTemplateDir($templateDir)) {
-            CoreSecure::getInstance()->throwException("makeStyleConfig", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("makeStyleConfig", null, array(
                 "templateDir = " . $templateDir));
         }
 

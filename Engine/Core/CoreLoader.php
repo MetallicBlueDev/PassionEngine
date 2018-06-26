@@ -148,7 +148,7 @@ class CoreLoader {
     public static function affectRegister() {
         try {
             if (!is_null(self::$loadedFiles)) {
-                throw new FailLoader("Loader already registered");
+                throw new FailLoader("loader already registered", 4);
             }
 
             self::$loadedFiles = array();
@@ -156,10 +156,10 @@ class CoreLoader {
             if (!spl_autoload_register(array(
                         'TREngine\Engine\Core\CoreLoader',
                         'classLoader'), true)) {
-                throw new FailLoader("spl_autoload_register fail");
+                throw new FailLoader("spl_autoload_register fail", 4);
             }
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException("loader", $ex);
+            CoreSecure::getInstance()->throwExceptionOLD("loader", $ex);
         }
     }
 
@@ -385,7 +385,7 @@ class CoreLoader {
 
         try {
             if (empty($keyName)) {
-                throw new FailLoader("loader");
+                throw new FailLoader("empty file name", 4, array($keyName, $fileType));
             }
 
             self::buildKeyNameAndFileType($keyName, $fileType);
@@ -396,7 +396,7 @@ class CoreLoader {
                 $loaded = self::load($keyName, $fileType);
             }
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwException($ex->getMessage(), $ex, array(
+            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex, array(
                 $keyName,
                 $fileType));
         }
@@ -429,7 +429,7 @@ class CoreLoader {
                     // Aucune traduction disponible
                     break;
                 default:
-                    throw new FailLoader("loader");
+                    throw new FailLoader("unable to load file", 4, array($keyName, $fileType));
             }
         }
         return $loaded;
@@ -497,6 +497,7 @@ class CoreLoader {
      * @param string $keyName
      * @param string $fileType
      * @return string
+     * @throws FailLoader
      */
     private static function &getFilePath(string $keyName, string $fileType): string {
         $path = "";
@@ -520,7 +521,7 @@ class CoreLoader {
                 $path = str_replace("_", DIRECTORY_SEPARATOR, $keyName) . "." . $fileType;
                 break;
             default:
-                throw new FailLoader("loader");
+                throw new FailLoader("can not determine the file path", 4, array($keyName, $fileType));
         }
 
         $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path . ".php";

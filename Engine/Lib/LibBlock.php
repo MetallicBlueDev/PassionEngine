@@ -216,7 +216,7 @@ class LibBlock {
      */
     public function launchStandaloneBlockType(string $blockTypeName) {
         if (!$this->isStandaloneBlockType($blockTypeName)) {
-            CoreSecure::getInstance()->throwException("blockType", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("blockType", null, array(
                 "Invalid type value: " . $blockTypeName
             ));
         }
@@ -298,7 +298,7 @@ class LibBlock {
         $sideLetters = array_search($side, self::SIDE_LIST);
 
         if ($sideLetters === false) {
-            CoreSecure::getInstance()->throwException("blockSide", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("blockSide", null, array(
                 "Numeric side: " . $side
             ));
         }
@@ -501,7 +501,7 @@ class LibBlock {
                 $blockClass->display();
                 $blockInfo->setBuffer(ob_get_clean());
             } catch (Exception $ex) {
-                CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+                CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
             }
         } else {
             CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockInfo->getType() . ")");
@@ -516,7 +516,7 @@ class LibBlock {
      */
     private static function &getSideAsNumeric(string $sideName): int {
         if (!isset(self::SIDE_LIST[$sideName])) {
-            CoreSecure::getInstance()->throwException("blockSide", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("blockSide", null, array(
                 "Letters side: " . $sideName
             ));
         }

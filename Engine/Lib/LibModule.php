@@ -295,7 +295,7 @@ class LibModule {
                 $moduleInfo->setBuffer(ob_get_clean());
             } catch (Exception $ex) {
                 // PHP 7
-                CoreSecure::getInstance()->throwException($ex->getMessage(), $ex);
+                CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
             }
         } else {
             CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleInfo->getName() . ")");

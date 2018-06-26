@@ -33,7 +33,7 @@ class BlockImageGenerator extends BlockModel {
                 $this->renderText();
                 break;
             default:
-                CoreSecure::getInstance()->throwException("mode", null, array(
+                CoreSecure::getInstance()->throwExceptionOLD("mode", null, array(
                     "Invalid mode: " . $mode));
                 break;
         }
@@ -54,7 +54,7 @@ class BlockImageGenerator extends BlockModel {
         $code = CoreRequest::getString("code", "", CoreRequestType::GET);
 
         if (empty($code)) {
-            CoreSecure::getInstance()->throwException("code", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("code", null, array(
                 "Invalid code: " . $code));
         }
 
@@ -93,7 +93,7 @@ class BlockImageGenerator extends BlockModel {
         $text = CoreRequest::getString("text", "", CoreRequestType::GET);
 
         if (empty($text)) {
-            CoreSecure::getInstance()->throwException("text", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("text", null, array(
                 "Invalid text: " . $text));
         }
 

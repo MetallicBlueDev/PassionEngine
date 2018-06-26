@@ -66,14 +66,14 @@ class CoreAccess {
      */
     public static function &getRankAsLitteral(int $rank): string {
         if (!is_numeric($rank)) {
-            CoreSecure::getInstance()->throwException("accessRank", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("accessRank", null, array(
                 "Invalid rank value: " . $rank));
         }
 
         $rankLitteral = array_search($rank, CoreAccessRank::RANK_LIST);
 
         if ($rankLitteral === false) {
-            CoreSecure::getInstance()->throwException("accessRank", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("accessRank", null, array(
                 "Numeric rank: " . $rank));
         }
 

@@ -15,8 +15,10 @@ class FailEngine extends FailBase {
      * Exception déclenchée par une erreur interne.
      *
      * @param string $message
+     * @param int $failCode
+     * @param array $failArgs
      */
-    public function __construct(string $message) {
-        parent::__construct($message, FailFrom::ENGINE);
+    public function __construct(string $message, int $failCode = 0, array $failArgs = array()) {
+        parent::__construct($message, $failCode, $failArgs);
     }
 }

@@ -15,8 +15,10 @@ class FailCache extends FailBase {
      * Exception déclenchée par le cache.
      *
      * @param string $message
+     * @param int $failCode
+     * @param array $failArgs
      */
-    public function __construct(string $message) {
-        parent::__construct($message, FailFrom::CACHE);
+    public function __construct(string $message, int $failCode = 0, array $failArgs = array()) {
+        parent::__construct($message, $failCode, $failArgs);
     }
 }

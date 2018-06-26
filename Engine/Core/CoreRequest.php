@@ -187,7 +187,7 @@ class CoreRequest {
         $input = array();
 
         if (!$useDefault) {
-            CoreSecure::getInstance()->throwException("requestHash", null, array(
+            CoreSecure::getInstance()->throwExceptionOLD("requestHash", null, array(
                 $hash));
         }
 

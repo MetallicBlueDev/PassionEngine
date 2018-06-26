@@ -63,10 +63,12 @@ abstract class BaseModel extends CoreTransaction {
      * {@inheritdoc}
      *
      * @param string $message
+     * @param int $failCode
+     * @param array $failArgs
      * @throws FailSql
      */
-    protected function throwException(string $message) {
-        throw new FailSql("sql" . $message);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
+        throw new FailSql($message, $failCode, $failArgs);
     }
 
     /**

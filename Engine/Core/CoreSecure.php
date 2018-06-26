@@ -110,7 +110,7 @@ class CoreSecure {
 
             // Si nous ne sommes pas passé par l'index
             if (self::$secure->locked()) {
-                self::$secure->throwException("badUrl");
+                self::$secure->throwExceptionOLD("badUrl");
             }
         }
     }
@@ -142,11 +142,21 @@ class CoreSecure {
      * Affiche un message d'erreur au client, mettra fin à l'exécution du moteur.
      * Cette fonction est activé si une erreur est détectée.
      *
+     * @param Exception $ex L'exception interne levée.
+     */
+    public function catchException(Exception $ex) {
+// TODO-------------------------<------------------------------------------
+    }
+
+    /**
+     * Affiche un message d'erreur au client, mettra fin à l'exécution du moteur.
+     * Cette fonction est activé si une erreur est détectée.
+     *
      * @param string $customMessage Message d'erreur.
      * @param Exception $ex L'exception interne levée.
-     * @param array $argv Argument suplementaire d'information sur l'erreur.
+     * @param array $argv Argument supplémentaire d'information sur l'erreur.
      */
-    public function throwException(string $customMessage, Exception $ex = null, array $argv = array()) {
+    public function throwExceptionOLD(string $customMessage, Exception $ex = null, array $argv = array()) {
         $this->locked = true;
 
         if ($ex === null) {
@@ -234,7 +244,8 @@ class CoreSecure {
     private function appendExceptionMessage(Exception $ex, array &$errorMessages) {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
-                $errorMessages[] = $ex->getFailInformation();
+                $errorMessages[] = "Exception " . $ex->getFailSourceName() . " (" . $ex->getCode() . ") : " . $ex->getMessage();
+                $errorMessages = array_merge($errorMessages, $ex->getFailArgs());
             } else {
                 $errorMessages[] = "Exception PHP (" . $ex->getCode() . ") : " . $ex->getMessage();
             }
@@ -325,7 +336,7 @@ class CoreSecure {
 
             foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
                 if (strpos($queryString, $badStringValue)) {
-                    $this->throwException("badQueryString");
+                    $this->throwExceptionOLD("badQueryString");
                 }
             }
         }
@@ -338,7 +349,7 @@ class CoreSecure {
         if (CoreRequest::getRequestMethod() === "POST" && !empty(CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
             // Vérification du demandeur de la méthode POST
             if (!preg_match("/" . CoreRequest::getString("HTTP_HOST", "", CoreRequestType::SERVER) . "/", CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
-                $this->throwException("badRequestReferer");
+                $this->throwExceptionOLD("badRequestReferer");
             }
         }
     }
