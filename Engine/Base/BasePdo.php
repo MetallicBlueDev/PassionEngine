@@ -304,14 +304,8 @@ class BasePdo extends BaseModel {
      * @return string
      */
     private function &getPdoErrorMessage(): string {
-        $message = "";
         $error = $this->getPdo()->errorInfo();
-
-        if (count($error) >= 3) {
-            $message = $error[2];
-        } else {
-            $message = implode(" // ", $error);
-        }
+        $message = implode(" // ", $error);
         return $message;
     }
 }

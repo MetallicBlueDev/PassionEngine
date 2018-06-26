@@ -283,6 +283,8 @@ class CoreSecure {
                     $errorMessages[] = "<span class=\"text_bold\">Last Sql error message:</span>";
                     $errorMessages = array_merge($errorMessages, $sqlErrors);
                 }
+            } else {
+                $errorMessages[] = "No connection available to the database.";
             }
         }
     }

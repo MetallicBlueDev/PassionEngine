@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Exec\ExecMailer;
+use TREngine\Engine\Exec\ExecString;
 use Closure;
 
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
@@ -315,7 +316,7 @@ class CoreMainData extends CoreDataStorage {
         }
 
         // Ajout à la configuration courante
-        addConfig($newConfig);
+        $this->addConfig($newConfig);
     }
 
     /**
