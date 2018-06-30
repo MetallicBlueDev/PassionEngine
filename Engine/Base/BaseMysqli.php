@@ -15,14 +15,16 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class BaseMysqli extends BaseModel {
+class BaseMysqli extends BaseModel
+{
 
     /**
      * {@inheritDoc}
      *
      * @return bool
      */
-    protected function canUse(): bool {
+    protected function canUse(): bool
+    {
         $rslt = function_exists("mysqli_connect");
 
         if (!$rslt) {
@@ -34,11 +36,14 @@ class BaseMysqli extends BaseModel {
     /**
      * {@inheritDoc}
      */
-    public function netConnect() {
+    public function netConnect()
+    {
         try {
             // Permet de générer une exception à la place des avertissements qui spam
             mysqli_report(MYSQLI_REPORT_STRICT);
-            $this->connId = new mysqli($this->getTransactionHost(), $this->getTransactionUser(), $this->getTransactionPass());
+            $this->connId = new mysqli($this->getTransactionHost(),
+                                       $this->getTransactionUser(),
+                                       $this->getTransactionPass());
         } catch (mysqli_sql_exception $ex) {
             CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
             $this->connId = null;
@@ -50,7 +55,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return bool
      */
-    public function &netSelect(): bool {
+    public function &netSelect(): bool
+    {
         $rslt = false;
 
         if ($this->netConnected()) {
@@ -62,7 +68,8 @@ class BaseMysqli extends BaseModel {
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect() {
+    public function netDeconnect()
+    {
         if ($this->netConnected()) {
             $this->getMysqli()->close();
         }
@@ -75,7 +82,8 @@ class BaseMysqli extends BaseModel {
      *
      * @param string $sql
      */
-    public function query(string $sql = "") {
+    public function query(string $sql = "")
+    {
         $this->queries = $this->getMysqli()->query($sql);
 
         if ($this->queries === false) {
@@ -88,7 +96,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return array
      */
-    public function &fetchArray(): array {
+    public function &fetchArray(): array
+    {
         $values = array();
         $rslt = $this->getMysqliResult();
 
@@ -108,7 +117,8 @@ class BaseMysqli extends BaseModel {
      * @param string $className
      * @return array
      */
-    public function &fetchObject(string $className = null): array {
+    public function &fetchObject(string $className = null): array
+    {
         $values = array();
         $rslt = $this->getMysqliResult();
 
@@ -131,7 +141,8 @@ class BaseMysqli extends BaseModel {
      * @param mixed $query
      * @return bool
      */
-    public function &freeResult($query = null): bool {
+    public function &freeResult($query = null): bool
+    {
         $success = false;
         $rslt = $query !== null ? $this->getMysqliResult($query) : null;
 
@@ -147,7 +158,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return int
      */
-    public function &affectedRows(): int {
+    public function &affectedRows(): int
+    {
         $nbRows = $this->getMysqli()->affected_rows;
 
         if ($nbRows < 0) {
@@ -165,7 +177,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return string
      */
-    public function &insertId(): string {
+    public function &insertId(): string
+    {
         return $this->getMysqli()->insert_id;
     }
 
@@ -174,7 +187,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return array
      */
-    public function &getLastError(): array {
+    public function &getLastError(): array
+    {
         $error = parent::getLastError();
         $error[] = "<span class=\"text_bold\">MySqli response</span> : " . $this->getMysqli()->error;
         return $error;
@@ -185,7 +199,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return string
      */
-    public function &getVersion(): string {
+    public function &getVersion(): string
+    {
         // Exemple : 5.6.15-log
         $version = $this->getMysqli()->server_info;
         return $version;
@@ -200,8 +215,13 @@ class BaseMysqli extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "") {
-        parent::update($table, $values, $where, $orderby, $limit);
+    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    {
+        parent::update($table,
+                       $values,
+                       $where,
+                       $orderby,
+                       $limit);
     }
 
     /**
@@ -213,8 +233,13 @@ class BaseMysqli extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "") {
-        parent::select($table, $values, $where, $orderby, $limit);
+    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    {
+        parent::select($table,
+                       $values,
+                       $where,
+                       $orderby,
+                       $limit);
     }
 
     /**
@@ -224,8 +249,11 @@ class BaseMysqli extends BaseModel {
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values) {
-        parent::insert($table, $keys, $values);
+    public function insert(string $table, array $keys, array $values)
+    {
+        parent::insert($table,
+                       $keys,
+                       $values);
     }
 
     /**
@@ -236,8 +264,12 @@ class BaseMysqli extends BaseModel {
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "") {
-        parent::delete($table, $where, $like, $limit);
+    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    {
+        parent::delete($table,
+                       $where,
+                       $like,
+                       $limit);
     }
 
     /**
@@ -246,7 +278,8 @@ class BaseMysqli extends BaseModel {
      * @param string $str
      * @return string
      */
-    protected function converEscapeString(string $str): string {
+    protected function converEscapeString(string $str): string
+    {
         return $this->getMysqli()->escape_string($str);
     }
 
@@ -255,7 +288,8 @@ class BaseMysqli extends BaseModel {
      *
      * @return mysqli
      */
-    private function &getMysqli(): mysqli {
+    private function &getMysqli(): mysqli
+    {
         return $this->connId;
     }
 
@@ -265,7 +299,8 @@ class BaseMysqli extends BaseModel {
      * @param resource $query
      * @return mysqli_result
      */
-    private function &getMysqliResult($query = null): mysqli_result {
+    private function &getMysqliResult($query = null): mysqli_result
+    {
         $object = null;
 
         if ($query === null) {
@@ -277,5 +312,4 @@ class BaseMysqli extends BaseModel {
         }
         return $object;
     }
-
 }

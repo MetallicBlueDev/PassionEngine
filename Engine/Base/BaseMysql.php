@@ -14,7 +14,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  * A remplacer par un support de PostgreSQL  et de SQLite3
  * @author Sébastien Villemain
  */
-class BaseMysql extends BaseModel {
+class BaseMysql extends BaseModel
+{
 
     /**
      * Le type de la dernière commande.
@@ -29,7 +30,8 @@ class BaseMysql extends BaseModel {
      *
      * @return bool
      */
-    protected function canUse(): bool {
+    protected function canUse(): bool
+    {
         $rslt = function_exists("mysql_connect");
 
         if (!$rslt) {
@@ -41,8 +43,11 @@ class BaseMysql extends BaseModel {
     /**
      * {@inheritDoc}
      */
-    public function netConnect() {
-        $link = mysql_connect($this->getTransactionHost(), $this->getTransactionUser(), $this->getTransactionPass());
+    public function netConnect()
+    {
+        $link = mysql_connect($this->getTransactionHost(),
+                              $this->getTransactionUser(),
+                              $this->getTransactionPass());
 
         if ($link) {
             $this->connId = $link;
@@ -56,11 +61,13 @@ class BaseMysql extends BaseModel {
      *
      * @return bool
      */
-    public function &netSelect(): bool {
+    public function &netSelect(): bool
+    {
         $rslt = false;
 
         if ($this->netConnected()) {
-            $rslt = mysql_select_db($this->getDatabaseName(), $this->connId);
+            $rslt = mysql_select_db($this->getDatabaseName(),
+                                    $this->connId);
         }
         return $rslt;
     }
@@ -68,7 +75,8 @@ class BaseMysql extends BaseModel {
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect() {
+    public function netDeconnect()
+    {
         if ($this->netConnected()) {
             mysql_close($this->connId);
         }
@@ -81,8 +89,10 @@ class BaseMysql extends BaseModel {
      *
      * @param string $sql
      */
-    public function query(string $sql = "") {
-        $this->queries = mysql_query($sql, $this->connId);
+    public function query(string $sql = "")
+    {
+        $this->queries = mysql_query($sql,
+                                     $this->connId);
 
         if ($this->queries === false) {
             CoreLogger::addException("MySql query: " . mysql_error());
@@ -94,14 +104,16 @@ class BaseMysql extends BaseModel {
      *
      * @return array
      */
-    public function &fetchArray(): array {
+    public function &fetchArray(): array
+    {
         $values = array();
 
         if (is_resource($this->queries)) {
             $nbRows = $this->affectedRows();
 
             for ($i = 0; $i < $nbRows; $i++) {
-                $values[] = mysql_fetch_array($this->queries, MYSQL_ASSOC);
+                $values[] = mysql_fetch_array($this->queries,
+                                              MYSQL_ASSOC);
             }
         }
         return $values;
@@ -113,7 +125,8 @@ class BaseMysql extends BaseModel {
      * @param string $className
      * @return array
      */
-    public function &fetchObject(string $className = null): array {
+    public function &fetchObject(string $className = null): array
+    {
         $values = array();
 
         if (is_resource($this->queries)) {
@@ -126,7 +139,8 @@ class BaseMysql extends BaseModel {
                 }
             } else {
                 for ($i = 0; $i < $nbRows; $i++) {
-                    $values[] = mysql_fetch_object($this->queries, $className);
+                    $values[] = mysql_fetch_object($this->queries,
+                                                   $className);
                 }
             }
         }
@@ -139,7 +153,8 @@ class BaseMysql extends BaseModel {
      * @param mixed $query
      * @return bool
      */
-    public function &freeResult($query = null): bool {
+    public function &freeResult($query = null): bool
+    {
         $rslt = false;
 
         if ($query !== null && is_resource($query)) {
@@ -153,7 +168,8 @@ class BaseMysql extends BaseModel {
      *
      * @return int
      */
-    public function &affectedRows(): int {
+    public function &affectedRows(): int
+    {
         $rslt = -1;
 
         if ($this->lastSqlCommand === "SELECT" || $this->lastSqlCommand === "SHOW") {
@@ -169,7 +185,8 @@ class BaseMysql extends BaseModel {
      *
      * @return string
      */
-    public function &insertId(): string {
+    public function &insertId(): string
+    {
         $lastId = mysql_insert_id($this->connId);
         return $lastId;
     }
@@ -179,7 +196,8 @@ class BaseMysql extends BaseModel {
      *
      * @return array
      */
-    public function &getLastError(): array {
+    public function &getLastError(): array
+    {
         $error = parent::getLastError();
         $error[] = "<span class=\"text_bold\">MySql response</span> : " . mysql_error();
         return $error;
@@ -190,7 +208,8 @@ class BaseMysql extends BaseModel {
      *
      * @return string
      */
-    public function &getVersion(): string {
+    public function &getVersion(): string
+    {
         // Exemple : 5.6.15-log
         $version = mysql_get_server_info($this->connId);
         $version = ($version !== false) ? $version : "?";
@@ -206,9 +225,14 @@ class BaseMysql extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "") {
+    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    {
         $this->lastSqlCommand = "UPDATE";
-        parent::update($table, $values, $where, $orderby, $limit);
+        parent::update($table,
+                       $values,
+                       $where,
+                       $orderby,
+                       $limit);
     }
 
     /**
@@ -220,9 +244,14 @@ class BaseMysql extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "") {
+    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    {
         $this->lastSqlCommand = "SELECT";
-        parent::select($table, $values, $where, $orderby, $limit);
+        parent::select($table,
+                       $values,
+                       $where,
+                       $orderby,
+                       $limit);
     }
 
     /**
@@ -232,9 +261,12 @@ class BaseMysql extends BaseModel {
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values) {
+    public function insert(string $table, array $keys, array $values)
+    {
         $this->lastSqlCommand = "INSERT";
-        parent::insert($table, $keys, $values);
+        parent::insert($table,
+                       $keys,
+                       $values);
     }
 
     /**
@@ -245,9 +277,13 @@ class BaseMysql extends BaseModel {
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "") {
+    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    {
         $this->lastSqlCommand = "DELETE";
-        parent::delete($table, $where, $like, $limit);
+        parent::delete($table,
+                       $where,
+                       $like,
+                       $limit);
     }
 
     /**
@@ -256,9 +292,11 @@ class BaseMysql extends BaseModel {
      * @param string $str
      * @return string
      */
-    protected function converEscapeString(string $str): string {
+    protected function converEscapeString(string $str): string
+    {
         if (function_exists("mysql_real_escape_string") && is_resource($this->connId)) {
-            $str = mysql_real_escape_string($str, $this->connId);
+            $str = mysql_real_escape_string($str,
+                                            $this->connId);
         } else if (function_exists("mysql_escape_string")) {// WARNING: DEPRECATED
             $str = mysql_escape_string($str);
         } else {
@@ -266,5 +304,4 @@ class BaseMysql extends BaseModel {
         }
         return $str;
     }
-
 }

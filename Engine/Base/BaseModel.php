@@ -14,7 +14,8 @@ use TREngine\Engine\Fail\FailSql;
  *
  * @author Sébastien Villemain
  */
-abstract class BaseModel extends CoreTransaction {
+abstract class BaseModel extends CoreTransaction
+{
 
     /**
      * Dernier resultat de la dernière requête SQL.
@@ -59,7 +60,6 @@ abstract class BaseModel extends CoreTransaction {
     protected $quoted = array();
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $message
@@ -67,8 +67,11 @@ abstract class BaseModel extends CoreTransaction {
      * @param array $failArgs
      * @throws FailSql
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
-        throw new FailSql($message, $failCode, $failArgs);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        throw new FailSql($message,
+                          $failCode,
+                          $failArgs);
     }
 
     /**
@@ -76,7 +79,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return int
      */
-    public function &affectedRows(): int {
+    public function &affectedRows(): int
+    {
         $rslt = -1;
         return $rslt;
     }
@@ -86,7 +90,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getDatabaseName(): string {
+    public function &getDatabaseName(): string
+    {
         return $this->getStringValue("name");
     }
 
@@ -95,7 +100,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getDatabasePrefix(): string {
+    public function &getDatabasePrefix(): string
+    {
         return $this->getStringValue("prefix");
     }
 
@@ -107,13 +113,16 @@ abstract class BaseModel extends CoreTransaction {
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "") {
+    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    {
         // Nom complet de la table
         $table = $this->getTableName($table);
         // Mise en place du WHERE
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ", $where);
+        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
+                                                               $where);
         // Mise en place du LIKE
-        $likeValue = empty($like) ? "" : " LIKE " . implode(" ", $like);
+        $likeValue = empty($like) ? "" : " LIKE " . implode(" ",
+                                                            $like);
         // Fonction ET entre WHERE et LIKE
         if (!empty($whereValue) && !empty($likeValue)) {
             $whereValue .= "AND";
@@ -127,7 +136,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return array
      */
-    public function &fetchArray(): array {
+    public function &fetchArray(): array
+    {
         $rslt = array();
         return $rslt;
     }
@@ -138,7 +148,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $className Nom de la classe
      * @return array
      */
-    public function &fetchObject(string $className = null): array {
+    public function &fetchObject(string $className = null): array
+    {
         unset($className);
         $rslt = array();
         return $rslt;
@@ -151,10 +162,13 @@ abstract class BaseModel extends CoreTransaction {
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values) {
+    public function insert(string $table, array $keys, array $values)
+    {
         // Nom complet de la table
         $table = $this->getTableName($table);
-        $this->sql = "INSERT INTO " . $table . " (" . implode(", ", $this->converKey($keys)) . ") VALUES (" . implode(", ", $this->converValue($values)) . ")";
+        $this->sql = "INSERT INTO " . $table . " (" . implode(", ",
+                                                              $this->converKey($keys)) . ") VALUES (" . implode(", ",
+                                                                                                                $this->converValue($values)) . ")";
     }
 
     /**
@@ -162,7 +176,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &insertId(): string {
+    public function &insertId(): string
+    {
         $rslt = "0";
         return $rslt;
     }
@@ -172,7 +187,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @param string $sql
      */
-    public function query(string $sql = "") {
+    public function query(string $sql = "")
+    {
         unset($sql);
     }
 
@@ -185,17 +201,21 @@ abstract class BaseModel extends CoreTransaction {
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "") {
+    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    {
         // Nom complet de la table
         $table = $this->getTableName($table);
         // Mise en place des valeurs sélectionnées
-        $valuesValue = implode(", ", $values);
+        $valuesValue = implode(", ",
+                               $values);
         // Mise en place du where
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ", $where);
+        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
+                                                               $where);
         // Mise en place de la limite
         $limit = empty($limit) ? "" : " LIMIT " . $limit;
         // Mise en place de l'ordre
-        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ", $orderby);
+        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
+                                                                      $orderby);
         // Mise en forme de la requête finale
         $this->sql = "SELECT " . $valuesValue . " FROM " . $table . $whereValue . $orderbyValue . $limit;
     }
@@ -209,7 +229,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "") {
+    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    {
         // Nom complet de la table
         $table = $this->getTableName($table);
         // Affectation des clès à leurs valeurs
@@ -217,13 +238,16 @@ abstract class BaseModel extends CoreTransaction {
         foreach ($values as $key => $value) {
             $valuesString[] = $this->converKey($key) . " = " . $this->converValue($value);
         }
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ", $where);
+        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
+                                                               $where);
         // Mise en place de la limite
         $limit = empty($limit) ? "" : " LIMIT " . $limit;
         // Mise en place de l'ordre
-        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ", $orderby);
+        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
+                                                                      $orderby);
         // Mise en forme de la requête finale
-        $this->sql = "UPDATE " . $table . " SET " . implode(", ", $valuesString) . $whereValue . $orderbyValue . $limit;
+        $this->sql = "UPDATE " . $table . " SET " . implode(", ",
+                                                            $valuesString) . $whereValue . $orderbyValue . $limit;
     }
 
     /**
@@ -231,7 +255,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return mixed
      */
-    public function &getQueries() {
+    public function &getQueries()
+    {
         return $this->queries;
     }
 
@@ -240,7 +265,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getSql(): string {
+    public function &getSql(): string
+    {
         return $this->sql;
     }
 
@@ -250,7 +276,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param mixed $query
      * @return bool
      */
-    public function &freeResult($query = null): bool {
+    public function &freeResult($query = null): bool
+    {
         if ($query !== null) {
             unset($query);
         }
@@ -264,7 +291,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addArrayBuffer(string $name, string $key = "") {
+    public function addArrayBuffer(string $name, string $key = "")
+    {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchArray() as $row) {
                 if (!empty($key)) {
@@ -283,7 +311,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addObjectBuffer(string $name, string $key = "") {
+    public function addObjectBuffer(string $name, string $key = "")
+    {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchObject() as $row) {
                 if (!empty($key)) {
@@ -302,7 +331,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $name
      * @return array
      */
-    public function &fetchBuffer(string $name): array {
+    public function &fetchBuffer(string $name): array
+    {
         $buffer = array(
             current($this->buffer[$name])
         );
@@ -316,7 +346,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $name
      * @return mixed
      */
-    public function &getBuffer(string $name) {
+    public function &getBuffer(string $name)
+    {
         return $this->buffer[$name];
     }
 
@@ -325,7 +356,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return array
      */
-    public function &getLastError(): array {
+    public function &getLastError(): array
+    {
         $rslt = array(
             "<span class=\"text_bold\">Last Sql query</span> : " . $this->getSql()
         );
@@ -337,7 +369,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @param string $key
      */
-    public function addQuotedKey(string $key) {
+    public function addQuotedKey(string $key)
+    {
         if (!empty($key)) {
             $this->quoted[$key] = true;
         }
@@ -348,7 +381,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @param string $value
      */
-    public function addQuotedValue(string $value) {
+    public function addQuotedValue(string $value)
+    {
         if (!empty($value)) {
             $this->quoted[] = $value;
         }
@@ -357,7 +391,8 @@ abstract class BaseModel extends CoreTransaction {
     /**
      * Remise à zéro du tableau de clés déjà quoté.
      */
-    public function resetQuoted() {
+    public function resetQuoted()
+    {
         $this->quoted = array();
     }
 
@@ -366,7 +401,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getVersion(): string {
+    public function &getVersion(): string
+    {
         return "?";
     }
 
@@ -375,7 +411,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getCollation(): string {
+    public function &getCollation(): string
+    {
         $this->query("SHOW FULL COLUMNS FROM " . $this->getTableName(CoreTable::CONFIG));
         $info = $this->fetchArray();
         return !empty($info['Collation']) ? $info['Collation'] : "?";
@@ -388,9 +425,13 @@ abstract class BaseModel extends CoreTransaction {
      * @param bool $isValue
      * @return string
      */
-    protected function &addQuote(string $s, bool $isValue = false): string {
+    protected function &addQuote(string $s, bool $isValue = false): string
+    {
         // Ne pas quoter les champs avec la notation avec les point
-        if (($isValue && !ExecUtils::inArray($s, $this->quoted, true)) || (!$isValue && strpos($s, ".") === false && !isset($this->quoted[$s]))) {
+        if (($isValue && !ExecUtils::inArray($s,
+                                             $this->quoted,
+                                             true)) || (!$isValue && strpos($s,
+                                                                            ".") === false && !isset($this->quoted[$s]))) {
             if ($isValue) {
                 $q = $this->quoteValue;
             } else {
@@ -407,7 +448,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param mixed $value
      * @return mixed
      */
-    protected function &converValue($value) {
+    protected function &converValue($value)
+    {
         if (is_array($value)) {
             foreach ($value as $realKey => $realValue) {
                 $value[$realKey] = $this->converValue($realValue);
@@ -421,7 +463,8 @@ abstract class BaseModel extends CoreTransaction {
             $value = $this->converEscapeString($value);
         }
         if (!is_array($value)) {
-            $value = $this->addQuote($value, true);
+            $value = $this->addQuote($value,
+                                     true);
         }
         return $value;
     }
@@ -432,7 +475,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param mixed $key
      * @return mixed
      */
-    protected function &converKey($key) {
+    protected function &converKey($key)
+    {
         if (is_array($key)) {
             foreach ($key as $realKey => $keyValue) {
                 $key[$realKey] = $this->converKey($keyValue);
@@ -441,7 +485,9 @@ abstract class BaseModel extends CoreTransaction {
             $key = $this->addQuote($key);
         }
         // Converti les multiples espaces (tabulation, espace en trop) en espace simple
-        $key = preg_replace("/[\s]+/", " ", $key);
+        $key = preg_replace("/[\s]+/",
+                            " ",
+                            $key);
         return $key;
     }
 
@@ -451,7 +497,8 @@ abstract class BaseModel extends CoreTransaction {
      * @param string $str
      * @return string
      */
-    protected function converEscapeString(string $str): string {
+    protected function converEscapeString(string $str): string
+    {
         return addslashes($str);
     }
 
@@ -460,7 +507,8 @@ abstract class BaseModel extends CoreTransaction {
      *
      * @param string $table
      */
-    protected function getTableName(string $table): string {
+    protected function getTableName(string $table): string
+    {
         return $this->getDatabasePrefix() . "_" . $table;
     }
 }
