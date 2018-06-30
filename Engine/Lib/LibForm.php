@@ -6,15 +6,14 @@ use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Exec\ExecString;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Classe de mise en forme d'un formulaire.
  * Avec mise en cache automatique.
  *
  * @author Sébastien Villemain
  */
-class LibForm {
+class LibForm
+{
 
     /**
      * Nom de la variable en cache.
@@ -90,7 +89,8 @@ class LibForm {
      * @param string $name identifiant du formlaire : attention à ne pas prendre un nom déjà utilisé !
      * @param string $urlAction
      */
-    public function __construct(string $name, string $urlAction = "") {
+    public function __construct(string $name, string $urlAction = "")
+    {
         $this->name = $name;
         $this->urlAction = !empty($urlAction) ? $urlAction : "index.php";
         $this->cached = CoreCache::getInstance(CoreCacheSection::FORMS)->cached($name . ".php");
@@ -101,7 +101,8 @@ class LibForm {
      *
      * @param string $title
      */
-    public function setTitle(string $title) {
+    public function setTitle(string $title)
+    {
         $this->title = $title;
     }
 
@@ -110,7 +111,8 @@ class LibForm {
      *
      * @param string $description
      */
-    public function setDescription(string $description) {
+    public function setDescription(string $description)
+    {
         $this->description = $description;
     }
 
@@ -120,7 +122,8 @@ class LibForm {
      * @param string $title
      * @param string $description
      */
-    public function addFieldset(string $title = "", string $description = "") {
+    public function addFieldset(string $title = "", string $description = "")
+    {
         $title = $this->getTitle($title);
         $description = $this->getDescription($description);
 
@@ -145,8 +148,15 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputText(string $name, string $description = "", string $defaultValue = "", string $options = "", string $class = "") {
-        $this->addInput($name, $name, $description, "text", $defaultValue, $options, $class);
+    public function addInputText(string $name, string $description = "", string $defaultValue = "", string $options = "", string $class = "")
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        "text",
+                        $defaultValue,
+                        $options,
+                        $class);
     }
 
     /**
@@ -156,8 +166,15 @@ class LibForm {
      * @param string $defaultValue
      * @param string $options
      */
-    public function addInputHidden(string $name, string $defaultValue, string $options = "") {
-        $this->addInput($name, $name, "", "hidden", $defaultValue, $options, "");
+    public function addInputHidden(string $name, string $defaultValue, string $options = "")
+    {
+        $this->addInput($name,
+                        $name,
+                        "",
+                        "hidden",
+                        $defaultValue,
+                        $options,
+                        "");
     }
 
     /**
@@ -168,8 +185,15 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputSubmit(string $name, string $defaultValue, string $options = "", string $class = "") {
-        $this->addInput($name, $name, "", "submit", $defaultValue, $options, $class);
+    public function addInputSubmit(string $name, string $defaultValue, string $options = "", string $class = "")
+    {
+        $this->addInput($name,
+                        $name,
+                        "",
+                        "submit",
+                        $defaultValue,
+                        $options,
+                        $class);
     }
 
     /**
@@ -183,7 +207,8 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputRadio(string $id, string $name, string $description = "", bool $checked = false, string $defaultValue = "", string $options = "", string $class = "") {
+    public function addInputRadio(string $id, string $name, string $description = "", bool $checked = false, string $defaultValue = "", string $options = "", string $class = "")
+    {
         if (empty($class)) {
             $class = "radio";
         }
@@ -192,7 +217,13 @@ class LibForm {
             $options = "checked=\"checked\"" . ((!empty($options)) ? " " . $options : "");
         }
 
-        $this->addInput($id, $name, $description, "radio", $defaultValue, $options, $class);
+        $this->addInput($id,
+                        $name,
+                        $description,
+                        "radio",
+                        $defaultValue,
+                        $options,
+                        $class);
     }
 
     /**
@@ -206,7 +237,8 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputCheckbox(string $id, string $name, string $description = "", bool $checked = false, string $defaultValue = "", string $options = "", string $class = "") {
+    public function addInputCheckbox(string $id, string $name, string $description = "", bool $checked = false, string $defaultValue = "", string $options = "", string $class = "")
+    {
         if (empty($class)) {
             $class = "checkbox";
         }
@@ -215,7 +247,13 @@ class LibForm {
             $options = "checked=\"checked\"" . ((!empty($options)) ? " " . $options : "");
         }
 
-        $this->addInput($id, $name, $description, "checkbox", $defaultValue, $options, $class);
+        $this->addInput($id,
+                        $name,
+                        $description,
+                        "checkbox",
+                        $defaultValue,
+                        $options,
+                        $class);
     }
 
     /**
@@ -227,8 +265,15 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputButton(string $name, string $description = "", string $defaultValue = "", string $options = "", string $class = "") {
-        $this->addInput($name, $name, $description, "button", $defaultValue, $options, $class);
+    public function addInputButton(string $name, string $description = "", string $defaultValue = "", string $options = "", string $class = "")
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        "button",
+                        $defaultValue,
+                        $options,
+                        $class);
     }
 
     /**
@@ -239,8 +284,15 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addInputPassword(string $name, string $description = "", string $options = "", string $class = "") {
-        $this->addInput($name, $name, $description, "password", "", $options, $class);
+    public function addInputPassword(string $name, string $description = "", string $options = "", string $class = "")
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        "password",
+                        "",
+                        $options,
+                        $class);
     }
 
     /**
@@ -252,14 +304,17 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addTextarea(string $name, string $description, string $defaultValue = "", string $options = "", string $class = "") {
+    public function addTextarea(string $name, string $description, string $defaultValue = "", string $options = "", string $class = "")
+    {
         if (empty($class)) {
             $class = "textarea";
         }
 
         $idDescription = $this->getId($name);
-        $description = $this->getLabel($name, $description);
-        $id = $this->getId($name, "input");
+        $description = $this->getLabel($name,
+                                       $description);
+        $id = $this->getId($name,
+                           "input");
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -290,14 +345,17 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    public function addSelectOpenTag(string $name, string $description, string $options = "", string $class = "") {
+    public function addSelectOpenTag(string $name, string $description, string $options = "", string $class = "")
+    {
         if (empty($class)) {
             $class = "select";
         }
 
         $idDescription = $this->getId($name);
-        $description = $this->getLabel($name, $description);
-        $id = $this->getId($name, "input");
+        $description = $this->getLabel($name,
+                                       $description);
+        $id = $this->getId($name,
+                           "input");
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -323,7 +381,8 @@ class LibForm {
      * @param bool $selected
      * @param string $options
      */
-    public function addSelectItemTag(string $value, string $description = "", bool $selected = false, string $options = "") {
+    public function addSelectItemTag(string $value, string $description = "", bool $selected = false, string $options = "")
+    {
         if ($selected) {
             $options = "selected=\"selected\"" . ((!empty($options)) ? " " . $options : "");
         }
@@ -348,7 +407,8 @@ class LibForm {
     /**
      * Ajoute la fermeture de la liste déroulante.
      */
-    public function addSelectCloseTag() {
+    public function addSelectCloseTag()
+    {
         if (!$this->cached) {
             $this->inputData .= "</select></p>";
         }
@@ -359,7 +419,8 @@ class LibForm {
      *
      * @param string $html
      */
-    public function addHtmlInFieldset(string $html) {
+    public function addHtmlInFieldset(string $html)
+    {
         $this->addCacheVar($html);
 
         if (!$this->cached) {
@@ -370,7 +431,8 @@ class LibForm {
     /**
      * Ajoute un espace.
      */
-    public function addSpace() {
+    public function addSpace()
+    {
         if (!$this->cached) {
             $this->inputData .= "<p><br /></p>";
         }
@@ -381,7 +443,8 @@ class LibForm {
      *
      * @param string $html
      */
-    public function addHtmlOutFieldset(string $html) {
+    public function addHtmlOutFieldset(string $html)
+    {
         $this->addCacheVar($html);
 
         if (!$this->cached) {
@@ -401,7 +464,8 @@ class LibForm {
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string {
+    public function &render(string $class = ""): string
+    {
         if (empty($class)) {
             $class = "form";
         }
@@ -422,7 +486,9 @@ class LibForm {
         $content = "";
 
         if ($this->cached) { // Récupèration des données mise en cache
-            $content = $coreCache->readCache($this->name . ".php", self::CACHE_VARIABLE_NAME, $this->cacheVars);
+            $content = $coreCache->readCache($this->name . ".php",
+                                             self::CACHE_VARIABLE_NAME,
+                                             $this->cacheVars);
         } else { // Préparation puis mise en cache
             $data = "<form action=\"" . $url . "\" method=\"post\" id=\"form-" . $name . "\" name=\"" . $name . "\""
                     . " class=\"" . $class . "\"><fieldset class=\"fieldset\">" . $title . $description . $this->inputData
@@ -430,7 +496,11 @@ class LibForm {
 
             // Enregistrement dans le cache
             $data = $coreCache->serializeData($data);
-            $content = $coreCache->writeCacheWithVariable($this->name . ".php", $data, true, self::CACHE_VARIABLE_NAME, $this->cacheVars);
+            $content = $coreCache->writeCacheWithVariable($this->name . ".php",
+                                                          $data,
+                                                          true,
+                                                          self::CACHE_VARIABLE_NAME,
+                                                          $this->cacheVars);
         }
         return $content;
     }
@@ -442,8 +512,10 @@ class LibForm {
      * @param string $description
      * @return string
      */
-    private function &getLabel(string $name, string $description): string {
-        $id = $this->getId($name, "input");
+    private function &getLabel(string $name, string $description): string
+    {
+        $id = $this->getId($name,
+                           "input");
         $description = ExecString::textDisplay($description);
         $this->addCacheVar($description);
 
@@ -461,7 +533,8 @@ class LibForm {
      * @param string $title
      * @return string
      */
-    private function &getTitle(string $title): string {
+    private function &getTitle(string $title): string
+    {
         $title = ExecString::textDisplay($title);
         $this->addCacheVar($title);
 
@@ -479,7 +552,8 @@ class LibForm {
      * @param string $description
      * @return string
      */
-    private function &getDescription(string $description): string {
+    private function &getDescription(string $description): string
+    {
         $id = $this->getId("description");
         $description = ExecString::textDisplay($description);
         $this->addCacheVar($description);
@@ -499,7 +573,8 @@ class LibForm {
      * @param string $options
      * @return string
      */
-    private function &getId(string $name, string $options = ""): string {
+    private function &getId(string $name, string $options = ""): string
+    {
         if (!empty($options)) {
             $options = "-" . $options;
         }
@@ -526,14 +601,17 @@ class LibForm {
      * @param string $options
      * @param string $class
      */
-    private function addInput(string $id, string $name, string $description, string $type, string $defaultValue = "", string $options = "", string $class = "") {
+    private function addInput(string $id, string $name, string $description, string $type, string $defaultValue = "", string $options = "", string $class = "")
+    {
         if (empty($class)) {
             $class = "input";
         }
 
         $idDescription = $this->getId($name);
-        $description = $this->getLabel($id, $description);
-        $id = $this->getId($id, "input");
+        $description = $this->getLabel($id,
+                                       $description);
+        $id = $this->getId($id,
+                           "input");
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -563,7 +641,8 @@ class LibForm {
      *
      * @param string $value
      */
-    private function addCacheVar(string $value) {
+    private function addCacheVar(string $value)
+    {
         $this->cacheVars[$this->cacheVarsIndex++] = $value;
     }
 
@@ -573,7 +652,8 @@ class LibForm {
      * @see CoreCache::getInstance()->getCache()
      * @return string
      */
-    private function &getLastCacheVar(): string {
+    private function &getLastCacheVar(): string
+    {
         $rslt = "";
 
         if (!$this->cached) {

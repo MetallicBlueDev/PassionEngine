@@ -4,8 +4,6 @@ namespace TREngine\Engine\Base;
 
 use TREngine\Engine\Core\CoreLogger;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de transaction utilisant l'extension MySql (ancienne version obselète).
  * Ne supporte que les bases de données MySql.

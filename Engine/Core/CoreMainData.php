@@ -6,19 +6,19 @@ use TREngine\Engine\Exec\ExecMailer;
 use TREngine\Engine\Exec\ExecString;
 use Closure;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Collecteur d'information sur la configuration du moteur.
  *
  * @author Sébastien Villemain
  */
-class CoreMainData extends CoreDataStorage {
+class CoreMainData extends CoreDataStorage
+{
 
     /**
      * Nouvelle information de configuration.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $data = array();
@@ -30,7 +30,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return bool
      */
-    public function initialize(): bool {
+    public function initialize(): bool
+    {
         $canUse = false;
 
         // Tentative d'utilisation de la configuration
@@ -51,12 +52,15 @@ class CoreMainData extends CoreDataStorage {
      *
      * @param array
      */
-    public function addConfig(array $configuration) {
+    public function addConfig(array $configuration)
+    {
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
-                $this->setDataValue($key, $value);
+                $this->setDataValue($key,
+                                    $value);
             } else {
-                $this->setDataValue($key, ExecString::stripSlashes($value));
+                $this->setDataValue($key,
+                                    ExecString::stripSlashes($value));
             }
         }
     }
@@ -67,7 +71,8 @@ class CoreMainData extends CoreDataStorage {
      * @param string $name
      * @param array $include
      */
-    public function addInclude(string $name, array $include) {
+    public function addInclude(string $name, array $include)
+    {
         $this->addConfig(array(
             $name => $include));
     }
@@ -77,7 +82,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return array
      */
-    public function &getConfigCache(): array {
+    public function &getConfigCache(): array
+    {
         return $this->getArrayValues("configs_cache");
     }
 
@@ -86,7 +92,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return array
      */
-    public function &getConfigDatabase(): array {
+    public function &getConfigDatabase(): array
+    {
         return $this->getArrayValues("configs_database");
     }
 
@@ -95,7 +102,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return bool
      */
-    public function &doUrlRewriting(): bool {
+    public function &doUrlRewriting(): bool
+    {
         return $this->getBoolValue("urlRewriting");
     }
 
@@ -104,7 +112,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return bool
      */
-    public function doDumb(): bool {
+    public function doDumb(): bool
+    {
         return (!$this->doOpening() && !CoreSession::getInstance()->getUserInfos()->hasAdminRank());
     }
 
@@ -113,7 +122,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return bool
      */
-    public function doOpening(): bool {
+    public function doOpening(): bool
+    {
         return ($this->getDefaultSiteStatut() === "open");
     }
 
@@ -122,7 +132,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return bool
      */
-    public function &registrationAllowed(): bool {
+    public function &registrationAllowed(): bool
+    {
         return $this->getBoolValue("registrationAllowed");
     }
 
@@ -131,7 +142,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getCookiePrefix(): string {
+    public function &getCookiePrefix(): string
+    {
         return $this->getStringValue("cookiePrefix");
     }
 
@@ -140,7 +152,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return int
      */
-    public function &getSessionTimeLimit(): int {
+    public function &getSessionTimeLimit(): int
+    {
         return $this->getIntValue("sessionTimeLimit");
     }
 
@@ -149,7 +162,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getCryptKey(): string {
+    public function &getCryptKey(): string
+    {
         return $this->getStringValue("cryptKey");
     }
 
@@ -158,7 +172,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getCaptchaMode(): string {
+    public function &getCaptchaMode(): string
+    {
         return $this->getStringValue("captchaMode");
     }
 
@@ -167,8 +182,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultAdministratorMail(): string {
-        return $this->getStringValueWithDefault("defaultAdministratorMail", function() {
+    public function &getDefaultAdministratorMail(): string
+    {
+        return $this->getStringValueWithDefault("defaultAdministratorMail",
+                                                function() {
                     return TR_ENGINE_MAIL;
                 });
     }
@@ -178,9 +195,13 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultSiteName(): string {
-        return $this->getStringValueWithDefault("defaultSiteName", function() {
-                    return CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
+    public function &getDefaultSiteName(): string
+    {
+        return $this->getStringValueWithDefault("defaultSiteName",
+                                                function() {
+                    return CoreRequest::getString("SERVER_NAME",
+                                                  "",
+                                                  CoreRequestType::SERVER);
                 });
     }
 
@@ -189,8 +210,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultSiteSlogan(): string {
-        return $this->getStringValueWithDefault("defaultSiteSlogan", function() {
+    public function &getDefaultSiteSlogan(): string
+    {
+        return $this->getStringValueWithDefault("defaultSiteSlogan",
+                                                function() {
                     return "TR ENGINE";
                 });
     }
@@ -200,8 +223,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultSiteStatut(): string {
-        return $this->getStringValueWithDefault("defaultSiteStatut", function() {
+    public function &getDefaultSiteStatut(): string
+    {
+        return $this->getStringValueWithDefault("defaultSiteStatut",
+                                                function() {
                     return "open";
                 });
     }
@@ -211,8 +236,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultSiteCloseReason(): string {
-        return $this->getStringValueWithDefault("defaultSiteCloseReason", function() {
+    public function &getDefaultSiteCloseReason(): string
+    {
+        return $this->getStringValueWithDefault("defaultSiteCloseReason",
+                                                function() {
                     return " ";
                 });
     }
@@ -222,8 +249,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultDescription(): string {
-        return $this->getStringValueWithDefault("defaultDescription", function() {
+    public function &getDefaultDescription(): string
+    {
+        return $this->getStringValueWithDefault("defaultDescription",
+                                                function() {
                     return "TR ENGINE";
                 });
     }
@@ -233,8 +262,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultKeyWords(): string {
-        return $this->getStringValueWithDefault("defaultKeyWords", function() {
+    public function &getDefaultKeyWords(): string
+    {
+        return $this->getStringValueWithDefault("defaultKeyWords",
+                                                function() {
                     return "TR ENGINE";
                 });
     }
@@ -244,8 +275,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultLanguage(): string {
-        return $this->getStringValueWithDefault("defaultLanguage", function() {
+    public function &getDefaultLanguage(): string
+    {
+        return $this->getStringValueWithDefault("defaultLanguage",
+                                                function() {
                     return "english";
                 });
     }
@@ -255,8 +288,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultTemplate(): string {
-        return $this->getStringValueWithDefault("defaultTemplate", function() {
+    public function &getDefaultTemplate(): string
+    {
+        return $this->getStringValueWithDefault("defaultTemplate",
+                                                function() {
                     return " ";
                 });
     }
@@ -266,8 +301,10 @@ class CoreMainData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getDefaultMod(): string {
-        return $this->getStringValueWithDefault("defaultMod", function() {
+    public function &getDefaultMod(): string
+    {
+        return $this->getStringValueWithDefault("defaultMod",
+                                                function() {
                     return "home";
                 });
     }
@@ -277,7 +314,8 @@ class CoreMainData extends CoreDataStorage {
      *
      * @param array $rawConfig
      */
-    private function loadSpecificConfig(array $rawConfig) {
+    private function loadSpecificConfig(array $rawConfig)
+    {
         $newConfig = array();
 
         // Vérification de l'adresse email du webmaster
@@ -285,7 +323,8 @@ class CoreMainData extends CoreDataStorage {
             CoreLogger::addException("Default mail isn't valid");
         }
 
-        define("TR_ENGINE_MAIL", $rawConfig["TR_ENGINE_MAIL"]);
+        define("TR_ENGINE_MAIL",
+               $rawConfig["TR_ENGINE_MAIL"]);
 
         // Vérification du statut
         $rawConfig["TR_ENGINE_STATUT"] = strtolower($rawConfig["TR_ENGINE_STATUT"]);
@@ -294,7 +333,8 @@ class CoreMainData extends CoreDataStorage {
             $rawConfig["TR_ENGINE_STATUT"] = "open";
         }
 
-        define("TR_ENGINE_STATUT", $rawConfig["TR_ENGINE_STATUT"]);
+        define("TR_ENGINE_STATUT",
+               $rawConfig["TR_ENGINE_STATUT"]);
 
         // Vérification de la durée de validité du cache
         if (!is_int($rawConfig['sessionTimeLimit']) || $rawConfig['sessionTimeLimit'] < 1) {
@@ -326,12 +366,14 @@ class CoreMainData extends CoreDataStorage {
      * @param Closure $callback
      * @return string
      */
-    private function &getStringValueWithDefault(string $keyName, Closure $callback): string {
+    private function &getStringValueWithDefault(string $keyName, Closure $callback): string
+    {
         $value = $this->getStringValue($keyName);
 
         if (empty($value)) {
             $value = $callback();
-            $this->setDataValue($keyName, $value);
+            $this->setDataValue($keyName,
+                                $value);
         }
         return $value;
     }

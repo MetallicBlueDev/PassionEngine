@@ -4,14 +4,13 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Fail\FailEngine;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Collecteur d'information sur une transaction.
  *
  * @author Sébastien Villemain
  */
-abstract class CoreTransaction extends CoreDataStorage {
+abstract class CoreTransaction extends CoreDataStorage
+{
 
     /**
      * Objet de connexion.
@@ -23,7 +22,8 @@ abstract class CoreTransaction extends CoreDataStorage {
     /**
      * Nouveau modèle de transaction.
      */
-    protected function __construct() {
+    protected function __construct()
+    {
         parent::__construct();
     }
 
@@ -33,7 +33,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      * @param array $transaction
      * @throws FailEngine
      */
-    public function initialize(array &$transaction) {
+    public function initialize(array &$transaction)
+    {
         if (!$this->initialized()) {
             $this->newStorage($transaction);
 
@@ -42,15 +43,18 @@ abstract class CoreTransaction extends CoreDataStorage {
                 $this->netConnect();
 
                 if (!$this->netConnected()) {
-                    $this->throwException("connection error", 20);
+                    $this->throwException("connection error",
+                                          20);
                 }
 
                 // Sélection d'une base de données
                 if (!$this->netSelect()) {
-                    $this->throwException("can not select a node", 21);
+                    $this->throwException("can not select a node",
+                                          21);
                 }
             } else {
-                $this->throwException("transaction can not be used", 22);
+                $this->throwException("transaction can not be used",
+                                      22);
             }
         }
     }
@@ -58,14 +62,16 @@ abstract class CoreTransaction extends CoreDataStorage {
     /**
      * Destruction de la communication.
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->netDeconnect();
     }
 
     /**
      * Etablie une connexion au serveur.
      */
-    public function netConnect() {
+    public function netConnect()
+    {
 
     }
 
@@ -74,14 +80,16 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return bool
      */
-    public function netConnected(): bool {
+    public function netConnected(): bool
+    {
         return ($this->connId !== null) ? true : false;
     }
 
     /**
      * Déconnexion du serveur.
      */
-    public function netDeconnect() {
+    public function netDeconnect()
+    {
 
     }
 
@@ -90,7 +98,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return bool true succès
      */
-    public function &netSelect(): bool {
+    public function &netSelect(): bool
+    {
         $rslt = false;
         return $rslt;
     }
@@ -100,7 +109,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getTransactionHost(): string {
+    public function &getTransactionHost(): string
+    {
         return $this->getStringValue("host");
     }
 
@@ -109,7 +119,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getTransactionUser(): string {
+    public function &getTransactionUser(): string
+    {
         return $this->getStringValue("user");
     }
 
@@ -118,7 +129,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getTransactionPass(): string {
+    public function &getTransactionPass(): string
+    {
         return $this->getStringValue("pass");
     }
 
@@ -127,7 +139,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getTransactionType(): string {
+    public function &getTransactionType(): string
+    {
         return $this->getStringValue("type");
     }
 
@@ -136,7 +149,8 @@ abstract class CoreTransaction extends CoreDataStorage {
      *
      * @return bool
      */
-    protected function canUse(): bool {
+    protected function canUse(): bool
+    {
         return false;
     }
 
@@ -148,7 +162,10 @@ abstract class CoreTransaction extends CoreDataStorage {
      * @param array $failArgs
      * @throws FailEngine
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
-        throw new FailEngine($message, $failCode, $failArgs);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        throw new FailEngine($message,
+                             $failCode,
+                             $failArgs);
     }
 }

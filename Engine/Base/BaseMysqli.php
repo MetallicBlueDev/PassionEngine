@@ -7,8 +7,6 @@ use mysqli_sql_exception;
 use mysqli_result;
 use TREngine\Engine\Core\CoreLogger;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de transaction utilisant l'extension MySqli (nouvelle version de MySql).
  * Ne supporte que les bases de données MySQL 4.1 et supérieur.

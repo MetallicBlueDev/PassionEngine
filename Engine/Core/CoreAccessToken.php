@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Représente un jeton d'accès à une zone.
  *
  * @author Sébastien Villemain
  */
-interface CoreAccessToken {
+interface CoreAccessToken
+{
 
     /**
      * Retourne la zone d'échange actuelle.

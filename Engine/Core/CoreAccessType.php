@@ -5,14 +5,13 @@ namespace TREngine\Engine\Core;
 use TREngine\Engine\Lib\LibBlock;
 use TREngine\Engine\Lib\LibModule;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Représente un type d'accès à une zone spécifique.
  *
  * @author Sébastien Villemain
  */
-class CoreAccessType implements CoreAccessToken {
+class CoreAccessType implements CoreAccessToken
+{
 
     /**
      * Accès passe partout.
@@ -40,7 +39,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @param array $rights
      */
-    private function __construct(array &$rights) {
+    private function __construct(array &$rights)
+    {
         $this->rights = $rights;
     }
 
@@ -50,7 +50,8 @@ class CoreAccessType implements CoreAccessToken {
      * @param array $rights
      * @return CoreAccessType
      */
-    public static function &getTypeFromDatas(array &$rights): CoreAccessType {
+    public static function &getTypeFromDatas(array &$rights): CoreAccessType
+    {
         $newAccess = new CoreAccessType($rights);
         return $newAccess;
     }
@@ -61,7 +62,8 @@ class CoreAccessType implements CoreAccessToken {
      * @param CoreAccessToken $data
      * @return CoreAccessType
      */
-    public static function &getTypeFromToken(CoreAccessToken $data): CoreAccessType {
+    public static function &getTypeFromToken(CoreAccessToken $data): CoreAccessType
+    {
         $infos = array(
             "zone" => $data->getZone(),
             "rank" => $data->getRank(),
@@ -75,7 +77,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return CoreAccessType
      */
-    public static function &getTypeFromAdmin(): CoreAccessType {
+    public static function &getTypeFromAdmin(): CoreAccessType
+    {
         if (!isset(self::$cache[self::FULL_ACCESS])) {
             $infos = array(
                 "zone" => self::FULL_ACCESS,
@@ -91,7 +94,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return int
      */
-    public function &getRank(): int {
+    public function &getRank(): int
+    {
         $rank = isset($this->rights['rank']) ? (int) $this->rights['rank'] : CoreAccessRank::NONE;
         return $rank;
     }
@@ -102,7 +106,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return string
      */
-    public function &getZone(): string {
+    public function &getZone(): string
+    {
         return $this->rights['zone'];
     }
 
@@ -112,7 +117,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return string
      */
-    public function &getPage(): string {
+    public function &getPage(): string
+    {
         return $this->rights['page'];
     }
 
@@ -121,7 +127,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @param string $newPage
      */
-    public function &setPage(string $newPage) {
+    public function &setPage(string $newPage)
+    {
         $this->rights['page'] = $newPage;
         unset($this->rights['validity']);
     }
@@ -132,7 +139,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return string
      */
-    public function &getId(): string {
+    public function &getId(): string
+    {
         return $this->rights['identifiant'];
     }
 
@@ -141,7 +149,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return string
      */
-    public function &getName(): string {
+    public function &getName(): string
+    {
         return $this->rights['name'];
     }
 
@@ -150,7 +159,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    public function isModuleZone(): bool {
+    public function isModuleZone(): bool
+    {
         return ($this->getZone() === CoreAccessZone::MODULE);
     }
 
@@ -159,7 +169,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    public function isBlockZone(): bool {
+    public function isBlockZone(): bool
+    {
         return ($this->getZone() === CoreAccessZone::BLOCK);
     }
 
@@ -168,7 +179,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    public function isCustomZone(): bool {
+    public function isCustomZone(): bool
+    {
         return !empty($this->getZone()) && !$this->isBlockZone() && !$this->isModuleZone();
     }
 
@@ -177,7 +189,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    public function hasPageAccess(): bool {
+    public function hasPageAccess(): bool
+    {
         return !empty($this->getPage());
     }
 
@@ -186,7 +199,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    public function &valid(): bool {
+    public function &valid(): bool
+    {
         if (!$this->alreadyChecked()) {
             $this->checkValidity();
         }
@@ -199,7 +213,8 @@ class CoreAccessType implements CoreAccessToken {
      * @param CoreAccessType $otherAccessType
      * @return bool
      */
-    public function isAssignableFrom(CoreAccessType $otherAccessType): bool {
+    public function isAssignableFrom(CoreAccessType $otherAccessType): bool
+    {
         $rslt = false;
 
         if ($otherAccessType->getZone() === $this->getZone() || $otherAccessType->getZone() === self::FULL_ACCESS) {
@@ -215,7 +230,8 @@ class CoreAccessType implements CoreAccessToken {
     /**
      * Routine de vérification du type d'accès.
      */
-    private function checkValidity() {
+    private function checkValidity()
+    {
         $valid = false;
 
         if (!empty($this->getZone()) && !empty($this->getId())) {
@@ -236,11 +252,13 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    private function &canOpenModule(): bool {
+    private function &canOpenModule(): bool
+    {
         $valid = false;
 
         if ($this->hasPageAccess()) {
-            if (CoreLoader::isCallable("LibModule") && LibModule::getInstance()->isModule($this->getPage(), $this->getId())) {
+            if (CoreLoader::isCallable("LibModule") && LibModule::getInstance()->isModule($this->getPage(),
+                                                                                          $this->getId())) {
                 $valid = true;
             }
         } else {
@@ -265,7 +283,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    private function &canOpenBlock(): bool {
+    private function &canOpenBlock(): bool
+    {
         $valid = false;
         $blockInfo = null;
 
@@ -287,7 +306,8 @@ class CoreAccessType implements CoreAccessToken {
      *
      * @return bool
      */
-    private function alreadyChecked(): bool {
+    private function alreadyChecked(): bool
+    {
         return isset($this->rights['validity']);
     }
 }

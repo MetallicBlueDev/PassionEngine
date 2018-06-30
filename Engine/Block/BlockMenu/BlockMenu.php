@@ -9,8 +9,6 @@ use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Lib\LibMenu;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Block de menu.
  *

@@ -7,8 +7,6 @@ use PDOException;
 use PDOStatement;
 use TREngine\Engine\Core\CoreLogger;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de transaction utilisant l'extension PHP Data Objects.
  *

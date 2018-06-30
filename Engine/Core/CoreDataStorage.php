@@ -4,14 +4,13 @@ namespace TREngine\Engine\Core;
 
 use DateTime;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Collecteur de données pour mise en mémoire tampon.
  *
  * @author Sébastien Villemain
  */
-abstract class CoreDataStorage {
+abstract class CoreDataStorage
+{
 
     /**
      * Données en cache.
@@ -23,7 +22,8 @@ abstract class CoreDataStorage {
     /**
      * Nouveau modèle de données.
      */
-    protected function __construct() {
+    protected function __construct()
+    {
         $this->data = null;
     }
 
@@ -32,7 +32,8 @@ abstract class CoreDataStorage {
      *
      * @param array $data
      */
-    protected function newStorage(array &$data) {
+    protected function newStorage(array &$data)
+    {
         $this->data = $data;
     }
 
@@ -41,7 +42,8 @@ abstract class CoreDataStorage {
      *
      * @return array
      */
-    protected function &getStorage(): array {
+    protected function &getStorage(): array
+    {
         return $this->data;
     }
 
@@ -50,7 +52,8 @@ abstract class CoreDataStorage {
      *
      * @return bool
      */
-    protected function initialized(): bool {
+    protected function initialized(): bool
+    {
         return $this->data !== null;
     }
 
@@ -59,7 +62,8 @@ abstract class CoreDataStorage {
      *
      * @return mixed
      */
-    protected function &getDataValue($keyName, $defaultValue = null) {
+    protected function &getDataValue($keyName, $defaultValue = null)
+    {
         $value = null;
 
         if ($this->exist($keyName)) {
@@ -78,8 +82,10 @@ abstract class CoreDataStorage {
      * @param bool $testIfEmpty
      * @return array
      */
-    protected function &getArrayValues(string $keyName, array $defaultValue = null, bool $testIfEmpty = false): array {
-        $value = (array) $this->getDataValue($keyName, $defaultValue);
+    protected function &getArrayValues(string $keyName, array $defaultValue = null, bool $testIfEmpty = false): array
+    {
+        $value = (array) $this->getDataValue($keyName,
+                                             $defaultValue);
 
         if ($testIfEmpty && empty($value)) {
             $value = $defaultValue;
@@ -95,7 +101,8 @@ abstract class CoreDataStorage {
      * @param string $defaultValue
      * @return string
      */
-    public function &getStringSubValue(string $key, string $subKey, string $defaultValue = ""): string {
+    public function &getStringSubValue(string $key, string $subKey, string $defaultValue = ""): string
+    {
         $value = $this->getArrayValues($key);
 
         if ($value !== null && isset($value[$subKey])) {
@@ -115,8 +122,10 @@ abstract class CoreDataStorage {
      * @param bool $defaultValue
      * @return bool
      */
-    protected function &getBoolValue(string $keyName, bool $defaultValue = false): bool {
-        $value = (bool) $this->getDataValue($keyName, $defaultValue);
+    protected function &getBoolValue(string $keyName, bool $defaultValue = false): bool
+    {
+        $value = (bool) $this->getDataValue($keyName,
+                                            $defaultValue);
         return $value;
     }
 
@@ -127,8 +136,10 @@ abstract class CoreDataStorage {
      * @param string $defaultValue
      * @return string
      */
-    protected function &getStringValue(string $keyName, string $defaultValue = null): string {
-        $value = (string) $this->getDataValue($keyName, $defaultValue);
+    protected function &getStringValue(string $keyName, string $defaultValue = null): string
+    {
+        $value = (string) $this->getDataValue($keyName,
+                                              $defaultValue);
         return $value;
     }
 
@@ -139,8 +150,10 @@ abstract class CoreDataStorage {
      * @param int $defaultValue
      * @return int
      */
-    protected function &getIntValue(string $keyName, int $defaultValue = null): int {
-        $value = (int) $this->getDataValue($keyName, $defaultValue);
+    protected function &getIntValue(string $keyName, int $defaultValue = null): int
+    {
+        $value = (int) $this->getDataValue($keyName,
+                                           $defaultValue);
         return $value;
     }
 
@@ -151,8 +164,10 @@ abstract class CoreDataStorage {
      * @param DateTime $defaultValue
      * @return DateTime
      */
-    protected function &getDatetimeValue(string $keyName, DateTime $defaultValue = null): DateTime {
-        $value = $this->getDataValue($keyName, $defaultValue);
+    protected function &getDatetimeValue(string $keyName, DateTime $defaultValue = null): DateTime
+    {
+        $value = $this->getDataValue($keyName,
+                                     $defaultValue);
         return $value;
     }
 
@@ -162,7 +177,8 @@ abstract class CoreDataStorage {
      * @param string $keyName
      * @return bool
      */
-    protected function exist(string $keyName): bool {
+    protected function exist(string $keyName): bool
+    {
         return isset($this->data[$keyName]);
     }
 
@@ -172,7 +188,8 @@ abstract class CoreDataStorage {
      * @param string $keyName
      * @return bool
      */
-    protected function hasValue(string $keyName): bool {
+    protected function hasValue(string $keyName): bool
+    {
         return $this->exist($keyName) && !empty($this->data[$keyName]);
     }
 
@@ -182,7 +199,8 @@ abstract class CoreDataStorage {
      * @param string $keyName
      * @param mixed $value
      */
-    protected function setDataValue(string $keyName, $value) {
+    protected function setDataValue(string $keyName, $value)
+    {
         $this->data[$keyName] = $value;
     }
 
@@ -192,18 +210,21 @@ abstract class CoreDataStorage {
      * @param string $keyName
      * @param mixed $value
      */
-    protected function updateDataValue(string $keyName, $value) {
+    protected function updateDataValue(string $keyName, $value)
+    {
         if ($this->exist($keyName)) {
-            $this->setDataValue($keyName, $value);
+            $this->setDataValue($keyName,
+                                $value);
         }
     }
 
     /**
      * Nettoyage de la variable.
-     * 
+     *
      * @param string $keyName
      */
-    protected function unsetValue(string $keyName) {
+    protected function unsetValue(string $keyName)
+    {
         if ($this->exist($keyName)) {
             unset($this->data[$keyName]);
         }

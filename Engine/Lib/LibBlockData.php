@@ -8,14 +8,13 @@ use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Exec\ExecString;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Information de base sur un block.
  *
  * @author Sébastien Villemain
  */
-class LibBlockData extends LibEntityData {
+class LibBlockData extends LibEntityData
+{
 
     /**
      * Position du block en lettre.
@@ -29,7 +28,8 @@ class LibBlockData extends LibEntityData {
      *
      * @param array $data
      */
-    public function __construct(array &$data) {
+    public function __construct(array &$data)
+    {
         parent::__construct();
 
         // Vérification des informations
@@ -38,8 +38,11 @@ class LibBlockData extends LibEntityData {
         }
 
         $this->newStorage($data);
-        $this->updateDataValue("mods", explode("|", $this->getStringValue("mods")));
-        $this->updateDataValue("title", ExecString::textDisplay($this->getStringValue("title")));
+        $this->updateDataValue("mods",
+                               explode("|",
+                                       $this->getStringValue("mods")));
+        $this->updateDataValue("title",
+                               ExecString::textDisplay($this->getStringValue("title")));
 
         // Affecte la position du block en lettre.
         $this->sideName = LibBlock::getSideAsLetters($this->getSide());
@@ -50,7 +53,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getId(): string {
+    public function &getId(): string
+    {
         // Note : l'identification du block est un entier mais la fonction générale demande une chaine de caractère
         return $this->getIntValue("block_id");
     }
@@ -60,7 +64,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getName(): string {
+    public function &getName(): string
+    {
         return $this->getSideName();
     }
 
@@ -69,7 +74,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return int
      */
-    public function &getSide(): int {
+    public function &getSide(): int
+    {
         return $this->getIntValue("side");
     }
 
@@ -78,7 +84,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getSideName(): string {
+    public function &getSideName(): string
+    {
         return $this->sideName;
     }
 
@@ -87,7 +94,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getTemplateName(): string {
+    public function &getTemplateName(): string
+    {
         $templateName = "block_" . $this->sideName;
         return $templateName;
     }
@@ -97,7 +105,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getTitle(): string {
+    public function &getTitle(): string
+    {
         return $this->getStringValue("title");
     }
 
@@ -107,7 +116,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getContent(): string {
+    public function &getContent(): string
+    {
         return $this->getStringValue("content");
     }
 
@@ -116,8 +126,10 @@ class LibBlockData extends LibEntityData {
      *
      * @param string $content
      */
-    public function setContent(string $content) {
-        $this->setDataValue("content", $content);
+    public function setContent(string $content)
+    {
+        $this->setDataValue("content",
+                            $content);
     }
 
     /**
@@ -125,7 +137,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return int
      */
-    public function &getRank(): int {
+    public function &getRank(): int
+    {
         return $this->getIntValue("rank");
     }
 
@@ -134,8 +147,10 @@ class LibBlockData extends LibEntityData {
      *
      * @return array
      */
-    public function &getTargetModules(): array {
-        $rslt = $this->getArrayValues("mods", array("all"));
+    public function &getTargetModules(): array
+    {
+        $rslt = $this->getArrayValues("mods",
+                                      array("all"));
         return $rslt;
     }
 
@@ -144,7 +159,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getType(): string {
+    public function &getType(): string
+    {
         $dataValue = ucfirst($this->getStringValue("type"));
         return $dataValue;
     }
@@ -154,7 +170,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function getFolderName(): string {
+    public function getFolderName(): string
+    {
         return CoreLoader::BLOCK_FILE . $this->getType();
     }
 
@@ -163,7 +180,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function getClassName(): string {
+    public function getClassName(): string
+    {
         return CoreLoader::BLOCK_FILE . $this->getType();
     }
 
@@ -172,7 +190,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return bool
      */
-    public function installed(): bool {
+    public function installed(): bool
+    {
         return $this->hasValue("block_id");
     }
 
@@ -182,7 +201,8 @@ class LibBlockData extends LibEntityData {
      * @param bool $checkModule
      * @return bool true le block doit être actif.
      */
-    public function &canActive(bool $checkModule = true): bool {
+    public function &canActive(bool $checkModule = true): bool
+    {
         $rslt = false;
 
         if (CoreAccess::autorize(CoreAccessType::getTypeFromToken($this))) {
@@ -200,7 +220,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return string
      */
-    public function &getZone(): string {
+    public function &getZone(): string
+    {
         $zone = CoreAccessZone::BLOCK;
         return $zone;
     }
@@ -210,7 +231,8 @@ class LibBlockData extends LibEntityData {
      *
      * @return bool
      */
-    private function &canActiveForModule(): bool {
+    private function &canActiveForModule(): bool
+    {
         $rslt = false;
 
         if (CoreLoader::isCallable("LibModule")) {

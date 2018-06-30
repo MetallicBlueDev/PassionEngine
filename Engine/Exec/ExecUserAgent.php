@@ -5,14 +5,13 @@ namespace TREngine\Engine\Exec;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil d'analyse des informations contenu dans le User-Agent.
  *
  * @author Sébastien Villemain
  */
-class ExecUserAgent {
+class ExecUserAgent
+{
 
     /**
      * Liste des systèmes d'exploitation.
@@ -291,14 +290,21 @@ class ExecUserAgent {
      *
      * @return string
      */
-    public static function &getAddressIp(): string {
-        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP", "", CoreRequestType::SERVER);
+    public static function &getAddressIp(): string
+    {
+        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP",
+                                            "",
+                                            CoreRequestType::SERVER);
 
         if (empty($currentIp)) {
-            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR", "", CoreRequestType::SERVER);
+            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR",
+                                                "",
+                                                CoreRequestType::SERVER);
 
             if (empty($currentIp)) {
-                $currentIp = CoreRequest::getString("REMOTE_ADDR", "", CoreRequestType::SERVER);
+                $currentIp = CoreRequest::getString("REMOTE_ADDR",
+                                                    "",
+                                                    CoreRequestType::SERVER);
             }
         }
         return $currentIp;
@@ -310,7 +316,8 @@ class ExecUserAgent {
      * @param string $currentIp
      * @return string
      */
-    public static function &getHost(string &$currentIp): string {
+    public static function &getHost(string &$currentIp): string
+    {
         $currentHost = "";
 
         if (!empty($currentIp)) {
@@ -320,7 +327,9 @@ class ExecUserAgent {
         if ($currentHost !== $currentIp && $currentHost !== false) {
             $res = array();
 
-            if (preg_match(self::HOST_REGEXP, $currentHost, $res)) {
+            if (preg_match(self::HOST_REGEXP,
+                           $currentHost,
+                           $res)) {
                 $currentHost = $res[0];
             }
         }
@@ -332,8 +341,11 @@ class ExecUserAgent {
      *
      * @return string
      */
-    public static function &getRawUserAgent(): string {
-        $currentUserAgent = CoreRequest::getString("HTTP_USER_AGENT", "", CoreRequestType::SERVER);
+    public static function &getRawUserAgent(): string
+    {
+        $currentUserAgent = CoreRequest::getString("HTTP_USER_AGENT",
+                                                   "",
+                                                   CoreRequestType::SERVER);
         return $currentUserAgent;
     }
 
@@ -343,7 +355,8 @@ class ExecUserAgent {
      * @param string $currentUserAgent
      * @return array
      */
-    public static function &getOsData(string &$currentUserAgent): array {
+    public static function &getOsData(string &$currentUserAgent): array
+    {
         $currentOs = array(
             "category" => "",
             "name" => "Unknown Os");
@@ -352,7 +365,10 @@ class ExecUserAgent {
             foreach ($osSubResources as $osAgent => $osName) {
                 // Remplace les underscores par un point afin d'obtenir qu'une version de l'agent
                 // Exemple avec Mac OS X 10_7 et Mac OS X 10.7
-                if (preg_match("/" . str_replace("_", ".", $osAgent) . "/ie", $currentUserAgent)) {
+                if (preg_match("/" . str_replace("_",
+                                                 ".",
+                                                 $osAgent) . "/ie",
+                                                 $currentUserAgent)) {
                     $currentOs['category'] = $osCategory;
                     $currentOs['name'] = $osName;
                     break 2;
@@ -368,7 +384,8 @@ class ExecUserAgent {
      * @param string $currentUserAgent
      * @return array
      */
-    public static function &getBrowserData(string &$currentUserAgent): array {
+    public static function &getBrowserData(string &$currentUserAgent): array
+    {
         $currentBrowser = array(
             "category" => "",
             "name" => "Unknown Browser",
@@ -379,7 +396,11 @@ class ExecUserAgent {
 
         foreach (self::BROWSER_RESOURCES_LIST as $browserCategory => $browserSubResources) {
             foreach ($browserSubResources as $browserAgent => $browserName) {
-                if (preg_match("/" . $browserAgent . "[ \/]([0-9\.]+)/ie", $currentUserAgent, $version) || preg_match("/" . $browserAgent . "/ie", $currentUserAgent, $version)) {
+                if (preg_match("/" . $browserAgent . "[ \/]([0-9\.]+)/ie",
+                               $currentUserAgent,
+                               $version) || preg_match("/" . $browserAgent . "/ie",
+                                                       $currentUserAgent,
+                                                       $version)) {
                     $currentBrowser['category'] = $browserCategory;
                     $currentBrowser['name'] = $browserName;
                     $currentBrowser['version'] = isset($version[1]) ? trim($version[1]) : "";
@@ -395,8 +416,12 @@ class ExecUserAgent {
      *
      * @return string
      */
-    public static function &getReferer(): string {
-        $currentReferer = htmlentities(CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER), ENT_QUOTES);
+    public static function &getReferer(): string
+    {
+        $currentReferer = htmlentities(CoreRequest::getString("HTTP_REFERER",
+                                                              "",
+                                                              CoreRequestType::SERVER),
+                                                              ENT_QUOTES);
         return $currentReferer;
     }
 }

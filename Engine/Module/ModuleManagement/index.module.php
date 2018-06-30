@@ -1,13 +1,12 @@
 <?php
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Module d'interface entre le site et le client.
  *
  * @author Sébastien Villemain
  */
-class Module_Management_Index extends ModuleModel {
+class Module_Management_Index extends ModuleModel
+{
 
     /**
      * Tableau contenant les boutons de la barre d'outil.
@@ -16,7 +15,8 @@ class Module_Management_Index extends ModuleModel {
      */
     private static $toolbar = array();
 
-    public function display() {
+    public function display()
+    {
         // Ajout du CSS du template et du fichier javascript par défaut
         CoreHtml::getInstance()->addCssTemplateFile("module_management.css");
         CoreHtml::getInstance()->addJavascriptFile("management.js");
@@ -28,15 +28,19 @@ class Module_Management_Index extends ModuleModel {
         $moduleList = LibModule::getModuleList(); // Liste des modules
         // Préparation de la mise en page
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignArray("pageList", $pageList);
-        $libMakeStyle->assignArray("moduleList", $moduleList);
+        $libMakeStyle->assignArray("pageList",
+                                   $pageList);
+        $libMakeStyle->assignArray("moduleList",
+                                   $moduleList);
 
         // Affichage de la page d'administration
         $managementScreen = "module_management_index";
         $pageSelected = "";
         if (!empty($managePage)) { // Affichage d'une page de configuration spécial
-            $settingPage = ExecUtils::inMultiArray($managePage, $pageList);
-            $moduleSettingPage = ExecUtils::inMultiArray($managePage, $moduleList);
+            $settingPage = ExecUtils::inMultiArray($managePage,
+                                                   $pageList);
+            $moduleSettingPage = ExecUtils::inMultiArray($managePage,
+                                                         $moduleList);
 
             // Si c'est une page valide
             if ($settingPage || $moduleSettingPage) {
@@ -56,35 +60,43 @@ class Module_Management_Index extends ModuleModel {
                 if (CoreLoader::classLoader($moduleClassPage)) {
                     // Nom de la page courane
                     $currentPageName = self::getManagementPageName($pageSelected);
-                    $libMakeStyle->assignString("currentPageName", $currentPageName);
+                    $libMakeStyle->assignString("currentPageName",
+                                                $currentPageName);
 
                     // Ajout du repere au fil d'ariane
                     if (CoreMain::getInstance()->isDefaultLayout()) {
                         LibBreadcrumb::getInstance()->addTrail(
-                                $currentPageName, "?module=management&manage=" . $pageSelected
+                                $currentPageName,
+                                "?module=management&manage=" . $pageSelected
                         );
                     }
 
                     $ModuleClass = new $moduleClassName();
                     $content = "";
-                    if (CoreLoader::isCallable($moduleClassPage, "setting")) {
+                    if (CoreLoader::isCallable($moduleClassPage,
+                                               "setting")) {
                         $content = $ModuleClass->setting();
                     }
 
-                    $libMakeStyle->assignString("content", $content);
+                    $libMakeStyle->assignString("content",
+                                                $content);
                 }
             }
         }
-        $libMakeStyle->assignArray("toolbar", self::$toolbar);
-        $libMakeStyle->assignString("pageSelected", $pageSelected);
+        $libMakeStyle->assignArray("toolbar",
+                                   self::$toolbar);
+        $libMakeStyle->assignString("pageSelected",
+                                    $pageSelected);
         $libMakeStyle->display($managementScreen);
     }
 
-    public function install() {
+    public function install()
+    {
         // Aucune installation n'est permise
     }
 
-    public function uninstall() {
+    public function uninstall()
+    {
         // Aucune désinstallation n'est permise
     }
 
@@ -93,9 +105,11 @@ class Module_Management_Index extends ModuleModel {
      *
      * @return array => array("value" => valeur de la page, "name" => nom de la page).
      */
-    public static function &getManagementList() {
+    public static function &getManagementList()
+    {
         $pageList = array();
-        $files = CoreCache::getInstance()->getFileList("modules/management", ".setting.module");
+        $files = CoreCache::getInstance()->getFileList("modules/management",
+                                                       ".setting.module");
         $currentAccessType = $this->getAccessType();
 
         foreach ($files as $page) {
@@ -118,7 +132,8 @@ class Module_Management_Index extends ModuleModel {
      * @param $page string
      * @return string
      */
-    private static function &getManagementPageName($page) {
+    private static function &getManagementPageName($page)
+    {
         $name = defined("SETTING_TITLE_" . strtoupper($page)) ? constant("SETTING_TITLE_" . strtoupper($page)) : ucfirst($page);
         return $name;
     }
@@ -130,7 +145,8 @@ class Module_Management_Index extends ModuleModel {
      * @param string $description
      * @param string $link
      */
-    private static function addButtonInToolbar($name, $description, $link) {
+    private static function addButtonInToolbar($name, $description, $link)
+    {
         self::$toolbar[] = array(
             "name" => $name,
             "description" => $description,
@@ -138,28 +154,40 @@ class Module_Management_Index extends ModuleModel {
         );
     }
 
-    public static function addEditButtonInToolbar($link, $description = "") {
+    public static function addEditButtonInToolbar($link, $description = "")
+    {
         if (empty($description))
             $description = EDIT;
-        self::addButtonInToolbar("edit", $description, $link);
+        self::addButtonInToolbar("edit",
+                                 $description,
+                                 $link);
     }
 
-    public static function addDeleteButtonInToolbar($link, $description = "") {
+    public static function addDeleteButtonInToolbar($link, $description = "")
+    {
         if (empty($description))
             $description = DELETE;
-        self::addButtonInToolbar("delete", $description, $link);
+        self::addButtonInToolbar("delete",
+                                 $description,
+                                 $link);
     }
 
-    public static function addCopyButtonInToolbar($link, $description = "") {
+    public static function addCopyButtonInToolbar($link, $description = "")
+    {
         if (empty($description))
             $description = COPY;
-        self::addButtonInToolbar("copy", $description, $link);
+        self::addButtonInToolbar("copy",
+                                 $description,
+                                 $link);
     }
 
-    public static function addAddButtonInToolbar($link, $description = "") {
+    public static function addAddButtonInToolbar($link, $description = "")
+    {
         if (empty($description))
             $description = ADD;
-        self::addButtonInToolbar("add", $description, $link);
+        self::addButtonInToolbar("add",
+                                 $description,
+                                 $link);
     }
 }
 ?>

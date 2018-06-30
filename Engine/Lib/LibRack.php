@@ -2,14 +2,15 @@
 
 namespace TREngine\Engine\Lib;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
+require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARAOR . 'SecurityCheck.php';
 
 /**
  * Gestionnaire de tableau automatique.
  *
  * @author Sébastien Villemain
  */
-class LibRack {
+class LibRack
+{
 
     /**
      * Première ligne définissant les colonnes.
@@ -30,7 +31,8 @@ class LibRack {
      *
      * @param array $startLine array('size in %', 'my title')
      */
-    public function __construct(array &$startLine = array()) {
+    public function __construct(array &$startLine = array())
+    {
         $this->firstLine = $startLine;
     }
 
@@ -40,7 +42,8 @@ class LibRack {
      * @param int $size taille en pourcentage.
      * @param string $title titre de la colonne.
      */
-    public function addColumn($size, $title = "") {
+    public function addColumn($size, $title = "")
+    {
         $this->firstLine[] = array(
             $size,
             $title);
@@ -51,7 +54,8 @@ class LibRack {
      *
      * @param array $line tableau contenant dans l'ordre toutes les colonnes de la ligne.
      */
-    public function addLine(array $line) {
+    public function addLine(array $line)
+    {
         $this->lines[] = $line;
     }
 
@@ -61,7 +65,8 @@ class LibRack {
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string {
+    public function &render(string $class = ""): string
+    {
         $content = "<table class=\"" . ((!empty($class)) ? $class : "table") . "\">"
                 . "<tbody><tr class=\"first\">";
 

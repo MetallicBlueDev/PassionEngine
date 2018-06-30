@@ -4,14 +4,13 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Exec\ExecString;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de traduction de texte.
  *
  * @author Sébastien Villemain
  */
-class CoreTranslate {
+class CoreTranslate
+{
 
     /**
      * Liste des differentes langues.
@@ -204,7 +203,8 @@ class CoreTranslate {
     /**
      * Nouveau gestionnaire.
      */
-    private function __construct() {
+    private function __construct()
+    {
         $this->languageInfos['extension'] = self::getLanguageExtension();
         $this->languageInfos['name'] = $this->getLanguageTranslated();
 
@@ -216,7 +216,8 @@ class CoreTranslate {
      *
      * @return CoreTranslate
      */
-    public static function &getInstance(): CoreTranslate {
+    public static function &getInstance(): CoreTranslate
+    {
         self::checkInstance();
         return self::$coreTranslate;
     }
@@ -224,7 +225,8 @@ class CoreTranslate {
     /**
      * Vérification de l'instance du gestionnaire de traduction.
      */
-    public static function checkInstance() {
+    public static function checkInstance()
+    {
         if (self::$coreTranslate === null) {
             self::$coreTranslate = new CoreTranslate();
             self::$coreTranslate->translate(CoreLoader::ENGINE_SUBTYPE);
@@ -236,7 +238,8 @@ class CoreTranslate {
      *
      * @param array $cache
      */
-    public function affectCache(array $cache) {
+    public function affectCache(array $cache)
+    {
         if (!empty($cache) && empty($this->cache)) {
             $this->cache = $cache;
         }
@@ -247,7 +250,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    public function &getCurrentLanguage(): string {
+    public function &getCurrentLanguage(): string
+    {
         return $this->languageInfos['name'];
     }
 
@@ -256,7 +260,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    public function &getCurrentLanguageExtension(): string {
+    public function &getCurrentLanguageExtension(): string
+    {
         return $this->languageInfos['extension'];
     }
 
@@ -265,7 +270,8 @@ class CoreTranslate {
      *
      * @param string $pathLang chemin du fichier de traduction.
      */
-    public function translate(string $pathLang) {
+    public function translate(string $pathLang)
+    {
         if (!empty($pathLang) && !$this->translated($pathLang)) {
             $this->fireTranslation($pathLang);
             $this->setTranslated($pathLang);
@@ -277,8 +283,10 @@ class CoreTranslate {
      *
      * @return array
      */
-    public static function &getLangList(): array {
-        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::TRANSLATE_FILE, "." . CoreLoader::TRANSLATE_EXTENSION);
+    public static function &getLangList(): array
+    {
+        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::TRANSLATE_FILE,
+                                                     "." . CoreLoader::TRANSLATE_EXTENSION);
     }
 
     /**
@@ -286,7 +294,8 @@ class CoreTranslate {
      *
      * @param string $pathLang
      */
-    public static function removeCache(string $pathLang = "") {
+    public static function removeCache(string $pathLang = "")
+    {
         $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
         $langCacheFileName = self::getLangCachePrefixFileName($pathLang);
         $langues = self::getLangList();
@@ -302,7 +311,8 @@ class CoreTranslate {
      * @param string $pathLang
      * @return bool
      */
-    private function translated(string $pathLang): bool {
+    private function translated(string $pathLang): bool
+    {
         return isset($this->translated[$pathLang]);
     }
 
@@ -311,7 +321,8 @@ class CoreTranslate {
      *
      * @param string $pathLang
      */
-    private function setTranslated(string $pathLang) {
+    private function setTranslated(string $pathLang)
+    {
         $this->translated[$pathLang] = true;
     }
 
@@ -320,12 +331,14 @@ class CoreTranslate {
      *
      * @param string $pathLang
      */
-    private function fireTranslation(string $pathLang) {
+    private function fireTranslation(string $pathLang)
+    {
         if (!$this->translateWithCache($pathLang)) {
             $content = $this->getTranslation($pathLang);
 
             if (!empty($content)) {
-                $this->createTranslationCache($pathLang, $content);
+                $this->createTranslationCache($pathLang,
+                                              $content);
                 $this->translateWithBuffer($content);
             }
         }
@@ -337,7 +350,8 @@ class CoreTranslate {
      * @param string $pathLang
      * @return bool
      */
-    private function translateWithCache(string $pathLang): bool {
+    private function translateWithCache(string $pathLang): bool
+    {
         $translated = false;
 
         if (CoreLoader::isCallable("CoreCache")) {
@@ -362,7 +376,8 @@ class CoreTranslate {
      * @param string $pathLang
      * @return string
      */
-    private function getLangCacheFileName(string $pathLang): string {
+    private function getLangCacheFileName(string $pathLang): string
+    {
         return self::getLangCachePrefixFileName($pathLang) . $this->getCurrentLanguage() . ".php";
     }
 
@@ -372,7 +387,8 @@ class CoreTranslate {
      * @param string $pathLang
      * @return string
      */
-    private function getTranslation(string $pathLang): string {
+    private function getTranslation(string $pathLang): string
+    {
         $content = "";
 
         // Initialisation de la variable de cache
@@ -392,7 +408,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    private function serializeTranslation(): string {
+    private function serializeTranslation(): string
+    {
         $content = "";
 
         foreach ($this->cache as $key => $value) {
@@ -409,10 +426,12 @@ class CoreTranslate {
      * @param string $pathLang
      * @param string $content
      */
-    private function createTranslationCache(string $pathLang, string $content) {
+    private function createTranslationCache(string $pathLang, string $content)
+    {
         if (CoreLoader::isCallable("CoreCache")) {
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
-            CoreCache::getInstance(CoreCacheSection::TRANSLATE)->writeCache($langCacheFileName, $content);
+            CoreCache::getInstance(CoreCacheSection::TRANSLATE)->writeCache($langCacheFileName,
+                                                                            $content);
         }
     }
 
@@ -421,7 +440,8 @@ class CoreTranslate {
      *
      * @param string $content
      */
-    private function translateWithBuffer(string $content) {
+    private function translateWithBuffer(string $content)
+    {
         ob_start();
         print eval(" $content ");
         ob_get_contents();
@@ -434,11 +454,15 @@ class CoreTranslate {
      * @param string $pathLang
      * @return string
      */
-    private static function getLangCachePrefixFileName(string $pathLang = ""): string {
-        if (!empty($pathLang) && substr($pathLang, -1) !== DIRECTORY_SEPARATOR) {
+    private static function getLangCachePrefixFileName(string $pathLang = ""): string
+    {
+        if (!empty($pathLang) && substr($pathLang,
+                                        -1) !== DIRECTORY_SEPARATOR) {
             $pathLang .= DIRECTORY_SEPARATOR;
         }
-        return str_replace(DIRECTORY_SEPARATOR, "_", $pathLang) . CoreLoader::TRANSLATE_EXTENSION . "_";
+        return str_replace(DIRECTORY_SEPARATOR,
+                           "_",
+                           $pathLang) . CoreLoader::TRANSLATE_EXTENSION . "_";
     }
 
     /**
@@ -446,28 +470,42 @@ class CoreTranslate {
      *
      * @return string
      */
-    private static function &getLanguageExtension(): string {
+    private static function &getLanguageExtension(): string
+    {
         $validExtension = "";
 
         // Recherche de la langue du client
-        $acceptedLanguages = explode(',', CoreRequest::getString("HTTP_ACCEPT_LANGUAGE", "", CoreRequestType::SERVER));
-        $extension = strtolower(substr(trim($acceptedLanguages[0]), 0, 2));
+        $acceptedLanguages = explode(',',
+                                     CoreRequest::getString("HTTP_ACCEPT_LANGUAGE",
+                                                            "",
+                                                            CoreRequestType::SERVER));
+        $extension = strtolower(substr(trim($acceptedLanguages[0]),
+                                            0,
+                                            2));
 
         if (self::canUseExtension($extension)) {
             $validExtension = $extension;
         } else {
             // Recherche de l'URL
             if (!defined("TR_ENGINE_URL")) {
-                $url = CoreRequest::getString("SERVER_NAME", "", CoreRequestType::SERVER);
+                $url = CoreRequest::getString("SERVER_NAME",
+                                              "",
+                                              CoreRequestType::SERVER);
             } else {
                 $url = TR_ENGINE_URL;
             }
 
             // Recherche de l'extension de URL
             $matches = array();
-            preg_match('@^(?:http://)?([^/]+)@i', $url, $matches);
-            preg_match('/[^.]+\.[^.]+$/', $matches[1], $matches);
-            preg_match('/[^.]+$/', $matches[0], $matches);
+            preg_match('@^(?:http://)?([^/]+)@i',
+                       $url,
+                       $matches);
+            preg_match('/[^.]+\.[^.]+$/',
+                       $matches[1],
+                       $matches);
+            preg_match('/[^.]+$/',
+                       $matches[0],
+                       $matches);
 
             $extension = $matches[0];
 
@@ -481,18 +519,24 @@ class CoreTranslate {
     /**
      * Formate l'heure locale.
      */
-    private function configureLocale() {
+    private function configureLocale()
+    {
         if ($this->getCurrentLanguage() === "french" && TR_ENGINE_PHP_OS === "WIN") {
-            setlocale(LC_TIME, "french");
+            setlocale(LC_TIME,
+                      "french");
         } else if ($this->getCurrentLanguage() === "french" && TR_ENGINE_PHP_OS === "BSD") {
-            setlocale(LC_TIME, "fr_FR.ISO8859-1");
+            setlocale(LC_TIME,
+                      "fr_FR.ISO8859-1");
         } else if ($this->getCurrentLanguage() === "french") {
-            setlocale(LC_TIME, 'fr_FR');
+            setlocale(LC_TIME,
+                      'fr_FR');
         } else {
             // Tentative de formatage via le nom de la langue
-            if (!setlocale(LC_TIME, $this->getCurrentLanguage())) {
+            if (!setlocale(LC_TIME,
+                           $this->getCurrentLanguage())) {
                 // Dernière tentative de formatage sous forme "fr_FR"
-                setlocale(LC_TIME, strtolower($this->getCurrentLanguageExtension()) . "_" . strtoupper($this->getCurrentLanguageExtension()));
+                setlocale(LC_TIME,
+                          strtolower($this->getCurrentLanguageExtension()) . "_" . strtoupper($this->getCurrentLanguageExtension()));
             }
         }
     }
@@ -504,7 +548,8 @@ class CoreTranslate {
      * @param string
      * @return string
      */
-    private static function &entitiesTranslate(string $text): string {
+    private static function &entitiesTranslate(string $text): string
+    {
         $text = ExecString::entitiesUtf8($text);
         //$text = ExecEntities::addSlashes($text);
         return $text;
@@ -516,7 +561,8 @@ class CoreTranslate {
      * @param string $extension
      * @return bool
      */
-    private static function canUseExtension(string $extension): bool {
+    private static function canUseExtension(string $extension): bool
+    {
         return !empty($extension) && isset(self::LANGUAGE_LIST[$extension]);
     }
 
@@ -525,7 +571,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    private function &getLanguageTranslated(): string {
+    private function &getLanguageTranslated(): string
+    {
         $language = self::getLanguageBySession();
 
         if (empty($language)) {
@@ -543,7 +590,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    private static function &getLanguageBySession(): string {
+    private static function &getLanguageBySession(): string
+    {
         $language = "";
 
         if (CoreLoader::isCallable("CoreSession")) {
@@ -562,7 +610,8 @@ class CoreTranslate {
      * @param string $extension
      * @return string
      */
-    private static function &getLanguageByExtension(string $extension): string {
+    private static function &getLanguageByExtension(string $extension): string
+    {
         $language = strtolower(trim(self::LANGUAGE_LIST[$extension]));
 
         if (!self::canUseLanguage($language)) {
@@ -576,7 +625,8 @@ class CoreTranslate {
      *
      * @return string
      */
-    private static function &getLanguageByDefault(): string {
+    private static function &getLanguageByDefault(): string
+    {
         $language = "";
 
         if (CoreLoader::isCallable("CoreMain")) {
@@ -597,7 +647,9 @@ class CoreTranslate {
      * @param string $language
      * @return bool true langue disponible.
      */
-    private static function canUseLanguage(string $language): bool {
-        return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE, $language) . ".php");
+    private static function canUseLanguage(string $language): bool
+    {
+        return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
+                                                                                                                            $language) . ".php");
     }
 }

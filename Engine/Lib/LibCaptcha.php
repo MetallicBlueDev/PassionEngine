@@ -10,14 +10,13 @@ use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Exec\ExecCrypt;
 use TREngine\Engine\Exec\ExecCookie;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Générateur de captcha, anti-robot, anti-spam.
  *
  * @author Sébastien Villemain
  */
-class LibCaptcha {
+class LibCaptcha
+{
 
     /**
      * Vérifie l'état initialisation de la classe.
@@ -66,7 +65,8 @@ class LibCaptcha {
      *
      * @param object $object (LibForm object par exemple)
      */
-    public function __construct(&$object = null) {
+    public function __construct(&$object = null)
+    {
         // Mode du captcha
         $captchaMode = CoreMain::getInstance()->getConfigs()->getCaptchaMode();
         $captchaMode = ($captchaMode === "off" || $captchaMode === "auto" || $captchaMode === "manu") ? $captchaMode : "auto";
@@ -91,21 +91,29 @@ class LibCaptcha {
      *
      * @return string le code HTML a incruster dans la page ou une chaine vide si un objet valide est utilisé
      */
-    public function &create(): string {
+    public function &create(): string
+    {
         $rslt = "";
 
         if ($this->enabled) {
-            $this->inputRobotName = ExecCrypt::makeLetterIdentifier($this->randInt(5, 9));
+            $this->inputRobotName = ExecCrypt::makeLetterIdentifier($this->randInt(5,
+                                                                                   9));
             $mini = (extension_loaded('gd')) ? 0 : 1;
-            $mode = $this->randInt($mini, 5);
+            $mode = $this->randInt($mini,
+                                   5);
 
             $this->createMode($mode);
 
             if ($this->object !== null) {
                 // TODO A vérifier
                 if ($this->object instanceOf LibForm) {
-                    $this->object->addInputText("cles", $this->question, "", "", "input captcha");
-                    $this->object->addInputHidden($this->inputRobotName, "");
+                    $this->object->addInputText("cles",
+                                                $this->question,
+                                                "",
+                                                "",
+                                                "input captcha");
+                    $this->object->addInputHidden($this->inputRobotName,
+                                                  "");
                 }
             } else {
                 $rslt = $this->question . " <input name=\"cles\" type=\"text\" value=\"\" />"
@@ -113,7 +121,8 @@ class LibCaptcha {
             }
         }
 
-        ExecCookie::createCookie("captcha", addslashes(serialize($this)));
+        ExecCookie::createCookie("captcha",
+                                 addslashes(serialize($this)));
         return $rslt;
     }
 
@@ -123,7 +132,8 @@ class LibCaptcha {
      * @param LibCaptcha $object
      * @return bool
      */
-    public static function &check($object = null): bool {
+    public static function &check($object = null): bool
+    {
         $rslt = false;
 
         if ($object === null || !is_object($object)) {
@@ -145,7 +155,8 @@ class LibCaptcha {
      *
      * @param int $mode
      */
-    private function createMode(int &$mode) {
+    private function createMode(int &$mode)
+    {
         switch ($mode) {
             case 0:
                 $this->makePicture();
@@ -176,11 +187,16 @@ class LibCaptcha {
      *
      * @return bool
      */
-    private function &internalCheck(): bool {
+    private function &internalCheck(): bool
+    {
         $rslt = false;
 
-        $code = CoreRequest::getString("cles", "", CoreRequestType::POST);
-        $inputRobot = CoreRequest::getString($this->inputRobotName, "", CoreRequestType::POST);
+        $code = CoreRequest::getString("cles",
+                                       "",
+                                       CoreRequestType::POST);
+        $inputRobot = CoreRequest::getString($this->inputRobotName,
+                                             "",
+                                             CoreRequestType::POST);
 
         // Vérification du formulaire
         if (empty($inputRobot) && $code === $this->response) {
@@ -199,19 +215,24 @@ class LibCaptcha {
      * @param int $max
      * @return int
      */
-    private function randInt(int $mini, int $max): int {
+    private function randInt(int $mini, int $max): int
+    {
         if (!self::$iniRand) {
             self::initRand();
         }
-        return mt_rand($mini, $max);
+        return mt_rand($mini,
+                       $max);
     }
 
     /**
      * Créé un calcul simple.
      */
-    private function makeSimpleCalculation() {
-        $numberOne = $this->randInt(0, 9);
-        $numberTwo = $this->randInt(1, 12);
+    private function makeSimpleCalculation()
+    {
+        $numberOne = $this->randInt(0,
+                                    9);
+        $numberTwo = $this->randInt(1,
+                                    12);
 
         // Choix de l'operateur de façon aléatoire
         $operateur = ($numberTwo >= $numberOne) ? array(
@@ -226,7 +247,8 @@ class LibCaptcha {
         eval('$this->response = strval(' . $numberOne . $operateur . $numberTwo . ');');
 
         // Affichage aléatoire de l'opérateur
-        if ($this->randInt(0, 1) == 1) {
+        if ($this->randInt(0,
+                           1) == 1) {
             // Affichage de l'opérateur en lettre
             switch ($operateur) {
                 case '*':
@@ -244,7 +266,8 @@ class LibCaptcha {
             }
         } else {
             // Affichage de l'opérateur en symbole
-            $operateur = ($operateur === "*" && $this->randInt(0, 1) == 1) ? "x" : $operateur;
+            $operateur = ($operateur === "*" && $this->randInt(0,
+                                                               1) == 1) ? "x" : $operateur;
         }
 
         $this->question = CAPTCHA_MAKE_SIMPLE_CALCULATION . " " . $numberOne . " " . $operateur . " " . $numberTwo . " ?";
@@ -253,38 +276,52 @@ class LibCaptcha {
     /**
      * Ecrire un certain nombre de lettre de l'alphabet.
      */
-    private function makeLetters() {
-        $number = $this->randInt(1, 6);
+    private function makeLetters()
+    {
+        $number = $this->randInt(1,
+                                 6);
 
         $this->question = CAPTCHA_MAKE_LETTERS . " " . $number;
-        $this->response = substr("abcdef", 0, $number);
+        $this->response = substr("abcdef",
+                                 0,
+                                 $number);
     }
 
     /**
      * Ecrire la lettre de l'alphabet correspondant au chiffre.
      */
-    private function makeLetter() {
-        $number = $this->randInt(1, 6);
+    private function makeLetter()
+    {
+        $number = $this->randInt(1,
+                                 6);
 
         $this->question = CAPTCHA_MAKE_LETTER . " " . $number;
-        $this->response = substr("abcdef", $number - 1, 1);
+        $this->response = substr("abcdef",
+                                 $number - 1,
+                                 1);
     }
 
     /**
      * Ecrire un certain nombre de chiffre.
      */
-    private function makeNumbers() {
-        $number = $this->randInt(1, 6);
+    private function makeNumbers()
+    {
+        $number = $this->randInt(1,
+                                 6);
 
         $this->question = CAPTCHA_MAKE_NUMBERS . " " . $number;
-        $this->response = substr("012345", 0, $number + 1);
+        $this->response = substr("012345",
+                                 0,
+                                 $number + 1);
     }
 
     /**
      * Convertir en lettre un mois demandé en chiffre et inversement.
      */
-    private function makeNumberMonth() {
-        $number = $this->randInt(1, 12);
+    private function makeNumberMonth()
+    {
+        $number = $this->randInt(1,
+                                 12);
 
         // Recherche du mois par rapport au chiffre
         switch ($number) {
@@ -329,7 +366,8 @@ class LibCaptcha {
                 break;
         }
 
-        if ($this->randInt(0, 1) == 0) {
+        if ($this->randInt(0,
+                           1) == 0) {
             // Ecrire en lettre un mois de l'année
             $this->question = CAPTCHA_MAKE_NUMBER_TO_MONTH . " " . $number . " ?";
             $this->response = $month;
@@ -343,15 +381,18 @@ class LibCaptcha {
     /**
      * Génére une image.
      */
-    private function makePicture() {// TODO a vérifier
-        $this->response = ExecCrypt::makeIdentifier($this->randInt(3, 6));
+    private function makePicture()
+    {// TODO a vérifier
+        $this->response = ExecCrypt::makeIdentifier($this->randInt(3,
+                                                                   6));
         $this->question = CAPTCHA_MAKE_PICTURE_CODE . ": " . "<img src=\"index.php?layout=block&amp;blockType=ImageGenerator&amp;mode=code&amp;code=" . $this->response . "\" alt=\"\" />\n";
     }
 
     /**
      * Initialise le compteur de donnée aléatoire.
      */
-    private static function initRand() {
+    private static function initRand()
+    {
         mt_srand((double) microtime() * 1000000);
         self::$iniRand = true;
     }

@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Exec;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil de mesure de durée.
  *
  * @author Sébastien Villemain
  */
-class ExecTimeMarker {
+class ExecTimeMarker
+{
 
     /**
      * Marqueur de début.
@@ -30,7 +29,8 @@ class ExecTimeMarker {
      *
      * @param string $name Nom de la mesure.
      */
-    public static function startMeasurement(string $name) {
+    public static function startMeasurement(string $name)
+    {
         self::$startTime[$name] = self::getMaker();
     }
 
@@ -39,7 +39,8 @@ class ExecTimeMarker {
      *
      * @param string $name Nom de la mesure.
      */
-    public static function stopMeasurement(string $name) {
+    public static function stopMeasurement(string $name)
+    {
         self::$finishTime[$name] = self::getMaker();
     }
 
@@ -48,7 +49,8 @@ class ExecTimeMarker {
      *
      * @return float
      */
-    private static function getMaker(): float {
+    private static function getMaker(): float
+    {
         return microtime(true);
     }
 
@@ -57,7 +59,8 @@ class ExecTimeMarker {
      *
      * @return float le temps de génération en milliseconde.
      */
-    public static function &getMeasurement(string $name): float {
+    public static function &getMeasurement(string $name): float
+    {
         $rslt = 0;
 
         if (isset(self::$startTime[$name])) {
@@ -66,9 +69,9 @@ class ExecTimeMarker {
             }
 
             $rslt = self::$finishTime[$name] - self::$startTime[$name];
-            $rslt = round($rslt, 4) * 1000;
+            $rslt = round($rslt,
+                          4) * 1000;
         }
         return $rslt;
     }
-
 }

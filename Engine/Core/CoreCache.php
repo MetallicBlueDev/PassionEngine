@@ -7,8 +7,6 @@ use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
 use Exception;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de fichier cache.
  *

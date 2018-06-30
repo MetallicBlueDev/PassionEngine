@@ -6,14 +6,13 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreDataStorage;
 use TREngine\Engine\Core\CoreAccessToken;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Information de base sur une entité de bibliothèque.
  *
  * @author Sébastien Villemain
  */
-abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken {
+abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
+{
 
     /**
      * Les données compilées.
@@ -25,7 +24,8 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
     /**
      * Nouvelle information d'une entité.
      */
-    protected function __construct() {
+    protected function __construct()
+    {
         parent::__construct();
     }
 
@@ -34,7 +34,8 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @return string
      */
-    public function &getBuffer(): string {
+    public function &getBuffer(): string
+    {
         return $this->buffer;
     }
 
@@ -43,7 +44,8 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @param string $buffer
      */
-    public function setBuffer(string $buffer) {
+    public function setBuffer(string $buffer)
+    {
         $this->buffer = $buffer;
     }
 
@@ -66,8 +68,10 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken 
      *
      * @return bool
      */
-    public function isValid(): bool {
-        $qualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(), $this->getFolderName());
+    public function isValid(): bool
+    {
+        $qualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(),
+                                                                    $this->getFolderName());
         return is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
     }
 

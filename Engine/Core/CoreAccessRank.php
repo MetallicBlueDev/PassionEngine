@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Référence les rangs possibles utilisés par le moteur.
  *
  * @author Sébastien Villemain
  */
-class CoreAccessRank {
+class CoreAccessRank
+{
 
     /**
      * Accès non défini (cas de désactivation).

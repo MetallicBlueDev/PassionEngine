@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de réécriture du tampon de sortie.
  *
  * @author Sébastien Villemain
  */
-class CoreUrlRewriting {
+class CoreUrlRewriting
+{
 
     /**
      * Gestionnnaire de réécriture.
@@ -28,7 +27,8 @@ class CoreUrlRewriting {
     /**
      * Nouveau gestionnaire.
      */
-    private function __construct() {
+    private function __construct()
+    {
         if (CoreMain::getInstance()->getConfigs()->doUrlRewriting()) {
             $this->canUse = $this->testPassed();
         }
@@ -39,21 +39,24 @@ class CoreUrlRewriting {
      *
      * @return CoreUrlRewriting
      */
-    public static function &getInstance(): CoreUrlRewriting {
+    public static function &getInstance(): CoreUrlRewriting
+    {
         if (self::$coreUrlRewriting === null) {
             self::$coreUrlRewriting = new CoreUrlRewriting();
         }
         return self::$coreUrlRewriting;
     }
 
-    public function &rewriteLink(string $link): string {
+    public function &rewriteLink(string $link): string
+    {
         if ($this->canUse) {
 
         }
         return $link;
     }
 
-    public function &rewriteBuffer(string $buffer): string {
+    public function &rewriteBuffer(string $buffer): string
+    {
         if ($this->canUse) {
 
         }
@@ -67,15 +70,19 @@ class CoreUrlRewriting {
      * @param bool $layout true ajouter le layout.
      * @return string
      */
-    public static function &getLink(string $link, bool $layout = false): string {
+    public static function &getLink(string $link, bool $layout = false): string
+    {
         if ($link[0] !== "#") {
             // Configuration du layout
             if ($layout) {
                 $layout = "&amp;layout=";
 
-                if (strpos($link, "blockId=") !== false || strpos($link, "blockType=") !== false) {
+                if (strpos($link,
+                           "blockId=") !== false || strpos($link,
+                                                           "blockType=") !== false) {
                     $layout .= "block";
-                } else if (strpos($link, "module=") !== false) {
+                } else if (strpos($link,
+                                  "module=") !== false) {
                     $layout .= "module";
                 } else {
                     $layout .= "default";
@@ -85,7 +92,8 @@ class CoreUrlRewriting {
             }
 
             // Recherche de la page principal
-            if (strpos($link, "index.php") === false) {
+            if (strpos($link,
+                       "index.php") === false) {
                 if ($link[0] === "?") {
                     $link = "index.php" . $link;
                 } else {
@@ -102,7 +110,8 @@ class CoreUrlRewriting {
      *
      * @return bool
      */
-    private function &testPassed(): bool {
+    private function &testPassed(): bool
+    {
         $rslt = false;
         // TODO vérifie si fichier tmp de test est OK
         // si pas OK et pas de fichier tmp pour signaler la désactivation

@@ -15,18 +15,23 @@ use TREngine\Engine\Core\CoreSecure;
  */
 // Initialisation principal
 if (!defined("TR_ENGINE_INITIALIZED")) {
-    define("TR_ENGINE_INITIALIZED", true);
+    define("TR_ENGINE_INITIALIZED",
+           true);
 
     // Vérification du serveur et de la version PHP
-    if (!class_exists("CoreInfo", false)) {
+    if (!class_exists("CoreInfo",
+                      false)) {
         require 'Core' . DIRECTORY_SEPARATOR . 'CoreInfo.php';
 
         // Les Superglobales ne peuvent pas être appelées directement dans une classe.
         // http://php.net/manual/fr/language.variables.variable.php
         // http://php.net/manual/fr/language.variables.superglobals.php
         foreach ($GLOBALS as $gvName => $gvValue) {
-            if (substr($gvName, 0, 1) === "_") {
-                CoreInfo::addGlobalVars($gvName, $gvValue);
+            if (substr($gvName,
+                       0,
+                       1) === "_") {
+                CoreInfo::addGlobalVars($gvName,
+                                        $gvValue);
             }
         }
 
@@ -47,19 +52,22 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
     }
 
     // Vérification de l'inclusion du chargeur
-    if (!class_exists("CoreLoader", false)) {
+    if (!class_exists("CoreLoader",
+                      false)) {
         require 'Core' . DIRECTORY_SEPARATOR . 'CoreLoader.php';
     }
 }
 
 // Initialisation du chargeur de classe
 if (!defined("TR_ENGINE_AUTOLOADED")) {
-    define("TR_ENGINE_AUTOLOADED", true);
+    define("TR_ENGINE_AUTOLOADED",
+           true);
     CoreLoader::affectRegister();
 }
 
 // Initialisation du système de sécurité
 if (!defined("TR_ENGINE_SECURE")) {
-    define("TR_ENGINE_SECURE", true);
+    define("TR_ENGINE_SECURE",
+           true);
     CoreSecure::checkInstance();
 }

@@ -4,11 +4,11 @@ namespace TREngine\Engine\Module\ModuleHome;
 
 use TREngine\Engine\Module\ModuleModel;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
+class ModuleIndex extends ModuleModel
+{
 
-class ModuleIndex extends ModuleModel {
-
-    public function display() {
+    public function display()
+    {
         ?>
         <div class="title">
             <span>Bonjour, bienvenue sur <a href="index.php">Trancer-Studio.net</a>.</span>
@@ -22,8 +22,8 @@ class ModuleIndex extends ModuleModel {
         <?php
     }
 
-    public function setting() {
+    public function setting()
+    {
         return "Pas de setting...";
     }
-
 }

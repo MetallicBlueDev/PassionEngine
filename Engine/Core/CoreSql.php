@@ -6,8 +6,6 @@ use TREngine\Engine\Base\BaseModel;
 use TREngine\Engine\Fail\FailSql;
 use Exception;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de la communication SQL.
  *

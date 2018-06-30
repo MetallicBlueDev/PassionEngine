@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Référence le nom des sections de cache utilisées par le moteur.
  *
  * @author Sébastien Villemain
  */
-class CoreCacheSection {
+class CoreCacheSection
+{
 
     /**
      * Section de configuration.

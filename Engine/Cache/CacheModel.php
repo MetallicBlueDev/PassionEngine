@@ -6,14 +6,13 @@ use TREngine\Engine\Core\CoreTransaction;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Fail\FailCache;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Modèle pour un gestionnaire de fichier.
  *
  * @author Sébastien Villemain
  */
-abstract class CacheModel extends CoreTransaction {
+abstract class CacheModel extends CoreTransaction
+{
 
     /**
      * Droit d'écriture CHMOD.
@@ -32,8 +31,11 @@ abstract class CacheModel extends CoreTransaction {
      * @param array $failArgs
      * @throws FailCache
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array()) {
-        throw new FailCache($message, $failCode, $failArgs);
+    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        throw new FailCache($message,
+                            $failCode,
+                            $failArgs);
     }
 
     /**
@@ -42,15 +44,20 @@ abstract class CacheModel extends CoreTransaction {
      * @param array $transaction
      * @throws FailCache
      */
-    public function initialize(array &$transaction) {
+    public function initialize(array &$transaction)
+    {
         if (!empty($transaction)) {
             $matches = array();
 
-            if (preg_match("/(ftp:\/\/)(.+)/", $transaction['host'], $matches)) {
+            if (preg_match("/(ftp:\/\/)(.+)/",
+                           $transaction['host'],
+                           $matches)) {
                 $transaction['host'] = $matches[2];
             }
 
-            if (preg_match("/(.+)(\/)/", $transaction['host'], $matches)) {
+            if (preg_match("/(.+)(\/)/",
+                           $transaction['host'],
+                           $matches)) {
                 $transaction['host'] = $matches[1];
             }
 
@@ -72,7 +79,8 @@ abstract class CacheModel extends CoreTransaction {
      *
      * @return int
      */
-    public function &getServerPort(): int {
+    public function &getServerPort(): int
+    {
         return $this->getIntValue("port");
     }
 
@@ -81,7 +89,8 @@ abstract class CacheModel extends CoreTransaction {
      *
      * @return string
      */
-    public function &getServerRoot(): string {
+    public function &getServerRoot(): string
+    {
         return $this->getStringValue("root");
     }
 
@@ -90,8 +99,10 @@ abstract class CacheModel extends CoreTransaction {
      *
      * @param string $newRoot
      */
-    public function setServerRoot(string &$newRoot) {
-        $this->setDataValue("root", $newRoot);
+    public function setServerRoot(string &$newRoot)
+    {
+        $this->setDataValue("root",
+                            $newRoot);
     }
 
     /**
@@ -101,7 +112,8 @@ abstract class CacheModel extends CoreTransaction {
      * @param mixed $content contenu du fichier cache
      * @param bool $overwrite écrasement du fichier
      */
-    public function writeCache(string $path, $content, bool $overwrite = true) {
+    public function writeCache(string $path, $content, bool $overwrite = true)
+    {
         unset($path);
         unset($content);
         unset($overwrite);
@@ -113,7 +125,8 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $path chemin vers le fichier cache
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0) {
+    public function touchCache(string $path, int $updateTime = 0)
+    {
         unset($path);
         unset($updateTime);
     }
@@ -124,7 +137,8 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $path chemin vers le fichier ou le dossier
      * @param int $timeLimit limite de temps
      */
-    public function removeCache(string $path, int $timeLimit = 0) {
+    public function removeCache(string $path, int $timeLimit = 0)
+    {
         unset($path);
         unset($timeLimit);
     }
@@ -135,7 +149,8 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $path
      * @return array
      */
-    public function &getNameList(string $path): array {
+    public function &getNameList(string $path): array
+    {
         unset($path);
         $names = array();
         return $names;
@@ -147,7 +162,8 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $path
      * @return int
      */
-    public function &getCacheMTime(string $path): int {
+    public function &getCacheMTime(string $path): int
+    {
         unset($path);
         $time = 0;
         return $time;
@@ -159,24 +175,29 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $path
      * @return bool true c'est un dossier
      */
-    protected static function &isDirectoryPath(string $path): bool {
+    protected static function &isDirectoryPath(string $path): bool
+    {
         $pathIsDir = false;
 
-        if (substr($path, -1) === DIRECTORY_SEPARATOR) {
+        if (substr($path,
+                   -1) === DIRECTORY_SEPARATOR) {
             $pathIsDir = true;
         } else {
             // Recherche du bout du path
             $supposedFileName = "";
-            $pos = strrpos(DIRECTORY_SEPARATOR, $path);
+            $pos = strrpos(DIRECTORY_SEPARATOR,
+                           $path);
 
             if ($pos !== false) {
-                $supposedFileName = substr($path, $pos);
+                $supposedFileName = substr($path,
+                                           $pos);
             } else {
                 $supposedFileName = $path;
             }
 
             // Si ce n'est pas un fichier (avec ext.)
-            if (strpos($supposedFileName, ".") === false) {
+            if (strpos($supposedFileName,
+                       ".") === false) {
                 $pathIsDir = true;
             }
         }
@@ -190,21 +211,27 @@ abstract class CacheModel extends CoreTransaction {
      * @param string $content
      * @return string $content
      */
-    protected static function &getFileHeader(string $filePath, string $content): string {
-        $ext = substr($filePath, -3);
+    protected static function &getFileHeader(string $filePath, string $content): string
+    {
+        $ext = substr($filePath,
+                      -3);
 
         // Entête des fichier PHP
         if ($ext === "php") {
             // Recherche du dossier parent
             $dirBase = "";
 
-            $localDir = str_replace(TR_ENGINE_INDEXDIR, "", $filePath);
+            $localDir = str_replace(TR_ENGINE_INDEXDIR,
+                                    "",
+                                    $filePath);
 
             if ($localDir[0] === DIRECTORY_SEPARATOR) {
-                $localDir = substr($localDir, 1);
+                $localDir = substr($localDir,
+                                   1);
             }
 
-            $nbDir = count(explode(DIRECTORY_SEPARATOR, $localDir));
+            $nbDir = count(explode(DIRECTORY_SEPARATOR,
+                                   $localDir));
 
             for ($i = 1; $i < $nbDir; $i++) {
                 $dirBase .= ".." . DIRECTORY_SEPARATOR;

@@ -12,8 +12,6 @@ use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecTimeMarker;
 use TREngine\Engine\Exec\ExecString;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire du noyau et d'enchainement dans le moteur.
  * Classe principal du moteur.

@@ -7,8 +7,6 @@ use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Exec\ExecJQuery;
 use TREngine\Engine\Lib\LibMakeStyle;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Block de menu style jdMenu by Jonathan Sharp
  *

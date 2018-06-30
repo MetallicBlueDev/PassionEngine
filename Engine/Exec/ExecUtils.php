@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Exec;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Fonction optimisée et utilitaire.
  *
  * @author Sébastien Villemain
  */
-class ExecUtils {
+class ExecUtils
+{
 
     /**
      * Indique si une valeur appartient à un tableau.
@@ -20,7 +19,8 @@ class ExecUtils {
      * @param bool $strict
      * @return bool
      */
-    public static function inArray(string $needle, array $haystack, bool $strict = false): bool {
+    public static function inArray(string $needle, array $haystack, bool $strict = false): bool
+    {
         $rslt = false;
 
         foreach ($haystack as $value) {
@@ -42,12 +42,14 @@ class ExecUtils {
      * @param bool $strict
      * @return bool
      */
-    public static function inMultiArray(string $needle, array $haystack, bool $strict = false): bool {
+    public static function inMultiArray(string $needle, array $haystack, bool $strict = false): bool
+    {
         $rslt = false;
 
         foreach ($haystack as $value) {
             if (is_array($value)) {
-                if (self::inMultiArray($needle, $value)) {
+                if (self::inMultiArray($needle,
+                                       $value)) {
                     $rslt = true;
                     break;
                 }
@@ -60,5 +62,4 @@ class ExecUtils {
         }
         return $rslt;
     }
-
 }

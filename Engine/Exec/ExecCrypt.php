@@ -5,14 +5,13 @@ namespace TREngine\Engine\Exec;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil de manipulation de données pour le cryptage.
  *
  * @author Sébastien Villemain
  */
-class ExecCrypt {
+class ExecCrypt
+{
 
     /**
      * Création d'un identifiant unique avec des chiffres, lettres et sensible à la case.
@@ -20,8 +19,12 @@ class ExecCrypt {
      * @param int $size
      * @return string
      */
-    public static function &makeIdentifier(int $size = 32): string {
-        $key = self::makeNewKey($size, true, true, true);
+    public static function &makeIdentifier(int $size = 32): string
+    {
+        $key = self::makeNewKey($size,
+                                true,
+                                true,
+                                true);
         return $key;
     }
 
@@ -31,8 +34,12 @@ class ExecCrypt {
      * @param int $size
      * @return string
      */
-    public static function &makeNumericIdentifier(int $size = 32): string {
-        $key = self::makeNewKey($size, false, true, false);
+    public static function &makeNumericIdentifier(int $size = 32): string
+    {
+        $key = self::makeNewKey($size,
+                                false,
+                                true,
+                                false);
         return $key;
     }
 
@@ -42,8 +49,12 @@ class ExecCrypt {
      * @param int $size
      * @return string
      */
-    public static function &makeLetterIdentifier(int $size = 32): string {
-        $key = self::makeNewKey($size, true, false, false);
+    public static function &makeLetterIdentifier(int $size = 32): string
+    {
+        $key = self::makeNewKey($size,
+                                true,
+                                false,
+                                false);
         return $key;
     }
 
@@ -53,8 +64,12 @@ class ExecCrypt {
      * @param int $size
      * @return string
      */
-    public static function &makeLetterCaseSensitiveIdentifier(int $size = 32): string {
-        $key = self::makeNewKey($size, true, false, true);
+    public static function &makeLetterCaseSensitiveIdentifier(int $size = 32): string
+    {
+        $key = self::makeNewKey($size,
+                                true,
+                                false,
+                                true);
         return $key;
     }
 
@@ -66,7 +81,8 @@ class ExecCrypt {
      * @param string $salt
      * @return string
      */
-    public static function &cryptBySmd5(string $data, string $salt = ""): string {
+    public static function &cryptBySmd5(string $data, string $salt = ""): string
+    {
         $cryptData = "";
 
         if (defined("CRYPT_MD5") && CRYPT_MD5) {
@@ -74,8 +90,11 @@ class ExecCrypt {
                 $salt = self::makeIdentifier(8);
             }
 
-            $salt = substr($salt, 0, 8);
-            $cryptData = crypt($data, "$1$" . $salt . "$");
+            $salt = substr($salt,
+                           0,
+                           8);
+            $cryptData = crypt($data,
+                               "$1$" . $salt . "$");
         } else {
             if (CoreLoader::isCallable("CoreLogger")) {
                 CoreLogger::addException("Unsupported crypt method: CRYPT_MD5");
@@ -94,12 +113,15 @@ class ExecCrypt {
      * @param string $salt
      * @return string
      */
-    public static function &cryptByStandard(string $data, string $salt = ""): string {
+    public static function &cryptByStandard(string $data, string $salt = ""): string
+    {
         if (empty($salt)) {
             $salt = self::makeIdentifier(8);
         }
 
-        $salt = substr($salt, 0, 8);
+        $salt = substr($salt,
+                       0,
+                       8);
         $cryptData = "TR" . md5($data . $salt);
         return $cryptData;
     }
@@ -112,7 +134,8 @@ class ExecCrypt {
      * @param string $salt
      * @return string
      */
-    public static function &cryptByDes(string $data, string $salt = ""): string {
+    public static function &cryptByDes(string $data, string $salt = ""): string
+    {
         $cryptData = "";
 
         if (defined("CRYPT_STD_DES") && CRYPT_STD_DES) {
@@ -120,13 +143,17 @@ class ExecCrypt {
                 $salt = self::makeIdentifier(2);
             }
 
-            $salt = substr($salt, 0, 2);
-            $cryptData = crypt($data, $salt);
+            $salt = substr($salt,
+                           0,
+                           2);
+            $cryptData = crypt($data,
+                               $salt);
         } else {
             if (CoreLoader::isCallable("CoreLogger")) {
                 CoreLogger::addException("Unsupported crypt method: CRYPT_STD_DES");
             }
-            $cryptData = self::cryptBySmd5($data, $salt);
+            $cryptData = self::cryptBySmd5($data,
+                                           $salt);
         }
         return $cryptData;
     }
@@ -138,7 +165,8 @@ class ExecCrypt {
      * @param string $data
      * @return string
      */
-    public static function &cryptBySha1(string $data): string {
+    public static function &cryptBySha1(string $data): string
+    {
         $cryptData = sha1($data);
         return $cryptData;
     }
@@ -151,13 +179,17 @@ class ExecCrypt {
      * @param string $salt
      * @return string
      */
-    public static function &cryptBySsha(string $data, string $salt = ""): string {
+    public static function &cryptBySsha(string $data, string $salt = ""): string
+    {
         if (empty($salt)) {
             $salt = self::makeIdentifier(4);
         }
 
-        $salt = substr($salt, 0, 4);
-        $cryptData = "{SSHA}" . base64_encode(pack("H*", sha1($data . $salt)) . $salt);
+        $salt = substr($salt,
+                       0,
+                       4);
+        $cryptData = "{SSHA}" . base64_encode(pack("H*",
+                                                   sha1($data . $salt)) . $salt);
         return $cryptData;
     }
 
@@ -169,9 +201,11 @@ class ExecCrypt {
      * @param string $salt
      * @return string
      */
-    public static function &cryptByBinarySha1(string $data): string {
+    public static function &cryptByBinarySha1(string $data): string
+    {
         // Chaîne hexadécimale H, bit de poids fort en premier
-        $cryptData = "*" . sha1(pack("H*", sha1($data)));
+        $cryptData = "*" . sha1(pack("H*",
+                                     sha1($data)));
         return $cryptData;
     }
 
@@ -185,22 +219,31 @@ class ExecCrypt {
      * @param int $ivLen
      * @return string
      */
-    public static function &md5Encrypt(string $plainText, string $password, int $ivLen = 16): string {
+    public static function &md5Encrypt(string $plainText, string $password, int $ivLen = 16): string
+    {
         $plainText .= "\x13";
         $n = strlen($plainText);
 
         if ($n % 16) {
-            $plainText .= str_repeat("\0", 16 - ($n % 16));
+            $plainText .= str_repeat("\0",
+                                     16 - ($n % 16));
         }
 
         $i = 0;
         $encText = self::getRandIv($ivLen);
-        $iv = substr($password ^ $encText, 0, 512);
+        $iv = substr($password ^ $encText,
+                     0,
+                     512);
 
         while ($i < $n) {
-            $block = substr($plainText, $i, 16) ^ pack('H*', md5($iv));
+            $block = substr($plainText,
+                            $i,
+                            16) ^ pack('H*',
+                                       md5($iv));
             $encText .= $block;
-            $iv = substr($block . $iv, 0, 512) ^ $password;
+            $iv = substr($block . $iv,
+                         0,
+                         512) ^ $password;
             $i += 16;
         }
         $encText = base64_encode($encText);
@@ -217,21 +260,33 @@ class ExecCrypt {
      * @param int $ivLen
      * @return string
      */
-    public static function &md5Decrypt(string $encText, string $password, int $ivLen = 16): string {
+    public static function &md5Decrypt(string $encText, string $password, int $ivLen = 16): string
+    {
         $encText = base64_decode($encText);
         $n = strlen($encText);
 
         $i = $ivLen;
         $plainText = '';
-        $iv = substr($password ^ substr($encText, 0, $ivLen), 0, 512);
+        $iv = substr($password ^ substr($encText,
+                                        0,
+                                        $ivLen),
+                                        0,
+                                        512);
 
         while ($i < $n) {
-            $block = substr($encText, $i, 16);
-            $plainText .= $block ^ pack('H*', md5($iv));
-            $iv = substr($block . $iv, 0, 512) ^ $password;
+            $block = substr($encText,
+                            $i,
+                            16);
+            $plainText .= $block ^ pack('H*',
+                                        md5($iv));
+            $iv = substr($block . $iv,
+                         0,
+                         512) ^ $password;
             $i += 16;
         }
-        $plainText = preg_replace('/\\x13\\x00*$/', '', $plainText);
+        $plainText = preg_replace('/\\x13\\x00*$/',
+                                  '',
+                                  $plainText);
         return $plainText;
     }
 
@@ -244,7 +299,8 @@ class ExecCrypt {
      * @param bool $caseSensitive
      * @return string
      */
-    private static function &makeNewKey(int $size = 32, bool $letter = true, bool $number = true, bool $caseSensitive = true): string {
+    private static function &makeNewKey(int $size = 32, bool $letter = true, bool $number = true, bool $caseSensitive = true): string
+    {
         $randKey = "";
         $string = "";
         $letters = "abcdefghijklmnopqrstuvwxyz";
@@ -262,10 +318,13 @@ class ExecCrypt {
         srand(time());
 
         for ($i = 0; $i < $size; $i++) {
-            $key = substr($string, (rand() % (strlen($string))), 1);
+            $key = substr($string,
+                          (rand() % (strlen($string))),
+                                            1);
 
             if ($caseSensitive) {
-                $key = (rand(0, 1) == 1) ? strtoupper($key) : strtolower($key);
+                $key = (rand(0,
+                             1) == 1) ? strtoupper($key) : strtolower($key);
             }
             $randKey .= $key;
         }
@@ -279,7 +338,8 @@ class ExecCrypt {
      * @param string $data
      * @return string
      */
-    private static function &cryptByMd5Unsafe(string $data): string {
+    private static function &cryptByMd5Unsafe(string $data): string
+    {
         $cryptData = md5($data);
         return $cryptData;
     }
@@ -292,7 +352,8 @@ class ExecCrypt {
      * @param int $ivLen
      * @return string
      */
-    private static function &getRandIv(int $ivLen): string {
+    private static function &getRandIv(int $ivLen): string
+    {
         $iv = "";
 
         while ($ivLen-- > 0) {

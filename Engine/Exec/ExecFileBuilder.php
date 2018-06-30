@@ -6,14 +6,13 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreSql;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil de création des fichiers du moteur.
  *
  * @author Sébastien Villemain
  */
-class ExecFileBuilder {
+class ExecFileBuilder
+{
 
     /**
      * Génére un nouveau fichier de configuration du moteur.
@@ -24,7 +23,8 @@ class ExecFileBuilder {
      * @param string $cookiePrefix
      * @param string $cryptKey
      */
-    public static function buildConfigFile(string $mail, string $statut, int $sessionTimeLimit, string $cookiePrefix, string $cryptKey) {
+    public static function buildConfigFile(string $mail, string $statut, int $sessionTimeLimit, string $cookiePrefix, string $cryptKey)
+    {
         if (empty($mail) && defined("TR_ENGINE_MAIL")) {
             $mail = TR_ENGINE_MAIL;
         }
@@ -66,7 +66,8 @@ class ExecFileBuilder {
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("config.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("config.inc.php",
+                                                                      $content);
     }
 
     /**
@@ -79,10 +80,12 @@ class ExecFileBuilder {
      * @param string $pass
      * @param string $root
      */
-    public static function buildCacheFile(string $type, string $host, int $port, string $user, string $pass, string $root) {
+    public static function buildCacheFile(string $type, string $host, int $port, string $user, string $pass, string $root)
+    {
         $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS);
 
-        if (empty($type) || !ExecUtils::inArray($type, CoreCache::getCacheList())) {
+        if (empty($type) || !ExecUtils::inArray($type,
+                                                CoreCache::getCacheList())) {
             $type = $coreCache->getTransactionType();
         }
 
@@ -122,7 +125,8 @@ class ExecFileBuilder {
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        $coreCache->writeCache("cache.inc.php", $content);
+        $coreCache->writeCache("cache.inc.php",
+                               $content);
     }
 
     /**
@@ -135,8 +139,10 @@ class ExecFileBuilder {
      * @param string $name
      * @param string $prefix
      */
-    public static function buildDatabaseFile(string $type, string $host, string $user, string $pass, string $name, string $prefix) {
-        if (empty($type) || !ExecUtils::inArray($type, CoreSql::getBaseList())) {
+    public static function buildDatabaseFile(string $type, string $host, string $user, string $pass, string $name, string $prefix)
+    {
+        if (empty($type) || !ExecUtils::inArray($type,
+                                                CoreSql::getBaseList())) {
             $type = CoreSql::getInstance()->getTransactionType();
         }
 
@@ -177,6 +183,7 @@ class ExecFileBuilder {
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("database.inc.php", $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("database.inc.php",
+                                                                      $content);
     }
 }

@@ -5,8 +5,6 @@ namespace TREngine\Engine\Core;
 use Exception;
 use TREngine\Engine\Fail\FailLoader;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de chargeur de classe.
  *

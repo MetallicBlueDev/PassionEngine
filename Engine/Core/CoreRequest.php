@@ -4,8 +4,6 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Fail\FailEngine;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de requêtes vers le protocole HTTP.
  *

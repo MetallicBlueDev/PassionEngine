@@ -16,8 +16,6 @@ use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreUrlRewriting;
 use Exception;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de blocks.
  *

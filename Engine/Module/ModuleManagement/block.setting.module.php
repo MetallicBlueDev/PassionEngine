@@ -1,10 +1,10 @@
 <?php
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
+class Module_Management_Block extends ModuleModel
+{
 
-class Module_Management_Block extends ModuleModel {
-
-    public function setting() {
+    public function setting()
+    {
         $localView = CoreRequest::getWord("localView");
 
         // Affichage et traitement
@@ -43,7 +43,8 @@ class Module_Management_Block extends ModuleModel {
         return $content;
     }
 
-    private function tabHome() {
+    private function tabHome()
+    {
         $firstLine = array(
             array(
                 35,
@@ -67,7 +68,8 @@ class Module_Management_Block extends ModuleModel {
         $rack = new LibRack($firstLine);
 
         CoreSql::getInstance()->select(
-                CoreTable::BLOCKS_TABLE, array(
+                CoreTable::BLOCKS_TABLE,
+                array(
             "block_id",
             "side",
             "position",
@@ -75,19 +77,28 @@ class Module_Management_Block extends ModuleModel {
             "content",
             "type",
             "rank",
-            "mods"), array(), array(
+            "mods"),
+                array(),
+                array(
             "position")
         );
         if (CoreSql::getInstance()->affectedRows() > 0) {
             while ($row = CoreSql::getInstance()->fetchArray()) {
                 // Parametre de la ligne
-                $title = CoreHtml::getLink("?module=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'], $row['title']);
+                $title = CoreHtml::getLink("?module=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'],
+                                           $row['title']);
                 $type = $row['type'];
                 $side = LibBlock::getSideAsLitteral($row['side']);
-                $position = CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'], "?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'], "#block_main_setting", "^"
+                $position = CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
+                                                      "?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
+                                                      "#block_main_setting",
+                                                      "^"
                 );
                 $position .= $row['position'];
-                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'], "?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'], "#block_main_setting", "v"
+                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
+                                                       "?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
+                                                       "#block_main_setting",
+                                                       "v"
                 );
                 $rank = CoreAccess::getRankAsLitteral($row['rank']);
                 $mods = ($row['mods'] == "all") ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
@@ -106,14 +117,18 @@ class Module_Management_Block extends ModuleModel {
         return $rack->render();
     }
 
-    private function sendMoveUp() {
-        $blockId = CoreRequest::getInteger("blockId", -1);
+    private function sendMoveUp()
+    {
+        $blockId = CoreRequest::getInteger("blockId",
+                                           -1);
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE, array(
+                    CoreTable::BLOCKS_TABLE,
+                    array(
                 "side",
-                "position"), array(
+                "position"),
+                    array(
                 "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
@@ -122,9 +137,11 @@ class Module_Management_Block extends ModuleModel {
                 if ($blockMove['position'] > 0) {
                     // Requête de Sélection des autres blocks
                     CoreSql::getInstance()->select(
-                            CoreTable::BLOCKS_TABLE, array(
+                            CoreTable::BLOCKS_TABLE,
+                            array(
                         "block_id",
-                        "position"), array(
+                        "position"),
+                            array(
                         "side = '" . $blockMove['side'] . "' AND",
                         "(position = '" . $blockMove['position'] . "' OR position = '"
                         . ($blockMove['position'] - 1) . "')")
@@ -136,8 +153,10 @@ class Module_Management_Block extends ModuleModel {
                             $row['position'] = ($row['block_id'] == $blockId) ? $row['position'] - 1 : $row['position'] + 1;
 
                             CoreSql::getInstance()->update(
-                                    CoreTable::BLOCKS_TABLE, array(
-                                "position" => $row['position']), array(
+                                    CoreTable::BLOCKS_TABLE,
+                                    array(
+                                "position" => $row['position']),
+                                    array(
                                 "block_id = '" . $row['block_id'] . "'")
                             );
                         }
@@ -152,25 +171,33 @@ class Module_Management_Block extends ModuleModel {
         }
     }
 
-    private function sendMoveDown() {
-        $blockId = CoreRequest::getInteger("blockId", -1);
+    private function sendMoveDown()
+    {
+        $blockId = CoreRequest::getInteger("blockId",
+                                           -1);
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE, array(
+                    CoreTable::BLOCKS_TABLE,
+                    array(
                 "side",
-                "position"), array(
+                "position"),
+                    array(
                 "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $blockMove = CoreSql::getInstance()->fetchArray(); // Récuperation des informations sur le block
                 // Sélection du block le plus bas
                 CoreSql::getInstance()->select(
-                        CoreTable::BLOCKS_TABLE, array(
+                        CoreTable::BLOCKS_TABLE,
+                        array(
                     "block_id",
-                    "position"), array(
-                    "side = '" . $blockMove['side'] . "'"), array(
-                    "position DESC"), "1"
+                    "position"),
+                        array(
+                    "side = '" . $blockMove['side'] . "'"),
+                        array(
+                    "position DESC"),
+                        "1"
                 );
 
                 if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -179,9 +206,11 @@ class Module_Management_Block extends ModuleModel {
                     if ($blockMove['position'] < $blockDown['position']) {
                         // Requête de Sélection des autres blocks
                         CoreSql::getInstance()->select(
-                                CoreTable::BLOCKS_TABLE, array(
+                                CoreTable::BLOCKS_TABLE,
+                                array(
                             "block_id",
-                            "position"), array(
+                            "position"),
+                                array(
                             "side = '" . $blockMove['side'] . "' AND",
                             "(position = '" . $blockMove['position'] . "' OR position = '"
                             . ($blockMove['position'] + 1) . "')")
@@ -193,8 +222,10 @@ class Module_Management_Block extends ModuleModel {
                                 $row['position'] = ($row['block_id'] == $blockId) ? $row['position'] + 1 : $row['position'] - 1;
 
                                 CoreSql::getInstance()->update(
-                                        CoreTable::BLOCKS_TABLE, array(
-                                    "position" => $row['position']), array(
+                                        CoreTable::BLOCKS_TABLE,
+                                        array(
+                                    "position" => $row['position']),
+                                        array(
                                     "block_id = '" . $row['block_id'] . "'")
                                 );
                             }
@@ -210,26 +241,31 @@ class Module_Management_Block extends ModuleModel {
         }
     }
 
-    private function tabEdit($blockId = -1) {
+    private function tabEdit($blockId = -1)
+    {
         if ($blockId < 0) {
-            $blockId = CoreRequest::getInteger("blockId", -1);
+            $blockId = CoreRequest::getInteger("blockId",
+                                               -1);
         }
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE, array(
+                    CoreTable::BLOCKS_TABLE,
+                    array(
                 "side",
                 "position",
                 "title",
                 "content",
                 "type",
                 "rank",
-                "mods"), array(
+                "mods"),
+                    array(
                 "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
-                LibBreadcrumb::getInstance()->addTrail($block['title'], "?module=management&manage=block&localView=tabEdit&blockId=" . $blockId);
+                LibBreadcrumb::getInstance()->addTrail($block['title'],
+                                                       "?module=management&manage=block&localView=tabEdit&blockId=" . $blockId);
 
                 $form = new LibForm("management-block-blockedit");
                 $form->setTitle(BLOCK_EDIT_TITLE);
@@ -237,11 +273,16 @@ class Module_Management_Block extends ModuleModel {
                 $form->addSpace();
 
                 $form->addHtmlInFieldset("ID : #" . $blockId);
-                $form->addInputText("blockTitle", BLOCK_TITLE, $block['title']);
+                $form->addInputText("blockTitle",
+                                    BLOCK_TITLE,
+                                    $block['title']);
 
                 $blockList = LibBlock::getBlockList();
-                $form->addSelectOpenTag("blockType", BLOCK_TYPE);
-                $form->addSelectItemTag($block['type'], "", true);
+                $form->addSelectOpenTag("blockType",
+                                        BLOCK_TYPE);
+                $form->addSelectItemTag($block['type'],
+                                        "",
+                                        true);
                 foreach ($blockList as $blockType) {
                     if ($blockType == $block['type'])
                         continue;
@@ -250,42 +291,60 @@ class Module_Management_Block extends ModuleModel {
                 $form->addSelectCloseTag();
 
                 $sideList = LibBlock::getSideList();
-                $form->addSelectOpenTag("blockSide", BLOCK_SIDE);
+                $form->addSelectOpenTag("blockSide",
+                                        BLOCK_SIDE);
                 $currentSideName = "";
                 foreach ($sideList as $blockSide) {
                     if ($blockSide['numeric'] == $block['side']) {
                         $currentSideName = $blockSide['letters'];
                         continue;
                     }
-                    $form->addSelectItemTag($blockSide['numeric'], $blockSide['numeric'] . " " . $blockSide['letters']);
+                    $form->addSelectItemTag($blockSide['numeric'],
+                                            $blockSide['numeric'] . " " . $blockSide['letters']);
                 }
-                $form->addSelectItemTag($block['side'], $block['side'] . " " . $currentSideName, true);
+                $form->addSelectItemTag($block['side'],
+                                        $block['side'] . " " . $currentSideName,
+                                        true);
                 $form->addSelectCloseTag();
                 // TODO rafraichir la liste des ordres (position) suivant la liste des positions (side)
-                $form->addInputText("blockTitle", BLOCK_POSITION, $block['position']);
+                $form->addInputText("blockTitle",
+                                    BLOCK_POSITION,
+                                    $block['position']);
 
                 $rankList = CoreAccess::getRankList();
-                $form->addSelectOpenTag("blockRank", BLOCK_ACCESS);
+                $form->addSelectOpenTag("blockRank",
+                                        BLOCK_ACCESS);
                 $currentRankName = "";
                 foreach ($rankList as $blockRank) {
                     if ($blockRank['numeric'] == $block['rank']) {
                         $currentRankName = $blockRank['letters'];
                         continue;
                     }
-                    $form->addSelectItemTag($blockRank['numeric'], $blockRank['numeric'] . " " . $blockRank['letters']);
+                    $form->addSelectItemTag($blockRank['numeric'],
+                                            $blockRank['numeric'] . " " . $blockRank['letters']);
                 }
-                $form->addSelectItemTag($block['rank'], $block['rank'] . " " . $currentRankName, true);
+                $form->addSelectItemTag($block['rank'],
+                                        $block['rank'] . " " . $currentRankName,
+                                        true);
                 $form->addSelectCloseTag();
                 // TODO faire une liste cliquable avec un bouton radio "toutes les pages" et "aucune page" (= rank -1)
-                $form->addInputText("blockTitle", BLOCK_VIEW_MODULE_PAGE, $block['mods']);
+                $form->addInputText("blockTitle",
+                                    BLOCK_VIEW_MODULE_PAGE,
+                                    $block['mods']);
 
-                $form->addInputText("blockTitle", "content", $block['content']);
+                $form->addInputText("blockTitle",
+                                    "content",
+                                    $block['content']);
 
-                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'], "?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'], "#block_main_setting", "v"
+                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
+                                                       "?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
+                                                       "#block_main_setting",
+                                                       "v"
                 );
                 Module_Management_Index::addDeleteButtonInToolbar("localView=sendDelete&blockId=" . $blockId);
                 Module_Management_Index::addCopyButtonInToolbar("localView=sendCopy&blockId=" . $blockId);
-                Module_Management_Index::addEditButtonInToolbar("localView=tabAdd", PREVIEW);
+                Module_Management_Index::addEditButtonInToolbar("localView=tabAdd",
+                                                                PREVIEW);
                 Module_Management_Index::addAddButtonInToolbar("localView=tabAdd");
                 return $form->render();
             } else {
@@ -297,13 +356,17 @@ class Module_Management_Block extends ModuleModel {
         return "";
     }
 
-    private function sendDelete() {
-        $blockId = CoreRequest::getInteger("blockId", -1);
+    private function sendDelete()
+    {
+        $blockId = CoreRequest::getInteger("blockId",
+                                           -1);
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE, array(
-                "type"), array(
+                    CoreTable::BLOCKS_TABLE,
+                    array(
+                "type"),
+                    array(
                 "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
@@ -313,14 +376,16 @@ class Module_Management_Block extends ModuleModel {
                 $loaded = CoreLoader::classLoader($blockClassName);
 
                 if ($loaded) {
-                    if (CoreLoader::isCallable($blockClassName, "uninstall")) {
+                    if (CoreLoader::isCallable($blockClassName,
+                                               "uninstall")) {
                         $BlockClass = new $blockClassName();
                         $BlockClass->uninstall();
                     }
                 }
 
                 CoreSql::getInstance()->delete(
-                        CoreTable::BLOCKS_TABLE, array(
+                        CoreTable::BLOCKS_TABLE,
+                        array(
                     "block_id = '" . $blockId . "'")
                 );
                 CoreTranslate::removeCache("blocks/" . $block['type']);
@@ -333,10 +398,12 @@ class Module_Management_Block extends ModuleModel {
         }
     }
 
-    private function sendCopy() {
+    private function sendCopy()
+    {
         $blockId = CoreRequest::getInteger("
 
-                blockId", -1);
+                blockId",
+                                           -1);
 
         if ($blockId > -1) { // Si l'id semble valide
             $keys = array(
@@ -348,14 +415,18 @@ class Module_Management_Block extends ModuleModel {
                 "rank",
                 "mods");
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE, $keys, array(
+                    CoreTable::BLOCKS_TABLE,
+                    $keys,
+                    array(
                 "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
                 $block['title'] = $block['title'] . " Copy";
                 CoreSql::getInstance()->insert(
-                        CoreTable::BLOCKS_TABLE, $keys, $block
+                        CoreTable::BLOCKS_TABLE,
+                        $keys,
+                        $block
                 );
                 CoreLogger::addInformationMessage(DATA_COPIED);
             } else {
@@ -366,15 +437,18 @@ class Module_Management_Block extends ModuleModel {
         }
     }
 
-    private function tabAdd() {
-        LibBreadcrumb::getInstance()->addTrail(ADD, "?
+    private function tabAdd()
+    {
+        LibBreadcrumb::getInstance()->addTrail(ADD,
+                                               "?
 
                 module = management &manage = block&localView = tabAdd
 
                 ");
     }
 
-    private function sendAdd() {
+    private function sendAdd()
+    {
 
     }
 }

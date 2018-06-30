@@ -6,14 +6,13 @@ use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Exec\ExecString;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire d'onglet.
  *
  * @author Sébastien Villemain
  */
-class LibTabs {
+class LibTabs
+{
 
     /**
      * Nom du groupe d'onglets.
@@ -49,7 +48,8 @@ class LibTabs {
      *
      * @param string $name Nom du groupe d'onglet
      */
-    public function __construct(string $name) {
+    public function __construct(string $name)
+    {
         $this->name = $name;
         $this->selected = CoreRequest::getString("selectedTab");
 
@@ -72,7 +72,8 @@ class LibTabs {
      * @param string $title Le titre de l'onglet
      * @param string $htmlContent Le contenu de l'onglet
      */
-    public function addTab(string $title, string $htmlContent) {
+    public function addTab(string $title, string $htmlContent)
+    {
         $tabId = $this->getTabId();
         $tabSelected = ($this->selected === $tabId);
 
@@ -99,7 +100,8 @@ class LibTabs {
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string {
+    public function &render(string $class = ""): string
+    {
         $content = "<div id=\"" . $this->name . "\" class=\"" . ((!empty($class)) ? $class : "tabs") . "\">"
                 . "<ul>"
                 . $this->tabsBuffer
@@ -114,7 +116,8 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabsName(): string {
+    private function getTabsName(): string
+    {
         return "tabs_" . $this->name;
     }
 
@@ -123,7 +126,8 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabId(): string {
+    private function getTabId(): string
+    {
         return "tab_" . $this->name . "_" . $this->tabCounter;
     }
 
@@ -132,7 +136,8 @@ class LibTabs {
      *
      * @return string
      */
-    private function getTabContentId(): string {
+    private function getTabContentId(): string
+    {
         return "tab_content_" . $this->name . "_" . $this->tabCounter;
     }
 }

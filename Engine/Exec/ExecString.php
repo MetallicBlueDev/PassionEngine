@@ -5,14 +5,13 @@ namespace TREngine\Engine\Exec;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreTextEditor;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil de manipulation des chaine de caractères.
  *
  * @author Sébastien Villemain
  */
-class ExecString {
+class ExecString
+{
 
     /**
      * Liste de portion de texte à sécuriser.
@@ -74,7 +73,8 @@ class ExecString {
      * @param string $source : la chaine
      * @return string $encodedString : chaine et ses entitées
      */
-    public static function &entitiesUtf8(string $source): string {
+    public static function &entitiesUtf8(string $source): string
+    {
         // Remplace les entités numériques
 //        $source = preg_replace_callback(
 //        '~&#x([0-9a-f]+);~i', function($m) {
@@ -172,7 +172,8 @@ class ExecString {
      * @param $text string
      * @return string
      */
-    public static function &addSlashes(string $text): string {
+    public static function &addSlashes(string $text): string
+    {
         $text = addslashes($text);
         return $text;
     }
@@ -183,7 +184,8 @@ class ExecString {
      * @param string $text
      * @return string
      */
-    public static function &stripSlashes(string $text): string {
+    public static function &stripSlashes(string $text): string
+    {
         $text = stripslashes($text);
         return $text;
     }
@@ -194,7 +196,8 @@ class ExecString {
      * @param string $text
      * @return string
      */
-    public static function &textDisplay(string $text): string {
+    public static function &textDisplay(string $text): string
+    {
         $text = self::entitiesUtf8($text);
         //$text = self::stripSlashes($text);
         if (CoreLoader::isCallable("CoreTextEditor")) {
@@ -211,9 +214,12 @@ class ExecString {
      * @param string $text
      * @return string
      */
-    public static function &secureText(string $text): string {
+    public static function &secureText(string $text): string
+    {
         foreach (self::SUSPICIOUS_TEXT_LIST as $search => $replace) {
-            $text = str_ireplace($search, $replace, $text);
+            $text = str_ireplace($search,
+                                 $replace,
+                                 $text);
         }
         return $text;
     }

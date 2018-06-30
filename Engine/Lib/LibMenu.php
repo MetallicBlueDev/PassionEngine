@@ -12,14 +12,13 @@ use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de menu.
  *
  * @author Sébastien Villemain
  */
-class LibMenu {
+class LibMenu
+{
 
     /**
      * Balise pour les options.
@@ -62,9 +61,11 @@ class LibMenu {
      * @param string $identifier Identifiant du menu par exemple "block22"
      * @param array $sql
      */
-    public function __construct(string $identifier, array $sql = array()) {
+    public function __construct(string $identifier, array $sql = array())
+    {
         $this->identifier = $identifier;
-        $this->activeItemId = CoreRequest::getInteger("item", 0);
+        $this->activeItemId = CoreRequest::getInteger("item",
+                                                      0);
 
         if ($this->isCached()) {
             $this->loadFromCache();
@@ -79,7 +80,8 @@ class LibMenu {
      * @param string $name
      * @param string $value
      */
-    public function addAttributs(string $name, string $value) {
+    public function addAttributs(string $name, string $value)
+    {
         $this->attribtus .= " " . $name . "=\"" . $value . "\"";
     }
 
@@ -89,7 +91,8 @@ class LibMenu {
      * @param string $callback
      * @return string
      */
-    public function &render(string $callback = "LibMenu::getLine"): string {
+    public function &render(string $callback = "LibMenu::getLine"): string
+    {
         $activeTree = array();
         $activeItem = $this->getActiveItem();
 
@@ -98,7 +101,9 @@ class LibMenu {
         }
 
         foreach ($this->items as $key => $item) {
-            $item->setActive(ExecUtils::inArray($key, $activeTree, true));
+            $item->setActive(ExecUtils::inArray($key,
+                                                $activeTree,
+                                                true));
         }
 
         // Début de rendu
@@ -130,11 +135,14 @@ class LibMenu {
      * @param string $line
      * @return string
      */
-    public static function getLine(string $line): string {
+    public static function getLine(string $line): string
+    {
         $output = "";
         $matches = array();
 
-        if (preg_match("/(.+)" . self::OPTIONS_TAG . "(.*?)" . self::OPTIONS_TAG . "/", $line, $matches)) {
+        if (preg_match("/(.+)" . self::OPTIONS_TAG . "(.*?)" . self::OPTIONS_TAG . "/",
+                       $line,
+                       $matches)) {
             // Conversion du texte
             $text = ExecString::textDisplay($matches[1]);
 
@@ -147,7 +155,8 @@ class LibMenu {
             $link = false;
 
             // Recherche des options et style
-            $options = explode(".", $matches[2]);
+            $options = explode(".",
+                               $matches[2]);
 
             // Application des options et styles
             foreach ($options as $key => $value) {
@@ -187,7 +196,10 @@ class LibMenu {
                             $linkValue = (isset($options[$key + 1]) ? $options[$key + 1] : null);
 
                             if (!empty($linkValue)) {
-                                $text = CoreHtml::getLink($linkValue, $text, false, ($popup ? "window.open('" . $linkValue . "');return false;" : ""));
+                                $text = CoreHtml::getLink($linkValue,
+                                                          $text,
+                                                          false,
+                                                          ($popup ? "window.open('" . $linkValue . "');return false;" : ""));
                             }
                             $link = true;
                         }
@@ -214,7 +226,8 @@ class LibMenu {
      * @param array $options Options choisis
      * @return string
      */
-    public static function setLine(string $text, array $options = array()): string {
+    public static function setLine(string $text, array $options = array()): string
+    {
         $optionsString = "";
 
         // Formate les options
@@ -258,7 +271,8 @@ class LibMenu {
      *
      * @return LibMenuElement
      */
-    private function getActiveItem(): LibMenuElement {
+    private function getActiveItem(): LibMenuElement
+    {
         $item = null;
 
         if (isset($this->items[$this->activeItemId]) && is_object($this->items[$this->activeItemId])) {
@@ -270,7 +284,8 @@ class LibMenu {
     /**
      * Chargement du menu via le cache.
      */
-    private function loadFromCache() {
+    private function loadFromCache()
+    {
         $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheWithUnserialize($this->identifier . ".php");
     }
 
@@ -279,7 +294,8 @@ class LibMenu {
      *
      * @return bool
      */
-    private function isCached(): bool {
+    private function isCached(): bool
+    {
         return (CoreCache::getInstance(CoreCacheSection::MENUS)->cached($this->identifier . ".php"));
     }
 
@@ -288,16 +304,22 @@ class LibMenu {
      *
      * @param array $sql parametre de Sélection
      */
-    private function loadFromDb(array $sql) {
+    private function loadFromDb(array $sql)
+    {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->select(
-                $sql['table'], $sql['select'], $sql['where'], $sql['orderby'], $sql['limit']
+                $sql['table'],
+                $sql['select'],
+                $sql['where'],
+                $sql['orderby'],
+                $sql['limit']
         );
 
         if ($coreSql->affectedRows() > 0) {
             // Création d'une mémoire tampon pour les menus
-            $coreSql->addArrayBuffer($this->identifier, "menu_id");
+            $coreSql->addArrayBuffer($this->identifier,
+                                     "menu_id");
             $menus = $coreSql->getBuffer($this->identifier);
 
             // Création de tous les menus
@@ -310,11 +332,13 @@ class LibMenu {
                 // Détermine le type de branche
                 if ($item->getParentId() > 0) {
                     // Enfant d'une branche
-                    $item->addAttributs("class", "item" . $item->getMenuId());
+                    $item->addAttributs("class",
+                                        "item" . $item->getMenuId());
                     $this->items[$item->getParentId()]->addChild($item);
                 } else if ($item->getParentId() == 0) {
                     // Branche principal
-                    $item->addAttributs("class", "parent");
+                    $item->addAttributs("class",
+                                        "parent");
                 }
 
                 // Termine le chemin du menu avec son propre identifiant
@@ -323,7 +347,8 @@ class LibMenu {
                 $item->setTree($tree);
             }
 
-            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheWithSerialize($this->identifier . ".php", $this->items);
+            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheWithSerialize($this->identifier . ".php",
+                                                                                     $this->items);
         }
     }
 }

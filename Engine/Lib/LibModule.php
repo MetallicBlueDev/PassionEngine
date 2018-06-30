@@ -19,8 +19,6 @@ use TREngine\Engine\Core\CoreUrlRewriting;
 use TREngine\Engine\Exec\ExecUtils;
 use Exception;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de module.
  *

@@ -1,20 +1,23 @@
 <?php
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 use TREngine\Engine\Core\CoreCache;
 
-class Module_Management_Systeminfo extends ModuleModel {
+class Module_Management_Systeminfo extends ModuleModel
+{
 
-    public function setting() {
+    public function setting()
+    {
         $accountTabs = new LibTabs("systeminfotab");
-        $accountTabs->addTab(SYSTEMINFO_SYSTEM_INFO_TAB, $this->tabSystemInfo());
-        $accountTabs->addTab(SYSTEMINFO_PHP_INFO_TAB, $this->tabPhpInfo());
+        $accountTabs->addTab(SYSTEMINFO_SYSTEM_INFO_TAB,
+                             $this->tabSystemInfo());
+        $accountTabs->addTab(SYSTEMINFO_PHP_INFO_TAB,
+                             $this->tabPhpInfo());
 
         return $accountTabs->render();
     }
 
-    private function tabSystemInfo() {
+    private function tabSystemInfo()
+    {
         $firstLine = array(
             array(
                 30,
@@ -60,7 +63,8 @@ class Module_Management_Systeminfo extends ModuleModel {
         return $rack->render();
     }
 
-    private function tabPhpInfo() {
+    private function tabPhpInfo()
+    {
         $output = "";
 
         ob_start();
@@ -68,16 +72,32 @@ class Module_Management_Systeminfo extends ModuleModel {
         $phpinfo = ob_get_contents();
         ob_end_clean();
 
-        preg_match_all('#<body[^>]*>(.*)</body>#siU', $phpinfo, $output);
-        $output = preg_replace('#<table#', '<table class="table"', $output[1][0]);
-        $output = preg_replace('#(\w),(\w)#', '\1, \2', $output);
+        preg_match_all('#<body[^>]*>(.*)</body>#siU',
+                       $phpinfo,
+                       $output);
+        $output = preg_replace('#<table#',
+                               '<table class="table"',
+                               $output[1][0]);
+        $output = preg_replace('#(\w),(\w)#',
+                               '\1, \2',
+                               $output);
         // Incompatible HTML5
 //        $output = preg_replace('#border="0" cellpadding="3" width="600"#', 'border="0" cellspacing="1" cellpadding="4" width="95%"', $output);
-        $output = preg_replace('#<hr />#', '', $output);
-        $output = str_replace('<div class="center">', '', $output);
-        $output = str_replace('</div>', '', $output);
-        $output = str_replace('class="e"', '', $output);
-        $output = str_replace('class="v"', '', $output);
+        $output = preg_replace('#<hr />#',
+                               '',
+                               $output);
+        $output = str_replace('<div class="center">',
+                              '',
+                              $output);
+        $output = str_replace('</div>',
+                              '',
+                              $output);
+        $output = str_replace('class="e"',
+                              '',
+                              $output);
+        $output = str_replace('class="v"',
+                              '',
+                              $output);
 
         return $output;
     }

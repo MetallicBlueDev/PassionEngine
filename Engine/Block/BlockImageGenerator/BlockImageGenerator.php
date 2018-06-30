@@ -9,8 +9,6 @@ use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSecure;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Block permettant de générer une image.
  *

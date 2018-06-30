@@ -14,8 +14,6 @@ use TREngine\Engine\Exec\ExecImage;
 use TREngine\Engine\Lib\LibForm;
 use TREngine\Engine\Lib\LibMakeStyle;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Block login, accès rapide à une connexion, à une déconnexion et à son compte.
  *

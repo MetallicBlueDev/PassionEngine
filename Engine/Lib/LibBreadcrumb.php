@@ -5,14 +5,13 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreHtml;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Editeur du fil d'Ariane.
  *
  * @author Sébastien Villemain
  */
-class LibBreadcrumb {
+class LibBreadcrumb
+{
 
     /**
      * Instance de la classe.
@@ -28,9 +27,11 @@ class LibBreadcrumb {
      */
     private $breadcrumbTrail = array();
 
-    private function __construct() {
+    private function __construct()
+    {
         // Ajoute la page principal
-        $this->addTrail(CoreMain::getInstance()->getConfigs()->getDefaultSiteName(), "index.php");
+        $this->addTrail(CoreMain::getInstance()->getConfigs()->getDefaultSiteName(),
+                        "index.php");
     }
 
     /**
@@ -38,7 +39,8 @@ class LibBreadcrumb {
      *
      * @return LibBreadcrumb
      */
-    public static function &getInstance(): LibBreadcrumb {
+    public static function &getInstance(): LibBreadcrumb
+    {
         if (self::$libBreadcrumb === null) {
             self::$libBreadcrumb = new LibBreadcrumb();
         }
@@ -51,7 +53,8 @@ class LibBreadcrumb {
      * @param string $trail
      * @param string $link
      */
-    public function addTrail(string $trail, string $link = "") {
+    public function addTrail(string $trail, string $link = "")
+    {
         if (!empty($trail)) {
             $constant = "TRAIL_" . strtoupper($trail);
 
@@ -60,7 +63,8 @@ class LibBreadcrumb {
             }
 
             if (!empty($link)) {
-                $trail = CoreHtml::getLink($link, $trail);
+                $trail = CoreHtml::getLink($link,
+                                           $trail);
             }
 
             $this->breadcrumbTrail[] = $trail;
@@ -72,7 +76,8 @@ class LibBreadcrumb {
      *
      * @return string
      */
-    public function &getBreadcrumbTrail(): string {
+    public function &getBreadcrumbTrail(): string
+    {
         $rslt = "<nav class=\"breadcrumbtrail\"><ul>";
 
         foreach ($this->breadcrumbTrail as $trail) {

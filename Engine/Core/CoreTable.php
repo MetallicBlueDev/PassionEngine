@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Référence le nom des tables en base de données utilisées par le moteur.
  *
  * @author Sébastien Villemain
  */
-class CoreTable {
+class CoreTable
+{
 
     /**
      * Table des bannissements.

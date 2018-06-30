@@ -2,14 +2,13 @@
 
 namespace TREngine\Engine\Exec;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Outil de manipulation des images.
  *
  * @author Sébastien Villemain
  */
-class ExecImage {
+class ExecImage
+{
 
     /**
      * Type d'image autorisé.
@@ -32,7 +31,8 @@ class ExecImage {
      * @param int $heightDefault
      * @return string
      */
-    public static function &getTag(string $url, int $widthDefault = 350, int $heightDefault = -1): string {
+    public static function &getTag(string $url, int $widthDefault = 350, int $heightDefault = -1): string
+    {
         $img = "";
 
         $infos = self::getInfos($url);
@@ -72,13 +72,16 @@ class ExecImage {
      * @param string $url
      * @return array
      */
-    public static function getInfos(string $url): array {
+    public static function getInfos(string $url): array
+    {
         $type = array();
 
         if (is_file($url)) {
             $infos = getimagesize($url);
 
-            if ($infos !== false && isset($infos[2]) && ExecUtils::inArray($infos[2], self::TYPE_LIST, true)) {
+            if ($infos !== false && isset($infos[2]) && ExecUtils::inArray($infos[2],
+                                                                           self::TYPE_LIST,
+                                                                           true)) {
                 $type[] = isset($infos[0]) ? $infos[0] : 0;
                 $type[] = isset($infos[1]) ? $infos[1] : 0;
                 $type[] = $infos[2];

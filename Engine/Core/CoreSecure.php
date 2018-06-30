@@ -7,8 +7,6 @@ use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailEngine;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de la sécurité du noyaux.
  * Inclus un système de sécurité, une analyse rapidement les données reçues et une configuration les erreurs.

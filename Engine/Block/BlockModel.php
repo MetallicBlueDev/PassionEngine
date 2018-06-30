@@ -6,8 +6,6 @@ use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Lib\LibBlockData;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Block de base, hérité par tous les autres blocks.
  * Modèle pour le contenu d'un block.

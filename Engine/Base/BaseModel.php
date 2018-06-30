@@ -2,8 +2,6 @@
 
 namespace TREngine\Engine\Base;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTransaction;
 use TREngine\Engine\Exec\ExecUtils;

@@ -2,15 +2,14 @@
 
 namespace TREngine\Engine\Core;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Représente un type de méthode HTTP à utiliser dans la requête.
  * http://php.net/manual/en/language.variables.superglobals.php
  *
  * @author Sébastien Villemain
  */
-class CoreRequestType {
+class CoreRequestType
+{
 
     /**
      * $_GET

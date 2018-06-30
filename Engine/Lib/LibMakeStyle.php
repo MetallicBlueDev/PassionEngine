@@ -7,8 +7,6 @@ use TREngine\Engine\Fail\FailTemplate;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Make Style, moteur de template PHP.
  * RAPIDE, SIMPLE ET EFFICACE !

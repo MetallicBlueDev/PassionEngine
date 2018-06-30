@@ -5,14 +5,13 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreAccessZone;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Information de base sur un module.
  *
  * @author Sébastien Villemain
  */
-class LibModuleData extends LibEntityData {
+class LibModuleData extends LibEntityData
+{
 
     /**
      * La page sélectionnée.
@@ -34,7 +33,8 @@ class LibModuleData extends LibEntityData {
      * @param array $data
      * @param bool $initializeConfig
      */
-    public function __construct(array &$data, bool $initializeConfig = false) {
+    public function __construct(array &$data, bool $initializeConfig = false)
+    {
         parent::__construct();
 
         // Vérification des informations
@@ -55,7 +55,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getPage(): string {
+    public function &getPage(): string
+    {
         return $this->page;
     }
 
@@ -64,7 +65,8 @@ class LibModuleData extends LibEntityData {
      *
      * @param string $page
      */
-    public function setPage(string $page) {
+    public function setPage(string $page)
+    {
         $this->page = ucfirst($page);
     }
 
@@ -73,7 +75,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getView(): string {
+    public function &getView(): string
+    {
         return $this->view;
     }
 
@@ -82,7 +85,8 @@ class LibModuleData extends LibEntityData {
      *
      * @param string $view
      */
-    public function setView(string $view) {
+    public function setView(string $view)
+    {
         $this->view = $view;
     }
 
@@ -91,7 +95,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string Le nom du module.
      */
-    public function &getName(): string {
+    public function &getName(): string
+    {
         $dataValue = ucfirst($this->getStringValue("name"));
         return $dataValue;
     }
@@ -101,7 +106,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function getFolderName(): string {
+    public function getFolderName(): string
+    {
         return CoreLoader::MODULE_FILE . $this->getName();
     }
 
@@ -110,7 +116,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function getClassName(): string {
+    public function getClassName(): string
+    {
         return CoreLoader::MODULE_FILE . $this->getPage();
     }
 
@@ -119,7 +126,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return int
      */
-    public function &getId(): int {
+    public function &getId(): int
+    {
         return $this->getIntValue("mod_id");
     }
 
@@ -128,7 +136,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return int
      */
-    public function &getRank(): int {
+    public function &getRank(): int
+    {
         return $this->getIntValue("rank");
     }
 
@@ -138,7 +147,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return array
      */
-    public function &getConfigs(): array {
+    public function &getConfigs(): array
+    {
         return $this->getArrayValues("configs");
     }
 
@@ -149,8 +159,11 @@ class LibModuleData extends LibEntityData {
      * @param string $defaultValue
      * @return string
      */
-    public function &getConfigValue(string $key, string $defaultValue = ""): string {
-        return $this->getStringSubValue("configs", $key, $defaultValue);
+    public function &getConfigValue(string $key, string $defaultValue = ""): string
+    {
+        return $this->getStringSubValue("configs",
+                                        $key,
+                                        $defaultValue);
     }
 
     /**
@@ -158,7 +171,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return bool
      */
-    public function installed(): bool {
+    public function installed(): bool
+    {
         return $this->hasValue("mod_id");
     }
 
@@ -167,7 +181,8 @@ class LibModuleData extends LibEntityData {
      *
      * @return string
      */
-    public function &getZone(): string {
+    public function &getZone(): string
+    {
         $zone = CoreAccessZone::MODULE;
         return $zone;
     }
@@ -178,12 +193,15 @@ class LibModuleData extends LibEntityData {
      * @param string $moduleConfigs
      * @return array
      */
-    private static function getModuleConfigs(string &$moduleConfigs): array {
-        $moduleConfigs = explode("|", $moduleConfigs);
+    private static function getModuleConfigs(string &$moduleConfigs): array
+    {
+        $moduleConfigs = explode("|",
+                                 $moduleConfigs);
 
         foreach ($moduleConfigs as $config) {
             if (!empty($config)) {
-                $values = explode("=", $config);
+                $values = explode("=",
+                                  $config);
 
                 if (count($values) > 1) {
                     // Chaine encodé avec urlencode

@@ -4,21 +4,21 @@ namespace TREngine\Engine\Cache;
 
 use TREngine\Engine\Core\CoreLogger;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de fichier via PHP.
  *
  * @author Sébastien Villemain
  */
-class CachePhp extends CacheModel {
+class CachePhp extends CacheModel
+{
 
     /**
      * {@inheritDoc}
      *
      * @return bool
      */
-    protected function canUse(): bool {
+    protected function canUse(): bool
+    {
         // Gestionnaire natif; toujours diponible
         return true;
     }
@@ -28,7 +28,8 @@ class CachePhp extends CacheModel {
      *
      * @return bool
      */
-    public function netConnected(): bool {
+    public function netConnected(): bool
+    {
         // Gestionnaire natif; toujours diponible
         return true;
     }
@@ -38,7 +39,8 @@ class CachePhp extends CacheModel {
      *
      * @return bool
      */
-    public function &netSelect(): bool {
+    public function &netSelect(): bool
+    {
         $rslt = true;
         return $rslt;
     }
@@ -50,7 +52,8 @@ class CachePhp extends CacheModel {
      * @param mixed $content
      * @param bool $overwrite
      */
-    public function writeCache(string $path, $content, bool $overwrite = true) {
+    public function writeCache(string $path, $content, bool $overwrite = true)
+    {
         if (!is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path)) {
             // Soit le fichier n'exite pas soit tout le dossier n'existe pas
             // On commence par vérifier et si besoin écrire le dossier
@@ -58,7 +61,9 @@ class CachePhp extends CacheModel {
         }
 
         // Réécriture rapide sur un fichier
-        $this->writeFile($path, $content, $overwrite);
+        $this->writeFile($path,
+                         $content,
+                         $overwrite);
     }
 
     /**
@@ -67,8 +72,10 @@ class CachePhp extends CacheModel {
      * @param string $path
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0) {
-        if (!touch(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path, $updateTime)) {
+    public function touchCache(string $path, int $updateTime = 0)
+    {
+        if (!touch(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path,
+                   $updateTime)) {
             CoreLogger::addException("Touch error on " . $path);
         }
     }
@@ -79,13 +86,16 @@ class CachePhp extends CacheModel {
      * @param string $path
      * @param int $timeLimit
      */
-    public function removeCache(string $path, int $timeLimit = 0) {
+    public function removeCache(string $path, int $timeLimit = 0)
+    {
         if (!empty($path) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path)) {
             // C'est un fichier a supprimer
-            $this->removeFile($path, $timeLimit);
+            $this->removeFile($path,
+                              $timeLimit);
         } else if (is_dir(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path)) {
             // C'est un dossier a nettoyer
-            $this->removeDirectory($path, $timeLimit);
+            $this->removeDirectory($path,
+                                   $timeLimit);
         }
     }
 
@@ -95,7 +105,8 @@ class CachePhp extends CacheModel {
      * @param string $path
      * @return int
      */
-    public function &getCacheMTime(string $path): int {
+    public function &getCacheMTime(string $path): int
+    {
         $mTime = filemtime(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path);
         return $mTime;
     }
@@ -106,7 +117,8 @@ class CachePhp extends CacheModel {
      * @param string $path
      * @return array
      */
-    public function &getNameList(string $path): array {
+    public function &getNameList(string $path): array
+    {
         $dirList = array();
 
         // Si le dossier est vide, on prend le dossier par défaut
@@ -143,25 +155,32 @@ class CachePhp extends CacheModel {
      * @param string $content contenu du fichier cache
      * @param bool $overwrite écrasement du fichier
      */
-    private function writeFile(string $pathFile, string $content, bool $overwrite = true) {
-        $content = ($overwrite) ? self::getFileHeader($pathFile, $content) : $content;
+    private function writeFile(string $pathFile, string $content, bool $overwrite = true)
+    {
+        $content = ($overwrite) ? self::getFileHeader($pathFile,
+                                                      $content) : $content;
 
         // Tentative d'écriture du fichier
         // Des problèmes on été constaté avec l'utilisation du chemin absolu TR_ENGINE_INDEXDIR
-        $fp = fopen($pathFile, 'a');
+        $fp = fopen($pathFile,
+                    'a');
 
         if ($fp) {
             // Verrouiller le fichier destination
-            flock($fp, LOCK_EX);
+            flock($fp,
+                  LOCK_EX);
 
             if ($overwrite) {
                 // Tronque pour une réécriture complete
-                ftruncate($fp, 0);
+                ftruncate($fp,
+                          0);
             }
 
             // Ecriture du fichier cache
             $nbBytesFile = strlen($content);
-            $nbBytesCmd = fwrite($fp, $content, $nbBytesFile);
+            $nbBytesCmd = fwrite($fp,
+                                 $content,
+                                 $nbBytesFile);
 
             // Vérification des bytes écris
             if ($nbBytesCmd !== $nbBytesFile) {
@@ -172,10 +191,13 @@ class CachePhp extends CacheModel {
             }
 
             // Libere le verrou
-            flock($fp, LOCK_UN);
+            flock($fp,
+                  LOCK_UN);
             fclose($fp);
         } else {
-            $this->manageFileOpenError($pathFile, $content, $overwrite);
+            $this->manageFileOpenError($pathFile,
+                                       $content,
+                                       $overwrite);
         }
     }
 
@@ -186,19 +208,27 @@ class CachePhp extends CacheModel {
      * @param string $content
      * @param bool $overwrite
      */
-    private function manageFileOpenError(string $pathFile, string $content, bool $overwrite) {
+    private function manageFileOpenError(string $pathFile, string $content, bool $overwrite)
+    {
         // Recherche d'un fichier htaccess
         $strlen = strlen($pathFile);
-        $isHtaccessFile = (substr($pathFile, -9, $strlen) === ".htaccess");
+        $isHtaccessFile = (substr($pathFile,
+                                  -9,
+                                  $strlen) === ".htaccess");
 
         // Si c'est un htaccess, on essai de corriger le problème
         if ($isHtaccessFile) {
             // On créée le même fichier en HTML
-            $htaccessPath = substr($pathFile, 0, $strlen - 9);
-            $this->writeFile($htaccessPath . "index.html", $content, $overwrite);
+            $htaccessPath = substr($pathFile,
+                                   0,
+                                   $strlen - 9);
+            $this->writeFile($htaccessPath . "index.html",
+                             $content,
+                             $overwrite);
 
             // Puis on renomme
-            rename($htaccessPath . "index.html", $htaccessPath . ".htaccess");
+            rename($htaccessPath . "index.html",
+                   $htaccessPath . ".htaccess");
         }
 
         CoreLogger::addException("Bad response for fopen command. Path : " . $pathFile);
@@ -209,12 +239,14 @@ class CachePhp extends CacheModel {
      *
      * @param string $path chemin voulu
      */
-    private function writeDirectory(string $path) {
+    private function writeDirectory(string $path)
+    {
         // Savoir si le path est un dossier ou un fichier
         $pathIsDir = self::isDirectoryPath($path);
 
         // Information sur les dossiers
-        $dirs = explode(DIRECTORY_SEPARATOR, TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path);
+        $dirs = explode(DIRECTORY_SEPARATOR,
+                        TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path);
         $nbDir = count($dirs);
         $currentPath = "";
         $count = 0;
@@ -237,9 +269,11 @@ class CachePhp extends CacheModel {
 
                     // Des petites fichiers bonus...
                     if ($dir === "tmp") {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . "index.php", "header(\"Location: .." . DIRECTORY_SEPARATOR . "index.php\");");
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . "index.php",
+                                         "header(\"Location: .." . DIRECTORY_SEPARATOR . "index.php\");");
                     } else {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . ".htaccess", "deny from all");
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . ".htaccess",
+                                         "deny from all");
                     }
                 }
             }
@@ -251,10 +285,13 @@ class CachePhp extends CacheModel {
      *
      * @param string $path
      */
-    private function makeDirectory(string $path) {
+    private function makeDirectory(string $path)
+    {
         // Création du dossier
-        mkdir($path, $this->chmod);
-        chmod($path, $this->chmod);
+        mkdir($path,
+              $this->chmod);
+        chmod($path,
+              $this->chmod);
 
         // Vérification de l'existence du fichier
         if (!is_dir($path)) {
@@ -268,16 +305,21 @@ class CachePhp extends CacheModel {
      * @param string $path
      * @param int $timeLimit
      */
-    private function removeFile(string $path, int $timeLimit) {
-        if ($this->canRemoveFile($path, $timeLimit)) {
-            $fp = fopen(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path, 'a');
+    private function removeFile(string $path, int $timeLimit)
+    {
+        if ($this->canRemoveFile($path,
+                                 $timeLimit)) {
+            $fp = fopen(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path,
+                        'a');
 
             if ($fp) {
                 // Verrouiller le fichier destination
-                flock($fp, LOCK_EX);
+                flock($fp,
+                      LOCK_EX);
 
                 // Libere le verrou
-                flock($fp, LOCK_UN);
+                flock($fp,
+                      LOCK_UN);
                 fclose($fp);
 
                 // Suppression
@@ -297,7 +339,8 @@ class CachePhp extends CacheModel {
      * @param int $timeLimit
      * @return boolean
      */
-    private function &canRemoveFile(string $path, int $timeLimit): bool {
+    private function &canRemoveFile(string $path, int $timeLimit): bool
+    {
         $deleteFile = false;
 
         // Vérification de la date
@@ -320,7 +363,8 @@ class CachePhp extends CacheModel {
      * @param string $dirPath
      * @param int $timeLimit
      */
-    private function removeDirectory(string $dirPath, int $timeLimit) {
+    private function removeDirectory(string $dirPath, int $timeLimit)
+    {
         // Ouverture du dossier
         $handle = opendir(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $dirPath);
 
@@ -332,17 +376,21 @@ class CachePhp extends CacheModel {
                 // Si c'est un fichier valide
                 if ($file !== ".." && $file !== "." && $file !== ".svn") {
                     // Vérification avant suppression
-                    if (!$this->canRemove($dirPath, $file, $timeLimit)) {
+                    if (!$this->canRemove($dirPath,
+                                          $file,
+                                          $timeLimit)) {
                         continue;
                     }
 
                     // Suppression
                     if (is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $dirPath . DIRECTORY_SEPARATOR . $file)) {
                         // Suppression du fichier
-                        $this->removeFile($dirPath . DIRECTORY_SEPARATOR . $file, $timeLimit);
+                        $this->removeFile($dirPath . DIRECTORY_SEPARATOR . $file,
+                                          $timeLimit);
                     } else {
                         // Suppression du dossier
-                        $this->removeDirectory($dirPath . DIRECTORY_SEPARATOR . $file, 0);
+                        $this->removeDirectory($dirPath . DIRECTORY_SEPARATOR . $file,
+                                               0);
                     }
                 }
             }
@@ -369,7 +417,8 @@ class CachePhp extends CacheModel {
      * @param int $timeLimit
      * @return bool
      */
-    private function &canRemove(string $dirPath, string $file, int $timeLimit): bool {
+    private function &canRemove(string $dirPath, string $file, int $timeLimit): bool
+    {
         $rslt = true;
 
         if ($timeLimit > 0) {

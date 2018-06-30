@@ -1,12 +1,11 @@
 <?php
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
-class Module_Management_User extends ModuleModel {
+class Module_Management_User extends ModuleModel
+{
 
-    public function setting() {
+    public function setting()
+    {
         return "setting!!";
     }
-
 }
-
 ?>
