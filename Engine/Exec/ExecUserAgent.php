@@ -292,19 +292,17 @@ class ExecUserAgent
      */
     public static function &getAddressIp(): string
     {
-        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP",
-                                            "",
-                                            CoreRequestType::SERVER);
+        $currentIp = self::getAddressIpHttpClient();
 
         if (empty($currentIp)) {
-            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR",
-                                                "",
-                                                CoreRequestType::SERVER);
+            $currentIp = self::getAddressIpHttpXForwarded();
 
             if (empty($currentIp)) {
-                $currentIp = CoreRequest::getString("REMOTE_ADDR",
-                                                    "",
-                                                    CoreRequestType::SERVER);
+                $currentIp = self::getAddressIpHttpForwarded();
+
+                if (empty($currentIp)) {
+                    $currentIp = self::getAddressIpRemoteAddr();
+                }
             }
         }
         return $currentIp;
@@ -418,10 +416,70 @@ class ExecUserAgent
      */
     public static function &getReferer(): string
     {
-        $currentReferer = htmlentities(CoreRequest::getString("HTTP_REFERER",
-                                                              "",
-                                                              CoreRequestType::SERVER),
-                                                              ENT_QUOTES);
+        $currentReferer = htmlentities(CoreRequest::getHttpReferer(),
+                                       ENT_QUOTES);
         return $currentReferer;
+    }
+
+    /**
+     * Retourne l'adresse IP du client.
+     *
+     * @return string
+     */
+    private static function &getAddressIpHttpClient(): string
+    {
+        $currentIp = CoreRequest::getString("HTTP_CLIENT_IP",
+                                            "",
+                                            CoreRequestType::SERVER);
+        return $currentIp;
+    }
+
+    /**
+     * Retourne l'adresse IP du client.
+     *
+     * @return string
+     */
+    private static function &getAddressIpHttpXForwarded(): string
+    {
+        $currentIp = CoreRequest::getString("HTTP_X_FORWARDED_FOR",
+                                            "",
+                                            CoreRequestType::SERVER);
+        if (empty($currentIp)) {
+            $currentIp = CoreRequest::getString("HTTP_X_FORWARDED",
+                                                "",
+                                                CoreRequestType::SERVER);
+        }
+        return $currentIp;
+    }
+
+    /**
+     * Retourne l'adresse IP du client.
+     *
+     * @return string
+     */
+    private static function &getAddressIpHttpForwarded(): string
+    {
+        $currentIp = CoreRequest::getString("HTTP_FORWARDED_FOR",
+                                            "",
+                                            CoreRequestType::SERVER);
+        if (empty($currentIp)) {
+            $currentIp = CoreRequest::getString("HTTP_FORWARDED",
+                                                "",
+                                                CoreRequestType::SERVER);
+        }
+        return $currentIp;
+    }
+
+    /**
+     * Retourne l'adresse IP du client.
+     *
+     * @return string
+     */
+    private static function &getAddressIpRemoteAddr(): string
+    {
+        $currentIp = CoreRequest::getString("REMOTE_ADDR",
+                                            "",
+                                            CoreRequestType::SERVER);
+        return $currentIp;
     }
 }

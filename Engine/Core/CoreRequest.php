@@ -27,12 +27,14 @@ class CoreRequest
      * @param string $hash Provenance de la variable
      * @return bool
      */
-    public static function &getBoolean(string $name, bool $default = false, string $hash = "default"): bool
+    public static function &getBoolean(string $name,
+                                       bool $default = false,
+                                       string $hash = "default"): bool
     {
-        return self::getVars($name,
-                             "BOOL",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "BOOL",
+                              $default,
+                              $hash);
     }
 
     /**
@@ -43,76 +45,86 @@ class CoreRequest
      * @param string $hash Provenance de la variable
      * @return int
      */
-    public static function &getInteger(string $name, int $default = 0, string $hash = "default"): int
+    public static function &getInteger(string $name,
+                                       int $default = 0,
+                                       string $hash = "default"): int
     {
-        return self::getVars($name,
-                             "INT",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "INT",
+                              $default,
+                              $hash);
     }
 
     /**
-     * Retourne la variable demandée de type float.
+     * Retourne la variable demandée de type virgule flottante.
      *
      * @param string $name Nom de la variable
      * @param float $default Donnée par défaut
      * @param string $hash Provenance de la variable
      * @return float
      */
-    public static function &getFloat(string $name, float $default = 0.0, string $hash = "default"): float
+    public static function &getFloat(string $name,
+                                     float $default = 0.0,
+                                     string $hash = "default"): float
     {
-        return self::getVars($name,
-                             "FLOAT",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "FLOAT",
+                              $default,
+                              $hash);
     }
 
     /**
-     * Retourne la variable demandée de type string valide base64.
+     * Retourne la variable demandée de type chaine de caractères base64.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getBase64(string $name, string $default = "", string $hash = "default"): string
+    public static function &getBase64(string $name,
+                                      string $default = "",
+                                      string $hash = "default"): string
     {
-        return self::getVars($name,
-                             "BASE64",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "BASE64",
+                              $default,
+                              $hash);
     }
 
     /**
-     * Retourne la variable demandée de type string.
+     * Retourne la variable demandée de type chaine de caratères d'un seul mot.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getWord(string $name, string $default = "", string $hash = "default"): string
+    public static function &getWord(string $name,
+                                    string $default = "",
+                                    string $hash = "default"): string
     {
-        return self::getVars($name,
-                             "WORD",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "WORD",
+                              $default,
+                              $hash);
     }
 
     /**
-     * Retourne la variable demandée de type string.
+     * Retourne la variable demandée de type chaine de caratères.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getString(string $name, string $default = "", string $hash = "default"): string
+    public static function &getString(string $name,
+                                      string $default = "",
+                                      string $hash = "default"): string
     {
-        return self::getVars($name,
-                             "STRING",
-                             $default,
-                             $hash);
+        return self::getMixed($name,
+                              "STRING",
+                              $default,
+                              $hash);
     }
 
     /**
@@ -123,6 +135,19 @@ class CoreRequest
     public static function &getRequestMethod(): string
     {
         $hash = "_" . self::getString("REQUEST_METHOD",
+                                      "",
+                                      CoreRequestType::SERVER);
+        return $hash;
+    }
+
+    /**
+     * Retourne l'adresse de la page qui a conduit le client à la page courante.
+     *
+     * @return string
+     */
+    public static function &getHttpReferer(): string
+    {
+        $hash = self::getUnsafeString("HTTP_REFERER",
                                       "",
                                       CoreRequestType::SERVER);
         return $hash;
@@ -152,6 +177,24 @@ class CoreRequest
     }
 
     /**
+     * Retourne la variable demandée de type chaine de caratères (version non sécurisée).
+     *
+     * @param string $name Nom de la variable
+     * @param string $default Donnée par défaut
+     * @param string $hash Provenance de la variable
+     * @return string
+     */
+    public static function &getUnsafeString(string $name,
+                                            string $default = "",
+                                            string $hash = "default"): string
+    {
+        return self::getMixed($name,
+                              "UNSAFE-STRING",
+                              $default,
+                              $hash);
+    }
+
+    /**
      * Récupère, analyse et vérifie une variable URL.
      *
      * @param string $name Nom de la variable
@@ -160,14 +203,13 @@ class CoreRequest
      * @param string $hash Provenance de la variable
      * @return mixed
      */
-    private static function &getVars(string $name, string $type, $default = "", string $hash = "default")
+    private static function &getMixed(string $name,
+                                      string $type,
+                                      $default = "",
+                                      string $hash = "default")
     {
         $rslt = null;
 
-        if ($name === "HTTP_REFERER") {
-            // TODO Vérifier si c'est opérationnel avec HTTP_REFERER
-            $rslt = null;
-        }
 
         if (isset(self::$buffer[$name])) {
             $rslt = self::$buffer[$name];
@@ -193,7 +235,8 @@ class CoreRequest
      * @param bool $useDefault
      * @return array
      */
-    private static function &getRequest(string $hash, bool $useDefault): array
+    private static function &getRequest(string $hash,
+                                        bool $useDefault): array
     {
         $hash = strtoupper($hash);
         $input = array();
@@ -221,7 +264,8 @@ class CoreRequest
      * @param bool $useDefault
      * @return array
      */
-    private static function &getDefaultRequest(string $hash, bool $useDefault): array
+    private static function &getDefaultRequest(string $hash,
+                                               bool $useDefault): array
     {
         $input = array();
 
@@ -247,21 +291,19 @@ class CoreRequest
      * @param string $type
      * @return mixed
      */
-    private static function &protect($content, string $type)
+    private static function &protect($content,
+                                     string $type)
     {
         $type = strtoupper($type);
 
         switch ($type) {
             case 'INT':
-            case 'INTEGER':
                 $content = self::protectInt($content);
                 break;
             case 'FLOAT':
-            case 'DOUBLE':
                 $content = self::protectFloat($content);
                 break;
             case 'BOOL':
-            case 'BOOLEAN':
                 $content = self::protectBool($content);
                 break;
             case 'BASE64':
@@ -272,6 +314,10 @@ class CoreRequest
                 break;
             case 'STRING':
                 $content = self::protectString($content);
+                break;
+            case 'UNSAFE-STRING':
+                $content = self::protectString($content,
+                                               true);
                 break;
             default:
                 CoreLogger::addException("CoreRequest : data type unknown");
@@ -298,7 +344,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en float.
+     * Force le typage en virgule flottante.
      *
      * @param mixed $content
      * @return float
@@ -322,8 +368,7 @@ class CoreRequest
     private static function &protectBool($content): bool
     {
         $content = (string) $content;
-        $content = ($content === "1" || $content === "true") ? "1" : "0";
-        $content = (bool) $content;
+        $content = (bool) (($content === "1" || $content === "true") ? true : false);
         return $content;
     }
 
@@ -361,12 +406,13 @@ class CoreRequest
      * @param mixed $content
      * @return string
      */
-    private static function &protectString($content): string
+    private static function &protectString($content,
+                                           $useUnsafeMethod = false): string
     {
         $content = trim((string) $content);
 
-        if (preg_match('/(\.\.|http:|ftp:)/',
-                       $content)) {
+        if (!$useUnsafeMethod && preg_match('/(\.\.|http:|ftp:)/',
+                                            $content)) {
             $content = "";
         }
         return $content;

@@ -48,6 +48,8 @@ class CoreSecure
         "<comment",
         "..",
         "http://",
+        "https://",
+        "ftp://",
         "%3C%3F");
 
     /**
@@ -217,7 +219,8 @@ class CoreSecure
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendException(Exception $ex, array &$errorMessages)
+    private function appendException(Exception $ex,
+                                     array &$errorMessages)
     {
         if ($ex !== null) {
             $this->appendExceptionMessage($ex,
@@ -234,7 +237,8 @@ class CoreSecure
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendExceptionMessage(Exception $ex, array &$errorMessages)
+    private function appendExceptionMessage(Exception $ex,
+                                            array &$errorMessages)
     {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
@@ -253,7 +257,8 @@ class CoreSecure
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendExceptionTrace(Exception $ex, array &$errorMessages)
+    private function appendExceptionTrace(Exception $ex,
+                                          array &$errorMessages)
     {
         foreach ($ex->getTrace() as $traceValue) {
             $errorLine = "";
@@ -357,16 +362,12 @@ class CoreSecure
      */
     private function checkServerRequest()
     {
-        if (CoreRequest::getRequestMethod() === CoreRequestType::POST && !empty(CoreRequest::getString("HTTP_REFERER",
-                                                                                                       "",
-                                                                                                       CoreRequestType::SERVER))) {
+        if (CoreRequest::getRequestMethod() === CoreRequestType::POST && !empty(CoreRequest::getHttpReferer())) {
             // Vérification du demandeur de la méthode POST
             if (!preg_match("/" . CoreRequest::getString("HTTP_HOST",
                                                          "",
                                                          CoreRequestType::SERVER) . "/",
-                                                         CoreRequest::getString("HTTP_REFERER",
-                                                                                "",
-                                                                                CoreRequestType::SERVER))) {
+                                                         CoreRequest::getHttpReferer())) {
                 $this->catchException(new FailEngine("invalid request/referer",
                                                      12));
             }
