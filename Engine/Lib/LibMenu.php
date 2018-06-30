@@ -286,7 +286,7 @@ class LibMenu
      */
     private function loadFromCache()
     {
-        $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheWithUnserialize($this->identifier . ".php");
+        $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->identifier . ".php");
     }
 
     /**

@@ -111,7 +111,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionHost(): string
     {
-        return $this->getStringValue("host");
+        return $this->getString("host");
     }
 
     /**
@@ -121,7 +121,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionUser(): string
     {
-        return $this->getStringValue("user");
+        return $this->getString("user");
     }
 
     /**
@@ -131,7 +131,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionPass(): string
     {
-        return $this->getStringValue("pass");
+        return $this->getString("pass");
     }
 
     /**
@@ -141,7 +141,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionType(): string
     {
-        return $this->getStringValue("type");
+        return $this->getString("type");
     }
 
     /**

@@ -30,7 +30,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentIp")) {
             $this->searchAddressIp();
         }
-        return $this->getStringValue("agentIp");
+        return $this->getString("agentIp");
     }
 
     /**
@@ -42,7 +42,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentHost")) {
             $this->searchHost();
         }
-        return $this->getStringValue("agentHost");
+        return $this->getString("agentHost");
     }
 
     /**
@@ -54,7 +54,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("userAgent")) {
             $this->searchUserAgent();
         }
-        return $this->getStringValue("userAgent");
+        return $this->getString("userAgent");
     }
 
     /**
@@ -66,7 +66,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentOsCategory")) {
             $this->searchOs();
         }
-        return $this->getStringValue("agentOsCategory");
+        return $this->getString("agentOsCategory");
     }
 
     /**
@@ -78,7 +78,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentOsName")) {
             $this->searchOs();
         }
-        return $this->getStringValue("agentOsName");
+        return $this->getString("agentOsName");
     }
 
     /**
@@ -90,7 +90,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentBrowserCategory")) {
             $this->searchBrowserData();
         }
-        return $this->getStringValue("agentBrowserCategory");
+        return $this->getString("agentBrowserCategory");
     }
 
     /**
@@ -102,7 +102,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentBrowserName")) {
             $this->searchBrowserData();
         }
-        return $this->getStringValue("agentBrowserName");
+        return $this->getString("agentBrowserName");
     }
 
     /**
@@ -114,7 +114,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentBrowserVersion")) {
             $this->searchBrowserData();
         }
-        return $this->getStringValue("agentBrowserVersion");
+        return $this->getString("agentBrowserVersion");
     }
 
     /**
@@ -126,7 +126,7 @@ class CoreUserAgentData extends CoreDataStorage {
         if (!$this->exist("agentReferer")) {
             $this->searchReferer();
         }
-        return $this->getStringValue("agentReferer");
+        return $this->getString("agentReferer");
     }
 
     /**

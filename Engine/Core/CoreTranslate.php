@@ -426,7 +426,8 @@ class CoreTranslate
      * @param string $pathLang
      * @param string $content
      */
-    private function createTranslationCache(string $pathLang, string $content)
+    private function createTranslationCache(string $pathLang,
+                                            string $content)
     {
         if (CoreLoader::isCallable("CoreCache")) {
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
@@ -650,6 +651,6 @@ class CoreTranslate
     private static function canUseLanguage(string $language): bool
     {
         return !empty($language) && is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
-                                                                                                                            $language) . ".php");
+                                                                                                                                   $language) . ".php");
     }
 }

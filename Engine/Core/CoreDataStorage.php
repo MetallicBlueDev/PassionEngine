@@ -58,23 +58,6 @@ abstract class CoreDataStorage
     }
 
     /**
-     * Retourne la valeur de la clé.
-     *
-     * @return mixed
-     */
-    protected function &getDataValue($keyName, $defaultValue = null)
-    {
-        $value = null;
-
-        if ($this->exist($keyName)) {
-            $value = $this->data[$keyName];
-        } else {
-            $value = $defaultValue;
-        }
-        return $value;
-    }
-
-    /**
      * Retourne la valeur de la clé sous forme de tableau.
      *
      * @param string $keyName
@@ -82,10 +65,10 @@ abstract class CoreDataStorage
      * @param bool $testIfEmpty
      * @return array
      */
-    protected function &getArrayValues(string $keyName, array $defaultValue = null, bool $testIfEmpty = false): array
+    protected function &getArray(string $keyName, array $defaultValue = null, bool $testIfEmpty = false): array
     {
-        $value = (array) $this->getDataValue($keyName,
-                                             $defaultValue);
+        $value = (array) $this->getMixed($keyName,
+                                         $defaultValue);
 
         if ($testIfEmpty && empty($value)) {
             $value = $defaultValue;
@@ -101,9 +84,9 @@ abstract class CoreDataStorage
      * @param string $defaultValue
      * @return string
      */
-    public function &getStringSubValue(string $key, string $subKey, string $defaultValue = ""): string
+    public function &getSubString(string $key, string $subKey, string $defaultValue = ""): string
     {
-        $value = $this->getArrayValues($key);
+        $value = $this->getArray($key);
 
         if ($value !== null && isset($value[$subKey])) {
             $value = $value[$subKey];
@@ -122,10 +105,10 @@ abstract class CoreDataStorage
      * @param bool $defaultValue
      * @return bool
      */
-    protected function &getBoolValue(string $keyName, bool $defaultValue = false): bool
+    protected function &getBool(string $keyName, bool $defaultValue = false): bool
     {
-        $value = (bool) $this->getDataValue($keyName,
-                                            $defaultValue);
+        $value = (bool) $this->getMixed($keyName,
+                                        $defaultValue);
         return $value;
     }
 
@@ -136,10 +119,10 @@ abstract class CoreDataStorage
      * @param string $defaultValue
      * @return string
      */
-    protected function &getStringValue(string $keyName, string $defaultValue = null): string
+    protected function &getString(string $keyName, string $defaultValue = null): string
     {
-        $value = (string) $this->getDataValue($keyName,
-                                              $defaultValue);
+        $value = (string) $this->getMixed($keyName,
+                                          $defaultValue);
         return $value;
     }
 
@@ -150,10 +133,10 @@ abstract class CoreDataStorage
      * @param int $defaultValue
      * @return int
      */
-    protected function &getIntValue(string $keyName, int $defaultValue = null): int
+    protected function &getInt(string $keyName, int $defaultValue = null): int
     {
-        $value = (int) $this->getDataValue($keyName,
-                                           $defaultValue);
+        $value = (int) $this->getMixed($keyName,
+                                       $defaultValue);
         return $value;
     }
 
@@ -164,10 +147,10 @@ abstract class CoreDataStorage
      * @param DateTime $defaultValue
      * @return DateTime
      */
-    protected function &getDatetimeValue(string $keyName, DateTime $defaultValue = null): DateTime
+    protected function &getDatetime(string $keyName, DateTime $defaultValue = null): DateTime
     {
-        $value = $this->getDataValue($keyName,
-                                     $defaultValue);
+        $value = $this->getMixed($keyName,
+                                 $defaultValue);
         return $value;
     }
 
@@ -228,5 +211,22 @@ abstract class CoreDataStorage
         if ($this->exist($keyName)) {
             unset($this->data[$keyName]);
         }
+    }
+
+    /**
+     * Retourne la valeur de la clé.
+     *
+     * @return mixed
+     */
+    private function &getMixed($keyName, $defaultValue = null)
+    {
+        $value = null;
+
+        if ($this->exist($keyName)) {
+            $value = $this->data[$keyName];
+        } else {
+            $value = $defaultValue;
+        }
+        return $value;
     }
 }

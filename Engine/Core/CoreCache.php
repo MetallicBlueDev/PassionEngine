@@ -101,12 +101,12 @@ class CoreCache extends CacheModel
         $loaded = false;
         $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
 
-        // Mode par défaut
+// Mode par défaut
         if (empty($cacheConfig) || !isset($cacheConfig['type'])) {
             $cacheConfig['type'] = "php";
         }
 
-        // Chargement des drivers pour le cache
+// Chargement des drivers pour le cache
         $cacheClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
         $loaded = CoreLoader::classLoader($cacheClassName);
 
@@ -139,7 +139,7 @@ class CoreCache extends CacheModel
      */
     public function initialize(array &$cache)
     {
-        // NE RIEN FAIRE
+// NE RIEN FAIRE
         unset($cache);
     }
 
@@ -301,7 +301,9 @@ class CoreCache extends CacheModel
      * @param mixed $content
      * @param bool $overwrite
      */
-    public function writeCache(string $path, $content, bool $overwrite = true)
+    public function writeCache(string $path,
+                               $content,
+                               bool $overwrite = true)
     {
         $this->writeCacheWithReturn($path,
                                     $content,
@@ -317,16 +319,18 @@ class CoreCache extends CacheModel
      * @param bool $overwrite
      * @return string
      */
-    public function &writeCacheWithReturn(string $path, $content, bool $overwrite = true): string
+    public function &writeCacheWithReturn(string $path,
+                                          $content,
+                                          bool $overwrite = true): string
     {
         if (is_array($content)) {
             $content = $this->serializeData($content);
         }
 
-        // Mise en forme de la clé
+// Mise en forme de la clé
         $key = $this->getCurrentSectionPath($path);
 
-        // Ajout dans le cache
+// Ajout dans le cache
         if ($overwrite) {
             $this->overwriteCache[$key] = $content;
         } else {
@@ -335,7 +339,7 @@ class CoreCache extends CacheModel
 
         $variableName = $this->getVariableName();
 
-        // Supprime la déclaration de la variable $tmp = "myData"; = > myData
+// Supprime la déclaration de la variable $tmp = "myData"; = > myData
         $pos = strpos($content,
                       "$" . $variableName . " = \"");
 
@@ -366,7 +370,11 @@ class CoreCache extends CacheModel
      * @param array $cacheVariables
      * @return string
      */
-    public function &writeCacheWithVariable(string $path, string $content, bool $overwrite = true, string $cacheVariableName = "", array $cacheVariables = array()): string
+    public function &writeCacheWithVariable(string $path,
+                                            string $content,
+                                            bool $overwrite = true,
+                                            string $cacheVariableName = "",
+                                            array $cacheVariables = array()): string
     {
         $content = $this->writeCacheWithReturn($path,
                                                $content,
@@ -420,7 +428,8 @@ class CoreCache extends CacheModel
      * @param mixed $content
      * @return string
      */
-    public function &writeCacheWithSerialize(string $path, $content): string
+    public function &writeCacheWithSerialize(string $path,
+                                             $content): string
     {
         $content = serialize($content);
         // Préserve les données (protection utilisateur et protection des quotes)
@@ -436,36 +445,67 @@ class CoreCache extends CacheModel
      * @param string $path chemin du cache
      * @param string $cacheVariableName
      * @param array $cacheVariables
-     * @return mixed
      */
-    public function &readCache(string $path, string $cacheVariableName = "", array $cacheVariables = [])
+    public function readCache(string $path,
+                              string $cacheVariableName = "",
+                              array $cacheVariables = [])
     {
-        // Ajout des valeurs en cache
-        if (!empty($cacheVariableName)) {
-            ${$cacheVariableName} = &$cacheVariables;
-        }
-
-        // Rend la variable global à la fonction
-        $variableName = $this->getVariableName();
-        ${$variableName} = "";
-
-        // Capture du fichier
-        if ($this->cached($path)) {
-            require $this->getCurrentSectionPath($path,
-                                                 true);
-        }
-        return ${$variableName};
+        $this->readCacheAsMixed($path,
+                                $cacheVariableName,
+                                $cacheVariables);
     }
 
     /**
-     * Lecture du cache ciblé.
+     * Lecture du cache ciblé puis retourne une chaine de caractères.
+     *
+     * @param string $path chemin du cache
+     * @param string $cacheVariableName
+     * @param array $cacheVariables
+     * @return string
+     */
+    public function &readCacheAsString(string $path,
+                                       string $cacheVariableName = "",
+                                       array $cacheVariables = []): string
+    {
+        $cacheData = $this->readCacheAsMixed($path,
+                                             $cacheVariableName,
+                                             $cacheVariables);
+        if (empty($cacheData)) {
+            $cacheData = "";
+        }
+        return $cacheData;
+    }
+
+    /**
+     * Lecture du cache ciblé puis retourne un tableau.
+     *
+     * @param string $path chemin du cache
+     * @param string $cacheVariableName
+     * @param array $cacheVariables
+     * @return array
+     */
+    public function &readCacheAsArray(string $path,
+                                      string $cacheVariableName = "",
+                                      array $cacheVariables = []): array
+    {
+        $cacheData = $this->readCacheAsMixed($path,
+                                             $cacheVariableName,
+                                             $cacheVariables);
+        if (empty($cacheData)) {
+            $cacheData = array();
+        }
+        return $cacheData;
+    }
+
+    /**
+     * Lecture du cache ciblé puis retourne un tableau contenant des objets.
      *
      * @param string $path
-     * @return mixed
+     * @return array
      */
-    public function &readCacheWithUnserialize(string $path)
+    public function &readCacheAsArrayUnserialized(string $path): array
     {
-        $content = $this->readCache($path);
+        $content = $this->readCacheAsArray($path);
         $content = base64_decode($content);
         $content = unserialize($content);
         return $content;
@@ -477,7 +517,8 @@ class CoreCache extends CacheModel
      * @param string $path chemin vers le fichier cache
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0)
+    public function touchCache(string $path,
+                               int $updateTime = 0)
     {
         if ($updateTime <= 0) {
             $updateTime = time();
@@ -492,7 +533,8 @@ class CoreCache extends CacheModel
      * @param string $path chemin vers le fichier ou le dossier
      * @param int $timeLimit limite de temps
      */
-    public function removeCache(string $path, int $timeLimit = 0)
+    public function removeCache(string $path,
+                                int $timeLimit = 0)
     {
         $this->removeCache[$this->getCurrentSectionPath($path)] = $timeLimit;
     }
@@ -514,7 +556,7 @@ class CoreCache extends CacheModel
                                 $path) . ".php";
 
         if ($this->cached($fileName)) {
-            $dirList = $this->readCache($fileName);
+            $dirList = $this->readCacheAsArray($fileName);
         } else {
             $dirList = $this->selectedCache->getNameList($path);
             $this->writeCache($fileName,
@@ -541,7 +583,8 @@ class CoreCache extends CacheModel
      * @param string $extension
      * @return array
      */
-    public function &getFileList(string $dirPath, string $extension = ".class"): array
+    public function &getFileList(string $dirPath,
+                                 string $extension = ".class"): array
     {
         $names = array();
         $files = $this->getNameList($dirPath);
@@ -590,7 +633,8 @@ class CoreCache extends CacheModel
      * @param string $lastKey clé supplémentaire
      * @return string
      */
-    public function &serializeData($data, string $lastKey = ""): string
+    public function &serializeData($data,
+                                   string $lastKey = ""): string
     {
         $content = "";
 
@@ -712,7 +756,8 @@ class CoreCache extends CacheModel
      * @param bool $includeRoot
      * @return string
      */
-    private function &getCurrentSectionPath(string $dir, bool $includeRoot = false): string
+    private function &getCurrentSectionPath(string $dir,
+                                            bool $includeRoot = false): string
     {
         $dir = $this->currentSection . DIRECTORY_SEPARATOR . $dir;
 
@@ -729,7 +774,8 @@ class CoreCache extends CacheModel
      * @param string $value
      * @return string
      */
-    private function &serializeVariable(string $key, string $value): string
+    private function &serializeVariable(string $key,
+                                        string $value): string
     {
         $content = "$" . $this->getVariableName($key) . " = \"" . ExecString::addSlashes($value) . "\"; ";
         return $content;
@@ -751,5 +797,34 @@ class CoreCache extends CacheModel
                                     "_",
                                     $this->currentSection) . $key;
         return $variableName;
+    }
+
+    /**
+     * Lecture du cache ciblé puis retourne une données.
+     *
+     * @param string $path chemin du cache
+     * @param string $cacheVariableName
+     * @param array $cacheVariables
+     * @return mixed
+     */
+    private function &readCacheAsMixed(string $path,
+                                       string $cacheVariableName = "",
+                                       array $cacheVariables = [])
+    {
+        // Ajout des valeurs en cache
+        if (!empty($cacheVariableName)) {
+            ${$cacheVariableName} = &$cacheVariables;
+        }
+
+        // Rend la variable global à la fonction
+        $variableName = $this->getVariableName();
+        ${$variableName} = "";
+
+        // Capture du fichier
+        if ($this->cached($path)) {
+            require $this->getCurrentSectionPath($path,
+                                                 true);
+        }
+        return ${$variableName};
     }
 }

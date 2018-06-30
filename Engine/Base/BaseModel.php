@@ -90,7 +90,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &getDatabaseName(): string
     {
-        return $this->getStringValue("name");
+        return $this->getString("name");
     }
 
     /**
@@ -100,7 +100,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &getDatabasePrefix(): string
     {
-        return $this->getStringValue("prefix");
+        return $this->getString("prefix");
     }
 
     /**

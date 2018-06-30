@@ -453,7 +453,7 @@ class CoreMain
         // Si le cache est disponible
         if ($coreCache->cached("configs.php")) {
             // Chargement de la configuration via la cache
-            $newConfig = $coreCache->readCache("configs.php");
+            $newConfig = $coreCache->readCacheAsArray("configs.php");
         } else {
             $content = "";
             $coreSql = CoreSql::getInstance();

@@ -81,7 +81,7 @@ abstract class CacheModel extends CoreTransaction
      */
     public function &getServerPort(): int
     {
-        return $this->getIntValue("port");
+        return $this->getInt("port");
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class CacheModel extends CoreTransaction
      */
     public function &getServerRoot(): string
     {
-        return $this->getStringValue("root");
+        return $this->getString("root");
     }
 
     /**

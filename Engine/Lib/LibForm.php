@@ -486,9 +486,9 @@ class LibForm
         $content = "";
 
         if ($this->cached) { // Récupèration des données mise en cache
-            $content = $coreCache->readCache($this->name . ".php",
-                                             self::CACHE_VARIABLE_NAME,
-                                             $this->cacheVars);
+            $content = $coreCache->readCacheAsString($this->name . ".php",
+                                                     self::CACHE_VARIABLE_NAME,
+                                                     $this->cacheVars);
         } else { // Préparation puis mise en cache
             $data = "<form action=\"" . $url . "\" method=\"post\" id=\"form-" . $name . "\" name=\"" . $name . "\""
                     . " class=\"" . $class . "\"><fieldset class=\"fieldset\">" . $title . $description . $this->inputData

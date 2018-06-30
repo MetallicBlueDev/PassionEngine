@@ -360,10 +360,10 @@ class CoreSession
 
         $coreSql->select(CoreTable::BANNED,
                          array(
-            "reason"
+                    "reason"
                 ),
                          array(
-            "ip = '" . $this->userIpBan . "'"
+                    "ip = '" . $this->userIpBan . "'"
         ));
 
         if ($coreSql->affectedRows() > 0) {
@@ -406,10 +406,10 @@ class CoreSession
         if ($cleanBanishment) {
             CoreSql::getInstance()->delete(CoreTable::BANNED,
                                            array(
-                "ip != ''",
-                "&& (name = 'Hacker' || name = '')",
-                "&& type = '0'",
-                "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
+                        "ip != ''",
+                        "&& (name = 'Hacker' || name = '')",
+                        "&& type = '0'",
+                        "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
             ));
         }
     }
@@ -428,10 +428,10 @@ class CoreSession
             // Vérification en base (au cas ou il y aurait un débannissement)
             $coreSql->select(CoreTable::BANNED,
                              array(
-                "ban_id"
+                        "ban_id"
                     ),
                              array(
-                "ip = '" . $this->userIpBan . "'"
+                        "ip = '" . $this->userIpBan . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -441,10 +441,10 @@ class CoreSession
                 // Mise à jour de l'ip
                 $coreSql->update(CoreTable::BANNED,
                                  array(
-                    "ip" => $userIp
+                            "ip" => $userIp
                         ),
                                  array(
-                    "ban_id = '" . $banId . "'"
+                            "ban_id = '" . $banId . "'"
                 ));
 
                 // Durée de connexion automatique via cookie
@@ -474,12 +474,12 @@ class CoreSession
         // Sinon on recherche dans la base les bannis; leurs ip et leurs pseudo
         $coreSql->select(CoreTable::BANNED,
                          array(
-            "ip",
-            "name"
+                    "ip",
+                    "name"
                 ),
                          array(),
                          array(
-            "ban_id"
+                    "ban_id"
         ));
 
         foreach ($coreSql->fetchArray() as $value) {
@@ -568,7 +568,7 @@ class CoreSession
 
         if ($coreCache->cached($sessionId . ".php")) {
             // Si fichier cache trouvé, on l'utilise
-            $sessions = $coreCache->readCache($sessionId . ".php");
+            $sessions = $coreCache->readCacheAsArray($sessionId . ".php");
 
             if ($sessions['user_id'] === $userId && $sessions['sessionId'] === $sessionId) {
                 // Mise a jour du dernier accès toute les 5 min
@@ -770,10 +770,10 @@ class CoreSession
         // Envoi la requête Sql de mise à jour
         $coreSql->update(CoreTable::USERS,
                          array(
-            "last_connect" => "NOW()"
+                    "last_connect" => "NOW()"
                 ),
                          array(
-            "user_id = '" . $userId . "'"
+                    "user_id = '" . $userId . "'"
         ));
         return ($coreSql->affectedRows() === 1) ? true : false;
     }
@@ -827,16 +827,16 @@ class CoreSession
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::USERS,
                          array(
-            "user_id",
-            "name",
-            "mail",
-            "rank",
-            "registration_date",
-            "avatar",
-            "website",
-            "signature",
-            "template",
-            "langue"
+                    "user_id",
+                    "name",
+                    "mail",
+                    "rank",
+                    "registration_date",
+                    "avatar",
+                    "website",
+                    "signature",
+                    "template",
+                    "langue"
                 ),
                          $where);
 

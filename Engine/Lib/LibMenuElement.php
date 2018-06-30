@@ -70,7 +70,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getParentId(): int
     {
-        return $this->getIntValue("parent_id");
+        return $this->getInt("parent_id");
     }
 
     /**
@@ -80,7 +80,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getMenuId(): int
     {
-        return $this->getIntValue("menu_id");
+        return $this->getInt("menu_id");
     }
 
     /**
@@ -91,7 +91,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getContent(): string
     {
-        return $this->getStringValue("content");
+        return $this->getString("content");
     }
 
     /**
@@ -101,7 +101,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getRank(): int
     {
-        return $this->getIntValue("rank");
+        return $this->getInt("rank");
     }
 
     /**

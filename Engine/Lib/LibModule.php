@@ -210,7 +210,7 @@ class LibModule
                     $dataFromDb = true;
                 }
             } else {
-                $moduleData = $coreCache->readCache($moduleName . ".php");
+                $moduleData = $coreCache->readCacheAsArray($moduleName . ".php");
             }
 
             // Injection des informations du module

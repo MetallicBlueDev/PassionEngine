@@ -40,9 +40,9 @@ class LibBlockData extends LibEntityData
         $this->newStorage($data);
         $this->updateDataValue("mods",
                                explode("|",
-                                       $this->getStringValue("mods")));
+                                       $this->getString("mods")));
         $this->updateDataValue("title",
-                               ExecString::textDisplay($this->getStringValue("title")));
+                               ExecString::textDisplay($this->getString("title")));
 
         // Affecte la position du block en lettre.
         $this->sideName = LibBlock::getSideAsLetters($this->getSide());
@@ -75,7 +75,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getIdAsInt(): int
     {
-        return $this->getIntValue("block_id");
+        return $this->getInt("block_id");
     }
 
     /**
@@ -85,7 +85,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getSide(): int
     {
-        return $this->getIntValue("side");
+        return $this->getInt("side");
     }
 
     /**
@@ -116,7 +116,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getTitle(): string
     {
-        return $this->getStringValue("title");
+        return $this->getString("title");
     }
 
     /**
@@ -127,7 +127,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getContent(): string
     {
-        return $this->getStringValue("content");
+        return $this->getString("content");
     }
 
     /**
@@ -148,7 +148,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getRank(): int
     {
-        return $this->getIntValue("rank");
+        return $this->getInt("rank");
     }
 
     /**
@@ -158,7 +158,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getTargetModules(): array
     {
-        $rslt = $this->getArrayValues("mods",
+        $rslt = $this->getArray("mods",
                                       array("all"));
         return $rslt;
     }
@@ -170,7 +170,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getType(): string
     {
-        $dataValue = ucfirst($this->getStringValue("type"));
+        $dataValue = ucfirst($this->getString("type"));
         return $dataValue;
     }
 

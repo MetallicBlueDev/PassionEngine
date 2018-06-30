@@ -97,7 +97,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getName(): string
     {
-        $dataValue = ucfirst($this->getStringValue("name"));
+        $dataValue = ucfirst($this->getString("name"));
         return $dataValue;
     }
 
@@ -138,7 +138,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getRank(): int
     {
-        return $this->getIntValue("rank");
+        return $this->getInt("rank");
     }
 
     /**
@@ -148,7 +148,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getIdAsInt(): int
     {
-        return $this->getIntValue("mod_id");
+        return $this->getInt("mod_id");
     }
 
     /**
@@ -159,7 +159,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getConfigs(): array
     {
-        return $this->getArrayValues("configs");
+        return $this->getArray("configs");
     }
 
     /**
@@ -171,7 +171,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getConfigValue(string $key, string $defaultValue = ""): string
     {
-        return $this->getStringSubValue("configs",
+        return $this->getSubString("configs",
                                         $key,
                                         $defaultValue);
     }

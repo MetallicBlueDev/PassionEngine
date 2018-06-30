@@ -396,7 +396,7 @@ class LibBlock
                                        $content);
             }
         } else {
-            $blockData = $coreCache->readCache($blockId . ".php");
+            $blockData = $coreCache->readCacheAsArray($blockId . ".php");
         }
         return $blockData;
     }
@@ -446,7 +446,7 @@ class LibBlock
                                        $content);
             }
         } else {
-            $blocksIndexer = $coreCache->readCache(self::BLOCKS_INDEXER_FILENAME);
+            $blocksIndexer = $coreCache->readCacheAsArray(self::BLOCKS_INDEXER_FILENAME);
         }
         return $blocksIndexer;
     }

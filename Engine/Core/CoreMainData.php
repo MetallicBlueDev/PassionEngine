@@ -36,7 +36,7 @@ class CoreMainData extends CoreDataStorage
         $canUse = false;
 
         // Tentative d'utilisation de la configuration
-        $rawConfig = $this->getArrayValues("configs_config");
+        $rawConfig = $this->getArray("configs_config");
 
         if (!empty($rawConfig)) {
             $this->loadSpecificConfig($rawConfig);
@@ -85,7 +85,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getConfigCache(): array
     {
-        return $this->getArrayValues("configs_cache");
+        return $this->getArray("configs_cache");
     }
 
     /**
@@ -95,7 +95,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getConfigDatabase(): array
     {
-        return $this->getArrayValues("configs_database");
+        return $this->getArray("configs_database");
     }
 
     /**
@@ -105,7 +105,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &doUrlRewriting(): bool
     {
-        return $this->getBoolValue("urlRewriting");
+        return $this->getBool("urlRewriting");
     }
 
     /**
@@ -135,7 +135,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &registrationAllowed(): bool
     {
-        return $this->getBoolValue("registrationAllowed");
+        return $this->getBool("registrationAllowed");
     }
 
     /**
@@ -145,7 +145,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getCookiePrefix(): string
     {
-        return $this->getStringValue("cookiePrefix");
+        return $this->getString("cookiePrefix");
     }
 
     /**
@@ -155,7 +155,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getSessionTimeLimit(): int
     {
-        return $this->getIntValue("sessionTimeLimit");
+        return $this->getInt("sessionTimeLimit");
     }
 
     /**
@@ -165,7 +165,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getCryptKey(): string
     {
-        return $this->getStringValue("cryptKey");
+        return $this->getString("cryptKey");
     }
 
     /**
@@ -175,7 +175,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getCaptchaMode(): string
     {
-        return $this->getStringValue("captchaMode");
+        return $this->getString("captchaMode");
     }
 
     /**
@@ -369,7 +369,7 @@ class CoreMainData extends CoreDataStorage
      */
     private function &getStringValueWithDefault(string $keyName, Closure $callback): string
     {
-        $value = $this->getStringValue($keyName);
+        $value = $this->getString($keyName);
 
         if (empty($value)) {
             $value = $callback();
