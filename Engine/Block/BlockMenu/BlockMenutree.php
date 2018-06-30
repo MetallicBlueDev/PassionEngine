@@ -13,22 +13,28 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class BlockMenutree extends BlockMenu {
+class BlockMenutree extends BlockMenu
+{
 
-    public function display() {
+    public function display()
+    {
         $this->configure();
         $menus = $this->getMenu();
-        $menus->addAttributs("class", "treeview");
+        $menus->addAttributs("class",
+                             "treeview");
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("blockTitle", $this->getBlockData()
+        $libMakeStyle->assignString("blockTitle",
+                                    $this->getBlockData()
                         ->getTitle());
-        $libMakeStyle->assignString("blockContent", $menus->render());
+        $libMakeStyle->assignString("blockContent",
+                                    $menus->render());
         $libMakeStyle->display($this->getBlockData()
                         ->getTemplateName());
     }
 
-    private function configure() {
+    private function configure()
+    {
         // Configure le style pour la classe
         $this->getBlockData()->setContent(strtolower($this->getBlockData()
                                 ->getContent()));
@@ -46,11 +52,13 @@ class BlockMenutree extends BlockMenu {
         ExecJQuery::checkTreeView("#block" . $this->getBlockData()->getId());
     }
 
-    public function install() {
+    public function install()
+    {
 
     }
 
-    public function uninstall() {
+    public function uninstall()
+    {
         parent::uninstall();
     }
 }

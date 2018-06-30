@@ -26,7 +26,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class LibModule {
+class LibModule
+{
 
     /**
      * Nom du fichier listant les modules.
@@ -59,14 +60,16 @@ class LibModule {
     /**
      * Création du gestionnaire.
      */
-    private function __construct() {
+    private function __construct()
+    {
 
     }
 
     /**
      * Vérification de l'instance du gestionnaire des modules.
      */
-    public static function checkInstance() {
+    public static function checkInstance()
+    {
         if (self::$libModule === null) {
             // Création d'un instance autonome
             self::$libModule = new LibModule();
@@ -124,7 +127,8 @@ class LibModule {
      *
      * @return LibModule
      */
-    public static function &getInstance(): LibModule {
+    public static function &getInstance(): LibModule
+    {
         self::checkInstance();
         return self::$libModule;
     }
@@ -134,7 +138,8 @@ class LibModule {
      *
      * @return array => array("value" => valeur du module, "name" => nom du module).
      */
-    public static function &getModuleList(): array {
+    public static function &getModuleList(): array
+    {
         $moduleList = array();
         $modules = CoreCache::getInstance()->getNameList(self::MODULES_FILELISTER);
 
@@ -153,7 +158,8 @@ class LibModule {
      * @param string $moduleName
      * @return bool true le module est actuellement sélectionné
      */
-    public static function &isSelected(string $moduleName): bool {
+    public static function &isSelected(string $moduleName): bool
+    {
         $selected = false;
 
         if (self::$libModule !== null) {
@@ -168,7 +174,8 @@ class LibModule {
      * @param string $moduleName Le nom du module, par défaut le module courant.
      * @return LibModuleData Informations sur le module.
      */
-    public function &getInfoModule(string $moduleName = ""): LibModuleData {
+    public function &getInfoModule(string $moduleName = ""): LibModuleData
+    {
         $moduleInfo = null;
 
         if (empty($moduleName)) {
@@ -189,13 +196,15 @@ class LibModule {
             if (!$coreCache->cached($moduleName . ".php")) {
                 $coreSql = CoreSql::getInstance();
 
-                $coreSql->select(CoreTable::MODULES, array(
-                    "mod_id",
-                    "name",
-                    "rank",
-                    "configs"
-                        ), array(
-                    "name =  '" . $moduleName . "'"
+                $coreSql->select(CoreTable::MODULES,
+                                 array(
+                            "mod_id",
+                            "name",
+                            "rank",
+                            "configs"
+                        ),
+                                 array(
+                            "name =  '" . $moduleName . "'"
                 ));
 
                 if ($coreSql->affectedRows() > 0) {
@@ -207,13 +216,15 @@ class LibModule {
             }
 
             // Injection des informations du module
-            $moduleInfo = new LibModuleData($moduleData, $dataFromDb);
+            $moduleInfo = new LibModuleData($moduleData,
+                                            $dataFromDb);
             $this->modulesInfo[$moduleName] = $moduleInfo;
 
             if ($dataFromDb) {
                 // Mise en cache
                 $content = $coreCache->serializeData($moduleData);
-                $coreCache->writeCache($moduleName . ".php", $content);
+                $coreCache->writeCache($moduleName . ".php",
+                                       $content);
             }
         }
         return $moduleInfo;
@@ -222,7 +233,8 @@ class LibModule {
     /**
      * Démarrage du module courant.
      */
-    public function launch() {
+    public function launch()
+    {
         $moduleInfo = $this->getInfoModule();
 
         // Vérification du niveau d'acces
@@ -231,12 +243,14 @@ class LibModule {
                 CoreTranslate::getInstance()->translate($moduleInfo->getFolderName());
 
                 $libBreadcrumb = LibBreadcrumb::getInstance();
-                $libBreadcrumb->addTrail($moduleInfo->getName(), "?module=" . $moduleInfo->getName());
+                $libBreadcrumb->addTrail($moduleInfo->getName(),
+                                         "?module=" . $moduleInfo->getName());
 
                 // TODO A MODIFIER
                 // Juste une petite exception pour le module management qui est different
                 if ($moduleInfo->getName() !== "management") {
-                    $libBreadcrumb->addTrail($moduleInfo->getView(), "?module=" . $moduleInfo->getName() . "&view=" . $moduleInfo->getView());
+                    $libBreadcrumb->addTrail($moduleInfo->getView(),
+                                             "?module=" . $moduleInfo->getName() . "&view=" . $moduleInfo->getView());
                 }
 
                 $this->get($moduleInfo);
@@ -251,12 +265,15 @@ class LibModule {
      *
      * @return string
      */
-    public function &getModule(): string {
+    public function &getModule(): string
+    {
         $buffer = $this->getInfoModule()->getBuffer();
         $configs = $this->getInfoModule()->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if ($configs !== null && ExecUtils::inArray("rewriteBuffer", $configs, false)) {
+        if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
+                                                    $configs,
+                                                    false)) {
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
         return $buffer;
@@ -267,15 +284,15 @@ class LibModule {
      *
      * @param LibModuleData $moduleInfo
      */
-    private function get(LibModuleData &$moduleInfo) {
-        $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleInfo->getClassName(), $moduleInfo->getFolderName());
+    private function get(LibModuleData &$moduleInfo)
+    {
+        $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleInfo->getClassName(),
+                                                                 $moduleInfo->getFolderName());
         $loaded = CoreLoader::classLoader($moduleClassName);
 
         // Vérification de la sous page
-        $moduleInfo->setView($this->getValidViewPage(array(
-                    $moduleClassName,
-                    ($moduleInfo->installed()) ? $moduleInfo->getView() : "install"
-        )));
+        $moduleInfo->setView($this->getValidViewPage(array($moduleClassName,
+                    ($moduleInfo->installed()) ? $moduleInfo->getView() : "install")));
 
         // Affichage du module si possible
         if ($loaded && !empty($moduleInfo->getView())) {
@@ -283,7 +300,6 @@ class LibModule {
 
             try {
                 /**
-                 *
                  * @var ModuleModel
                  */
                 $moduleClass = new $moduleClassName();
@@ -294,8 +310,7 @@ class LibModule {
                 echo $moduleClass->{$moduleInfo->getView()}();
                 $moduleInfo->setBuffer(ob_get_clean());
             } catch (Exception $ex) {
-                // PHP 7
-                CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+                CoreSecure::getInstance()->catchException($ex);
             }
         } else {
             CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleInfo->getName() . ")");
@@ -308,10 +323,12 @@ class LibModule {
      * @param array $pageInfo
      * @return string
      */
-    private function &getValidViewPage(array $pageInfo): string {
+    private function &getValidViewPage(array $pageInfo): string
+    {
         $invalid = false;
 
-        if (CoreLoader::isCallable($pageInfo[0], $pageInfo[1])) {
+        if (CoreLoader::isCallable($pageInfo[0],
+                                   $pageInfo[1])) {
             $userInfos = CoreSession::getInstance()->getUserInfos();
 
             if ($pageInfo[1] === "install" && ($this->getInfoModule()->installed() || !$userInfos->hasAdminRank())) {
@@ -347,14 +364,17 @@ class LibModule {
      *
      * @param int $modId
      */
-    private function updateCount(int $modId) {
+    private function updateCount(int $modId)
+    {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->addQuotedValue("count + 1");
-        $coreSql->update(CoreTable::MODULES, array(
-            "count" => "count + 1"
-                ), array(
-            "mod_id = '" . $modId . "'"
+        $coreSql->update(CoreTable::MODULES,
+                         array(
+                    "count" => "count + 1"
+                ),
+                         array(
+                    "mod_id = '" . $modId . "'"
         ));
     }
 }

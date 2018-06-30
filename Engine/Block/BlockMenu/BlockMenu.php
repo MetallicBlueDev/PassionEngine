@@ -16,28 +16,36 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class BlockMenu extends BlockModel {
+class BlockMenu extends BlockModel
+{
 
-    public function display() {
+    public function display()
+    {
         $menus = $this->getMenu();
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("blockTitle", $this->getBlockData()->getTitle());
-        $libMakeStyle->assignString("blockContent", "<nav class=\"menu\">" . $menus->render() . "</nav>");
+        $libMakeStyle->assignString("blockTitle",
+                                    $this->getBlockData()->getTitle());
+        $libMakeStyle->assignString("blockContent",
+                                    "<nav class=\"menu\">" . $menus->render() . "</nav>");
         $libMakeStyle->display($this->getBlockData()->getTemplateName());
     }
 
-    public function install() {
+    public function install()
+    {
 
     }
 
-    public function uninstall() {
+    public function uninstall()
+    {
         CoreCache::getInstance(CoreCacheSection::MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
     }
 
-    protected function getMenu() {
+    protected function getMenu()
+    {
         $menus = new LibMenu(
-                "block" . $this->getBlockData()->getId(), array(
+                "block" . $this->getBlockData()->getId(),
+                array(
             "table" => CoreTable::MENUS,
             "select" => array(
                 "menu_id",

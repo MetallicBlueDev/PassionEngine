@@ -9,7 +9,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class CoreAccess {
+class CoreAccess
+{
 
     /**
      * Retourne l'erreur d'accès liée au jeton.
@@ -17,7 +18,8 @@ class CoreAccess {
      * @param CoreAccessToken $token
      * @return string
      */
-    public static function &getAccessErrorMessage(CoreAccessToken $token): string {
+    public static function &getAccessErrorMessage(CoreAccessToken $token): string
+    {
         $error = ERROR_ACCES_FORBIDDEN;
 
         if ($token->getRank() === -1) {
@@ -41,7 +43,8 @@ class CoreAccess {
      * @param bool $forceSpecificRank
      * @return bool
      */
-    public static function &autorize(CoreAccessType &$accessType, bool $forceSpecificRank = false): bool {
+    public static function &autorize(CoreAccessType &$accessType, bool $forceSpecificRank = false): bool
+    {
         $rslt = false;
 
         if ($accessType->valid()) {
@@ -49,7 +52,8 @@ class CoreAccess {
 
             if ($userInfos->getRank() >= $accessType->getRank()) {
                 if ($accessType->getRank() === CoreAccessRank::SPECIFIC_RIGHT || $forceSpecificRank) {
-                    $rslt = self::autorizeSpecific($accessType, $userInfos);
+                    $rslt = self::autorizeSpecific($accessType,
+                                                   $userInfos);
                 } else {
                     $rslt = true;
                 }
@@ -64,17 +68,21 @@ class CoreAccess {
      * @param int $rank
      * @return string accès traduit (si possible).
      */
-    public static function &getRankAsLitteral(int $rank): string {
+    public static function &getRankAsLitteral(int $rank): string
+    {
         if (!is_numeric($rank)) {
-            CoreSecure::getInstance()->throwExceptionOLD("accessRank", null, array(
-                "Invalid rank value: " . $rank));
+            CoreSecure::getInstance()->catchException("invalid rank value",
+                                                      1,
+                                                      array($rank));
         }
 
-        $rankLitteral = array_search($rank, CoreAccessRank::RANK_LIST);
+        $rankLitteral = array_search($rank,
+                                     CoreAccessRank::RANK_LIST);
 
         if ($rankLitteral === false) {
-            CoreSecure::getInstance()->throwExceptionOLD("accessRank", null, array(
-                "Numeric rank: " . $rank));
+            CoreSecure::getInstance()->catchException("invalid rank number",
+                                                      1,
+                                                      array($rank));
         }
 
         $rankLitteral = defined($rankLitteral) ? constant($rankLitteral) : $rankLitteral;
@@ -86,7 +94,8 @@ class CoreAccess {
      *
      * @return array array("numeric" => identifiant int, "letters" => nom du niveau)
      */
-    public static function &getRankList(): array {
+    public static function &getRankList(): array
+    {
         $rankList = array();
 
         foreach (CoreAccessRank::RANK_LIST as $rank) {
@@ -104,7 +113,8 @@ class CoreAccess {
      * @param CoreSessionData $userInfos
      * @return bool
      */
-    private static function &autorizeSpecific(CoreAccessType &$accessType, CoreSessionData $userInfos): bool {
+    private static function &autorizeSpecific(CoreAccessType &$accessType, CoreSessionData $userInfos): bool
+    {
         $rslt = false;
 
         foreach ($userInfos->getRights() as $userAccessType) {

@@ -13,7 +13,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class CoreSql extends BaseModel {
+class CoreSql extends BaseModel
+{
 
     /**
      * Gestionnnaire SQL.
@@ -32,7 +33,8 @@ class CoreSql extends BaseModel {
     /**
      * Nouveau gestionnaire.
      */
-    protected function __construct() {
+    protected function __construct()
+    {
         parent::__construct();
 
         $baseClassName = "";
@@ -46,15 +48,16 @@ class CoreSql extends BaseModel {
         }
 
         if (!$loaded) {
-            CoreSecure::getInstance()->throwExceptionOLD("sqlType", null, array(
-                $databaseConfig['type']
-            ));
+            CoreSecure::getInstance()->catchException(new FailSql("database driver not found",
+                                                                  13,
+                                                                  array($databaseConfig['type'])));
         }
 
-        if (!CoreLoader::isCallable($baseClassName, "initialize")) {
-            CoreSecure::getInstance()->throwExceptionOLD("sqlCode", null, array(
-                $baseClassName
-            ));
+        if (!CoreLoader::isCallable($baseClassName,
+                                    "initialize")) {
+            CoreSecure::getInstance()->catchException(new FailSql("unable to initialize database",
+                                                                  14,
+                                                                  array($baseClassName)));
         }
 
         try {
@@ -62,7 +65,7 @@ class CoreSql extends BaseModel {
             $this->selectedBase->initialize($databaseConfig);
         } catch (Exception $ex) {
             $this->selectedBase = null;
-            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->catchException($ex);
         }
     }
 
@@ -71,7 +74,8 @@ class CoreSql extends BaseModel {
      *
      * @param array $database
      */
-    public function initialize(array &$database) {
+    public function initialize(array &$database)
+    {
         // NE RIEN FAIRE
         unset($database);
     }
@@ -79,7 +83,8 @@ class CoreSql extends BaseModel {
     /**
      * Destruction du gestionnaire.
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         $this->selectedBase = null;
     }
 
@@ -88,7 +93,8 @@ class CoreSql extends BaseModel {
      *
      * @return CoreSql
      */
-    public static function &getInstance(): CoreSql {
+    public static function &getInstance(): CoreSql
+    {
         self::checkInstance();
         return self::$coreSql;
     }
@@ -96,7 +102,8 @@ class CoreSql extends BaseModel {
     /**
      * Vérification de l'instance du gestionnaire SQL.
      */
-    public static function checkInstance() {
+    public static function checkInstance()
+    {
         if (self::$coreSql === null) {
             self::$coreSql = new CoreSql();
         }
@@ -107,7 +114,8 @@ class CoreSql extends BaseModel {
      *
      * @return bool
      */
-    public static function hasConnection(): bool {
+    public static function hasConnection(): bool
+    {
         return self::$coreSql !== null && self::$coreSql->selectedBase !== null;
     }
 
@@ -116,15 +124,18 @@ class CoreSql extends BaseModel {
      *
      * @return array
      */
-    public static function &getBaseList(): array {
-        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::BASE_FILE, CoreLoader::BASE_FILE);
+    public static function &getBaseList(): array
+    {
+        return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::BASE_FILE,
+                                                     CoreLoader::BASE_FILE);
     }
 
     /**
      *
      * {@inheritdoc}
      */
-    public function netConnect() {
+    public function netConnect()
+    {
         $this->selectedBase->netConnect();
     }
 
@@ -134,7 +145,8 @@ class CoreSql extends BaseModel {
      *
      * @return bool
      */
-    public function netConnected(): bool {
+    public function netConnected(): bool
+    {
         return $this->selectedBase !== null && $this->selectedBase->netConnected();
     }
 
@@ -142,7 +154,8 @@ class CoreSql extends BaseModel {
      *
      * {@inheritdoc}
      */
-    public function netDeconnect() {
+    public function netDeconnect()
+    {
         if (self::hasConnection()) {
             $this->selectedBase->netDeconnect();
         }
@@ -153,7 +166,8 @@ class CoreSql extends BaseModel {
      *
      * @return bool
      */
-    public function &netSelect(): bool {
+    public function &netSelect(): bool
+    {
         return $this->selectedBase->netSelect();
     }
 
@@ -163,7 +177,8 @@ class CoreSql extends BaseModel {
      *
      * @return int
      */
-    public function &affectedRows(): int {
+    public function &affectedRows(): int
+    {
         return $this->selectedBase->affectedRows();
     }
 
@@ -173,7 +188,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getTransactionHost(): string {
+    public function &getTransactionHost(): string
+    {
         return $this->selectedBase->getTransactionHost();
     }
 
@@ -183,7 +199,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getTransactionUser(): string {
+    public function &getTransactionUser(): string
+    {
         return $this->selectedBase->getTransactionUser();
     }
 
@@ -193,7 +210,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getTransactionPass(): string {
+    public function &getTransactionPass(): string
+    {
         return $this->selectedBase->getTransactionPass();
     }
 
@@ -203,7 +221,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getDatabaseName(): string {
+    public function &getDatabaseName(): string
+    {
         return $this->selectedBase->getDatabaseName();
     }
 
@@ -213,7 +232,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getTransactionType(): string {
+    public function &getTransactionType(): string
+    {
         return $this->selectedBase->getTransactionType();
     }
 
@@ -223,7 +243,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getDatabasePrefix(): string {
+    public function &getDatabasePrefix(): string
+    {
         return $this->selectedBase->getDatabasePrefix();
     }
 
@@ -236,13 +257,17 @@ class CoreSql extends BaseModel {
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "") {
-        $this->selectedBase->delete($table, $where, $like, $limit);
+    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    {
+        $this->selectedBase->delete($table,
+                                    $where,
+                                    $like,
+                                    $limit);
 
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->catchException($ex);
         }
     }
 
@@ -252,7 +277,8 @@ class CoreSql extends BaseModel {
      *
      * @return array
      */
-    public function &fetchArray(): array {
+    public function &fetchArray(): array
+    {
         return $this->selectedBase->fetchArray();
     }
 
@@ -263,7 +289,8 @@ class CoreSql extends BaseModel {
      * @param string $className
      * @return array
      */
-    public function &fetchObject(string $className = null): array {
+    public function &fetchObject(string $className = null): array
+    {
         return $this->selectedBase->fetchObject($className);
     }
 
@@ -275,13 +302,16 @@ class CoreSql extends BaseModel {
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values) {
-        $this->selectedBase->insert($table, $keys, $values);
+    public function insert(string $table, array $keys, array $values)
+    {
+        $this->selectedBase->insert($table,
+                                    $keys,
+                                    $values);
 
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->catchException($ex);
         }
     }
 
@@ -291,7 +321,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &insertId(): string {
+    public function &insertId(): string
+    {
         return $this->selectedBase->insertId();
     }
 
@@ -302,7 +333,8 @@ class CoreSql extends BaseModel {
      * @param string $sql
      * @throws FailSql
      */
-    public function query(string $sql = "") {
+    public function query(string $sql = "")
+    {
         $sql = (!empty($sql)) ? $sql : $this->getSql();
 
         $this->selectedBase->query($sql);
@@ -315,7 +347,9 @@ class CoreSql extends BaseModel {
 
         // Création d'une exception si une réponse est négative (false)
         if ($this->getQueries() === false) {
-            throw new FailSql("bad query", 19, array($sql));
+            throw new FailSql("bad query",
+                              19,
+                              array($sql));
         }
     }
 
@@ -329,13 +363,18 @@ class CoreSql extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "") {
-        $this->selectedBase->select($table, $values, $where, $orderby, $limit);
+    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    {
+        $this->selectedBase->select($table,
+                                    $values,
+                                    $where,
+                                    $orderby,
+                                    $limit);
 
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->catchException($ex);
         }
     }
 
@@ -349,13 +388,18 @@ class CoreSql extends BaseModel {
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "") {
-        $this->selectedBase->update($table, $values, $where, $orderby, $limit);
+    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    {
+        $this->selectedBase->update($table,
+                                    $values,
+                                    $where,
+                                    $orderby,
+                                    $limit);
 
         try {
             $this->query();
         } catch (Exception $ex) {
-            CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+            CoreSecure::getInstance()->catchException($ex);
         }
     }
 
@@ -365,7 +409,8 @@ class CoreSql extends BaseModel {
      *
      * @return mixed
      */
-    public function &getQueries() {
+    public function &getQueries()
+    {
         return $this->selectedBase->getQueries();
     }
 
@@ -375,7 +420,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getSql(): string {
+    public function &getSql(): string
+    {
         return $this->selectedBase->getSql();
     }
 
@@ -386,7 +432,8 @@ class CoreSql extends BaseModel {
      * @param mixed $query
      * @return bool
      */
-    public function &freeResult($query = null): bool {
+    public function &freeResult($query = null): bool
+    {
         $query = (!empty($query)) ? $query : $this->getQueries();
         return $this->selectedBase->freeResult($query);
     }
@@ -398,8 +445,10 @@ class CoreSql extends BaseModel {
      * @param string $name
      * @param string $key
      */
-    public function addArrayBuffer(string $name, string $key = "") {
-        $this->selectedBase->addArrayBuffer($name, $key);
+    public function addArrayBuffer(string $name, string $key = "")
+    {
+        $this->selectedBase->addArrayBuffer($name,
+                                            $key);
         $this->freeResult();
     }
 
@@ -410,8 +459,10 @@ class CoreSql extends BaseModel {
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addObjectBuffer(string $name, string $key = "") {
-        $this->selectedBase->addObjectBuffer($name, $key);
+    public function addObjectBuffer(string $name, string $key = "")
+    {
+        $this->selectedBase->addObjectBuffer($name,
+                                             $key);
         $this->freeResult();
     }
 
@@ -422,7 +473,8 @@ class CoreSql extends BaseModel {
      * @param string $name
      * @return array
      */
-    public function &fetchBuffer(string $name): array {
+    public function &fetchBuffer(string $name): array
+    {
         return $this->selectedBase->fetchBuffer($name);
     }
 
@@ -433,7 +485,8 @@ class CoreSql extends BaseModel {
      * @param string $name
      * @return mixed
      */
-    public function &getBuffer(string $name) {
+    public function &getBuffer(string $name)
+    {
         return $this->selectedBase->getBuffer($name);
     }
 
@@ -443,7 +496,8 @@ class CoreSql extends BaseModel {
      *
      * @return array
      */
-    public function &getLastError(): array {
+    public function &getLastError(): array
+    {
         return $this->selectedBase->getLastError();
     }
 
@@ -453,7 +507,8 @@ class CoreSql extends BaseModel {
      *
      * @param string $key
      */
-    public function addQuotedKey(string $key) {
+    public function addQuotedKey(string $key)
+    {
         $this->selectedBase->addQuotedKey($key);
     }
 
@@ -463,14 +518,16 @@ class CoreSql extends BaseModel {
      *
      * @param string $value
      */
-    public function addQuotedValue(string $value) {
+    public function addQuotedValue(string $value)
+    {
         $this->selectedBase->addQuotedValue($value);
     }
 
     /**
      * Aucune action réalisée dans ce contexte.
      */
-    public function resetQuoted() {
+    public function resetQuoted()
+    {
         // NE RIEN FAIRE
     }
 
@@ -480,7 +537,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getVersion(): string {
+    public function &getVersion(): string
+    {
         return $this->selectedBase->getVersion();
     }
 
@@ -490,7 +548,8 @@ class CoreSql extends BaseModel {
      *
      * @return string
      */
-    public function &getCollation(): string {
+    public function &getCollation(): string
+    {
         return $this->selectedBase->getCollation();
     }
 }

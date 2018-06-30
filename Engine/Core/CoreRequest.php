@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Fail\FailEngine;
+
 require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 /**
@@ -9,7 +11,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class CoreRequest {
+class CoreRequest
+{
 
     /**
      * Mémoire tampon: tableau array des requêtes.
@@ -26,8 +29,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return bool
      */
-    public static function &getBoolean(string $name, bool $default = false, string $hash = "default"): bool {
-        return self::getVars($name, "BOOL", $default, $hash);
+    public static function &getBoolean(string $name, bool $default = false, string $hash = "default"): bool
+    {
+        return self::getVars($name,
+                             "BOOL",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -38,8 +45,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return int
      */
-    public static function &getInteger(string $name, int $default = 0, string $hash = "default"): int {
-        return self::getVars($name, "INT", $default, $hash);
+    public static function &getInteger(string $name, int $default = 0, string $hash = "default"): int
+    {
+        return self::getVars($name,
+                             "INT",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -50,8 +61,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return float
      */
-    public static function &getFloat(string $name, float $default = 0.0, string $hash = "default"): float {
-        return self::getVars($name, "FLOAT", $default, $hash);
+    public static function &getFloat(string $name, float $default = 0.0, string $hash = "default"): float
+    {
+        return self::getVars($name,
+                             "FLOAT",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -62,8 +77,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getBase64(string $name, string $default = "", string $hash = "default"): string {
-        return self::getVars($name, "BASE64", $default, $hash);
+    public static function &getBase64(string $name, string $default = "", string $hash = "default"): string
+    {
+        return self::getVars($name,
+                             "BASE64",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -74,8 +93,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getWord(string $name, string $default = "", string $hash = "default"): string {
-        return self::getVars($name, "WORD", $default, $hash);
+    public static function &getWord(string $name, string $default = "", string $hash = "default"): string
+    {
+        return self::getVars($name,
+                             "WORD",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -86,8 +109,12 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getString(string $name, string $default = "", string $hash = "default"): string {
-        return self::getVars($name, "STRING", $default, $hash);
+    public static function &getString(string $name, string $default = "", string $hash = "default"): string
+    {
+        return self::getVars($name,
+                             "STRING",
+                             $default,
+                             $hash);
     }
 
     /**
@@ -95,8 +122,11 @@ class CoreRequest {
      *
      * @return string
      */
-    public static function &getRequestMethod(): string {
-        return self::getString("REQUEST_METHOD", "", CoreRequestType::SERVER);
+    public static function &getRequestMethod(): string
+    {
+        return self::getString("REQUEST_METHOD",
+                               "",
+                               CoreRequestType::SERVER);
     }
 
     /**
@@ -104,8 +134,11 @@ class CoreRequest {
      *
      * @return string
      */
-    public static function &getQueryString(): string {
-        return self::getString("QUERY_STRING", "", CoreRequestType::SERVER);
+    public static function &getQueryString(): string
+    {
+        return self::getString("QUERY_STRING",
+                               "",
+                               CoreRequestType::SERVER);
     }
 
     /**
@@ -113,7 +146,8 @@ class CoreRequest {
      *
      * @return string
      */
-    public static function getRefererQueryString(): string {
+    public static function getRefererQueryString(): string
+    {
         $queryString = self::getQueryString();
         return !empty($queryString) ? urlencode(base64_encode($queryString)) : "";
     }
@@ -127,7 +161,8 @@ class CoreRequest {
      * @param string $hash Provenance de la variable
      * @return mixed
      */
-    private static function &getVars(string $name, string $type, $default = "", string $hash = "default") {
+    private static function &getVars(string $name, string $type, $default = "", string $hash = "default")
+    {
         $rslt = null;
 
         if ($name === "HTTP_REFERER") {
@@ -138,10 +173,12 @@ class CoreRequest {
         if (isset(self::$buffer[$name])) {
             $rslt = self::$buffer[$name];
         } else {
-            $input = self::getRequest($hash, true);
+            $input = self::getRequest($hash,
+                                      true);
 
             if (isset($input[$name]) && $input[$name] !== null) {
-                $rslt = self::protect($input[$name], $type);
+                $rslt = self::protect($input[$name],
+                                      $type);
                 self::$buffer[$name] = $rslt;
             } else {
                 $rslt = $default;
@@ -157,7 +194,8 @@ class CoreRequest {
      * @param bool $useDefault
      * @return array
      */
-    private static function &getRequest(string $hash, bool $useDefault): array {
+    private static function &getRequest(string $hash, bool $useDefault): array
+    {
         $hash = strtoupper($hash);
         $input = array();
 
@@ -171,7 +209,8 @@ class CoreRequest {
                 $input = CoreInfo::getGlobalVars($hash);
                 break;
             default:
-                $input = self::getDefaultRequest($hash, $useDefault);
+                $input = self::getDefaultRequest($hash,
+                                                 $useDefault);
         }
         return $input;
     }
@@ -183,18 +222,21 @@ class CoreRequest {
      * @param bool $useDefault
      * @return array
      */
-    private static function &getDefaultRequest(string $hash, bool $useDefault): array {
+    private static function &getDefaultRequest(string $hash, bool $useDefault): array
+    {
         $input = array();
 
         if (!$useDefault) {
-            CoreSecure::getInstance()->throwExceptionOLD("requestHash", null, array(
-                $hash));
+            CoreSecure::getInstance()->catchException(new FailEngine("invalid request method",
+                                                                     9,
+                                                                     array($hash)));
         }
 
         $hash = self::getRequestMethod();
 
         if (!empty($hash)) {
-            $input = self::getRequest($hash, false);
+            $input = self::getRequest($hash,
+                                      false);
         }
         return $input;
     }
@@ -206,7 +248,8 @@ class CoreRequest {
      * @param string $type
      * @return mixed
      */
-    private static function &protect($content, string $type) {
+    private static function &protect($content, string $type)
+    {
         $type = strtoupper($type);
 
         switch ($type) {
@@ -245,9 +288,12 @@ class CoreRequest {
      * @param mixed $content
      * @return int
      */
-    private static function &protectInt($content): int {
+    private static function &protectInt($content): int
+    {
         $matches = array();
-        preg_match('/-?[0-9]+/', (string) $content, $matches);
+        preg_match('/-?[0-9]+/',
+                   (string) $content,
+                   $matches);
         $content = (int) $matches[0];
         return $content;
     }
@@ -258,9 +304,12 @@ class CoreRequest {
      * @param mixed $content
      * @return float
      */
-    private static function &protectFloat($content): float {
+    private static function &protectFloat($content): float
+    {
         $matches = array();
-        preg_match('/-?[0-9]+(\.[0-9]+)?/', (string) $content, $matches);
+        preg_match('/-?[0-9]+(\.[0-9]+)?/',
+                   (string) $content,
+                   $matches);
         $content = (float) $matches[0];
         return $content;
     }
@@ -271,7 +320,8 @@ class CoreRequest {
      * @param mixed $content
      * @return bool
      */
-    private static function &protectBool($content): bool {
+    private static function &protectBool($content): bool
+    {
         $content = (string) $content;
         $content = ($content === "1" || $content === "true") ? "1" : "0";
         $content = (bool) $content;
@@ -284,8 +334,11 @@ class CoreRequest {
      * @param mixed $content
      * @return string
      */
-    private static function &protectBase64($content): string {
-        $content = (string) preg_replace('/[^A-Z0-9\/+=]/i', '', $content);
+    private static function &protectBase64($content): string
+    {
+        $content = (string) preg_replace('/[^A-Z0-9\/+=]/i',
+                                         '',
+                                         $content);
         return $content;
     }
 
@@ -295,8 +348,11 @@ class CoreRequest {
      * @param mixed $content
      * @return string
      */
-    private static function &protectWord($content): string {
-        $content = (string) preg_replace('/[^A-Z_]/i', '', $content);
+    private static function &protectWord($content): string
+    {
+        $content = (string) preg_replace('/[^A-Z_]/i',
+                                         '',
+                                         $content);
         return self::protectString($content);
     }
 
@@ -306,10 +362,12 @@ class CoreRequest {
      * @param mixed $content
      * @return string
      */
-    private static function &protectString($content): string {
+    private static function &protectString($content): string
+    {
         $content = trim((string) $content);
 
-        if (preg_match('/(\.\.|http:|ftp:)/', $content)) {
+        if (preg_match('/(\.\.|http:|ftp:)/',
+                       $content)) {
             $content = "";
         }
         return $content;

@@ -14,7 +14,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-abstract class BlockModel {
+abstract class BlockModel
+{
 
     /**
      * Informations sur le block.
@@ -26,21 +27,24 @@ abstract class BlockModel {
     /**
      * Affichage par défaut.
      */
-    public function display() {
+    public function display()
+    {
         CoreLogger::addError(ERROR_BLOCK_IMPLEMENT . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
     }
 
     /**
      * Procédure d'installation du block.
      */
-    public function install() {
+    public function install()
+    {
 
     }
 
     /**
      * Procédure de désinstallation du block.
      */
-    public function uninstall() {
+    public function uninstall()
+    {
 
     }
 
@@ -49,7 +53,8 @@ abstract class BlockModel {
      *
      * @param LibBlockData $data
      */
-    public function setBlockData(LibBlockData &$data) {
+    public function setBlockData(LibBlockData &$data)
+    {
         $this->data = $data;
     }
 
@@ -58,7 +63,8 @@ abstract class BlockModel {
      *
      * @return LibBlockData
      */
-    public function &getBlockData(): LibBlockData {
+    public function &getBlockData(): LibBlockData
+    {
         if ($this->data === null) {
             $empty = array();
             $this->data = new LibBlockData($empty);
@@ -71,8 +77,8 @@ abstract class BlockModel {
      *
      * @return CoreAccessType
      */
-    public function &getAccessType(): CoreAccessType {
+    public function &getAccessType(): CoreAccessType
+    {
         return CoreAccessType::getTypeFromToken($this->getBlockData());
     }
-
 }

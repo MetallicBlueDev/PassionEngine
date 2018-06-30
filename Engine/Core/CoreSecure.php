@@ -4,7 +4,6 @@ namespace TREngine\Engine\Core;
 
 use Exception;
 use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailEngine;
 
@@ -16,7 +15,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class CoreSecure {
+class CoreSecure
+{
 
     /**
      * Retourne la liste des caractères interdits.
@@ -76,7 +76,8 @@ class CoreSecure {
     /**
      * Routine de sécurisation.
      */
-    private function __construct() {
+    private function __construct()
+    {
         $this->configureOutput();
         $this->checkServerQueryString();
         $this->checkServerRequest();
@@ -85,10 +86,13 @@ class CoreSecure {
         // Attention: il ne faut pas définir l'index avant CoreInfo mais avant CoreLoader
         if (!defined("TR_ENGINE_INDEX")) {
             $this->locked = true;
-            define("TR_ENGINE_INDEX", true);
+            define("TR_ENGINE_INDEX",
+                   true);
         }
 
-        $this->debuggingMode = CoreRequest::getBoolean("debuggingMode", false, CoreRequestType::GET);
+        $this->debuggingMode = CoreRequest::getBoolean("debuggingMode",
+                                                       false,
+                                                       CoreRequestType::GET);
     }
 
     /**
@@ -96,7 +100,8 @@ class CoreSecure {
      *
      * @return CoreSecure
      */
-    public static function &getInstance(): CoreSecure {
+    public static function &getInstance(): CoreSecure
+    {
         self::checkInstance();
         return self::$secure;
     }
@@ -104,13 +109,15 @@ class CoreSecure {
     /**
      * Vérification de l'instance du gestionnaire de sécurité.
      */
-    public static function checkInstance() {
+    public static function checkInstance()
+    {
         if (self::$secure === null) {
             self::$secure = new CoreSecure();
 
             // Si nous ne sommes pas passé par l'index
             if (self::$secure->locked()) {
-                self::$secure->throwExceptionOLD("badUrl");
+                self::$secure->catchException(new FailEngine("invalid access",
+                                                             10));
             }
         }
     }
@@ -120,7 +127,8 @@ class CoreSecure {
      *
      * @return bool
      */
-    public static function &debuggingMode(): bool {
+    public static function &debuggingMode(): bool
+    {
         $rslt = false;
 
         if (self::$secure !== null) {
@@ -134,7 +142,8 @@ class CoreSecure {
      *
      * @return bool
      */
-    public function &locked(): bool {
+    public function &locked(): bool
+    {
         return $this->locked;
     }
 
@@ -144,32 +153,24 @@ class CoreSecure {
      *
      * @param Exception $ex L'exception interne levée.
      */
-    public function catchException(Exception $ex) {
-// TODO-------------------------<------------------------------------------
-    }
-
-    /**
-     * Affiche un message d'erreur au client, mettra fin à l'exécution du moteur.
-     * Cette fonction est activé si une erreur est détectée.
-     *
-     * @param string $customMessage Message d'erreur.
-     * @param Exception $ex L'exception interne levée.
-     * @param array $argv Argument supplémentaire d'information sur l'erreur.
-     */
-    public function throwExceptionOLD(string $customMessage, Exception $ex = null, array $argv = array()) {
+    public function catchException(Exception $ex)
+    {
         $this->locked = true;
 
         if ($ex === null) {
-            $ex = new FailEngine($customMessage);
+            $ex = new FailEngine("generic error");
         }
 
         // Préparation du template debug
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("errorMessageTitle", $this->getErrorMessageTitle($customMessage));
-        $libMakeStyle->assignArray("errorMessage", $this->getDebugMessage($ex, $argv));
+        $libMakeStyle->assignString("errorMessageTitle",
+                                    $this->getErrorMessageTitle($ex));
+        $libMakeStyle->assignArray("errorMessage",
+                                   $this->getDebugMessage($ex));
 
         // Affichage du template en debug si problème
-        $libMakeStyle->display("debug", true);
+        $libMakeStyle->display("debug",
+                               true);
 
         // Arret du moteur
         exit();
@@ -178,18 +179,19 @@ class CoreSecure {
     /**
      * Retourne le type d'erreur courant sous forme de message.
      *
-     * @param string $customMessage
+     * @param Exception $ex L'exception interne levée.
      * @return string
      */
-    private function &getErrorMessageTitle(string $customMessage): string {
+    private function &getErrorMessageTitle(Exception $ex): string
+    {
         // Message d'erreur depuis une constante
-        $errorMessageTitle = FailBase::getErrorCodeDescription($customMessage);
+        $errorMessageTitle = FailBase::getErrorCodeDescription($ex->getCode());
 
         if (empty($errorMessageTitle)) {
             $errorMessageTitle = "Stop loading";
 
             if ($this->debuggingMode) {
-                $errorMessageTitle .= ": " . $customMessage;
+                $errorMessageTitle .= ": " . $ex->getMessage();
             }
         }
         return $errorMessageTitle;
@@ -199,21 +201,13 @@ class CoreSecure {
      * Analyse l'erreur et prépare l'affichage de l'erreur.
      *
      * @param Exception $ex L'exception interne levée.
-     * @param array $argv Argument supplémentaire d'information sur l'erreur.
      * @return array
      */
-    private function &getDebugMessage(Exception $ex = null, array $argv = array()): array {
+    private function &getDebugMessage(Exception $ex): array
+    {
         $errorMessages = array();
-
-        $this->appendException($ex, $errorMessages);
-
-        // Fusion des informations supplémentaires
-        if (!empty($argv)) {
-            $errorMessages[] = "";
-            $errorMessages[] = "<span class=\"text_bold\">Additional information about the error:</span>";
-            $errorMessages = array_merge($errorMessages, $argv);
-        }
-
+        $this->appendException($ex,
+                               $errorMessages);
         $this->appendSqlErrors($errorMessages);
         $this->appendLoggerErrors($errorMessages);
         return $errorMessages;
@@ -225,11 +219,14 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendException(Exception $ex, array &$errorMessages) {
+    private function appendException(Exception $ex, array &$errorMessages)
+    {
         if ($ex !== null) {
-            $this->appendExceptionMessage($ex, $errorMessages);
+            $this->appendExceptionMessage($ex,
+                                          $errorMessages);
             $errorMessages[] = "";
-            $this->appendExceptionTrace($ex, $errorMessages);
+            $this->appendExceptionTrace($ex,
+                                        $errorMessages);
         }
     }
 
@@ -239,11 +236,13 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendExceptionMessage(Exception $ex, array &$errorMessages) {
+    private function appendExceptionMessage(Exception $ex, array &$errorMessages)
+    {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
                 $errorMessages[] = "Exception " . $ex->getFailSourceName() . " (" . $ex->getCode() . ") : " . $ex->getMessage();
-                $errorMessages = array_merge($errorMessages, $ex->getFailArgs());
+                $errorMessages = array_merge($errorMessages,
+                                             $ex->getFailArgs());
             } else {
                 $errorMessages[] = "Exception PHP (" . $ex->getCode() . ") : " . $ex->getMessage();
             }
@@ -256,14 +255,17 @@ class CoreSecure {
      * @param Exception $ex
      * @param array $errorMessages
      */
-    private function appendExceptionTrace(Exception $ex, array &$errorMessages) {
+    private function appendExceptionTrace(Exception $ex, array &$errorMessages)
+    {
         foreach ($ex->getTrace() as $traceValue) {
             $errorLine = "";
 
             if (is_array($traceValue)) {
                 foreach ($traceValue as $key => $value) {
                     if ($key === "file" || $key === "function") {
-                        $value = preg_replace("/([a-zA-Z0-9._]+).php/", "<span class=\"text_bold\">\\1</span>.php", $value);
+                        $value = preg_replace("/([a-zA-Z0-9._]+).php/",
+                                              "<span class=\"text_bold\">\\1</span>.php",
+                                              $value);
                         $errorLine .= " <span class=\"text_bold\">" . $key . "</span> " . $value;
                     } else if ($key === "line" || $key == "class") {
                         $errorLine .= " in <span class=\"text_bold\">" . $key . "</span> " . $value;
@@ -282,15 +284,21 @@ class CoreSecure {
      *
      * @param array $errorMessages
      */
-    private function appendSqlErrors(array &$errorMessages) {
+    private function appendSqlErrors(array &$errorMessages)
+    {
         if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
             if (CoreSql::hasConnection()) {
                 $sqlErrors = CoreSql::getInstance()->getLastError();
 
+                if (empty($sqlErrors)) {
+                    $sqlErrors = "(empty)";
+                }
+
                 if (!empty($sqlErrors)) {
                     $errorMessages[] = "";
                     $errorMessages[] = "<span class=\"text_bold\">Last Sql error message:</span>";
-                    $errorMessages = array_merge($errorMessages, $sqlErrors);
+                    $errorMessages = array_merge($errorMessages,
+                                                 $sqlErrors);
                 }
             } else {
                 $errorMessages[] = "No connection available to the database.";
@@ -303,14 +311,16 @@ class CoreSecure {
      *
      * @param array $errorMessages
      */
-    private function appendLoggerErrors(array &$errorMessages) {
+    private function appendLoggerErrors(array &$errorMessages)
+    {
         if (CoreLoader::isCallable("CoreLogger")) {
             $loggerExceptions = CoreLogger::getExceptions();
 
             if (!empty($loggerExceptions)) {
                 $errorMessages[] = "";
                 $errorMessages[] = "<span class=\"text_bold\">Exceptions logged:</span>";
-                $errorMessages = array_merge($errorMessages, $loggerExceptions);
+                $errorMessages = array_merge($errorMessages,
+                                             $loggerExceptions);
             }
         }
     }
@@ -319,22 +329,26 @@ class CoreSecure {
      * Réglages de la sortie d'erreurs.
      * Affichage de toutes les erreurs.
      */
-    private function configureOutput() {
+    private function configureOutput()
+    {
         error_reporting(defined("E_ALL") ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
     }
 
     /**
      * Vérification des données reçues (depuis QUERY_STRING).
      */
-    private function checkServerQueryString() {
+    private function checkServerQueryString()
+    {
         $query = CoreRequest::getQueryString();
 
         if (!empty($query)) {
             $queryString = strtolower(rawurldecode($query));
 
             foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
-                if (strpos($queryString, $badStringValue)) {
-                    $this->throwExceptionOLD("badQueryString");
+                if (strpos($queryString,
+                           $badStringValue)) {
+                    $this->catchException(new FailEngine("invalid query string",
+                                                         11));
                 }
             }
         }
@@ -343,11 +357,20 @@ class CoreSecure {
     /**
      * Vérification de la provenance des requêtes.
      */
-    private function checkServerRequest() {
-        if (CoreRequest::getRequestMethod() === "POST" && !empty(CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
+    private function checkServerRequest()
+    {
+        if (CoreRequest::getRequestMethod() === "POST" && !empty(CoreRequest::getString("HTTP_REFERER",
+                                                                                        "",
+                                                                                        CoreRequestType::SERVER))) {
             // Vérification du demandeur de la méthode POST
-            if (!preg_match("/" . CoreRequest::getString("HTTP_HOST", "", CoreRequestType::SERVER) . "/", CoreRequest::getString("HTTP_REFERER", "", CoreRequestType::SERVER))) {
-                $this->throwExceptionOLD("badRequestReferer");
+            if (!preg_match("/" . CoreRequest::getString("HTTP_HOST",
+                                                         "",
+                                                         CoreRequestType::SERVER) . "/",
+                                                         CoreRequest::getString("HTTP_REFERER",
+                                                                                "",
+                                                                                CoreRequestType::SERVER))) {
+                $this->catchException(new FailEngine("invalid request/referer",
+                                                     12));
             }
         }
     }
@@ -355,7 +378,8 @@ class CoreSecure {
     /**
      * Vérification des variables globales.
      */
-    private function checkGlobals() {
+    private function checkGlobals()
+    {
         $this->addSlashesForQuotes(self::getGlobalGet());
         $this->addSlashesForQuotes(self::getGlobalPost());
         $this->addSlashesForQuotes(self::getGlobalCookie());
@@ -366,7 +390,8 @@ class CoreSecure {
      *
      * @param mixed $key objet sans antislash
      */
-    private function addSlashesForQuotes(&$key) {
+    private function addSlashesForQuotes(&$key)
+    {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 if (is_array($key[$k])) {
@@ -387,7 +412,8 @@ class CoreSecure {
      *
      * @return array
      */
-    private static function &getGlobalGet(): array {
+    private static function &getGlobalGet(): array
+    {
         $vars = &CoreInfo::getGlobalVars(CoreRequestType::GET);
         return $vars;
     }
@@ -397,7 +423,8 @@ class CoreSecure {
      *
      * @return array
      */
-    private static function &getGlobalPost(): array {
+    private static function &getGlobalPost(): array
+    {
         $vars = &CoreInfo::getGlobalVars(CoreRequestType::POST);
         return $vars;
     }
@@ -407,7 +434,8 @@ class CoreSecure {
      *
      * @return array
      */
-    private static function &getGlobalCookie(): array {
+    private static function &getGlobalCookie(): array
+    {
         $vars = &CoreInfo::getGlobalVars(CoreRequestType::COOKIE);
         return $vars;
     }

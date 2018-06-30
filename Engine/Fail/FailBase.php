@@ -11,41 +11,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-abstract class FailBase extends Exception {
-
-    /**
-     * Liste des codes d'erreur.
-     * Ne pas changer le numéro d'une erreur.
-     *
-     *
-     * @var array
-     */
-    private const ERROR_CODES = array(
-        0 => "genericErrorCode",
-        1 => "accessRank",
-        2 => "cacheType",
-        3 => "cacheCode",
-        4 => "loader",
-        5 => "cachePath",
-        6 => "sqlPath",
-        7 => "configPath",
-        8 => "siteClosed",
-        9 => "requestHash",
-        10 => "badUrl",
-        11 => "badQueryString",
-        12 => "badRequestReferer",
-        13 => "sqlType",
-        14 => "sqlCode",
-        15 => "blockType",
-        16 => "blockSide",
-        17 => "makeStyle",
-        18 => "makeStyleConfig",
-        19 => "sqlReq",
-        20 => "netConnect",
-        21 => "netSelect",
-        22 => "netCanUse",
-        9999 => "??"
-    );
+abstract class FailBase extends Exception
+{
 
     /**
      * Nom de la source de l'exception.
@@ -68,8 +35,11 @@ abstract class FailBase extends Exception {
      * @param int $failCode
      * @param array $failArgs
      */
-    public function __construct(string $message, int $failCode = 0, array $failArgs = array()) {
-        parent::__construct($message, $failCode, null);
+    public function __construct(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        parent::__construct($message,
+                            $failCode,
+                            null);
         $this->failSourceName = self::makeFailSourceName();
         $this->failArgs = $failArgs;
     }
@@ -79,23 +49,8 @@ abstract class FailBase extends Exception {
      *
      * @return string
      */
-    public function getFailCodeName(): string {
-        $codeName = "";
-
-        if (isset(self::ERROR_CODES[$this->getCode()])) {
-            $codeName = self::ERROR_CODES[$this->getCode()];
-        } else {
-            $codeName = self::ERROR_CODES[0];
-        }
-        return $codeName;
-    }
-
-    /**
-     * Retourne le nom de la source de l'exception.
-     *
-     * @return string
-     */
-    public function getFailSourceName(): string {
+    public function getFailSourceName(): string
+    {
         return $this->failSourceName;
     }
 
@@ -104,22 +59,24 @@ abstract class FailBase extends Exception {
      *
      * @return string
      */
-    public function getFailArgs(): array {
+    public function getFailArgs(): array
+    {
         return $this->failArgs;
     }
 
     /**
      * Retourne la description du code d'erreur (constantes).
      *
-     * @param string $shortCodeName
+     * @param string $codeName
      * @return string
      */
-    public static function &getErrorCodeDescription(string $shortCodeName): string {
+    public static function &getErrorCodeDescription(int $codeName): string
+    {
         $rslt = "";
-        $fullCodeName = "ERROR_CODE_" . strtoupper($shortCodeName);
+        $errorCodeName = "ERROR_CODE_" . $codeName;
 
-        if (defined($fullCodeName)) {
-            $rslt = constant($fullCodeName);
+        if (defined($errorCodeName)) {
+            $rslt = constant($errorCodeName);
         }
         return $rslt;
     }
@@ -129,18 +86,26 @@ abstract class FailBase extends Exception {
      *
      * @return string
      */
-    private static function makeFailSourceName(): string {
+    private static function makeFailSourceName(): string
+    {
         $sourceName = get_called_class();
-        $pos = strripos($sourceName, '\\');
+        $pos = strripos($sourceName,
+                        '\\');
 
         if ($pos > 1) {
-            $sourceName = substr($sourceName, $pos + 1, strlen($sourceName) - $pos - 1);
+            $sourceName = substr($sourceName,
+                                 $pos + 1,
+                                 strlen($sourceName) - $pos - 1);
         }
 
-        $pos = strcspn($sourceName, 'ABCDEFGHJIJKLMNOPQRSTUVWXYZ', 1);
+        $pos = strcspn($sourceName,
+                       'ABCDEFGHJIJKLMNOPQRSTUVWXYZ',
+                       1);
 
         if ($pos > 1) {
-            $sourceName = substr($sourceName, $pos + 1, strlen($sourceName) - $pos - 1);
+            $sourceName = substr($sourceName,
+                                 $pos + 1,
+                                 strlen($sourceName) - $pos - 1);
         }
         return $sourceName;
     }

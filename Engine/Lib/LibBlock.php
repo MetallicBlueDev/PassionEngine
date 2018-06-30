@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Lib;
 
+use TREngine\Engine\Fail\FailBlock;
 use TREngine\Engine\Core\CoreAccessRank;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
@@ -22,7 +23,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class LibBlock {
+class LibBlock
+{
 
     /**
      * Nom du fichier cache de bannissement.
@@ -33,7 +35,7 @@ class LibBlock {
 
     /**
      * Nom du fichier listant les blocks.
-     * 
+     *
      * @var string
      */
     private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . "s";
@@ -145,7 +147,8 @@ class LibBlock {
      */
     private $standaloneBlocksType = array();
 
-    private function __construct() {
+    private function __construct()
+    {
         $this->addStandaloneBlockType("Login");
         $this->addStandaloneBlockType("ImageGenerator");
     }
@@ -155,7 +158,8 @@ class LibBlock {
      *
      * @return LibBlock
      */
-    public static function &getInstance(): LibBlock {
+    public static function &getInstance(): LibBlock
+    {
         if (self::$libBlock === null) {
             self::$libBlock = new LibBlock();
         }
@@ -167,7 +171,8 @@ class LibBlock {
      *
      * @param string $blockTypeName
      */
-    public function addStandaloneBlockType(string $blockTypeName) {
+    public function addStandaloneBlockType(string $blockTypeName)
+    {
         $this->standaloneBlocksType[] = $blockTypeName;
     }
 
@@ -177,20 +182,24 @@ class LibBlock {
      * @param string $blockTypeName
      * @return bool
      */
-    public function isStandaloneBlockType(string $blockTypeName): bool {
-        return !empty($blockTypeName) && (array_search($blockTypeName, $this->standaloneBlocksType) !== false);
+    public function isStandaloneBlockType(string $blockTypeName): bool
+    {
+        return !empty($blockTypeName) && (array_search($blockTypeName,
+                                                       $this->standaloneBlocksType) !== false);
     }
 
     /**
      * Démarrage des blocks.
      */
-    public function launchAllBlock() {
+    public function launchAllBlock()
+    {
         // Recherche dans l'indexeur
         $blocksIndexer = $this->getBlocksIndexer();
 
         foreach ($blocksIndexer as $blockRawInfo) {
             if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::NONE) {
-                $this->launchBlockById($blockRawInfo['block_id'], true);
+                $this->launchBlockById($blockRawInfo['block_id'],
+                                       true);
             }
         }
     }
@@ -198,11 +207,14 @@ class LibBlock {
     /**
      * Démarrage du block demandé depuis une requête.
      */
-    public function launchBlockRequested() {
-        $blockId = CoreRequest::getInteger("blockId", -1);
+    public function launchBlockRequested()
+    {
+        $blockId = CoreRequest::getInteger("blockId",
+                                           -1);
 
         if ($blockId >= 0) {
-            $this->launchBlockById($blockId, false);
+            $this->launchBlockById($blockId,
+                                   false);
         } else {
             $blockType = CoreRequest::getString("blockType");
             $this->launchStandaloneBlockType($blockType);
@@ -214,11 +226,12 @@ class LibBlock {
      *
      * @param string $blockTypeName
      */
-    public function launchStandaloneBlockType(string $blockTypeName) {
+    public function launchStandaloneBlockType(string $blockTypeName)
+    {
         if (!$this->isStandaloneBlockType($blockTypeName)) {
-            CoreSecure::getInstance()->throwExceptionOLD("blockType", null, array(
-                "Invalid type value: " . $blockTypeName
-            ));
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
+                                                                    15,
+                                                                    array($blockTypeName)));
         }
 
         $empty = array(
@@ -230,7 +243,8 @@ class LibBlock {
         );
         $blockInfo = new LibBlockData($empty);
         $this->addBlockInfo($blockInfo);
-        $this->launchBlock($blockInfo, false);
+        $this->launchBlock($blockInfo,
+                           false);
     }
 
     /**
@@ -239,7 +253,8 @@ class LibBlock {
      * @param string $sideName
      * @return string
      */
-    public function &getBlocksBySideName(string $sideName): string {
+    public function &getBlocksBySideName(string $sideName): string
+    {
         $sideNumeric = self::getSideAsNumeric($sideName);
         return $this->getBlocksBySidePosition($sideNumeric);
     }
@@ -249,7 +264,8 @@ class LibBlock {
      *
      * @return string
      */
-    public function &getBlock(): string {
+    public function &getBlock(): string
+    {
         return $this->getBlocksBySidePosition(self::SIDE_FIRST_BLOCK);
     }
 
@@ -258,7 +274,8 @@ class LibBlock {
      *
      * @return array array("numeric" => identifiant int, "letters" => nom de la position).
      */
-    public static function &getSideList(): array {
+    public static function &getSideList(): array
+    {
         $sideList = array();
 
         foreach (self::SIDE_LIST as $sideNumeric) {
@@ -276,7 +293,8 @@ class LibBlock {
      * @param mixed $side
      * @return string postion traduit (si possible).
      */
-    public static function &getSideAsLitteral($side): string {
+    public static function &getSideAsLitteral($side): string
+    {
         // Assignation par défaut
         $litteralSideName = $side;
 
@@ -294,13 +312,15 @@ class LibBlock {
      * @param int $side
      * @return string identifiant de la position (right, left...).
      */
-    public static function &getSideAsLetters(int $side): string {
-        $sideLetters = array_search($side, self::SIDE_LIST);
+    public static function &getSideAsLetters(int $side): string
+    {
+        $sideLetters = array_search($side,
+                                    self::SIDE_LIST);
 
         if ($sideLetters === false) {
-            CoreSecure::getInstance()->throwExceptionOLD("blockSide", null, array(
-                "Numeric side: " . $side
-            ));
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side number",
+                                                                    16,
+                                                                    array($side)));
         }
         return $sideLetters;
     }
@@ -310,8 +330,10 @@ class LibBlock {
      *
      * @return array
      */
-    public static function &getBlockList(): array {
-        return CoreCache::getInstance()->getFileList(self::BLOCKS_FILELISTER, CoreLoader::BLOCK_FILE);
+    public static function &getBlockList(): array
+    {
+        return CoreCache::getInstance()->getFileList(self::BLOCKS_FILELISTER,
+                                                     CoreLoader::BLOCK_FILE);
     }
 
     /**
@@ -320,7 +342,8 @@ class LibBlock {
      * @param int $blockId l'identifiant du block.
      * @return LibBlockData Informations sur le block.
      */
-    public function &getBlockInfo(int $blockId): LibBlockData {
+    public function &getBlockInfo(int $blockId): LibBlockData
+    {
         $blockInfo = null;
 
         if (isset($this->blockInfos[$blockId])) {
@@ -341,7 +364,8 @@ class LibBlock {
      * @param int $blockId
      * @return array
      */
-    private function &createBlockInfo(int $blockId): array {
+    private function &createBlockInfo(int $blockId): array
+    {
         $blockData = array();
 
         // Recherche dans le cache
@@ -350,17 +374,19 @@ class LibBlock {
         if (!$coreCache->cached($blockId . ".php")) {
             $coreSql = CoreSql::getInstance();
 
-            $coreSql->select(CoreTable::BLOCKS, array(
-                "block_id",
-                "side",
-                "position",
-                "title",
-                "content",
-                "type",
-                "rank",
-                "mods"
-                    ), array(
-                "block_id =  '" . $blockId . "'"
+            $coreSql->select(CoreTable::BLOCKS,
+                             array(
+                        "block_id",
+                        "side",
+                        "position",
+                        "title",
+                        "content",
+                        "type",
+                        "rank",
+                        "mods"
+                    ),
+                             array(
+                        "block_id =  '" . $blockId . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -368,7 +394,8 @@ class LibBlock {
 
                 // Mise en cache
                 $content = $coreCache->serializeData($blockData);
-                $coreCache->writeCache($blockId . ".php", $content);
+                $coreCache->writeCache($blockId . ".php",
+                                       $content);
             }
         } else {
             $blockData = $coreCache->readCache($blockId . ".php");
@@ -381,7 +408,8 @@ class LibBlock {
      *
      * @param LibBlockData $blockInfo
      */
-    private function addBlockInfo(LibBlockData $blockInfo) {
+    private function addBlockInfo(LibBlockData $blockInfo)
+    {
         $this->blockInfos[$blockInfo->getId()] = $blockInfo;
     }
 
@@ -390,21 +418,25 @@ class LibBlock {
      *
      * @return array
      */
-    private function getBlocksIndexer(): array {
+    private function getBlocksIndexer(): array
+    {
         $blocksIndexer = array();
         $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
 
         if (!$coreCache->cached(self::BLOCKS_INDEXER_FILENAME)) {
             $coreSql = CoreSql::getInstance();
 
-            $coreSql->select(CoreTable::BLOCKS, array(
-                "block_id",
-                "side",
-                "type",
-                "rank"
-                    ), array(), array(
-                "side",
-                "position"
+            $coreSql->select(CoreTable::BLOCKS,
+                             array(
+                        "block_id",
+                        "side",
+                        "type",
+                        "rank"
+                    ),
+                             array(),
+                             array(
+                        "side",
+                        "position"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -412,7 +444,8 @@ class LibBlock {
 
                 // Mise en cache
                 $content = $coreCache->serializeData($blocksIndexer);
-                $coreCache->writeCache("blocks_indexer.php", $content);
+                $coreCache->writeCache("blocks_indexer.php",
+                                       $content);
             }
         } else {
             $blocksIndexer = $coreCache->readCache(self::BLOCKS_INDEXER_FILENAME);
@@ -426,7 +459,8 @@ class LibBlock {
      * @param int $selectedSide
      * @return string
      */
-    private function &getBlocksBySidePosition(int $selectedSide): string {
+    private function &getBlocksBySidePosition(int $selectedSide): string
+    {
         $buffer = "";
 
         if ($selectedSide === self::SIDE_FIRST_BLOCK || $selectedSide >= self::SIDE_NONE) {
@@ -438,7 +472,8 @@ class LibBlock {
                 $currentBuffer = $blockInfo->getBuffer();
 
                 // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-                if (strpos($blockInfo->getContent(), "rewriteBuffer") !== false) {
+                if (strpos($blockInfo->getContent(),
+                           "rewriteBuffer") !== false) {
                     $currentBuffer = CoreUrlRewriting::getInstance()->rewriteBuffer($currentBuffer);
                 }
 
@@ -458,9 +493,11 @@ class LibBlock {
      * @param int $blockId
      * @param bool $checkModule
      */
-    private function launchBlockById(int $blockId, bool $checkModule) {
+    private function launchBlockById(int $blockId, bool $checkModule)
+    {
         $blockInfo = $this->getBlockInfo($blockId);
-        $this->launchBlock($blockInfo, $checkModule);
+        $this->launchBlock($blockInfo,
+                           $checkModule);
     }
 
     /**
@@ -469,7 +506,8 @@ class LibBlock {
      * @param LibBlockData $blockInfo
      * @param bool $checkModule
      */
-    private function launchBlock(LibBlockData $blockInfo, bool $checkModule) {
+    private function launchBlock(LibBlockData $blockInfo, bool $checkModule)
+    {
         if ($blockInfo->isValid() && $blockInfo->canActive($checkModule)) {
             $this->build($blockInfo);
         }
@@ -480,17 +518,19 @@ class LibBlock {
      *
      * @param LibBlockData $blockInfo
      */
-    private function build(LibBlockData &$blockInfo) {
-        $blockClassName = CoreLoader::getFullQualifiedClassName($blockInfo->getClassName(), $blockInfo->getFolderName());
+    private function build(LibBlockData &$blockInfo)
+    {
+        $blockClassName = CoreLoader::getFullQualifiedClassName($blockInfo->getClassName(),
+                                                                $blockInfo->getFolderName());
         $loaded = CoreLoader::classLoader($blockClassName);
 
         // Vérification du block
-        if ($loaded && CoreLoader::isCallable($blockClassName, "display")) {
+        if ($loaded && CoreLoader::isCallable($blockClassName,
+                                              "display")) {
             CoreTranslate::getInstance()->translate($blockInfo->getFolderName());
 
             try {
                 /**
-                 *
                  * @var BlockModel
                  */
                 $blockClass = new $blockClassName();
@@ -501,7 +541,7 @@ class LibBlock {
                 $blockClass->display();
                 $blockInfo->setBuffer(ob_get_clean());
             } catch (Exception $ex) {
-                CoreSecure::getInstance()->throwExceptionOLD($ex->getMessage(), $ex);
+                CoreSecure::getInstance()->catchException($ex);
             }
         } else {
             CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockInfo->getType() . ")");
@@ -514,11 +554,12 @@ class LibBlock {
      * @param string $sideName
      * @return int identifiant de la position (1, 2..).
      */
-    private static function &getSideAsNumeric(string $sideName): int {
+    private static function &getSideAsNumeric(string $sideName): int
+    {
         if (!isset(self::SIDE_LIST[$sideName])) {
-            CoreSecure::getInstance()->throwExceptionOLD("blockSide", null, array(
-                "Letters side: " . $sideName
-            ));
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side name",
+                                                                    16,
+                                                                    array($sideName)));
         }
 
         $sideNumeric = self::SIDE_LIST[$sideName];

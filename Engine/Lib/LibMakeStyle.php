@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreSecure;
+use TREngine\Engine\Fail\FailTemplate;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 
@@ -14,7 +15,8 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class LibMakeStyle {
+class LibMakeStyle
+{
 
     /**
      * Dossier contenant les templates.
@@ -63,7 +65,8 @@ class LibMakeStyle {
      *
      * @param string $fileName nom du template
      */
-    public function __construct(string $fileName = "") {
+    public function __construct(string $fileName = "")
+    {
         $this->setFileName($fileName);
     }
 
@@ -73,7 +76,8 @@ class LibMakeStyle {
      * @param string $key Nome de la variable
      * @param LibMakeStyle $value Valeur de la variable
      */
-    public function assignStyle(string $key, LibMakeStyle $value) {
+    public function assignStyle(string $key, LibMakeStyle $value)
+    {
         $this->fileVars[$key] = $value->display();
     }
 
@@ -83,7 +87,8 @@ class LibMakeStyle {
      * @param string $key Nome de la variable
      * @param string $value Valeur de la variable
      */
-    public function assignString(string $key, string $value) {
+    public function assignString(string $key, string $value)
+    {
         $this->fileVars[$key] = $value;
     }
 
@@ -93,7 +98,8 @@ class LibMakeStyle {
      * @param string $key Nome de la variable
      * @param string $value Valeur de la variable
      */
-    public function assignArray(string $key, array $value) {
+    public function assignArray(string $key, array $value)
+    {
         $this->fileVars[$key] = $value;
     }
 
@@ -103,7 +109,8 @@ class LibMakeStyle {
      * @param string $fileName
      * @param bool $debugMode Si le fichier de template debug n'est pas trouvé, le fichier debug par défaut est utilisé.
      */
-    public function display(string $fileName = "", bool $debugMode = false) {
+    public function display(string $fileName = "", bool $debugMode = false)
+    {
         if ($debugMode) {
             $this->setFileName($fileName);
 
@@ -123,7 +130,8 @@ class LibMakeStyle {
      * @param string $fileName
      * @return string
      */
-    public function &render(string $fileName = ""): string {
+    public function &render(string $fileName = ""): string
+    {
         $this->setFileName($fileName);
 
         // Vérification du template
@@ -132,8 +140,9 @@ class LibMakeStyle {
                 exit("CRITICAL ERROR: DEBUG TEMPLATE NOT FOUND.");
             }
 
-            CoreSecure::getInstance()->throwExceptionOLD("makeStyle", null, array(
-                $this->getTemplatePath()));
+            CoreSecure::getInstance()->catchException(new FailTemplate("invalid template file",
+                                                                       17,
+                                                                       array($this->getTemplatePath())));
         }
 
         // Extrait les variables en local
@@ -151,10 +160,12 @@ class LibMakeStyle {
      *
      * @param string $templateDir
      */
-    public static function setTemplateDir(string $templateDir) {
+    public static function setTemplateDir(string $templateDir)
+    {
         if (!self::isTemplateDir($templateDir)) {
-            CoreSecure::getInstance()->throwExceptionOLD("makeStyleConfig", null, array(
-                "templateDir = " . $templateDir));
+            CoreSecure::getInstance()->catchException(new FailTemplate("invalid template directory"),
+                                                                       18,
+                                                                       array($templateDir));
         }
 
         self::$templateDir = $templateDir;
@@ -165,7 +176,8 @@ class LibMakeStyle {
      *
      * @return string
      */
-    public static function &getTemplateDir(): string {
+    public static function &getTemplateDir(): string
+    {
         return self::$templateDir;
     }
 
@@ -174,7 +186,8 @@ class LibMakeStyle {
      *
      * @return array
      */
-    public static function &getTemplateList(): array {
+    public static function &getTemplateList(): array
+    {
         $templates = array();
         $templatesDir = array(
             CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY,
@@ -182,7 +195,8 @@ class LibMakeStyle {
 
         foreach ($templatesDir as $templateDir) {
             if (self::isTemplateDir($templateDir)) {
-                $templates = array_merge($templatesDir, CoreCache::getInstance()->getNameList($templateDir));
+                $templates = array_merge($templatesDir,
+                                         CoreCache::getInstance()->getNameList($templateDir));
             }
         }
         return $templates;
@@ -194,7 +208,8 @@ class LibMakeStyle {
      * @param string $templateDir
      * @return bool
      */
-    public static function isTemplateDir($templateDir) {
+    public static function isTemplateDir($templateDir)
+    {
         return !empty($templateDir) && is_dir(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $templateDir);
     }
 
@@ -203,9 +218,11 @@ class LibMakeStyle {
      *
      * @param string $fileName Nom du fichier
      */
-    private function setFileName(string $fileName) {
+    private function setFileName(string $fileName)
+    {
         if (!empty($fileName)) {
-            if (substr($fileName, -4) !== ".php") {
+            if (substr($fileName,
+                       -4) !== ".php") {
                 $fileName .= ".php";
             }
 
@@ -219,7 +236,8 @@ class LibMakeStyle {
     /**
      * Activation du mode debug.
      */
-    private function setDebugMode() {
+    private function setDebugMode()
+    {
         $this->debugMode = true;
         $this->valid = null;
     }
@@ -229,7 +247,8 @@ class LibMakeStyle {
      *
      * @return string path
      */
-    private function &getTemplatePath(): string {
+    private function &getTemplatePath(): string
+    {
         $path = "";
 
         if ($this->debugMode) {
@@ -246,7 +265,8 @@ class LibMakeStyle {
      *
      * @return bool true si le chemin du template est valide
      */
-    private function isTemplate(): bool {
+    private function isTemplate(): bool
+    {
         if ($this->valid === null) {
             $this->valid = is_file($this->getTemplatePath());
         }
