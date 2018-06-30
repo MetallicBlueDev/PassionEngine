@@ -357,9 +357,9 @@ class CoreSecure
      */
     private function checkServerRequest()
     {
-        if (CoreRequest::getRequestMethod() === "POST" && !empty(CoreRequest::getString("HTTP_REFERER",
-                                                                                        "",
-                                                                                        CoreRequestType::SERVER))) {
+        if (CoreRequest::getRequestMethod() === CoreRequestType::POST && !empty(CoreRequest::getString("HTTP_REFERER",
+                                                                                                       "",
+                                                                                                       CoreRequestType::SERVER))) {
             // Vérification du demandeur de la méthode POST
             if (!preg_match("/" . CoreRequest::getString("HTTP_HOST",
                                                          "",

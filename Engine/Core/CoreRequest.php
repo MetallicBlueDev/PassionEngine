@@ -122,9 +122,10 @@ class CoreRequest
      */
     public static function &getRequestMethod(): string
     {
-        return self::getString("REQUEST_METHOD",
-                               "",
-                               CoreRequestType::SERVER);
+        $hash = "_" . self::getString("REQUEST_METHOD",
+                                      "",
+                                      CoreRequestType::SERVER);
+        return $hash;
     }
 
     /**
