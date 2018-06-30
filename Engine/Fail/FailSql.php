@@ -9,16 +9,20 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class FailSql extends FailBase {
+class FailSql extends FailBase
+{
 
     /**
-     * Exception déclenchée par SQL.
+     * Nouvelle erreur SQL.
      *
      * @param string $message
      * @param int $failCode
      * @param array $failArgs
      */
-    public function __construct(string $message, int $failCode = 0, array $failArgs = array()) {
-        parent::__construct($message, $failCode, $failArgs);
+    public function __construct(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        parent::__construct($message,
+                            $failCode,
+                            $failArgs);
     }
 }

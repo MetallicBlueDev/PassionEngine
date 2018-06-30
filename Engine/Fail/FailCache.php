@@ -9,16 +9,20 @@ require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '
  *
  * @author Sébastien Villemain
  */
-class FailCache extends FailBase {
+class FailCache extends FailBase
+{
 
     /**
-     * Exception déclenchée par le cache.
+     * Nouvelle erreur de cache.
      *
      * @param string $message
      * @param int $failCode
      * @param array $failArgs
      */
-    public function __construct(string $message, int $failCode = 0, array $failArgs = array()) {
-        parent::__construct($message, $failCode, $failArgs);
+    public function __construct(string $message, int $failCode = 0, array $failArgs = array())
+    {
+        parent::__construct($message,
+                            $failCode,
+                            $failArgs);
     }
 }
