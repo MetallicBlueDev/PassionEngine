@@ -1,18 +1,17 @@
 <?php
 
+/**
+ * A inclure dans un fichier contenant une logique à exécuter.
+ * Exemple:
+ * require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
+ */
+
 namespace TREngine\Engine;
 
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreInfo;
 use TREngine\Engine\Core\CoreSecure;
 
-/**
- * Attention, ce fichier va être inclus dans tous les fichiers PHP.
- * Le code doit être impérativement léger et rapide à exécuter.
- *
- * A utiliser avec l'instruction suivante :
- * require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
- */
 // Initialisation principal
 if (!defined("TR_ENGINE_INITIALIZED")) {
     define("TR_ENGINE_INITIALIZED",
@@ -41,7 +40,7 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
 
         CoreInfo::initialize();
 
-        // Si une version PHP OO moderne n'est pas détectée, c'est la fin
+        // Vérification de la compatibilité du moteur avec la version de PHP
         if (!CoreInfo::compatibleVersion()) {
             echo"<h1>Sorry, but the PHP version currently running is too old to understand TR ENGINE.</h1>"
             . "<br />Please, seriously consider updating your system."
