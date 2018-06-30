@@ -20,6 +20,10 @@ nb-configuration.xml
 
 # OS
 .DS_Store
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
 
 # TR ENGINE temporary files
 tmp/
