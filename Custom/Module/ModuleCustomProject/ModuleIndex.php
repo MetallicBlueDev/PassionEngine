@@ -12,46 +12,58 @@ use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Lib\LibForm;
 use TREngine\Engine\Exec\ExecJQuery;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'Engine' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
-
-class ModuleIndex extends ModuleModel {
+class ModuleIndex extends ModuleModel
+{
 
     const PROJECT_TABLE = "project";
 
-    public function display() {
+    public function display()
+    {
         $this->displayProjectsList();
     }
 
-    public function displayProjectsList() {
-        CoreSql::getInstance()->select(self::PROJECT_TABLE, array(
+    public function displayProjectsList()
+    {
+        CoreSql::getInstance()->select(self::PROJECT_TABLE,
+                                       array(
             "projectid",
             "name",
             "date",
             "language",
-            "progress"), array(), array(
+            "progress"),
+                                       array(),
+                                       array(
             "progress ASC",
             "date DESC")
         );
 
         CoreHtml::getInstance()->addCssTemplateFile("module_project.css");
         $libMakeStyle = new LibMakeStyle("module_project_list");
-        $libMakeStyle->assignString("title", PROJECTS_LIST_TITLE);
-        $libMakeStyle->assignString("description", PROJECTS_LIST_DESCRIPTION);
+        $libMakeStyle->assignString("title",
+                                    PROJECTS_LIST_TITLE);
+        $libMakeStyle->assignString("description",
+                                    PROJECTS_LIST_DESCRIPTION);
 
         if (CoreSql::getInstance()->affectedRows() > 0) {
             CoreSql::getInstance()->addArrayBuffer("projectList");
             $projects = CoreSql::getInstance()->getBuffer("projectList");
-            $libMakeStyle->assignString("projects", $projects);
-            $libMakeStyle->assignString("nbProjects", count($projects) . " " . NB_PROJECT);
+            $libMakeStyle->assignString("projects",
+                                        $projects);
+            $libMakeStyle->assignString("nbProjects",
+                                        count($projects) . " " . NB_PROJECT);
         } else {
-            $libMakeStyle->assignString("nbProjects", NO_PROJECT);
+            $libMakeStyle->assignString("nbProjects",
+                                        NO_PROJECT);
         }
         $libMakeStyle->display();
     }
 
-    public function displayProject() {
+    public function displayProject()
+    {
         // Identifiant du projet
-        $projectId = CoreRequest::getInteger("projectId", -1, CoreRequestType::GET);
+        $projectId = CoreRequest::getInteger("projectId",
+                                             -1,
+                                             CoreRequestType::GET);
 
         if ($projectId >= 0) {
             $values = array(
@@ -65,7 +77,9 @@ class ModuleIndex extends ModuleModel {
                 "img",
                 "progress",
                 "website");
-            CoreSql::getInstance()->select(self::PROJECT_TABLE, $values, array(
+            CoreSql::getInstance()->select(self::PROJECT_TABLE,
+                                           $values,
+                                           array(
                 "projectid = '" . $projectId . "'"));
 
             if (CoreSql::getInstance()->affectedRows() == 1) {
@@ -78,12 +92,14 @@ class ModuleIndex extends ModuleModel {
 
                 // Création de la page
                 $form = new LibForm(
-                        "project_description", CoreUrlRewriting::getLink("?module=project&view=download&&projectId=" . $projectInfo['projectid'])
+                        "project_description",
+                        CoreUrlRewriting::getLink("?module=project&view=download&&projectId=" . $projectInfo['projectid'])
                 );
                 $form->setTitle($projectInfo['name']);
 
                 $libMakeStyle = new LibMakeStyle("module_project_description");
-                $libMakeStyle->assignArray("projectInfo", $projectInfo);
+                $libMakeStyle->assignArray("projectInfo",
+                                           $projectInfo);
 
                 $form->addHtmlInFieldset($libMakeStyle->render());
                 $form->addFieldset(PROJECT_DESCRIPTION);
@@ -97,8 +113,12 @@ class ModuleIndex extends ModuleModel {
                 $form->addSpace();
                 $form->addFieldset(DOWNLOAD_DETAILS);
 
-                $form->addInputSubmit("download_binaire", DOWNLOAD_BINAIRE, !empty($projectInfo['binairelink']) ? "" : "disabled=\"disabled\"");
-                $form->addInputSubmit("download_source", DOWNLOAD_SOURCE, !empty($projectInfo['sourcelink']) ? "" : "disabled=\"disabled\"");
+                $form->addInputSubmit("download_binaire",
+                                      DOWNLOAD_BINAIRE,
+                                      !empty($projectInfo['binairelink']) ? "" : "disabled=\"disabled\"");
+                $form->addInputSubmit("download_source",
+                                      DOWNLOAD_SOURCE,
+                                      !empty($projectInfo['sourcelink']) ? "" : "disabled=\"disabled\"");
 
                 if (empty($projectInfo['binairelink']) && empty($projectInfo['sourcelink'])) {
                     $form->addHtmlInFieldset(NO_DOWNLOAD);
@@ -114,12 +134,14 @@ class ModuleIndex extends ModuleModel {
         }
     }
 
-    public function download() {
+    public function download()
+    {
 //        $projectId = CoreRequest::getInteger("projectId", -1, CoreRequestType::POST);
 //        $type = CoreRequest::getInteger("type", -1, CoreRequestType::POST);
     }
 
-    public function setting() {
+    public function setting()
+    {
         return "Pas de setting...";
     }
 }

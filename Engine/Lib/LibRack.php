@@ -2,8 +2,6 @@
 
 namespace TREngine\Engine\Lib;
 
-require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARAOR . 'SecurityCheck.php';
-
 /**
  * Gestionnaire de tableau automatique.
  *

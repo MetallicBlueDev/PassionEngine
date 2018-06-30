@@ -2,8 +2,6 @@
 
 namespace TREngine\Engine\Core;
 
-// Exceptionnellement, ne PAS vérifier la sécurité ici (SecurityCheck)
-
 /**
  * Recherche d'information rapide sur le moteur d'exécution et son environnement coté serveur.
  *
@@ -13,12 +11,13 @@ namespace TREngine\Engine\Core;
  * 5.6 : 31 Dec 2018 -> INCOMPATIBLE
  * 7.0 : 3 Dec 2018 -> INCOMPATIBLE
  * 7.1 : 1 Dec 2019 <- Version minimale
- * 7.2 : 30 Nov 2020 <- Compatible (vérifié)
+ * 7.2 : 30 Nov 2020 <- Compatible (vérifié via doc mais jamais exécuté)
  * 7.3 : ???
  *
  * @author Sébastien Villemain
  */
-class CoreInfo {
+class CoreInfo
+{
 
     /**
      * Indique si la classe a été initialisée.
@@ -34,7 +33,8 @@ class CoreInfo {
      */
     private static $unsafeGlobalVars = array();
 
-    private function __construct() {
+    private function __construct()
+    {
 
     }
 
@@ -49,7 +49,8 @@ class CoreInfo {
      * @param string $name Pointeur vers le nom de la variable.
      * @param array $value Pointeur vers le contenu de la variable.
      */
-    public static function addGlobalVars(&$name, &$value) {
+    public static function addGlobalVars(&$name, &$value)
+    {
         if (!self::$initialized) {
             self::$unsafeGlobalVars[$name] = $value;
         } else {
@@ -63,7 +64,8 @@ class CoreInfo {
      *
      * @return array
      */
-    public static function &getGlobalVars($name) {
+    public static function &getGlobalVars($name)
+    {
         return self::$unsafeGlobalVars[$name];
     }
 
@@ -72,14 +74,16 @@ class CoreInfo {
      *
      * @return bool
      */
-    public static function compatibleVersion() {
+    public static function compatibleVersion()
+    {
         return (TR_ENGINE_PHP_VERSION >= TR_ENGINE_PHP_MINIMUM_VERSION);
     }
 
     /**
      * Création des constantes contenant les informations sur l'environnement.
      */
-    public static function initialize() {
+    public static function initialize()
+    {
         if (!self::$initialized) {
             self::$initialized = true;
 
@@ -88,40 +92,46 @@ class CoreInfo {
             /**
              * Version php sous forme x.x.x.x (exemple : 7.1.0).
              */
-            define("TR_ENGINE_PHP_MINIMUM_VERSION", "7.1.0");
+            define("TR_ENGINE_PHP_MINIMUM_VERSION",
+                   "7.1.0");
 
             /**
              * Version php sous forme x.x.x.x (exemple : 5.2.9.2).
              */
-            define("TR_ENGINE_PHP_VERSION", $info->getPhpVersion());
+            define("TR_ENGINE_PHP_VERSION",
+                   $info->getPhpVersion());
 
             /**
              * Chemin jusqu'à la racine.
              *
              * @var string
              */
-            define("TR_ENGINE_INDEXDIR", $info->getBaseDir());
+            define("TR_ENGINE_INDEXDIR",
+                   $info->getBaseDir());
 
             /**
              * Adresse URL complète jusqu'à TR ENGINE.
              *
              * @var string
              */
-            define("TR_ENGINE_URL", $info->getUrlAddress());
+            define("TR_ENGINE_URL",
+                   $info->getUrlAddress());
 
             /**
              * Le système d'exploitation qui exécute TR ENGINE.
              *
              * @var string
              */
-            define("TR_ENGINE_PHP_OS", $info->getPhpOs());
+            define("TR_ENGINE_PHP_OS",
+                   $info->getPhpOs());
 
             /**
              * Le retour de chariot du serveur TR ENGINE.
              *
              * @var string
              */
-            define("TR_ENGINE_CRLF", $info->getCrLf());
+            define("TR_ENGINE_CRLF",
+                   $info->getCrLf());
 
             /**
              * Numéro de version du moteur.
@@ -134,7 +144,8 @@ class CoreInfo {
              *
              * @var string
              */
-            define("TR_ENGINE_VERSION", "0.6.2.0");
+            define("TR_ENGINE_VERSION",
+                   "0.6.2.0");
         }
     }
 
@@ -143,8 +154,13 @@ class CoreInfo {
      *
      * @return string
      */
-    private function getPhpVersion() {
-        return preg_replace("/[^0-9.]/", "", (preg_replace("/(_|-|[+])/", ".", phpversion())));
+    private function getPhpVersion()
+    {
+        return preg_replace("/[^0-9.]/",
+                            "",
+                            (preg_replace("/(_|-|[+])/",
+                                          ".",
+                                          phpversion())));
     }
 
     /**
@@ -152,7 +168,8 @@ class CoreInfo {
      *
      * @return string
      */
-    private function getBaseDir() {
+    private function getBaseDir()
+    {
         $baseDir = "";
 
         // Recherche du chemin absolu depuis n'importe quel fichier
@@ -161,18 +178,25 @@ class CoreInfo {
             $baseDir = getcwd();
         } else {
             // Chemin de base
-            $baseName = str_replace(self::getGlobalServer("SCRIPT_NAME"), "", self::getGlobalServer("SCRIPT_FILENAME"));
-            $baseName = str_replace("/", DIRECTORY_SEPARATOR, $baseName);
+            $baseName = str_replace(self::getGlobalServer("SCRIPT_NAME"),
+                                                          "",
+                                                          self::getGlobalServer("SCRIPT_FILENAME"));
+            $baseName = str_replace("/",
+                                    DIRECTORY_SEPARATOR,
+                                    $baseName);
             $workingDirectory = getcwd();
 
             if (!empty($workingDirectory)) {
                 // Nous isolons le chemin en plus jusqu'au fichier
-                $path = str_replace($baseName, "", $workingDirectory);
+                $path = str_replace($baseName,
+                                    "",
+                                    $workingDirectory);
 
                 if (!empty($path)) {
                     // Suppression du slash supplémentaire
                     if ($path[0] === DIRECTORY_SEPARATOR) {
-                        $path = substr($path, 1);
+                        $path = substr($path,
+                                       1);
                     }
 
                     // Vérification en se repérant sur l'emplacement du fichier de configuration
@@ -205,22 +229,29 @@ class CoreInfo {
      *
      * @return string
      */
-    private function getUrlAddress() {
+    private function getUrlAddress()
+    {
         // Recherche de l'URL courante
         $urlTmp = self::getGlobalServer("REQUEST_URI");
 
-        if (substr($urlTmp, -1) === "/") {
-            $urlTmp = substr($urlTmp, 0, -1);
+        if (substr($urlTmp,
+                   -1) === "/") {
+            $urlTmp = substr($urlTmp,
+                             0,
+                             -1);
         }
 
         if ($urlTmp[0] === "/") {
-            $urlTmp = substr($urlTmp, 1);
+            $urlTmp = substr($urlTmp,
+                             1);
         }
 
-        $urlTmp = explode("/", $urlTmp);
+        $urlTmp = explode("/",
+                          $urlTmp);
 
         // Recherche du dossier courant
-        $urlBase = explode(DIRECTORY_SEPARATOR, TR_ENGINE_INDEXDIR);
+        $urlBase = explode(DIRECTORY_SEPARATOR,
+                           TR_ENGINE_INDEXDIR);
 
         // Construction du lien
         $urlFinal = "";
@@ -255,8 +286,11 @@ class CoreInfo {
      *
      * @return string
      */
-    private function getPhpOs() {
-        return strtoupper(substr(PHP_OS, 0, 3));
+    private function getPhpOs()
+    {
+        return strtoupper(substr(PHP_OS,
+                                 0,
+                                 3));
     }
 
     /**
@@ -264,7 +298,8 @@ class CoreInfo {
      *
      * @return string
      */
-    private function getCrLf() {
+    private function getCrLf()
+    {
         $rslt = "";
 
         // Le retour chariot de chaque OS
@@ -284,7 +319,8 @@ class CoreInfo {
      * @param string $keyName
      * @return string
      */
-    private static function getGlobalServer($keyName) {
+    private static function getGlobalServer($keyName)
+    {
         return self::$unsafeGlobalVars["_SERVER"][$keyName];
     }
 }
