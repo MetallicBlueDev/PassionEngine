@@ -265,7 +265,7 @@ class CacheFtp extends CacheModel
             if (is_array($listNames)) {
                 // On décompose les dossiers
                 $listNamesSearch = explode(DIRECTORY_SEPARATOR,
-                                           TR_ENGINE_INDEXDIR);
+                                           TR_ENGINE_INDEX_DIRECTORY);
 
                 // On recherche des correspondances
                 foreach ($listNames as $dirName) {

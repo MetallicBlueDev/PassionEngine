@@ -162,7 +162,7 @@ class ModuleIndex extends ModuleModel
                                 ACCOUNT_PRIVATE_TEMPLATE)
         ;
         $templates = LibMakeStyle::getTemplateList();
-        $currentTemplate = LibMakeStyle::getTemplateDir();
+        $currentTemplate = LibMakeStyle::getTemplateDirectory();
         $form->addSelectItemTag($currentTemplate,
                                 "",
                                 true);

@@ -200,7 +200,7 @@ class CoreMain
     public function install()
     {
         // TODO installation a coder
-//        $installPath = TR_ENGINE_INDEXDIR . "/install/index.php";
+//        $installPath = TR_ENGINE_INDEX_DIRECTORY . "/install/index.php";
 //        if (is_file($installPath)) {
 //            require $installPath;
 //        }
@@ -307,19 +307,15 @@ class CoreMain
      */
     private function checkMakeStyle()
     {
+        // Tentative d'utilisation du template du client
         $templateName = CoreSession::getInstance()->getUserInfos()->getTemplate();
 
-        // Tentative d'utilisation du template du client
-        if (!LibMakeStyle::isTemplateDir($templateName)) {
-            $templateName = "";
-        }
-
-        // Tentative d'utilisation du template du site
-        if (empty($templateName)) {
+        if (empty($templateName) || !LibMakeStyle::isTemplateDirectory($templateName)) {
+            // Tentative d'utilisation du template du site
             $templateName = $this->getConfigs()->getDefaultTemplate();
         }
 
-        LibMakeStyle::setTemplateDir($templateName);
+        LibMakeStyle::setTemplateDirectory($templateName);
     }
 
     /**

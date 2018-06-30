@@ -600,7 +600,7 @@ class CoreLoader
                                      array($keyName, $fileType));
         }
 
-        $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $path . ".php";
+        $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";
         return $path;
     }
 

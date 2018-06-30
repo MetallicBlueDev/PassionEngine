@@ -7,13 +7,13 @@ if (TREngine\Engine\Core\CoreMain::getInstance()->isDefaultLayout()) {
         <div>
             <?php
 
-echo TREngine\Engine\Core\CoreHtml::getLink('?module=management', '<img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDir() . '/management/bar_home.png" />');
+echo TREngine\Engine\Core\CoreHtml::getLink('?module=management', '<img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_home.png" />');
     ?>
         </div>
         <div>
             <?php
 
-echo TREngine\Engine\Core\CoreHtml::getLink('?module=management&manage=update', '<img alt=""  src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDir() . '/management/bar_update.png" />');
+echo TREngine\Engine\Core\CoreHtml::getLink('?module=management&manage=update', '<img alt=""  src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_update.png" />');
     ?>
         </div>
         <div id="management_bar_setting_page">
@@ -69,6 +69,6 @@ echo $module['name'];
         </div>
     </div>
     <?php
-    include TREngine\Engine\Lib\LibMakeStyle::getTemplateDir() . DIRECTORY_SEPARATOR . "module_management_title.php";
+    include TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . "module_management_title.php";
 }
 ?>

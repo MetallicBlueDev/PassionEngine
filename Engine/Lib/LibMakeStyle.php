@@ -21,14 +21,21 @@ class LibMakeStyle
      *
      * @var string
      */
-    private const TEMPLATE_DIRECTORY = "Template";
+    public const TEMPLATE_ROOT_DIRECTORY = "Template";
 
     /**
      * Dossier contenant le template en cours d'utilisation.
      *
      * @var string
      */
-    private static $templateDir = CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
+    public const DEFAULT_TEMPLATE = CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
+
+    /**
+     * Dossier contenant le template en cours d'utilisation.
+     *
+     * @var string
+     */
+    public static $templateDir = "";
 
     /**
      * Nom du fichier template.
@@ -158,9 +165,9 @@ class LibMakeStyle
      *
      * @param string $templateDir
      */
-    public static function setTemplateDir(string $templateDir)
+    public static function setTemplateDirectory(string $templateDir)
     {
-        if (!self::isTemplateDir($templateDir)) {
+        if (!self::isTemplateDirectory($templateDir)) {
             CoreSecure::getInstance()->catchException(new FailTemplate("invalid template directory"),
                                                                        18,
                                                                        array($templateDir));
@@ -174,7 +181,7 @@ class LibMakeStyle
      *
      * @return string
      */
-    public static function &getTemplateDir(): string
+    public static function &getTemplateDirectory(): string
     {
         return self::$templateDir;
     }
@@ -187,14 +194,14 @@ class LibMakeStyle
     public static function &getTemplateList(): array
     {
         $templates = array();
-        $templatesDir = array(
-            CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY,
-            CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY);
+        $templateDirectories = array(
+            CoreLoader::CUSTOM_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_ROOT_DIRECTORY,
+            CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_ROOT_DIRECTORY);
 
-        foreach ($templatesDir as $templateDir) {
-            if (self::isTemplateDir($templateDir)) {
-                $templates = array_merge($templatesDir,
-                                         CoreCache::getInstance()->getNameList($templateDir));
+        foreach ($templateDirectories as $templateDirectory) {
+            if (self::isTemplateDirectory($templateDirectory)) {
+                $templates = array_merge($templateDirectories,
+                                         CoreCache::getInstance()->getNameList($templateDirectory));
             }
         }
         return $templates;
@@ -203,12 +210,12 @@ class LibMakeStyle
     /**
      * Détermine si le dossier contenant le template est valide.
      *
-     * @param string $templateDir
+     * @param string $templateDirectory
      * @return bool
      */
-    public static function isTemplateDir($templateDir)
+    public static function isTemplateDirectory($templateDirectory)
     {
-        return !empty($templateDir) && is_dir(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $templateDir);
+        return !empty($templateDirectory) && is_dir(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $templateDirectory);
     }
 
     /**
@@ -251,9 +258,9 @@ class LibMakeStyle
 
         if ($this->debugMode) {
             // En debug mode, on utilise le fichier par défaut
-            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
+            $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . self::TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
         } else {
-            $path = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . self::$templateDir . DIRECTORY_SEPARATOR . $this->fileName;
+            $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . self::$templateDir . DIRECTORY_SEPARATOR . $this->fileName;
         }
         return $path;
     }

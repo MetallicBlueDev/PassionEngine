@@ -2,9 +2,9 @@
     <div id="management_setting_title">
         <div id="management_setting_title_icon">
             <?php
-            $pictureName = is_file(TREngine\Engine\Lib\LibMakeStyle::getTemplateDir() . DIRECTORY_SEPARATOR . "management" . DIRECTORY_SEPARATOR . "icon_" . $pageSelected . ".png") ? $pageSelected : "no_picture";
+            $pictureName = is_file(TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . "management" . DIRECTORY_SEPARATOR . "icon_" . $pageSelected . ".png") ? $pageSelected : "no_picture";
             ?>
-            <img src="<?php echo TREngine\Engine\Lib\LibMakeStyle::getTemplateDir(); ?>/management/icon_<?php echo $pictureName; ?>.png" alt="" />
+            <img src="<?php echo TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory(); ?>/management/icon_<?php echo $pictureName; ?>.png" alt="" />
         </div>
         <div id="management_setting_title_text"><?php echo $currentPageName; ?></div>
     </div>

@@ -649,7 +649,7 @@ class CoreTranslate
      */
     private static function canUseLanguage(string $language): bool
     {
-        return !empty($language) && is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
+        return !empty($language) && is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
                                                                                                                             $language) . ".php");
     }
 }

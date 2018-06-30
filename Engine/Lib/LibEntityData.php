@@ -72,7 +72,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     {
         $qualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(),
                                                                     $this->getFolderName());
-        return is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
+        return is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
     }
 
     /**

@@ -106,7 +106,7 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_INDEXDIR",
+            define("TR_ENGINE_INDEX_DIRECTORY",
                    $info->getBaseDir());
 
             /**
@@ -251,7 +251,7 @@ class CoreInfo
 
         // Recherche du dossier courant
         $urlBase = explode(DIRECTORY_SEPARATOR,
-                           TR_ENGINE_INDEXDIR);
+                           TR_ENGINE_INDEX_DIRECTORY);
 
         // Construction du lien
         $urlFinal = "";

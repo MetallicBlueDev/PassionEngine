@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecMailer;
 use TREngine\Engine\Exec\ExecString;
 use Closure;
@@ -292,7 +293,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultTemplate",
                                                 function() {
-                    return " ";
+                    return LibMakeStyle::DEFAULT_TEMPLATE;
                 });
     }
 

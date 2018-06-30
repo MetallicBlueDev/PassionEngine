@@ -236,7 +236,7 @@ class CoreHtml
     public function addCssTemplateFile(string $fileName, string $options = "")
     {
         if (CoreLoader::isCallable("LibMakeStyle")) {
-            $this->addCssFile(LibMakeStyle::getTemplateDir() . DIRECTORY_SEPARATOR . $fileName,
+            $this->addCssFile(LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . $fileName,
                               $options);
         }
     }
@@ -291,7 +291,7 @@ class CoreHtml
                 . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
                 . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
                 . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDir() . "/favicon.ico\" />\n"
+                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
                 . $this->getMetaIncludeJavascript()
                 . $this->getMetaIncludeCss();
     }
@@ -495,7 +495,7 @@ class CoreHtml
      */
     private function addCssFile(string $filePath, string $options = "")
     {
-        if (is_file(TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . str_replace("/",
+        if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace("/",
                                                                            DIRECTORY_SEPARATOR,
                                                                            $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,

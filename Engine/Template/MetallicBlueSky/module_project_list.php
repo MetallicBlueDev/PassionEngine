@@ -23,7 +23,7 @@ foreach ($projects as $key => $projectItem) {
     echo TREngine\Engine\Core\CoreHtml::getLink('?module=project&view=displayProject&projectId=' . $projectItem['projectid'], '
         <div class="project_body' . $progress . '">
             <div>
-                <div class="project_img"><img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDir() . '/project/' . strtolower($projectItem['language']) . '.png" /></div>
+                <div class="project_img"><img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/project/' . strtolower($projectItem['language']) . '.png" /></div>
                 <div class="project_text">
                     <span class=\"text_bold\">' . $projectItem['name'] . '</span> (' . $projectItem['language'] . ')
                     <br /><span class=\"text_underline\">' . PERCENT_COMPLETE . ': " ' . $projectItem['progress'] . '%</span>

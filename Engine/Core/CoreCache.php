@@ -717,7 +717,7 @@ class CoreCache extends CacheModel
         $dir = $this->currentSection . DIRECTORY_SEPARATOR . $dir;
 
         if ($includeRoot) {
-            $dir = TR_ENGINE_INDEXDIR . DIRECTORY_SEPARATOR . $dir;
+            $dir = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $dir;
         }
         return $dir;
     }
