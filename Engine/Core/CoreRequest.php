@@ -184,9 +184,9 @@ class CoreRequest
      * @param string $hash Provenance de la variable
      * @return string
      */
-    public static function &getUnsafeString(string $name,
-                                            string $default = "",
-                                            string $hash = "default"): string
+    private static function &getUnsafeString(string $name,
+                                             string $default = "",
+                                             string $hash = "default"): string
     {
         return self::getMixed($name,
                               "UNSAFE-STRING",
