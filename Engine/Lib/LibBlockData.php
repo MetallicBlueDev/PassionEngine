@@ -55,8 +55,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getId(): string
     {
-        // Note : l'identification du block est un entier mais la fonction générale demande une chaine de caractère
-        return $this->getIntValue("block_id");
+        return $this->getIdAsInt();
     }
 
     /**
@@ -67,6 +66,16 @@ class LibBlockData extends LibEntityData
     public function &getName(): string
     {
         return $this->getSideName();
+    }
+
+    /**
+     * Retourne l'identifiant du block.
+     *
+     * @return int
+     */
+    public function &getIdAsInt(): int
+    {
+        return $this->getIntValue("block_id");
     }
 
     /**
