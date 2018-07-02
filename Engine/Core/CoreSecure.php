@@ -165,8 +165,8 @@ class CoreSecure
         $libMakeStyle = new LibMakeStyle();
         $libMakeStyle->assignString("errorMessageTitle",
                                     $this->getErrorMessageTitle($ex));
-        $libMakeStyle->assignArray("errorMessage",
-                                   $this->getDebugMessage($ex));
+        $libMakeStyle->assignArray("debugMessages",
+                                   $this->getDebugMessages($ex));
 
         // Affichage du template en debug si problème
         $libMakeStyle->display("debug",
@@ -203,31 +203,31 @@ class CoreSecure
      * @param Exception $ex L'exception interne levée.
      * @return array
      */
-    private function &getDebugMessage(Exception $ex): array
+    private function &getDebugMessages(Exception $ex): array
     {
-        $errorMessages = array();
+        $messages = array();
         $this->appendException($ex,
-                               $errorMessages);
-        $this->appendSqlErrors($errorMessages);
-        $this->appendLoggerErrors($errorMessages);
-        return $errorMessages;
+                               $messages);
+        $this->appendSqlErrors($messages);
+        $this->appendLoggerErrors($messages);
+        return $messages;
     }
 
     /**
      * Ajoute des informations sur l'exception.
      *
      * @param Exception $ex
-     * @param array $errorMessages
+     * @param array $messages
      */
     private function appendException(Exception $ex,
-                                     array &$errorMessages)
+                                     array &$messages)
     {
         if ($ex !== null) {
             $this->appendExceptionMessage($ex,
-                                          $errorMessages);
-            $errorMessages[] = "";
+                                          $messages);
+            $messages[] = "";
             $this->appendExceptionTrace($ex,
-                                        $errorMessages);
+                                        $messages);
         }
     }
 
@@ -235,18 +235,18 @@ class CoreSecure
      * Ajoute une information générale sur l'exception.
      *
      * @param Exception $ex
-     * @param array $errorMessages
+     * @param array $messages
      */
     private function appendExceptionMessage(Exception $ex,
-                                            array &$errorMessages)
+                                            array &$messages)
     {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
-                $errorMessages[] = "Exception " . $ex->getFailSourceName() . " (" . $ex->getCode() . ") : " . $ex->getMessage();
-                $errorMessages = array_merge($errorMessages,
-                                             $ex->getFailArgs());
+                $messages[] = "Exception " . $ex->getFailSourceName() . " (" . $ex->getCode() . ") : " . $ex->getMessage();
+                $messages = array_merge($messages,
+                                        $ex->getFailArgs());
             } else {
-                $errorMessages[] = "Exception PHP (" . $ex->getCode() . ") : " . $ex->getMessage();
+                $messages[] = "Exception PHP (" . $ex->getCode() . ") : " . $ex->getMessage();
             }
         }
     }
@@ -255,10 +255,10 @@ class CoreSecure
      * Ajoute la trace (pile d'appel) de l'exception.
      *
      * @param Exception $ex
-     * @param array $errorMessages
+     * @param array $messages
      */
     private function appendExceptionTrace(Exception $ex,
-                                          array &$errorMessages)
+                                          array &$messages)
     {
         foreach ($ex->getTrace() as $traceValue) {
             $errorLine = "";
@@ -277,7 +277,7 @@ class CoreSecure
             }
 
             if (!empty($errorLine)) {
-                $errorMessages[] = $errorLine;
+                $messages[] = $errorLine;
             }
         }
     }
@@ -285,9 +285,9 @@ class CoreSecure
     /**
      * Ajoute des informations sur les dernières erreurs SQL.
      *
-     * @param array $errorMessages
+     * @param array $messages
      */
-    private function appendSqlErrors(array &$errorMessages)
+    private function appendSqlErrors(array &$messages)
     {
         if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
             if (CoreSql::hasConnection()) {
@@ -298,13 +298,13 @@ class CoreSecure
                 }
 
                 if (!empty($sqlErrors)) {
-                    $errorMessages[] = "";
-                    $errorMessages[] = "<span class=\"text_bold\">Last Sql error message:</span>";
-                    $errorMessages = array_merge($errorMessages,
-                                                 $sqlErrors);
+                    $messages[] = "";
+                    $messages[] = "<span class=\"text_bold\">Last Sql error message:</span>";
+                    $messages = array_merge($messages,
+                                            $sqlErrors);
                 }
             } else {
-                $errorMessages[] = "No connection available to the database.";
+                $messages[] = "No connection available to the database.";
             }
         }
     }
@@ -312,18 +312,18 @@ class CoreSecure
     /**
      * Ajoute des informations sur les erreurs collectées dans le journal.
      *
-     * @param array $errorMessages
+     * @param array $messages
      */
-    private function appendLoggerErrors(array &$errorMessages)
+    private function appendLoggerErrors(array &$messages)
     {
         if (CoreLoader::isCallable("CoreLogger")) {
             $loggerExceptions = CoreLogger::getExceptions();
 
             if (!empty($loggerExceptions)) {
-                $errorMessages[] = "";
-                $errorMessages[] = "<span class=\"text_bold\">Exceptions logged:</span>";
-                $errorMessages = array_merge($errorMessages,
-                                             $loggerExceptions);
+                $messages[] = "";
+                $messages[] = "<span class=\"text_bold\">Exceptions logged:</span>";
+                $messages = array_merge($messages,
+                                        $loggerExceptions);
             }
         }
     }

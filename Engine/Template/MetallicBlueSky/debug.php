@@ -11,11 +11,11 @@
                 <br /><br />
                 Error details:<br />
                 <ul>
-                    <?php foreach ($errorMessage as $value) { ?>
-                        <?php if (empty($value)) { ?>
+                    <?php foreach ($debugMessages as $message) { ?>
+                        <?php if (empty($message)) { ?>
                             <li><hr/></li>
                         <?php } else { ?>
-                            <li><?php echo $value; ?></li>
+                            <li><?php echo $message; ?></li>
                             <?php
                         }
                     }

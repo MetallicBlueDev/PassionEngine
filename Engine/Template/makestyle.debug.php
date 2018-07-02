@@ -7,8 +7,8 @@
             Error details:
             <br />
             <ul>
-                <?php foreach ($errorMessage as $value) { ?>
-                    <li><?php echo $value; ?></li>
+                <?php foreach ($debugMessages as $message) { ?>
+                    <li><?php echo $message; ?></li>
                 <?php } ?>
             </ul>
         </div>
