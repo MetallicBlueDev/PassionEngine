@@ -315,7 +315,7 @@ class CoreMain
             $templateName = $this->getConfigs()->getDefaultTemplate();
         }
 
-        LibMakeStyle::setTemplateDirectory($templateName);
+        LibMakeStyle::configureTemplateDirectory($templateName);
     }
 
     /**

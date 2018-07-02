@@ -293,7 +293,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultTemplate",
                                                 function() {
-                    return LibMakeStyle::DEFAULT_TEMPLATE;
+                    return LibMakeStyle::DEFAULT_TEMPLATE_DIRECTORY;
                 });
     }
 
