@@ -347,7 +347,7 @@ class LibMenu
                 $item->setTree($tree);
             }
 
-            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheWithSerialize($this->identifier . ".php",
+            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->identifier . ".php",
                                                                                      $this->items);
         }
     }

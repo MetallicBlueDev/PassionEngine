@@ -221,7 +221,8 @@ class CoreLogger
      * @param string $msg
      * @param string $type Le type d'erreur (alert / note / info).
      */
-    private static function addMessage(string $msg, string $type)
+    private static function addMessage(string $msg,
+                                       string $type)
     {
         switch ($type) {
             case self::TYPE_ALERT:

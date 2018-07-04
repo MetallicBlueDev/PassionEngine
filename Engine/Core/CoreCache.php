@@ -305,13 +305,13 @@ class CoreCache extends CacheModel
                                $content,
                                bool $overwrite = true)
     {
-        $this->writeCacheWithReturn($path,
-                                    $content,
-                                    $overwrite);
+        $this->writeCacheAsString($path,
+                                  $content,
+                                  $overwrite);
     }
 
     /**
-     * Demande une écriture dans le cache d'une chaine classique.
+     * Demande une écriture dans le cache d'une chaine de caractères.
      * Prépare les données pour la soumission dans le cache et retourne les données telles qu’elles seront écrites.
      *
      * @param string $path
@@ -319,18 +319,18 @@ class CoreCache extends CacheModel
      * @param bool $overwrite
      * @return string
      */
-    public function &writeCacheWithReturn(string $path,
-                                          $content,
-                                          bool $overwrite = true): string
+    public function &writeCacheAsString(string $path,
+                                        $content,
+                                        bool $overwrite = true): string
     {
         if (is_array($content)) {
             $content = $this->serializeData($content);
         }
 
-// Mise en forme de la clé
+        // Mise en forme de la clé
         $key = $this->getCurrentSectionPath($path);
 
-// Ajout dans le cache
+        // Ajout dans le cache
         if ($overwrite) {
             $this->overwriteCache[$key] = $content;
         } else {
@@ -339,7 +339,7 @@ class CoreCache extends CacheModel
 
         $variableName = $this->getVariableName();
 
-// Supprime la déclaration de la variable $tmp = "myData"; = > myData
+        // Supprime la déclaration de la variable $tmp = "myData"; = > myData
         $pos = strpos($content,
                       "$" . $variableName . " = \"");
 
@@ -376,9 +376,9 @@ class CoreCache extends CacheModel
                                             string $cacheVariableName = "",
                                             array $cacheVariables = array()): string
     {
-        $content = $this->writeCacheWithReturn($path,
-                                               $content,
-                                               $overwrite);
+        $content = $this->writeCacheAsString($path,
+                                             $content,
+                                             $overwrite);
 
         if (!empty($cacheVariableName)) {
             $matches = array();
@@ -421,56 +421,57 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Demande d'écriture dans le cache d'un objet.
+     * Demande d'écriture dans le cache un objet.
      * Prépare l'objet pour la soumission dans le cache et retourne les données telles qu’elles seront écrites.
      *
      * @param string $path
      * @param mixed $content
      * @return string
      */
-    public function &writeCacheWithSerialize(string $path,
-                                             $content): string
+    public function &writeCacheAsStringSerialize(string $path,
+                                                 $content): string
     {
         $content = serialize($content);
         // Préserve les données (protection utilisateur et protection des quotes)
         $content = base64_encode($content);
         $content = $this->serializeData($content);
-        return $this->writeCacheWithReturn($path,
-                                           $content);
+        return $this->writeCacheAsString($path,
+                                         $content);
     }
 
     /**
-     * Lecture du cache ciblé.
+     * Lecture et exécution du cache ciblé.
      *
-     * @param string $path chemin du cache
-     * @param string $cacheVariableName
-     * @param array $cacheVariables
+     * @param string $path Chemin du cache.
+     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
+     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
      */
     public function readCache(string $path,
-                              string $cacheVariableName = "",
-                              array $cacheVariables = [])
+                              string $dynamicVariableName = "",
+                              array $dynamicVariableValue = [])
     {
-        $this->readCacheAsMixed($path,
-                                $cacheVariableName,
-                                $cacheVariables);
+        $this->readCacheAsString($path,
+                                 $dynamicVariableName,
+                                 $dynamicVariableValue);
     }
 
     /**
      * Lecture du cache ciblé puis retourne une chaine de caractères.
      *
-     * @param string $path chemin du cache
-     * @param string $cacheVariableName
-     * @param array $cacheVariables
+     * @param string $path Chemin du cache.
+     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
+     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
      * @return string
      */
     public function &readCacheAsString(string $path,
-                                       string $cacheVariableName = "",
-                                       array $cacheVariables = []): string
+                                       string $dynamicVariableName = "",
+                                       array $dynamicVariableValue = []): string
     {
         $cacheData = $this->readCacheAsMixed($path,
-                                             $cacheVariableName,
-                                             $cacheVariables);
-        if (empty($cacheData)) {
+                                             "",
+                                             $dynamicVariableName,
+                                             $dynamicVariableValue);
+        if (!is_string($cacheData)) {
             $cacheData = "";
         }
         return $cacheData;
@@ -479,19 +480,20 @@ class CoreCache extends CacheModel
     /**
      * Lecture du cache ciblé puis retourne un tableau.
      *
-     * @param string $path chemin du cache
-     * @param string $cacheVariableName
-     * @param array $cacheVariables
+     * @param string $path Chemin du cache.
+     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
+     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
      * @return array
      */
     public function &readCacheAsArray(string $path,
-                                      string $cacheVariableName = "",
-                                      array $cacheVariables = []): array
+                                      string $dynamicVariableName = "",
+                                      array $dynamicVariableValue = []): array
     {
         $cacheData = $this->readCacheAsMixed($path,
-                                             $cacheVariableName,
-                                             $cacheVariables);
-        if (empty($cacheData)) {
+                                             array(),
+                                             $dynamicVariableName,
+                                             $dynamicVariableValue);
+        if (!is_array($cacheData)) {
             $cacheData = array();
         }
         return $cacheData;
@@ -800,25 +802,27 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Lecture du cache ciblé puis retourne une données.
+     * Lecture du cache ciblé puis retourne les données.
      *
-     * @param string $path chemin du cache
-     * @param string $cacheVariableName
-     * @param array $cacheVariables
+     * @param string $path Chemin du cache.
+     * @param mixed $initialValue Donnée d'initialisation.
+     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
+     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
      * @return mixed
      */
     private function &readCacheAsMixed(string $path,
-                                       string $cacheVariableName = "",
-                                       array $cacheVariables = [])
+                                       $initialValue,
+                                       string $dynamicVariableName,
+                                       array $dynamicVariableValue)
     {
-        // Ajout des valeurs en cache
-        if (!empty($cacheVariableName)) {
-            ${$cacheVariableName} = &$cacheVariables;
+        // Ajout des valeurs pour utilisation dans le cache
+        if (!empty($dynamicVariableName)) {
+            ${$dynamicVariableName} = &$dynamicVariableValue;
         }
 
-        // Rend la variable global à la fonction
+        // Rend la variable global à la fonction pour retourner les données
         $variableName = $this->getVariableName();
-        ${$variableName} = "";
+        ${$variableName} = &$initialValue;
 
         // Capture du fichier
         if ($this->cached($path)) {
