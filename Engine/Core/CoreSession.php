@@ -4,7 +4,7 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Exec\ExecCookie;
 use TREngine\Engine\Exec\ExecCrypt;
-use TREngine\Engine\Exec\ExecMailer;
+use TREngine\Engine\Exec\ExecEmail;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Lib\LibMakeStyle;
 
@@ -150,7 +150,8 @@ class CoreSession
      * @param string $userPass Mot de passe du compte
      * @return bool true succès
      */
-    public static function &openSession(string $userName, string $userPass): bool
+    public static function &openSession(string $userName,
+                                        string $userPass): bool
     {
         $rslt = false;
 
@@ -368,14 +369,14 @@ class CoreSession
 
         if ($coreSql->affectedRows() > 0) {
             $coreMain = CoreMain::getInstance();
-            $mail = $coreMain->getConfigs()->getDefaultAdministratorMail();
-            $mail = ExecMailer::displayMail($mail,
-                                            $coreMain->getConfigs()->getDefaultSiteName());
+            $email = $coreMain->getConfigs()->getDefaultAdministratorEmail();
+            $email = ExecEmail::displayEmail($email,
+                                             $coreMain->getConfigs()->getDefaultSiteName());
             $reason = $coreSql->fetchArray()['reason'];
 
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assignString("mail",
-                                        $mail);
+            $libMakeStyle->assignString("email",
+                                        $email);
             $libMakeStyle->assignString("reason",
                                         ExecString::textDisplay($reason));
             $libMakeStyle->assignString("ip",
@@ -500,7 +501,8 @@ class CoreSession
      * @param string $userIp
      * @param array $value
      */
-    private function searchBanishmentUser(string $userIp, array $value)
+    private function searchBanishmentUser(string $userIp,
+                                          array $value)
     {
         $banned = false;
 
@@ -560,7 +562,8 @@ class CoreSession
      * @param string $sessionId
      * @return bool
      */
-    private function tryOpenSession(string $userId, string $sessionId): bool
+    private function tryOpenSession(string $userId,
+                                    string $sessionId): bool
     {
         // La session doit être entièrement re-validée
         $isValidSession = false;
@@ -741,7 +744,8 @@ class CoreSession
      * @param array $session
      * @param bool $refreshAll
      */
-    private function setUser(array $session, bool $refreshAll = false)
+    private function setUser(array $session,
+                             bool $refreshAll = false)
     {
         if ($this->userInfos === null || $refreshAll) {
             $this->userInfos = new CoreSessionData($session);
@@ -829,7 +833,7 @@ class CoreSession
                          array(
                     "user_id",
                     "name",
-                    "mail",
+                    "email",
                     "rank",
                     "registration_date",
                     "avatar",

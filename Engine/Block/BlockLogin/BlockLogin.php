@@ -216,8 +216,8 @@ class BlockLogin extends BlockModel
     private function &forgetlogin($moreLink)
     {
         $form = new LibForm("login-forgetloginblock");
-        $form->addInputText("mail",
-                            MAIL . " ");
+        $form->addInputText("email",
+                            EMAIL . " ");
         $form->addInputHidden("module",
                               "connect");
         $form->addInputHidden("view",
@@ -227,7 +227,7 @@ class BlockLogin extends BlockModel
         $form->addInputSubmit("submit",
                               VALID);
         $form->addHtmlInFieldset($moreLink);
-        CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetloginblock', '#form-login-forgetloginblock-mail-input');");
+        CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetloginblock', '#form-login-forgetloginblock-email-input');");
         return $form->render("login-forgetloginblock");
     }
 

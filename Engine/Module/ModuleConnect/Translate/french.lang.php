@@ -14,7 +14,7 @@ $lang = array(
     "ERROR_PASSWORD_EMPTY" => "Votre mot de passe doit être renseigné.",
     "ERROR_LOGIN_OR_PASSWORD_INVALID" => "Votre identifiant ou votre mot de passe n'est pas valide.",
     // Divers
-    "INVALID_MAIL" => "L'adresse email saisi n'est pas valide",
+    "INVALID_EMAIL" => "L'adresse email saisi n'est pas valide",
     // Votre compte
     "ACCOUNT_PROFILE" => "Votre profil",
     "ACCOUNT_PROFILE_TITLE" => "Edition de votre profil",
@@ -58,7 +58,7 @@ $lang = array(
     "FORGET_LOGIN_TITLE" => "Retrouver son identifiant",
     "FORGET_LOGIN_DESCRIPTION" => "Entrez l'adresse email de votre compte.",
     "FORGET_LOGIN_SUBMIT" => "Envoyer mon identifiant",
-    "FORGET_LOGIN_INVALID_MAIL_ACCOUNT" => "L'adresse email saisi ne correspond à aucun compte enregistré",
+    "FORGET_LOGIN_INVALID_EMAIL_ACCOUNT" => "L'adresse email saisi ne correspond à aucun compte enregistré",
     "FORGET_LOGIN_IS_SUBMIT_TO" => "Un email contenant votre identifiant vient d'être envoyé à"
 );
 

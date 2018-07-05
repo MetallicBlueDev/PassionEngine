@@ -17,7 +17,7 @@ use TREngine\Engine\Lib\LibTabs;
 use TREngine\Engine\Lib\LibForm;
 use TREngine\Engine\Exec\ExecUrl;
 use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Exec\ExecMailer;
+use TREngine\Engine\Exec\ExecEmail;
 
 /**
  * Module d'identification.
@@ -106,7 +106,7 @@ class ModuleIndex extends ModuleModel
                     CoreTable::USERS,
                     $values,
                     array(
-                "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
+                        "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
@@ -135,9 +135,9 @@ class ModuleIndex extends ModuleModel
                                 PASSWORD);
         $form->addInputPassword("pass2",
                                 ACCOUNT_PRIVATE_PASSWORD_CONFIRME);
-        $form->addInputText("mail",
-                            MAIL,
-                            $userInfos->getMail());
+        $form->addInputText("email",
+                            EMAIL,
+                            $userInfos->getEmail());
 
         $form->addSpace();
         $form->addSelectOpenTag("langue",
@@ -201,9 +201,9 @@ class ModuleIndex extends ModuleModel
         $pass2 = CoreRequest::getString("pass2",
                                         "",
                                         CoreRequestType::POST);
-        $mail = CoreRequest::getString("mail",
-                                       "",
-                                       CoreRequestType::POST);
+        $email = CoreRequest::getString("email",
+                                        "",
+                                        CoreRequestType::POST);
         $langue = CoreRequest::getString("langue",
                                          "",
                                          CoreRequestType::POST);
@@ -211,7 +211,7 @@ class ModuleIndex extends ModuleModel
                                            "",
                                            CoreRequestType::POST);
 
-        if ($userInfos->getName() != $name || $userInfos->getMail() != $mail || $userInfos->getLangue() != $langue || $userInfos->getTemplate() != $template) {
+        if ($userInfos->getName() != $name || $userInfos->getEmail() != $email || $userInfos->getLangue() != $langue || $userInfos->getTemplate() != $template) {
             if (CoreSession::validLogin($name)) {
                 $validName = true;
 
@@ -221,9 +221,9 @@ class ModuleIndex extends ModuleModel
                     CoreSql::getInstance()->select(
                             CoreTable::USERS,
                             array(
-                        "user_id"),
+                                "user_id"),
                             array(
-                        "name = '" . $name . "'")
+                                "name = '" . $name . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -232,7 +232,7 @@ class ModuleIndex extends ModuleModel
                     }
                 }
                 if ($validName) {
-                    if (ExecMailer::isValidMail($mail)) {
+                    if (ExecEmail::isValidEmail($email)) {
                         $values = array();
                         if (!empty($pass) || !empty($pass2)) {
                             if ($pass == $pass2) {
@@ -246,14 +246,14 @@ class ModuleIndex extends ModuleModel
                             }
                         }
                         $values['name'] = $name;
-                        $values['mail'] = $mail;
+                        $values['email'] = $email;
                         $values['langue'] = $langue;
                         $values['template'] = $template;
                         CoreSql::getInstance()->update(
                                 CoreTable::USERS,
                                 $values,
                                 array(
-                            "user_id = '" . $userInfos->getId() . "'")
+                                    "user_id = '" . $userInfos->getId() . "'")
                         );
 
                         if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -261,7 +261,7 @@ class ModuleIndex extends ModuleModel
                             CoreLogger::addInfo(DATA_SAVED);
                         }
                     } else {
-                        CoreLogger::addWarning(INVALID_MAIL);
+                        CoreLogger::addWarning(INVALID_EMAIL);
                     }
                 }
             } else {
@@ -448,41 +448,41 @@ class ModuleIndex extends ModuleModel
         if (!CoreSession::connected()) {
             $login = "";
             $ok = false;
-            $mail = CoreRequest::getString("mail",
-                                           "",
-                                           CoreRequestType::POST);
+            $email = CoreRequest::getString("email",
+                                            "",
+                                            CoreRequestType::POST);
 
-            if (!empty($mail)) {
-                if (ExecMailer::isValidMail($mail)) {
+            if (!empty($email)) {
+                if (ExecEmail::isValidEmail($email)) {
                     CoreSql::getInstance()->select(
                             CoreTable::USERS,
                             array(
-                        "name"),
+                                "name"),
                             array(
-                        "mail = '" . $mail . "'")
+                                "email = '" . $email . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() == 1) {
                         list($login) = CoreSql::getInstance()->fetchArray();
-                        $ok = ExecMailer::sendMail(); // TODO envoyer un mail
+                        $ok = ExecEmail::sendEmail(); // TODO envoyer un mail
                     }
                     if (!$ok) {
-                        CoreLogger::addWarning(FORGET_LOGIN_INVALID_MAIL_ACCOUNT);
+                        CoreLogger::addWarning(FORGET_LOGIN_INVALID_EMAIL_ACCOUNT);
                     }
                 } else {
-                    CoreLogger::addWarning(INVALID_MAIL);
+                    CoreLogger::addWarning(INVALID_EMAIL);
                 }
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . " " . $mail);
+                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . " " . $email);
             } else {
-                if (CoreMain::getInstance()->isDefaultLayout() || empty($mail)) {
+                if (CoreMain::getInstance()->isDefaultLayout() || empty($email)) {
                     $form = new LibForm("login-forgetlogin");
                     $form->setTitle(FORGET_LOGIN_TITLE);
                     $form->setDescription(FORGET_LOGIN_DESCRIPTION);
-                    $form->addInputText("mail",
-                                        MAIL);
+                    $form->addInputText("email",
+                                        EMAIL);
                     $form->addInputHidden("module",
                                           "connect");
                     $form->addInputHidden("view",
@@ -505,7 +505,7 @@ class ModuleIndex extends ModuleModel
                     $form->addHtmlInFieldset($moreLink);
 
                     echo $form->render();
-                    CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetlogin', '#form-login-forgetlogin-mail-input');");
+                    CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetlogin', '#form-login-forgetlogin-email-input');");
                 }
             }
         } else {
@@ -520,7 +520,7 @@ class ModuleIndex extends ModuleModel
     {
         if (!CoreSession::connected()) {
             $ok = false;
-            $mail = "";
+            $email = "";
             $login = CoreRequest::getString("login",
                                             "",
                                             CoreRequestType::POST);
@@ -530,16 +530,16 @@ class ModuleIndex extends ModuleModel
                     CoreSql::getInstance()->select(
                             CoreTable::USERS,
                             array(
-                        "name, mail"),
+                                "name, email"),
                             array(
-                        "name = '" . $login . "'")
+                                "name = '" . $login . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() == 1) {
-                        list($name, $mail) = CoreSql::getInstance()->fetchArray();
+                        list($name, $email) = CoreSql::getInstance()->fetchArray();
                         if ($name == $login) {
                             // TODO Ajouter un générateur d'id
-                            $ok = ExecMailer::sendMail(); // TODO envoyer un mail
+                            $ok = ExecEmail::sendEmail(); // TODO envoyer un mail
                         }
                     }
                     if (!$ok) {
@@ -551,7 +551,7 @@ class ModuleIndex extends ModuleModel
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $mail);
+                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $email);
             } else {
                 if (CoreMain::getInstance()->isDefaultLayout() || empty($login)) {
                     $form = new LibForm("login-forgetpass");

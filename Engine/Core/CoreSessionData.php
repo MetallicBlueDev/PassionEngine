@@ -75,9 +75,9 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      *
      * @return string
      */
-    public function &getMail(): string
+    public function &getEmail(): string
     {
-        return $this->getString("mail");
+        return $this->getString("email");
     }
 
     /**
@@ -207,7 +207,8 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      * @param string $template
      * @param bool $force
      */
-    public function setTemplate(string $template, bool $force = false)
+    public function setTemplate(string $template,
+                                bool $force = false)
     {
         if (!$this->hasValue("template") || $force) {
             $this->setDataValue("template",
@@ -232,7 +233,8 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      * @param string $langue
      * @param bool $force
      */
-    public function setLangue(string $langue, bool $force = false)
+    public function setLangue(string $langue,
+                              bool $force = false)
     {
         if (!$this->hasValue("langue") || $force) {
             $this->setDataValue("langue",

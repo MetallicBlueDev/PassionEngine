@@ -3,7 +3,7 @@
 // Engine settings
 //
 // Webmaster email address
-$inc['TR_ENGINE_MAIL'] = "villemain.sebastien@trancer-studio.net";
+$inc['TR_ENGINE_EMAIL'] = "villemain.sebastien@trancer-studio.net";
 //
 // Status of the site (open | close)
 $inc['TR_ENGINE_STATUT'] = "open";

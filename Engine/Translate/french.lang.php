@@ -90,7 +90,7 @@ $lang = array(
     "ACCESS_SPECIFIC_RIGHT" => "Administrateur avec droit",
 // Divers
     "WELCOME" => "Bienvenue",
-    "MAIL" => "Votre adresse email",
+    "EMAIL" => "Votre adresse email",
     "LOGIN" => "Votre identifiant",
     "PASSWORD" => "Votre mot de passe",
     "VALID" => "Valider",

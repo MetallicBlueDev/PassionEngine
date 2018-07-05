@@ -45,7 +45,7 @@ class Module_Management_Systeminfo extends ModuleModel
             "TR ENGINE actived cache" => $modeActivedContent,
             "TR ENGINE DIR" => TR_ENGINE_INDEX_DIRECTORY,
             "TR ENGINE URL" => TR_ENGINE_URL,
-            "TR ENGINE MAIL" => TR_ENGINE_MAIL,
+            "TR ENGINE EMAIL" => TR_ENGINE_EMAIL,
             "TR ENGINE valid session cache time" => $coreMain->getConfigs()->getSessionTimeLimit() . " days",
             "TR ENGINE UrlRewriting" => ($coreMain->getConfigs()->doUrlRewriting() ? "on" : "off"),
             "PHP built on" => php_uname(),

@@ -133,7 +133,7 @@ class BlockImageGenerator extends BlockModel
     }
 
     /**
-     * Methode text & mail.
+     * Methode text & email.
      */
     private function renderText()
     {

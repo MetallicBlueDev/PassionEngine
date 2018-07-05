@@ -3,7 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecMailer;
+use TREngine\Engine\Exec\ExecEmail;
 use TREngine\Engine\Exec\ExecString;
 use Closure;
 
@@ -184,11 +184,11 @@ class CoreMainData extends CoreDataStorage
      *
      * @return string
      */
-    public function &getDefaultAdministratorMail(): string
+    public function &getDefaultAdministratorEmail(): string
     {
-        return $this->getStringValueWithDefault("defaultAdministratorMail",
+        return $this->getStringValueWithDefault("defaultAdministratorEmail",
                                                 function() {
-                    return TR_ENGINE_MAIL;
+                    return TR_ENGINE_EMAIL;
                 });
     }
 
@@ -321,12 +321,12 @@ class CoreMainData extends CoreDataStorage
         $newConfig = array();
 
         // Vérification de l'adresse email du webmaster
-        if (!ExecMailer::isValidMail($rawConfig["TR_ENGINE_MAIL"])) {
-            CoreLogger::addException("Default mail isn't valid");
+        if (!ExecEmail::isValidEmail($rawConfig["TR_ENGINE_EMAIL"])) {
+            CoreLogger::addException("Default email isn't valid");
         }
 
-        define("TR_ENGINE_MAIL",
-               $rawConfig["TR_ENGINE_MAIL"]);
+        define("TR_ENGINE_EMAIL",
+               $rawConfig["TR_ENGINE_EMAIL"]);
 
         // Vérification du statut
         $rawConfig["TR_ENGINE_STATUT"] = strtolower($rawConfig["TR_ENGINE_STATUT"]);

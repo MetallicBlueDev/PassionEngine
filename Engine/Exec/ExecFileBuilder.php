@@ -17,16 +17,20 @@ class ExecFileBuilder
     /**
      * Génére un nouveau fichier de configuration du moteur.
      *
-     * @param string $mail
+     * @param string $email
      * @param string $statut
      * @param int $sessionTimeLimit
      * @param string $cookiePrefix
      * @param string $cryptKey
      */
-    public static function buildConfigFile(string $mail, string $statut, int $sessionTimeLimit, string $cookiePrefix, string $cryptKey)
+    public static function buildConfigFile(string $email,
+                                           string $statut,
+                                           int $sessionTimeLimit,
+                                           string $cookiePrefix,
+                                           string $cryptKey)
     {
-        if (empty($mail) && defined("TR_ENGINE_MAIL")) {
-            $mail = TR_ENGINE_MAIL;
+        if (empty($email) && defined("TR_ENGINE_EMAIL")) {
+            $email = TR_ENGINE_EMAIL;
         }
 
         $statut = ($statut === "close") ? "close" : "open";
@@ -48,7 +52,7 @@ class ExecFileBuilder
                 . "// Engine settings\n"
                 . "//\n"
                 . "// Webmaster email address\n"
-                . "$" . "inc['TR_ENGINE_MAIL'] = \"" . $mail . "\";\n"
+                . "$" . "inc['TR_ENGINE_EMAIL'] = \"" . $email . "\";\n"
                 . "//\n"
                 . "// Status of the site (open | close)\n"
                 . "$" . "inc['TR_ENGINE_STATUT'] = \"" . $statut . "\";\n"
@@ -80,7 +84,12 @@ class ExecFileBuilder
      * @param string $pass
      * @param string $root
      */
-    public static function buildCacheFile(string $type, string $host, int $port, string $user, string $pass, string $root)
+    public static function buildCacheFile(string $type,
+                                          string $host,
+                                          int $port,
+                                          string $user,
+                                          string $pass,
+                                          string $root)
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS);
 
@@ -139,7 +148,12 @@ class ExecFileBuilder
      * @param string $name
      * @param string $prefix
      */
-    public static function buildDatabaseFile(string $type, string $host, string $user, string $pass, string $name, string $prefix)
+    public static function buildDatabaseFile(string $type,
+                                             string $host,
+                                             string $user,
+                                             string $pass,
+                                             string $name,
+                                             string $prefix)
     {
         if (empty($type) || !ExecUtils::inArray($type,
                                                 CoreSql::getBaseList())) {

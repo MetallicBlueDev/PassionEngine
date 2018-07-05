@@ -31,13 +31,13 @@ function validLogon(formId, loginId, passwordId) {
         return false;
     });
 }
-function validForgetLogin(formId, mailId) {
+function validForgetLogin(formId, emailId) {
     $(formId).submit(function () {
-        if (checkMail($(mailId).val())) {
-            $(mailId).removeClass('error');
+        if (checkEmail($(emailId).val())) {
+            $(emailId).removeClass('error');
             postForm(this);
         } else {
-            $(mailId).addClass('error');
+            $(emailId).addClass('error');
         }
         return false;
     });
@@ -57,11 +57,11 @@ function validLink(divId, link) {
     $(divId).load(link);
     return false;
 }
-function validAccount(formId, loginId, passwordId, passwordConfirmeId, mailId) {
+function validAccount(formId, loginId, passwordId, passwordConfirmeId, emailId) {
     $(formId).submit(function () {
         var isLogin = false;
         var isPassword = false;
-        var isMail = false;
+        var isEmail = false;
         if (checkLogin($(loginId).val())) {
             $(loginId).removeClass('error');
             isLogin = true;
@@ -82,13 +82,13 @@ function validAccount(formId, loginId, passwordId, passwordConfirmeId, mailId) {
             $(passwordId).removeClass('error');
             $(passwordConfirmeId).removeClass('error');
         }
-        if (checkMail($(mailId).val())) {
-            $(mailId).removeClass('error');
-            isMail = true;
+        if (checkEmail($(emailId).val())) {
+            $(emailId).removeClass('error');
+            isEmail = true;
         } else {
-            $(mailId).addClass('error');
+            $(emailId).addClass('error');
         }
-        if (isLogin && isPassword && isMail) {
+        if (isLogin && isPassword && isEmail) {
             postForm(this);
         }
         return false;
@@ -123,7 +123,7 @@ function checkLogin(login) {
     var filter = new RegExp('^[A-Za-z0-9_-]{3,16}$');
     return (login.length >= 3 && filter.test(login));
 }
-function checkMail(mail) {
+function checkEmail(email) {
     var filter = new RegExp('^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$');
-    return filter.test(mail);
+    return filter.test(email);
 }

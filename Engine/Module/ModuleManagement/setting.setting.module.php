@@ -1,6 +1,7 @@
 <?php
 
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Exec\ExecEmail;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
@@ -97,9 +98,9 @@ class Module_Management_Setting extends ModuleModel
         $form->addInputText("defaultSiteSlogan",
                             SETTING_GENERAL_DEFAULT_SITE_SLOGAN,
                             $coreMain->getConfigs()->getDefaultSiteSlogan());
-        $form->addInputText("defaultAdministratorMail",
-                            SETTING_GENERAL_DEFAULT_ADMIN_MAIL,
-                            $coreMain->getConfigs()->getDefaultAdministratorMail());
+        $form->addInputText("defaultAdministratorEmail",
+                            SETTING_GENERAL_DEFAULT_ADMIN_EMAIL,
+                            $coreMain->getConfigs()->getDefaultAdministratorEmail());
         $form->addSpace();
 
         $form->addSelectOpenTag("defaultLanguage",
@@ -188,7 +189,7 @@ class Module_Management_Setting extends ModuleModel
                               "sendGeneral");
         $form->addInputSubmit("submit",
                               VALID);
-        CoreHtml::getInstance()->addJavascript("validGeneralSetting('#form-management-setting-general', '#form-management-setting-general-defaultSiteName-input', '#form-management-setting-general-defaultAdministratorMail-input');");
+        CoreHtml::getInstance()->addJavascript("validGeneralSetting('#form-management-setting-general', '#form-management-setting-general-defaultSiteName-input', '#form-management-setting-general-defaultAdministratorEmail-input');");
         return $form->render();
     }
 
@@ -239,16 +240,16 @@ class Module_Management_Setting extends ModuleModel
             $deleteCache = true;
         }
         // Email du site
-        $defaultAdministratorMail = CoreRequest::getString("defaultAdministratorMail",
-                                                           "",
-                                                           CoreRequestType::POST);
-        if ($coreMain->getConfigs()->getDefaultAdministratorMail() != $defaultAdministratorMail) {
-            if (!empty($defaultAdministratorMail) && ExecMailer::validMail($defaultAdministratorMail)) {
-                $this->updateTable("defaultAdministratorMail",
-                                   $defaultAdministratorMail);
+        $defaultAdministratorEmail = CoreRequest::getString("defaultAdministratorEmail",
+                                                            "",
+                                                            CoreRequestType::POST);
+        if ($coreMain->getConfigs()->getDefaultAdministratorEmail() != $defaultAdministratorEmail) {
+            if (!empty($defaultAdministratorEmail) && ExecEmail::isValidEmail($defaultAdministratorEmail)) {
+                $this->updateTable("defaultAdministratorEmail",
+                                   $defaultAdministratorEmail);
                 $deleteCache = true;
             } else {
-                CoreLogger::addErrorMessage(SETTING_GENERAL_DEFAULT_ADMIN_MAIL_INVALID);
+                CoreLogger::addErrorMessage(SETTING_GENERAL_DEFAULT_ADMIN_EMAIL_INVALID);
             }
         }
         // Langue par défaut
@@ -433,7 +434,7 @@ class Module_Management_Setting extends ModuleModel
                               "sendSystem");
         $form->addInputSubmit("submit",
                               VALID);
-        //CoreHtml::getInstance()->addJavascript("validSystemSetting('#form-management-setting-system', '#form-management-setting-system-defaultSiteName-input', '#form-management-setting-system-defaultAdministratorMail-input');");
+        //CoreHtml::getInstance()->addJavascript("validSystemSetting('#form-management-setting-system', '#form-management-setting-system-defaultSiteName-input', '#form-management-setting-system-defaultAdministratorEmail-input');");
         return $form->render();
     }
 
@@ -473,7 +474,7 @@ class Module_Management_Setting extends ModuleModel
         }
 
         if ($updateConfigFile) {
-            ExecFileBuilder::buildConfigFile($coreMain->getConfigs()->getDefaultAdministratorMail(),
+            ExecFileBuilder::buildConfigFile($coreMain->getConfigs()->getDefaultAdministratorEmail(),
                                              TR_ENGINE_STATUT,
                                              $sessionTimeLimit,
                                              $cookiePrefix,
