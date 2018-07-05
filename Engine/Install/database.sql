@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.5.1
--- http://www.phpmyadmin.net
+-- version 4.7.0
+-- https://www.phpmyadmin.net/
 --
--- Client :  127.0.0.1
--- Généré le :  Lun 14 Novembre 2016 à 16:50
--- Version du serveur :  5.7.11
--- Version de PHP :  7.0.4
+-- Hôte : 127.0.0.1
+-- Généré le :  jeu. 05 juil. 2018 à 17:28
+-- Version du serveur :  5.7.17
+-- Version de PHP :  7.1.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -26,15 +28,14 @@ SET time_zone = "+00:00";
 -- Structure de la table `tr_banned`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_banned` (
-  `ban_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_banned` (
+  `ban_id` int(10) UNSIGNED NOT NULL,
   `ip` varchar(50) NOT NULL,
   `name` varchar(45) NOT NULL,
   `mail` varchar(80) DEFAULT NULL,
   `reason` text NOT NULL,
   `banishment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `type` tinyint(1) UNSIGNED NOT NULL,
-  PRIMARY KEY (`ban_id`)
+  `type` tinyint(1) UNSIGNED NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -43,17 +44,16 @@ CREATE TABLE IF NOT EXISTS `tr_banned` (
 -- Structure de la table `tr_blocks`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_blocks` (
-  `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_blocks` (
+  `block_id` int(10) UNSIGNED NOT NULL,
   `side` tinyint(1) UNSIGNED NOT NULL,
   `position` tinyint(2) UNSIGNED NOT NULL,
   `title` varchar(45) NOT NULL,
   `content` text,
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `mods` text NOT NULL,
-  PRIMARY KEY (`block_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  `mods` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -61,12 +61,11 @@ CREATE TABLE IF NOT EXISTS `tr_blocks` (
 -- Structure de la table `tr_configs`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_configs` (
-  `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_configs` (
+  `config_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY (`config_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  `value` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -74,16 +73,15 @@ CREATE TABLE IF NOT EXISTS `tr_configs` (
 -- Structure de la table `tr_menus`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_menus` (
-  `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_menus` (
+  `menu_id` int(10) UNSIGNED NOT NULL,
   `block_id` int(10) UNSIGNED NOT NULL,
   `parent_id` int(10) UNSIGNED DEFAULT NULL,
   `content` text,
   `sublevel` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
   `position` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
-  `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`menu_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+  `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -91,14 +89,13 @@ CREATE TABLE IF NOT EXISTS `tr_menus` (
 -- Structure de la table `tr_modules`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_modules` (
-  `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_modules` (
+  `mod_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `configs` text,
-  `count` int(11) DEFAULT NULL,
-  PRIMARY KEY (`mod_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+  `count` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -106,8 +103,8 @@ CREATE TABLE IF NOT EXISTS `tr_modules` (
 -- Structure de la table `tr_project`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_project` (
-  `projectid` int(10) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_project` (
+  `projectid` int(10) NOT NULL,
   `name` varchar(45) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `language` varchar(5) NOT NULL,
@@ -116,9 +113,8 @@ CREATE TABLE IF NOT EXISTS `tr_project` (
   `description` text NOT NULL,
   `img` text NOT NULL,
   `progress` tinyint(1) NOT NULL,
-  `website` text NOT NULL,
-  PRIMARY KEY (`projectid`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+  `website` text NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -126,7 +122,7 @@ CREATE TABLE IF NOT EXISTS `tr_project` (
 -- Structure de la table `tr_users`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_users` (
+CREATE TABLE `tr_users` (
   `user_id` varchar(20) NOT NULL,
   `name` varchar(45) NOT NULL,
   `mail` varchar(80) NOT NULL,
@@ -138,9 +134,7 @@ CREATE TABLE IF NOT EXISTS `tr_users` (
   `website` varchar(100) DEFAULT NULL,
   `signature` varchar(100) DEFAULT NULL,
   `template` varchar(30) DEFAULT NULL,
-  `langue` varchar(30) DEFAULT NULL,
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `user_id` (`user_id`)
+  `langue` varchar(30) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -149,15 +143,108 @@ CREATE TABLE IF NOT EXISTS `tr_users` (
 -- Structure de la table `tr_users_rights`
 --
 
-CREATE TABLE IF NOT EXISTS `tr_users_rights` (
-  `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tr_users_rights` (
+  `right_id` int(10) UNSIGNED NOT NULL,
   `user_id` varchar(20) NOT NULL,
   `zone` varchar(10) DEFAULT NULL,
   `page` varchar(10) DEFAULT NULL,
-  `identifiant` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`right_id`),
-  UNIQUE KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+  `identifiant` varchar(10) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `tr_banned`
+--
+ALTER TABLE `tr_banned`
+  ADD PRIMARY KEY (`ban_id`);
+
+--
+-- Index pour la table `tr_blocks`
+--
+ALTER TABLE `tr_blocks`
+  ADD PRIMARY KEY (`block_id`);
+
+--
+-- Index pour la table `tr_configs`
+--
+ALTER TABLE `tr_configs`
+  ADD PRIMARY KEY (`config_id`),
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Index pour la table `tr_menus`
+--
+ALTER TABLE `tr_menus`
+  ADD PRIMARY KEY (`menu_id`);
+
+--
+-- Index pour la table `tr_modules`
+--
+ALTER TABLE `tr_modules`
+  ADD PRIMARY KEY (`mod_id`);
+
+--
+-- Index pour la table `tr_project`
+--
+ALTER TABLE `tr_project`
+  ADD PRIMARY KEY (`projectid`);
+
+--
+-- Index pour la table `tr_users`
+--
+ALTER TABLE `tr_users`
+  ADD PRIMARY KEY (`user_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- Index pour la table `tr_users_rights`
+--
+ALTER TABLE `tr_users_rights`
+  ADD PRIMARY KEY (`right_id`),
+  ADD UNIQUE KEY `user_id` (`user_id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `tr_banned`
+--
+ALTER TABLE `tr_banned`
+  MODIFY `ban_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT pour la table `tr_blocks`
+--
+ALTER TABLE `tr_blocks`
+  MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT pour la table `tr_configs`
+--
+ALTER TABLE `tr_configs`
+  MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+--
+-- AUTO_INCREMENT pour la table `tr_menus`
+--
+ALTER TABLE `tr_menus`
+  MODIFY `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+--
+-- AUTO_INCREMENT pour la table `tr_modules`
+--
+ALTER TABLE `tr_modules`
+  MODIFY `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+--
+-- AUTO_INCREMENT pour la table `tr_project`
+--
+ALTER TABLE `tr_project`
+  MODIFY `projectid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT pour la table `tr_users_rights`
+--
+ALTER TABLE `tr_users_rights`
+  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
