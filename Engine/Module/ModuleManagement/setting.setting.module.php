@@ -51,14 +51,15 @@ class Module_Management_Setting extends ModuleModel
      * @param $values array
      * @param $where array
      */
-    private function updateTable($key, $value)
+    private function updateTable($key,
+                                 $value)
     {
         CoreSql::getInstance()->update(
                 CoreTable::CONFIG_TABLE,
                 array(
-            "value" => $value),
+                    "value" => $value),
                 array(
-            "name = '" . $key . "'")
+                    "name = '" . $key . "'")
         );
     }
 
@@ -157,9 +158,9 @@ class Module_Management_Setting extends ModuleModel
                            $coreMain->getConfigs()->getDefaultDescription(),
                            "style=\"display: block;\" cols=\"50\"");
         $form->addSpace();
-        $form->addTextarea("defaultKeyWords",
+        $form->addTextarea("defaultKeywords",
                            SETTING_GENERAL_METADATA_DEFAULT_KEYWORDS,
-                           $coreMain->getConfigs()->getDefaultKeyWords(),
+                           $coreMain->getConfigs()->getDefaultKeywords(),
                            "style=\"display: block;\" cols=\"50\"");
         $form->addSpace();
 
@@ -303,12 +304,12 @@ class Module_Management_Setting extends ModuleModel
             $deleteCache = true;
         }
         // Mot clès du site
-        $defaultKeyWords = CoreRequest::getString("defaultKeyWords",
+        $defaultKeywords = CoreRequest::getString("defaultKeywords",
                                                   "",
                                                   CoreRequestType::POST);
-        if ($coreMain->getConfigs()->getDefaultKeyWords() != $defaultKeyWords) {
-            $this->updateTable("defaultKeyWords",
-                               $defaultKeyWords);
+        if ($coreMain->getConfigs()->getDefaultKeywords() != $defaultKeywords) {
+            $this->updateTable("defaultKeywords",
+                               $defaultKeywords);
             $deleteCache = true;
         }
         // état de la réécriture des URLs

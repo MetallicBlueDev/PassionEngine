@@ -72,7 +72,8 @@ class CoreMainData extends CoreDataStorage
      * @param string $name
      * @param array $include
      */
-    public function addInclude(string $name, array $include)
+    public function addInclude(string $name,
+                               array $include)
     {
         $this->addConfig(array(
             $name => $include));
@@ -241,7 +242,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultSiteCloseReason",
                                                 function() {
-                    return " ";
+                    return "Site is closed.";
                 });
     }
 
@@ -263,9 +264,9 @@ class CoreMainData extends CoreDataStorage
      *
      * @return string
      */
-    public function &getDefaultKeyWords(): string
+    public function &getDefaultKeywords(): string
     {
-        return $this->getStringValueWithDefault("defaultKeyWords",
+        return $this->getStringValueWithDefault("defaultKeywords",
                                                 function() {
                     return "TR ENGINE";
                 });
@@ -367,7 +368,8 @@ class CoreMainData extends CoreDataStorage
      * @param Closure $callback
      * @return string
      */
-    private function &getStringValueWithDefault(string $keyName, Closure $callback): string
+    private function &getStringValueWithDefault(string $keyName,
+                                                Closure $callback): string
     {
         $value = $this->getString($keyName);
 

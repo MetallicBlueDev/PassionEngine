@@ -529,7 +529,7 @@ class CoreHtml
             }
 
             if (empty($keywords)) {
-                $keywords = CoreMain::getInstance()->getConfigs()->getDefaultKeyWords();
+                $keywords = CoreMain::getInstance()->getConfigs()->getDefaultKeywords();
             }
         }
 
