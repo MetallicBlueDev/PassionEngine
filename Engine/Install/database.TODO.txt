@@ -3,5 +3,4 @@ tr_configs
 =>OK
 
 tr_users
-user_id -> mettre int ou bitint
-mail -> mettre 'email'
+=>OK

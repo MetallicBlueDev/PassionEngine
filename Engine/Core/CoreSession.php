@@ -558,11 +558,11 @@ class CoreSession
     /**
      * Tentative d'ouverture de la session.
      *
-     * @param string $userId
+     * @param int $userId
      * @param string $sessionId
      * @return bool
      */
-    private function tryOpenSession(string $userId,
+    private function tryOpenSession(int $userId,
                                     string $sessionId): bool
     {
         // La session doit être entièrement re-validée
@@ -763,10 +763,10 @@ class CoreSession
     /**
      * Mise à jour de la dernière connexion.
      *
-     * @param string $userId
+     * @param int $userId
      * @return bool true succès de la mise à jour
      */
-    private function updateLastConnect(string $userId): bool
+    private function updateLastConnect(int $userId): bool
     {
         $coreSql = CoreSql::getInstance();
         $coreSql->addQuotedValue("NOW()");

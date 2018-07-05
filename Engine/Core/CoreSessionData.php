@@ -41,6 +41,49 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
+     * Identifiant du client.
+     *
+     * @return string
+     */
+    public function &getId(): string
+    {
+        return $this->getIdAsInt();
+    }
+
+    /**
+     * Nom du client.
+     *
+     * @return string
+     */
+    public function &getName(): string
+    {
+        return $this->getString("name");
+    }
+
+    /**
+     * Type de compte lié au client.
+     * Valeur nulle possible, notamment en base de données.
+     *
+     * @return int
+     */
+    public function &getRank(): int
+    {
+        return $this->getInt("rank",
+                             0);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function &getZone(): string
+    {
+        $zone = "SESSION";
+        return $zone;
+    }
+
+    /**
      * Retourne toutes les information sur le client.
      *
      * @return array
@@ -55,19 +98,9 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      *
      * @return string
      */
-    public function &getId(): string
+    public function &getIdAsInt(): string
     {
-        return $this->getString("user_id");
-    }
-
-    /**
-     * Nom du client.
-     *
-     * @return string
-     */
-    public function &getName(): string
-    {
-        return $this->getString("name");
+        return $this->getInt("user_id");
     }
 
     /**
@@ -78,18 +111,6 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
     public function &getEmail(): string
     {
         return $this->getString("email");
-    }
-
-    /**
-     * Type de compte lié au client.
-     * Valeur nulle possible, notamment en base de données.
-     *
-     * @return int
-     */
-    public function &getRank(): int
-    {
-        return $this->getInt("rank",
-                             0);
     }
 
     /**
@@ -253,17 +274,6 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
             $this->checkRights();
         }
         return $this->getArray("rights");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getZone(): string
-    {
-        $zone = "SESSION";
-        return $zone;
     }
 
     /**

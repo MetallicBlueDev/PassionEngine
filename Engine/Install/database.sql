@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2018 at 05:53 PM
+-- Generation Time: Jul 05, 2018 at 06:59 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -123,9 +123,9 @@ CREATE TABLE `tr_project` (
 --
 
 CREATE TABLE `tr_users` (
-  `user_id` varchar(20) NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
-  `mail` varchar(80) NOT NULL,
+  `email` varchar(80) NOT NULL,
   `pass` varchar(80) NOT NULL,
   `rank` tinyint(1) UNSIGNED DEFAULT NULL,
   `registration_date` datetime NOT NULL,
@@ -196,7 +196,9 @@ ALTER TABLE `tr_project`
 -- Indexes for table `tr_users`
 --
 ALTER TABLE `tr_users`
-  ADD PRIMARY KEY (`user_id`);
+  ADD PRIMARY KEY (`user_id`),
+  ADD KEY `name` (`name`),
+  ADD KEY `email` (`email`);
 
 --
 -- Indexes for table `tr_users_rights`
@@ -239,6 +241,11 @@ ALTER TABLE `tr_modules`
 --
 ALTER TABLE `tr_project`
   MODIFY `projectid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+--
+-- AUTO_INCREMENT for table `tr_users`
+--
+ALTER TABLE `tr_users`
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_users_rights`
 --

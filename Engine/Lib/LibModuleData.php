@@ -33,7 +33,8 @@ class LibModuleData extends LibEntityData
      * @param array $data
      * @param bool $initializeConfig
      */
-    public function __construct(array &$data, bool $initializeConfig = false)
+    public function __construct(array &$data,
+                                bool $initializeConfig = false)
     {
         parent::__construct();
 
@@ -48,46 +49,6 @@ class LibModuleData extends LibEntityData
         }
 
         $this->newStorage($data);
-    }
-
-    /**
-     * Retourne la page sélectionnée.
-     *
-     * @return string
-     */
-    public function &getPage(): string
-    {
-        return $this->page;
-    }
-
-    /**
-     * Affecte la page sélectionnée.
-     *
-     * @param string $page
-     */
-    public function setPage(string $page)
-    {
-        $this->page = ucfirst($page);
-    }
-
-    /**
-     * Retourne la sous-page sélectionnée.
-     *
-     * @return string
-     */
-    public function &getView(): string
-    {
-        return $this->view;
-    }
-
-    /**
-     * Affecte la sous-page sélectionnée.
-     *
-     * @param string $view
-     */
-    public function setView(string $view)
-    {
-        $this->view = $view;
     }
 
     /**
@@ -132,6 +93,27 @@ class LibModuleData extends LibEntityData
     }
 
     /**
+     * Détermine si le module est installé.
+     *
+     * @return bool
+     */
+    public function installed(): bool
+    {
+        return $this->hasValue("mod_id");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function &getZone(): string
+    {
+        $zone = CoreAccessZone::MODULE;
+        return $zone;
+    }
+
+    /**
      * Retourne le rang du module.
      *
      * @return int
@@ -139,6 +121,46 @@ class LibModuleData extends LibEntityData
     public function &getRank(): int
     {
         return $this->getInt("rank");
+    }
+
+    /**
+     * Retourne la page sélectionnée.
+     *
+     * @return string
+     */
+    public function &getPage(): string
+    {
+        return $this->page;
+    }
+
+    /**
+     * Affecte la page sélectionnée.
+     *
+     * @param string $page
+     */
+    public function setPage(string $page)
+    {
+        $this->page = ucfirst($page);
+    }
+
+    /**
+     * Retourne la sous-page sélectionnée.
+     *
+     * @return string
+     */
+    public function &getView(): string
+    {
+        return $this->view;
+    }
+
+    /**
+     * Affecte la sous-page sélectionnée.
+     *
+     * @param string $view
+     */
+    public function setView(string $view)
+    {
+        $this->view = $view;
     }
 
     /**
@@ -169,32 +191,12 @@ class LibModuleData extends LibEntityData
      * @param string $defaultValue
      * @return string
      */
-    public function &getConfigValue(string $key, string $defaultValue = ""): string
+    public function &getConfigValue(string $key,
+                                    string $defaultValue = ""): string
     {
         return $this->getSubString("configs",
-                                        $key,
-                                        $defaultValue);
-    }
-
-    /**
-     * Détermine si le module est installé.
-     *
-     * @return bool
-     */
-    public function installed(): bool
-    {
-        return $this->hasValue("mod_id");
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getZone(): string
-    {
-        $zone = CoreAccessZone::MODULE;
-        return $zone;
+                                   $key,
+                                   $defaultValue);
     }
 
     /**

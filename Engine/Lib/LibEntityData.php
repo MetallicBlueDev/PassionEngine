@@ -30,6 +30,27 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
+     * Retourne le nom du dossier contenant l'entité.
+     *
+     * @return string
+     */
+    abstract public function getFolderName(): string;
+
+    /**
+     * Retourne le nom de classe représentant l'entité.
+     *
+     * @return string
+     */
+    abstract public function getClassName(): string;
+
+    /**
+     * Détermine si l'entité est installée.
+     *
+     * @return bool
+     */
+    abstract public function installed(): bool;
+
+    /**
      * Retourne les données compilées.
      *
      * @return string
@@ -50,20 +71,6 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Retourne le nom du dossier contenant l'entité.
-     *
-     * @return string
-     */
-    abstract public function getFolderName(): string;
-
-    /**
-     * Retourne le nom de classe représentant l'entité.
-     *
-     * @return string
-     */
-    abstract public function getClassName(): string;
-
-    /**
      * Détermine si l'entité est valide.
      *
      * @return bool
@@ -74,11 +81,4 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
                                                                     $this->getFolderName());
         return is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
     }
-
-    /**
-     * Détermine si l'entité est installée.
-     *
-     * @return bool
-     */
-    abstract public function installed(): bool;
 }

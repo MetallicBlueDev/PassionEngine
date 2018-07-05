@@ -69,6 +69,57 @@ class LibBlockData extends LibEntityData
     }
 
     /**
+     * Retourne le rang pour accèder au block.
+     *
+     * @return int
+     */
+    public function &getRank(): int
+    {
+        return $this->getInt("rank");
+    }
+
+    /**
+     * Retourne le nom du dossier contenant le block.
+     *
+     * @return string
+     */
+    public function getFolderName(): string
+    {
+        return CoreLoader::BLOCK_FILE . $this->getType();
+    }
+
+    /**
+     * Retourne le nom de classe représentant le block.
+     *
+     * @return string
+     */
+    public function getClassName(): string
+    {
+        return CoreLoader::BLOCK_FILE . $this->getType();
+    }
+
+    /**
+     * Détermine si le block est installé.
+     *
+     * @return bool
+     */
+    public function installed(): bool
+    {
+        return $this->hasValue("block_id");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function &getZone(): string
+    {
+        $zone = CoreAccessZone::BLOCK;
+        return $zone;
+    }
+
+    /**
      * Retourne l'identifiant du block.
      *
      * @return int
@@ -142,16 +193,6 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne le rang pour accèder au block.
-     *
-     * @return int
-     */
-    public function &getRank(): int
-    {
-        return $this->getInt("rank");
-    }
-
-    /**
      * Retourne les modules cibles.
      *
      * @return array
@@ -159,7 +200,7 @@ class LibBlockData extends LibEntityData
     public function &getTargetModules(): array
     {
         $rslt = $this->getArray("mods",
-                                      array("all"));
+                                array("all"));
         return $rslt;
     }
 
@@ -172,36 +213,6 @@ class LibBlockData extends LibEntityData
     {
         $dataValue = ucfirst($this->getString("type"));
         return $dataValue;
-    }
-
-    /**
-     * Retourne le nom du dossier contenant le block.
-     *
-     * @return string
-     */
-    public function getFolderName(): string
-    {
-        return CoreLoader::BLOCK_FILE . $this->getType();
-    }
-
-    /**
-     * Retourne le nom de classe représentant le block.
-     *
-     * @return string
-     */
-    public function getClassName(): string
-    {
-        return CoreLoader::BLOCK_FILE . $this->getType();
-    }
-
-    /**
-     * Détermine si le block est installé.
-     *
-     * @return bool
-     */
-    public function installed(): bool
-    {
-        return $this->hasValue("block_id");
     }
 
     /**
@@ -222,17 +233,6 @@ class LibBlockData extends LibEntityData
             }
         }
         return $rslt;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getZone(): string
-    {
-        $zone = CoreAccessZone::BLOCK;
-        return $zone;
     }
 
     /**

@@ -36,6 +36,14 @@ abstract class ModuleModel
     }
 
     /**
+     * Configuration du module courant.
+     */
+    public function setting()
+    {
+        // TODO mettre un forumlaire basique pour changer quelques configurations
+    }
+
+    /**
      * Installation du module courant.
      */
     public function install()
@@ -43,13 +51,13 @@ abstract class ModuleModel
         CoreSql::getInstance()->insert(
                 CoreTable::MODULES,
                 array(
-            "name",
-            "rank",
-            "configs"),
+                    "name",
+                    "rank",
+                    "configs"),
                 array(
-            $this->getModuleData()->getName(),
-            0,
-            "")
+                    $this->getModuleData()->getName(),
+                    0,
+                    "")
         );
     }
 
@@ -61,19 +69,11 @@ abstract class ModuleModel
         CoreSql::getInstance()->delete(
                 CoreTable::MODULES,
                 array(
-            "mod_id = '" . $this->getModuleData()->getId() . "'")
+                    "mod_id = '" . $this->getModuleData()->getId() . "'")
         );
 
         CoreCache::getInstance(CoreCacheSection::MODULES)->removeCache($this->getModuleData()->getName() . ".php");
         CoreTranslate::removeCache("modules" . DIRECTORY_SEPARATOR . $this->getModuleData()->getName());
-    }
-
-    /**
-     * Configuration du module courant.
-     */
-    public function setting()
-    {
-        // TODO mettre un forumlaire basique pour changer quelques configurations
     }
 
     /**
