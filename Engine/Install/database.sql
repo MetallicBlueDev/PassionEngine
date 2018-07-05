@@ -2,10 +2,10 @@
 -- version 4.7.0
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1
--- Généré le :  jeu. 05 juil. 2018 à 17:28
--- Version du serveur :  5.7.17
--- Version de PHP :  7.1.3
+-- Host: 127.0.0.1
+-- Generation Time: Jul 05, 2018 at 05:53 PM
+-- Server version: 5.7.17
+-- PHP Version: 7.1.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -19,13 +19,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `trancers_db`
+-- Database: `trancers_db`
 --
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_banned`
+-- Table structure for table `tr_banned`
 --
 
 CREATE TABLE `tr_banned` (
@@ -41,7 +41,7 @@ CREATE TABLE `tr_banned` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_blocks`
+-- Table structure for table `tr_blocks`
 --
 
 CREATE TABLE `tr_blocks` (
@@ -58,7 +58,7 @@ CREATE TABLE `tr_blocks` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_configs`
+-- Table structure for table `tr_configs`
 --
 
 CREATE TABLE `tr_configs` (
@@ -70,7 +70,7 @@ CREATE TABLE `tr_configs` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_menus`
+-- Table structure for table `tr_menus`
 --
 
 CREATE TABLE `tr_menus` (
@@ -86,7 +86,7 @@ CREATE TABLE `tr_menus` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_modules`
+-- Table structure for table `tr_modules`
 --
 
 CREATE TABLE `tr_modules` (
@@ -100,7 +100,7 @@ CREATE TABLE `tr_modules` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_project`
+-- Table structure for table `tr_project`
 --
 
 CREATE TABLE `tr_project` (
@@ -119,7 +119,7 @@ CREATE TABLE `tr_project` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_users`
+-- Table structure for table `tr_users`
 --
 
 CREATE TABLE `tr_users` (
@@ -140,7 +140,7 @@ CREATE TABLE `tr_users` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `tr_users_rights`
+-- Table structure for table `tr_users_rights`
 --
 
 CREATE TABLE `tr_users_rights` (
@@ -152,96 +152,95 @@ CREATE TABLE `tr_users_rights` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Index pour les tables déchargées
+-- Indexes for dumped tables
 --
 
 --
--- Index pour la table `tr_banned`
+-- Indexes for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
   ADD PRIMARY KEY (`ban_id`);
 
 --
--- Index pour la table `tr_blocks`
+-- Indexes for table `tr_blocks`
 --
 ALTER TABLE `tr_blocks`
   ADD PRIMARY KEY (`block_id`);
 
 --
--- Index pour la table `tr_configs`
+-- Indexes for table `tr_configs`
 --
 ALTER TABLE `tr_configs`
   ADD PRIMARY KEY (`config_id`),
   ADD UNIQUE KEY `name` (`name`);
 
 --
--- Index pour la table `tr_menus`
+-- Indexes for table `tr_menus`
 --
 ALTER TABLE `tr_menus`
   ADD PRIMARY KEY (`menu_id`);
 
 --
--- Index pour la table `tr_modules`
+-- Indexes for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
   ADD PRIMARY KEY (`mod_id`);
 
 --
--- Index pour la table `tr_project`
+-- Indexes for table `tr_project`
 --
 ALTER TABLE `tr_project`
   ADD PRIMARY KEY (`projectid`);
 
 --
--- Index pour la table `tr_users`
+-- Indexes for table `tr_users`
 --
 ALTER TABLE `tr_users`
-  ADD PRIMARY KEY (`user_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`);
+  ADD PRIMARY KEY (`user_id`);
 
 --
--- Index pour la table `tr_users_rights`
+-- Indexes for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
   ADD PRIMARY KEY (`right_id`),
   ADD UNIQUE KEY `user_id` (`user_id`);
 
 --
--- AUTO_INCREMENT pour les tables déchargées
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT pour la table `tr_banned`
+-- AUTO_INCREMENT for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
   MODIFY `ban_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
--- AUTO_INCREMENT pour la table `tr_blocks`
+-- AUTO_INCREMENT for table `tr_blocks`
 --
 ALTER TABLE `tr_blocks`
   MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
--- AUTO_INCREMENT pour la table `tr_configs`
+-- AUTO_INCREMENT for table `tr_configs`
 --
 ALTER TABLE `tr_configs`
   MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
--- AUTO_INCREMENT pour la table `tr_menus`
+-- AUTO_INCREMENT for table `tr_menus`
 --
 ALTER TABLE `tr_menus`
   MODIFY `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 --
--- AUTO_INCREMENT pour la table `tr_modules`
+-- AUTO_INCREMENT for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
   MODIFY `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
--- AUTO_INCREMENT pour la table `tr_project`
+-- AUTO_INCREMENT for table `tr_project`
 --
 ALTER TABLE `tr_project`
   MODIFY `projectid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
--- AUTO_INCREMENT pour la table `tr_users_rights`
+-- AUTO_INCREMENT for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
   MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;COMMIT;
