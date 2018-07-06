@@ -61,7 +61,8 @@ class LibMenu
      * @param string $identifier Identifiant du menu par exemple "block22"
      * @param array $sql
      */
-    public function __construct(string $identifier, array $sql = array())
+    public function __construct(string $identifier,
+                                array $sql = array())
     {
         $this->identifier = $identifier;
         $this->activeItemId = CoreRequest::getInteger("item",
@@ -80,7 +81,8 @@ class LibMenu
      * @param string $name
      * @param string $value
      */
-    public function addAttributs(string $name, string $value)
+    public function addAttributs(string $name,
+                                 string $value)
     {
         $this->attribtus .= " " . $name . "=\"" . $value . "\"";
     }
@@ -115,7 +117,7 @@ class LibMenu
                 $infos = array(
                     "zone" => "MENU",
                     "rank" => $item->getRank(),
-                    "identifiant" => $this->identifier);
+                    "identifier" => $this->identifier);
 
                 if (CoreAccess::autorize(CoreAccessType::getTypeFromDatas($infos))) {
                     $out .= $this->items[$key]->toString($callback);
@@ -226,7 +228,8 @@ class LibMenu
      * @param array $options Options choisis
      * @return string
      */
-    public static function setLine(string $text, array $options = array()): string
+    public static function setLine(string $text,
+                                   array $options = array()): string
     {
         $optionsString = "";
 
@@ -348,7 +351,7 @@ class LibMenu
             }
 
             CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->identifier . ".php",
-                                                                                     $this->items);
+                                                                                         $this->items);
         }
     }
 }

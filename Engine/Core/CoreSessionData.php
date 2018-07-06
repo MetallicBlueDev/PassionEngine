@@ -291,7 +291,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
                     array(
                         "zone",
                         "page",
-                        "identifiant"),
+                        "identifier"),
                     array(
                         "user_id = '" . $this->getId() . "'")
             );

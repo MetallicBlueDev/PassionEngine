@@ -4,3 +4,6 @@ tr_configs
 
 tr_users
 =>OK
+
+tr_users_rights
+=>OK

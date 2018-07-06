@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 05, 2018 at 06:59 PM
+-- Generation Time: Jul 06, 2018 at 06:31 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -145,10 +145,10 @@ CREATE TABLE `tr_users` (
 
 CREATE TABLE `tr_users_rights` (
   `right_id` int(10) UNSIGNED NOT NULL,
-  `user_id` varchar(20) NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL,
   `zone` varchar(10) DEFAULT NULL,
   `page` varchar(10) DEFAULT NULL,
-  `identifiant` varchar(10) DEFAULT NULL
+  `identifier` varchar(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
@@ -205,7 +205,7 @@ ALTER TABLE `tr_users`
 --
 ALTER TABLE `tr_users_rights`
   ADD PRIMARY KEY (`right_id`),
-  ADD UNIQUE KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -245,7 +245,7 @@ ALTER TABLE `tr_project`
 -- AUTO_INCREMENT for table `tr_users`
 --
 ALTER TABLE `tr_users`
-  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `tr_users_rights`
 --

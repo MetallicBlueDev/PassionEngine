@@ -67,7 +67,7 @@ class CoreAccessType implements CoreAccessToken
         $infos = array(
             "zone" => $data->getZone(),
             "rank" => $data->getRank(),
-            "identifiant" => $data->getId(),
+            "identifier" => $data->getId(),
             "name" => $data->getName());
         return self::getTypeFromDatas($infos);
     }
@@ -83,7 +83,7 @@ class CoreAccessType implements CoreAccessToken
             $infos = array(
                 "zone" => self::FULL_ACCESS,
                 "rank" => self::FULL_ACCESS,
-                "identifiant" => self::FULL_ACCESS);
+                "identifier" => self::FULL_ACCESS);
             self::$cache[self::FULL_ACCESS] = self::getTypeFromDatas($infos);
         }
         return self::$cache[self::FULL_ACCESS];
@@ -141,7 +141,7 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getId(): string
     {
-        return $this->rights['identifiant'];
+        return $this->rights['identifier'];
     }
 
     /**
@@ -271,7 +271,7 @@ class CoreAccessType implements CoreAccessToken
 
             if ($moduleInfo !== null && is_numeric($moduleInfo->getId())) {
                 $this->rights['page'] = $moduleInfo->getName();
-                $this->rights['identifiant'] = $moduleInfo->getId();
+                $this->rights['identifier'] = $moduleInfo->getId();
                 $valid = true;
             }
         }
@@ -295,7 +295,7 @@ class CoreAccessType implements CoreAccessToken
 
         if ($blockInfo !== null && is_numeric($blockInfo->getId())) {
             $this->rights['page'] = $blockInfo->getType();
-            $this->rights['identifiant'] = $blockInfo->getId();
+            $this->rights['identifier'] = $blockInfo->getId();
             $valid = true;
         }
         return $valid;
