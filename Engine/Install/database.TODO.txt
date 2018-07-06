@@ -2,6 +2,9 @@
 tr_configs
 =>OK
 
+tr_modules
+->configs->tr_modules_configs
+
 tr_users
 =>OK
 

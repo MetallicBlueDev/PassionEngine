@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2018 at 06:31 PM
+-- Generation Time: Jul 06, 2018 at 06:48 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -93,8 +93,20 @@ CREATE TABLE `tr_modules` (
   `mod_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `configs` text,
   `count` int(11) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_modules_configs`
+--
+
+CREATE TABLE `tr_modules_configs` (
+  `modconf_id` int(10) UNSIGNED NOT NULL,
+  `mod_id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `value` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -184,7 +196,16 @@ ALTER TABLE `tr_menus`
 -- Indexes for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
-  ADD PRIMARY KEY (`mod_id`);
+  ADD PRIMARY KEY (`mod_id`),
+  ADD KEY `name` (`name`);
+
+--
+-- Indexes for table `tr_modules_configs`
+--
+ALTER TABLE `tr_modules_configs`
+  ADD PRIMARY KEY (`modconf_id`),
+  ADD KEY `name` (`name`),
+  ADD KEY `mod_id` (`mod_id`);
 
 --
 -- Indexes for table `tr_project`
@@ -220,37 +241,42 @@ ALTER TABLE `tr_banned`
 -- AUTO_INCREMENT for table `tr_blocks`
 --
 ALTER TABLE `tr_blocks`
-  MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_configs`
 --
 ALTER TABLE `tr_configs`
-  MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_menus`
 --
 ALTER TABLE `tr_menus`
-  MODIFY `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
-  MODIFY `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tr_modules_configs`
+--
+ALTER TABLE `tr_modules_configs`
+  MODIFY `modconf_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_project`
 --
 ALTER TABLE `tr_project`
-  MODIFY `projectid` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `projectid` int(10) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_users`
 --
 ALTER TABLE `tr_users`
-  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
-  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;COMMIT;
+  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
