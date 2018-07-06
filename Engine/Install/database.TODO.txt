@@ -3,7 +3,10 @@ tr_configs
 =>OK
 
 tr_modules
-->configs->tr_modules_configs
+=>OK
+
+tr_modules_configs
+=>OK
 
 tr_users
 =>OK
