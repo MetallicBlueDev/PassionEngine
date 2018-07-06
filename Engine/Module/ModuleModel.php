@@ -48,16 +48,17 @@ abstract class ModuleModel
      */
     public function install()
     {
+        $coreSql = CoreSql::getInstance();
+        $coreSql->insert(
+            CoreTable::MODULES,
+            array("name", "rank"),
+            array($this->getModuleData()->getName(), 0)
+        );
+        $modId = $coreSql->insertId();
         CoreSql::getInstance()->insert(
-                CoreTable::MODULES,
-                array(
-                    "name",
-                    "rank",
-                    "configs"),
-                array(
-                    $this->getModuleData()->getName(),
-                    0,
-                    "")
+            CoreTable::MODULES_CONFIGS,
+            array("mod_id", "name", "value"),
+            array($modId, "key", "value")
         );
     }
 
@@ -67,9 +68,8 @@ abstract class ModuleModel
     public function uninstall()
     {
         CoreSql::getInstance()->delete(
-                CoreTable::MODULES,
-                array(
-                    "mod_id = '" . $this->getModuleData()->getId() . "'")
+            CoreTable::MODULES,
+            array("mod_id = '" . $this->getModuleData()->getId() . "'")
         );
 
         CoreCache::getInstance(CoreCacheSection::MODULES)->removeCache($this->getModuleData()->getName() . ".php");

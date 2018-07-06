@@ -185,7 +185,7 @@ class LibModule
         if (isset($this->modulesInfo[$moduleName])) {
             $moduleInfo = $this->modulesInfo[$moduleName];
         } else {
-            $dataFromDb = false;
+            $dbRequest = false;
             $moduleData = array();
 
             // Recherche dans le cache
@@ -193,21 +193,23 @@ class LibModule
 
             if (!$coreCache->cached($moduleName . ".php")) {
                 $coreSql = CoreSql::getInstance();
-
                 $coreSql->select(CoreTable::MODULES,
-                                 array(
-                            "mod_id",
-                            "name",
-                            "rank",
-                            "configs"
-                        ),
-                                 array(
-                            "name =  '" . $moduleName . "'"
-                ));
+                                 array("mod_id", "name", "rank"),
+                                 array("name =  '" . $moduleName . "'"));
 
                 if ($coreSql->affectedRows() > 0) {
+                    $dbRequest = true;
                     $moduleData = $coreSql->fetchArray()[0];
-                    $dataFromDb = true;
+                    $moduleData['configs'] = array();
+
+                    $coreSql->select(CoreTable::MODULES_CONFIGS,
+                                     array("name", "value"),
+                                     array("mod_id =  '" . $moduleData['mod_id'] . "'"
+                    ));
+
+                    if ($coreSql->affectedRows() > 0) {
+                        $moduleData['configs'] = $coreSql->fetchArray();
+                    }
                 }
             } else {
                 $moduleData = $coreCache->readCacheAsArray($moduleName . ".php");
@@ -215,10 +217,10 @@ class LibModule
 
             // Injection des informations du module
             $moduleInfo = new LibModuleData($moduleData,
-                                            $dataFromDb);
+                                            $dbRequest);
             $this->modulesInfo[$moduleName] = $moduleInfo;
 
-            if ($dataFromDb) {
+            if ($dbRequest) {
                 // Mise en cache
                 $content = $coreCache->serializeData($moduleData);
                 $coreCache->writeCache($moduleName . ".php",
@@ -290,7 +292,7 @@ class LibModule
 
         // Vérification de la sous page
         $moduleInfo->setView($this->getValidViewPage(array($moduleClassName,
-                    ($moduleInfo->installed()) ? $moduleInfo->getView() : "install")));
+                ($moduleInfo->installed()) ? $moduleInfo->getView() : "install")));
 
         // Affichage du module si possible
         if ($loaded && !empty($moduleInfo->getView())) {
@@ -369,10 +371,10 @@ class LibModule
         $coreSql->addQuotedValue("count + 1");
         $coreSql->update(CoreTable::MODULES,
                          array(
-                    "count" => "count + 1"
-                ),
+                "count" => "count + 1"
+            ),
                          array(
-                    "mod_id = '" . $modId . "'"
+                "mod_id = '" . $modId . "'"
         ));
     }
 }

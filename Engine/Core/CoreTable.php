@@ -46,6 +46,13 @@ class CoreTable
     const MODULES = "modules";
 
     /**
+     * Table de configuration des modules.
+     *
+     * @var string
+     */
+    const MODULES_CONFIGS = "modules_configs";
+
+    /**
      * Table des utilisateurs.
      *
      * @var string

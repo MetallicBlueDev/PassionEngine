@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreLoader;
+use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Core\CoreAccessZone;
 
 /**
@@ -44,8 +45,7 @@ class LibModuleData extends LibEntityData
         }
 
         if ($initializeConfig) {
-            $rawConfigs = isset($data['configs']) ? $data['configs'] : array();
-            $data['configs'] = self::getModuleConfigs($rawConfigs);
+            $data['configs'] = isset($data['configs']) ? ExecUtils::getArrayConfigs($data['configs']) : array();
         }
 
         $this->newStorage($data);
@@ -197,34 +197,5 @@ class LibModuleData extends LibEntityData
         return $this->getSubString("configs",
                                    $key,
                                    $defaultValue);
-    }
-
-    /**
-     * Retourne le jeu de configuration du module.
-     *
-     * @param string $moduleConfigs
-     * @return array
-     */
-    private static function getModuleConfigs(string &$moduleConfigs): array
-    {
-        $moduleConfigs = explode("|",
-                                 $moduleConfigs);
-
-        foreach ($moduleConfigs as $config) {
-            if (!empty($config)) {
-                $values = explode("=",
-                                  $config);
-
-                if (count($values) > 1) {
-                    // Chaine encodé avec urlencode
-                    $moduleConfigs[$values[0]] = urldecode($values[1]);
-                }
-            }
-        }
-
-        if ($moduleConfigs === null) {
-            $moduleConfigs = array();
-        }
-        return $moduleConfigs;
     }
 }

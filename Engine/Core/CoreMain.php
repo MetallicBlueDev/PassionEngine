@@ -10,7 +10,7 @@ use TREngine\Engine\Fail\FailSql;
 use TREngine\Engine\Lib\LibModule;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecTimeMarker;
-use TREngine\Engine\Exec\ExecString;
+use TREngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire du noyau et d'enchainement dans le moteur.
@@ -447,27 +447,24 @@ class CoreMain
      */
     private function loadGenericConfig()
     {
-        $newConfig = array();
+        $configs = array();
         $coreCache = CoreCache::getInstance(CoreCacheSection::TMP);
 
         // Si le cache est disponible
         if ($coreCache->cached("configs.php")) {
             // Chargement de la configuration via la cache
-            $newConfig = $coreCache->readCacheAsArray("configs.php");
+            $configs = $coreCache->readCacheAsArray("configs.php");
         } else {
             $content = "";
             $coreSql = CoreSql::getInstance();
 
             // Requête vers la base de données de configs
             $coreSql->select(CoreTable::CONFIG,
-                             array(
-                        "name",
-                        "value"));
+                             array("name", "value"));
+            $configs = ExecUtils::getArrayConfigs($coreSql->fetchArray());
 
-            foreach ($coreSql->fetchArray() as $row) {
-                $content .= $coreCache->serializeData(array(
-                    $row['name'] => $row['value']));
-                $newConfig[$row['name']] = ExecString::stripSlashes($row['value']);
+            foreach ($configs as $key => $value) {
+                $content .= $coreCache->serializeData(array($key => $value));
             }
 
             // Mise en cache
@@ -476,6 +473,6 @@ class CoreMain
         }
 
         // Ajout a la configuration courante
-        $this->getConfigs()->addConfig($newConfig);
+        $this->getConfigs()->addConfig($configs);
     }
 }
