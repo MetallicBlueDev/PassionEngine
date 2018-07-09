@@ -303,7 +303,7 @@ class CoreMainData extends CoreDataStorage
      *
      * @return string
      */
-    public function &getDefaultMod(): string
+    public function &getDefaultModule(): string
     {
         return $this->getStringValueWithDefault("defaultMod",
                                                 function() {

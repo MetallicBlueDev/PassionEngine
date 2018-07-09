@@ -260,7 +260,7 @@ class LibBlockData extends LibEntityData
             } else {
                 LibModule::getInstance()->getSelectedModuleData();
                 foreach ($this->getTargetModules() as $modSelected) {
-                    if (LibModule::isSelected($modSelected)) {
+                    if (LibModule::isSelectedModule($modSelected)) {
                         $rslt = true;
                         break;
                     }

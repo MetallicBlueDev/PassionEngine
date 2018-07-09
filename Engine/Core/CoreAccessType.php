@@ -266,7 +266,7 @@ class CoreAccessType implements CoreAccessToken
             $moduleInfo = null;
 
             if (CoreLoader::isCallable("LibModule")) {
-                $moduleInfo = LibModule::getInstance()->getInfoModule($this->getName());
+                $moduleInfo = LibModule::getInstance()->getModuleData($this->getName());
             }
 
             if ($moduleInfo !== null && is_numeric($moduleInfo->getId())) {

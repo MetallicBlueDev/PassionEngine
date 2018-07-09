@@ -134,7 +134,7 @@ class Module_Management_Setting extends ModuleModel
         $form->addSelectOpenTag("defaultMod",
                                 SETTING_GENERAL_DEFAULT_MODULE);
         $modules = LibModule::getModuleList();
-        $currentModule = $coreMain->getConfigs()->getDefaultMod();
+        $currentModule = $coreMain->getConfigs()->getDefaultModule();
         $currentModuleName = "";
         foreach ($modules as $module) {
             if ($module['value'] == $currentModule) {
@@ -286,7 +286,7 @@ class Module_Management_Setting extends ModuleModel
         $defaultMod = CoreRequest::getString("defaultMod",
                                              "",
                                              CoreRequestType::POST);
-        if ($coreMain->getConfigs()->getDefaultMod() != $defaultMod) {
+        if ($coreMain->getConfigs()->getDefaultModule() != $defaultMod) {
             if (!empty($defaultMod)) {
                 $this->updateTable("defaultMod",
                                    $defaultMod);

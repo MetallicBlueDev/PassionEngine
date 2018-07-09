@@ -100,8 +100,8 @@ class CoreHtml
 
         // Composition du nom du cookie de test
         $this->cookieTestName = ExecCrypt::cryptByStandard(
-                        $prefix . "_" . $this->cookieTestName,
-                        self::getSalt()
+                $prefix . "_" . $this->cookieTestName,
+                self::getSalt()
         );
 
         // Vérification du javascript du client
@@ -187,7 +187,8 @@ class CoreHtml
      * @param string $fileName
      * @param string $options
      */
-    public function addJavascriptFile(string $fileName, string $options = "")
+    public function addJavascriptFile(string $fileName,
+                                      string $options = "")
     {
         if (!array_key_exists($fileName,
                               $this->javaScriptFile)) {
@@ -221,7 +222,8 @@ class CoreHtml
      * @param string $fileName
      * @param string $options
      */
-    public function addCssResourceFile(string $fileName, string $options = "")
+    public function addCssResourceFile(string $fileName,
+                                       string $options = "")
     {
         $this->addCssFile("Resources" . DIRECTORY_SEPARATOR . "Css" . DIRECTORY_SEPARATOR . $fileName,
                           $options);
@@ -233,7 +235,8 @@ class CoreHtml
      * @param string $fileName
      * @param string $options
      */
-    public function addCssTemplateFile(string $fileName, string $options = "")
+    public function addCssTemplateFile(string $fileName,
+                                       string $options = "")
     {
         if (CoreLoader::isCallable("LibMakeStyle")) {
             $this->addCssFile(LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . $fileName,
@@ -259,7 +262,7 @@ class CoreHtml
                 $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable("LibModule")) {
-                    $title .= " / " . LibModule::getInstance()->getInfoModule()->getName();
+                    $title .= " / " . LibModule::getInstance()->getSelectedModuleData()->getName();
                 }
             } else {
                 // Titre manuel
@@ -287,13 +290,13 @@ class CoreHtml
     {
         // TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-                . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
-                . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
-                . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-                . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
-                . $this->getMetaIncludeJavascript()
-                . $this->getMetaIncludeCss();
+            . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
+            . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
+            . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
+            . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
+            . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
+            . $this->getMetaIncludeJavascript()
+            . $this->getMetaIncludeCss();
     }
 
     /**
@@ -352,7 +355,11 @@ class CoreHtml
      * @param string $addons Code additionnel
      * @return string
      */
-    public static function &getLink(string $link, string $displayContent = "", bool $layout = false, string $onclick = "", string $addons = ""): string
+    public static function &getLink(string $link,
+                                    string $displayContent = "",
+                                    bool $layout = false,
+                                    string $onclick = "",
+                                    string $addons = ""): string
     {
         $htmlLink = "<a href=\"" . CoreUrlRewriting::getLink($link,
                                                              $layout) . "\"";
@@ -391,7 +398,11 @@ class CoreHtml
      * @param string $addons Code additionnel
      * @return string
      */
-    public static function &getLinkWithAjax(string $linkWithoutJavascript, string $linkForJavascript, string $divId, string $displayContent, string $addons = ""): string
+    public static function &getLinkWithAjax(string $linkWithoutJavascript,
+                                            string $linkForJavascript,
+                                            string $divId,
+                                            string $displayContent,
+                                            string $addons = ""): string
     {
         // TODO A vérifier
         self::getInstance()->addJavascriptFile("jquery.js");
@@ -410,7 +421,9 @@ class CoreHtml
      * @param int $tps Temps avant le chargement de la page.
      * @param string $method Block de destination si ce n'est pas toute la page.
      */
-    public function redirect(string $url = "", int $tps = 0, string $method = "window")
+    public function redirect(string $url = "",
+                             int $tps = 0,
+                             string $method = "window")
     {
         // Configuration du temps
         $tps = ((!is_numeric($tps)) ? 0 : $tps) * 1000;
@@ -493,11 +506,12 @@ class CoreHtml
      * @param string $filePath
      * @param string $options
      */
-    private function addCssFile(string $filePath, string $options = "")
+    private function addCssFile(string $filePath,
+                                string $options = "")
     {
         if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace("/",
-                                                                           DIRECTORY_SEPARATOR,
-                                                                           $filePath))) {
+                                                                                  DIRECTORY_SEPARATOR,
+                                                                                  $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,
                                     "/",
                                     $filePath);
@@ -541,7 +555,7 @@ class CoreHtml
                                                        500) : $keywords;
 
         return "<meta name=\"description\" content=\"" . ExecString::textDisplay($this->description) . "\" />\n"
-                . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
+            . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
     }
 
     /**

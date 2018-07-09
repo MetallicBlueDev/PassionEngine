@@ -28,6 +28,20 @@ class LibModule
 {
 
     /**
+     * Nom de la page par défaut.
+     *
+     * @var string
+     */
+    private const DEFAULT_PAGE = "index";
+
+    /**
+     * Nom de la méthode d'affichage par défaut.
+     *
+     * @var string
+     */
+    private const DEFAULT_VIEW = "display";
+
+    /**
      * Nom du fichier listant les modules.
      *
      * @var string
@@ -72,51 +86,25 @@ class LibModule
             // Création d'un instance autonome
             self::$libModule = new LibModule();
 
-            // Nom du module courant
-            $moduleName = CoreRequest::getWord("module");
-            $defaultModuleName = CoreMain::getInstance()->getConfigs()->getDefaultMod();
+            $defaultModule = CoreMain::getInstance()->getConfigs()->getDefaultModule();
+            $module = self::getRequestedModule($defaultModule);
+            $page = self::getRequestedPage();
+            $moduleData = self::getRequestedModuleData($module,
+                                                       $page);
 
-            if (empty($moduleName)) {
-                $moduleName = $defaultModuleName;
-            }
-
-            // Nom de la page courante
-            $page = CoreRequest::getWord("page");
-            $defaultPage = "index";
-
-            if (empty($page)) {
-                $page = $defaultPage;
-            }
-
-            // Nom du viewer courant
-            $view = CoreRequest::getWord("view");
-            $defaultView = "display";
-
-            if (empty($view)) {
-                $view = $defaultView;
-            }
-
-            $infoModule = self::$libModule->getInfoModule($moduleName);
-            $infoModule->setPage($page);
-            $infoModule->setView($view);
-
-            if (!$infoModule->isValid() && $moduleName !== $defaultModuleName) {
+            if ($moduleData == null && $module !== $defaultModule) {
                 // Afficher une erreur 404
-                if (!empty($moduleName) || !empty($page)) {
+                if (!empty($module) || !empty($page)) {
                     CoreLogger::addInfo(ERROR_404);
                 }
 
                 // Utilisation du module par défaut
-                $moduleName = $defaultModuleName;
-                $page = $defaultPage;
-                $view = $defaultView;
-
-                $infoModule = self::$libModule->getInfoModule($moduleName);
-                $infoModule->setPage($page);
-                $infoModule->setView($view);
+                $moduleData = self::$libModule->getModuleData($defaultModule);
+                $moduleData->setPage(self::DEFAULT_PAGE);
+                $moduleData->setView(self::DEFAULT_VIEW);
             }
 
-            self::$libModule->module = $infoModule->getName();
+            self::$libModule->module = $moduleData->getName();
         }
     }
 
@@ -156,7 +144,7 @@ class LibModule
      * @param string $moduleName
      * @return bool true le module est actuellement sélectionné
      */
-    public static function &isSelected(string $moduleName): bool
+    public static function &isSelectedModule(string $moduleName): bool
     {
         $selected = false;
 
@@ -169,62 +157,30 @@ class LibModule
     /**
      * Retourne les informations du module cible.
      *
+     * @return LibModuleData Informations sur le module.
+     */
+    public function &getSelectedModuleData(): LibModuleData
+    {
+        return $this->getModuleData($this->module);
+    }
+
+    /**
+     * Retourne les informations du module cible.
+     *
      * @param string $moduleName Le nom du module, par défaut le module courant.
      * @return LibModuleData Informations sur le module.
      */
-    public function &getInfoModule(string $moduleName = ""): LibModuleData
+    public function &getModuleData(string $moduleName): LibModuleData
     {
         $moduleInfo = null;
 
-        if (empty($moduleName)) {
-            $moduleName = $this->module;
-        } else {
+        if (!empty($moduleName)) {
             $moduleName = ucfirst($moduleName);
-        }
 
-        if (isset($this->modulesInfo[$moduleName])) {
-            $moduleInfo = $this->modulesInfo[$moduleName];
-        } else {
-            $dbRequest = false;
-            $moduleData = array();
-
-            // Recherche dans le cache
-            $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
-
-            if (!$coreCache->cached($moduleName . ".php")) {
-                $coreSql = CoreSql::getInstance();
-                $coreSql->select(CoreTable::MODULES,
-                                 array("mod_id", "name", "rank"),
-                                 array("name =  '" . $moduleName . "'"));
-
-                if ($coreSql->affectedRows() > 0) {
-                    $dbRequest = true;
-                    $moduleData = $coreSql->fetchArray()[0];
-                    $moduleData['configs'] = array();
-
-                    $coreSql->select(CoreTable::MODULES_CONFIGS,
-                                     array("name", "value"),
-                                     array("mod_id =  '" . $moduleData['mod_id'] . "'"
-                    ));
-
-                    if ($coreSql->affectedRows() > 0) {
-                        $moduleData['configs'] = $coreSql->fetchArray();
-                    }
-                }
+            if (isset($this->modulesInfo[$moduleName])) {
+                $moduleInfo = $this->modulesInfo[$moduleName];
             } else {
-                $moduleData = $coreCache->readCacheAsArray($moduleName . ".php");
-            }
-
-            // Injection des informations du module
-            $moduleInfo = new LibModuleData($moduleData,
-                                            $dbRequest);
-            $this->modulesInfo[$moduleName] = $moduleInfo;
-
-            if ($dbRequest) {
-                // Mise en cache
-                $content = $coreCache->serializeData($moduleData);
-                $coreCache->writeCache($moduleName . ".php",
-                                       $content);
+                $moduleInfo = $this->requestModuleData($moduleName);
             }
         }
         return $moduleInfo;
@@ -235,7 +191,7 @@ class LibModule
      */
     public function launch()
     {
-        $moduleInfo = $this->getInfoModule();
+        $moduleInfo = $this->getSelectedModuleData();
 
         // Vérification du niveau d'acces
         if (($moduleInfo->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleInfo))) || (!$moduleInfo->installed() && CoreSession::getInstance()->getUserInfos()->hasAdminRank())) {
@@ -267,8 +223,9 @@ class LibModule
      */
     public function &getModule(): string
     {
-        $buffer = $this->getInfoModule()->getBuffer();
-        $configs = $this->getInfoModule()->getConfigs();
+        $selectedModuleData = $this->getSelectedModuleData();
+        $buffer = $selectedModuleData->getBuffer();
+        $configs = $selectedModuleData->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
         if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
@@ -277,6 +234,72 @@ class LibModule
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
         return $buffer;
+    }
+
+    /**
+     * Demande le chargement des informations du module.
+     *
+     * @param string $moduleName Le nom du module.
+     * @return LibModuleData Informations sur le module.
+     */
+    private function &requestModuleData(string $moduleName): LibModuleData
+    {
+        $moduleInfo = null;
+        $dbRequest = false;
+        $moduleData = array();
+
+        // Recherche dans le cache
+        $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
+
+        if (!$coreCache->cached($moduleName . ".php")) {
+            $moduleData = $this->loadModuleData($moduleName);
+            $dbRequest = !empty($moduleData);
+        } else {
+            $moduleData = $coreCache->readCacheAsArray($moduleName . ".php");
+        }
+
+        // Injection des informations du module
+        $moduleInfo = new LibModuleData($moduleData,
+                                        $dbRequest);
+        $this->modulesInfo[$moduleName] = $moduleInfo;
+
+        if ($dbRequest) {
+            // Mise en cache
+            $content = $coreCache->serializeData($moduleData);
+            $coreCache->writeCache($moduleName . ".php",
+                                   $content);
+        }
+        return $moduleInfo;
+    }
+
+    /**
+     * Chargement des informations du module.
+     *
+     * @param string $moduleName Le nom du module.
+     * @return array Informations sur le module.
+     */
+    private function &loadModuleData(string $moduleName): array
+    {
+        $moduleData = array();
+        $coreSql = CoreSql::getInstance();
+        $coreSql->select(CoreTable::MODULES,
+                         array("mod_id", "name", "rank"),
+                         array("name =  '" . $moduleName . "'"));
+
+        if ($coreSql->affectedRows() > 0) {
+            $moduleData = $coreSql->fetchArray()[0];
+            $moduleData['configs'] = array();
+
+            $coreSql->select(CoreTable::MODULES_CONFIGS,
+                             array("name", "value"),
+                             array("mod_id =  '" . $moduleData['mod_id'] . "'"
+            ));
+
+            if ($coreSql->affectedRows() > 0) {
+                $moduleData['configs'] = $coreSql->fetchArray();
+            }
+        }
+        return $moduleData;
     }
 
     /**
@@ -330,12 +353,13 @@ class LibModule
         if (CoreLoader::isCallable($pageInfo[0],
                                    $pageInfo[1])) {
             $userInfos = CoreSession::getInstance()->getUserInfos();
+            $selectedModuleData = $this->getSelectedModuleData();
 
-            if ($pageInfo[1] === "install" && ($this->getInfoModule()->installed() || !$userInfos->hasAdminRank())) {
+            if ($pageInfo[1] === "install" && ($selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "uninstall" && (!$this->getInfoModule()->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "uninstall" && (!$selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "setting" && (!$this->getInfoModule()->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "setting" && (!$selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
             }
         } else {
@@ -376,5 +400,76 @@ class LibModule
                          array(
                 "mod_id = '" . $modId . "'"
         ));
+    }
+
+    /**
+     * Retourne le module demandée.
+     *
+     * @param string $defaultModule Le module par défaut.
+     * @return string
+     */
+    private static function getRequestedModule(string $defaultModule): string
+    {
+        $module = CoreRequest::getWord("module");
+
+        if (empty($module)) {
+            $module = $defaultModule;
+        }
+        return $module;
+    }
+
+    /**
+     * Retourne la page demandée.
+     *
+     * @return string
+     */
+    private static function getRequestedPage(): string
+    {
+        $page = CoreRequest::getWord("page");
+
+        if (empty($page)) {
+            $page = self::DEFAULT_PAGE;
+        }
+        return $page;
+    }
+
+    /**
+     * Retourne la méthode d'affichage.
+     *
+     * @return string
+     */
+    private static function &getRequestedView(): string
+    {
+        $view = CoreRequest::getWord("view");
+
+        if (empty($view)) {
+            $view = self::DEFAULT_VIEW;
+        }
+        return $view;
+    }
+
+    /**
+     * Retourne les informations sur le module demandé.
+     *
+     * @param string $module
+     * @param string $page
+     * @return LibModuleData
+     */
+    private static function getRequestedModuleData(string $module,
+                                                   string $page): LibModuleData
+    {
+        $moduleData = self::$libModule->getModuleData($module);
+
+        if ($moduleData != null) {
+            $view = self::getRequestedView();
+
+            $moduleData->setPage($page);
+            $moduleData->setView($view);
+
+            if (!$moduleData->isValid()) {
+                $moduleData = null;
+            }
+        }
+        return $moduleData;
     }
 }
