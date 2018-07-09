@@ -205,6 +205,16 @@ class LibBlockData extends LibEntityData
     }
 
     /**
+     * Détermine si tous les modules sont ciblés.
+     *
+     * @return bool
+     */
+    public function &isAllTargetedModules(): bool
+    {
+        return $this->getBool("allMods");
+    }
+
+    /**
      * Retourne le type de block.
      *
      * @return string
@@ -245,10 +255,15 @@ class LibBlockData extends LibEntityData
         $rslt = false;
 
         if (CoreLoader::isCallable("LibModule")) {
-            foreach ($this->getTargetModules() as $modSelected) {
-                if ($modSelected === "all" || LibModule::isSelected($modSelected)) {
-                    $rslt = true;
-                    break;
+            if ($this->isAllTargetedModules()) {
+                $rslt = true;
+            } else {
+                LibModule::getInstance()->getSelectedModuleData();
+                foreach ($this->getTargetModules() as $modSelected) {
+                    if (LibModule::isSelected($modSelected)) {
+                        $rslt = true;
+                        break;
+                    }
                 }
             }
         }
