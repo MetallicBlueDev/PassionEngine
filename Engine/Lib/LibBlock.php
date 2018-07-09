@@ -236,7 +236,7 @@ class LibBlock
             "block_id" => 1,
             "type" => $blockTypeName,
             "side" => self::SIDE_RIGHT,
-            "mods" => "all",
+            "allMods" => 1,
             "title" => $blockTypeName
         );
         $blockInfo = new LibBlockData($empty);
@@ -374,17 +374,17 @@ class LibBlock
 
             $coreSql->select(CoreTable::BLOCKS,
                              array(
-                        "block_id",
-                        "side",
-                        "position",
-                        "title",
-                        "content",
-                        "type",
-                        "rank",
-                        "mods"
-                    ),
+                    "block_id",
+                    "side",
+                    "position",
+                    "title",
+                    "content",
+                    "type",
+                    "rank",
+                    "mods"
+                ),
                              array(
-                        "block_id =  '" . $blockId . "'"
+                    "block_id =  '" . $blockId . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -426,15 +426,15 @@ class LibBlock
 
             $coreSql->select(CoreTable::BLOCKS,
                              array(
-                        "block_id",
-                        "side",
-                        "type",
-                        "rank"
-                    ),
+                    "block_id",
+                    "side",
+                    "type",
+                    "rank"
+                ),
                              array(),
                              array(
-                        "side",
-                        "position"
+                    "side",
+                    "position"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -491,7 +491,8 @@ class LibBlock
      * @param int $blockId
      * @param bool $checkModule
      */
-    private function launchBlockById(int $blockId, bool $checkModule)
+    private function launchBlockById(int $blockId,
+                                     bool $checkModule)
     {
         $blockInfo = $this->getBlockInfo($blockId);
         $this->launchBlock($blockInfo,
@@ -504,7 +505,8 @@ class LibBlock
      * @param LibBlockData $blockInfo
      * @param bool $checkModule
      */
-    private function launchBlock(LibBlockData $blockInfo, bool $checkModule)
+    private function launchBlock(LibBlockData $blockInfo,
+                                 bool $checkModule)
     {
         if ($blockInfo->isValid() && $blockInfo->canActive($checkModule)) {
             $this->build($blockInfo);

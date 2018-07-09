@@ -38,7 +38,7 @@ class Module_Management_Block extends ModuleModel
 
         if (CoreMain::getInstance()->isDefaultLayout()) {
             return "<div id=\"block_main_setting\">"
-                    . $content . "</div>";
+                . $content . "</div>";
         }
         return $content;
     }
@@ -68,19 +68,19 @@ class Module_Management_Block extends ModuleModel
         $rack = new LibRack($firstLine);
 
         CoreSql::getInstance()->select(
-                CoreTable::BLOCKS_TABLE,
-                array(
-            "block_id",
-            "side",
-            "position",
-            "title",
-            "content",
-            "type",
-            "rank",
-            "mods"),
-                array(),
-                array(
-            "position")
+            CoreTable::BLOCKS_TABLE,
+            array(
+                "block_id",
+                "side",
+                "position",
+                "title",
+                "content",
+                "type",
+                "rank",
+                "mods"),
+            array(),
+            array(
+                "position")
         );
         if (CoreSql::getInstance()->affectedRows() > 0) {
             while ($row = CoreSql::getInstance()->fetchArray()) {
@@ -101,7 +101,7 @@ class Module_Management_Block extends ModuleModel
                                                        "v"
                 );
                 $rank = CoreAccess::getRankAsLitteral($row['rank']);
-                $mods = ($row['mods'] == "all") ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
+                $mods = ($row['allMods'] === 1) ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
                 // Ajout de la ligne au tableau
                 $rack->addLine(array(
                     $title,
@@ -124,12 +124,12 @@ class Module_Management_Block extends ModuleModel
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE,
-                    array(
-                "side",
-                "position"),
-                    array(
-                "block_id = '" . $blockId . "'")
+                CoreTable::BLOCKS_TABLE,
+                array(
+                    "side",
+                    "position"),
+                array(
+                    "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $blockMove = CoreSql::getInstance()->fetchArray(); // Récuperation des informations sur le block
@@ -137,14 +137,14 @@ class Module_Management_Block extends ModuleModel
                 if ($blockMove['position'] > 0) {
                     // Requête de Sélection des autres blocks
                     CoreSql::getInstance()->select(
-                            CoreTable::BLOCKS_TABLE,
-                            array(
-                        "block_id",
-                        "position"),
-                            array(
-                        "side = '" . $blockMove['side'] . "' AND",
-                        "(position = '" . $blockMove['position'] . "' OR position = '"
-                        . ($blockMove['position'] - 1) . "')")
+                        CoreTable::BLOCKS_TABLE,
+                        array(
+                            "block_id",
+                            "position"),
+                        array(
+                            "side = '" . $blockMove['side'] . "' AND",
+                            "(position = '" . $blockMove['position'] . "' OR position = '"
+                            . ($blockMove['position'] - 1) . "')")
                     );
                     if (CoreSql::getInstance()->affectedRows() > 0) {
                         CoreSql::getInstance()->addArrayBuffer("blockMoveUp");
@@ -153,11 +153,11 @@ class Module_Management_Block extends ModuleModel
                             $row['position'] = ($row['block_id'] == $blockId) ? $row['position'] - 1 : $row['position'] + 1;
 
                             CoreSql::getInstance()->update(
-                                    CoreTable::BLOCKS_TABLE,
-                                    array(
-                                "position" => $row['position']),
-                                    array(
-                                "block_id = '" . $row['block_id'] . "'")
+                                CoreTable::BLOCKS_TABLE,
+                                array(
+                                    "position" => $row['position']),
+                                array(
+                                    "block_id = '" . $row['block_id'] . "'")
                             );
                         }
                         CoreLogger::addInformationMessage(DATA_SAVED);
@@ -178,26 +178,26 @@ class Module_Management_Block extends ModuleModel
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE,
-                    array(
-                "side",
-                "position"),
-                    array(
-                "block_id = '" . $blockId . "'")
+                CoreTable::BLOCKS_TABLE,
+                array(
+                    "side",
+                    "position"),
+                array(
+                    "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $blockMove = CoreSql::getInstance()->fetchArray(); // Récuperation des informations sur le block
                 // Sélection du block le plus bas
                 CoreSql::getInstance()->select(
-                        CoreTable::BLOCKS_TABLE,
-                        array(
-                    "block_id",
-                    "position"),
-                        array(
-                    "side = '" . $blockMove['side'] . "'"),
-                        array(
-                    "position DESC"),
-                        "1"
+                    CoreTable::BLOCKS_TABLE,
+                    array(
+                        "block_id",
+                        "position"),
+                    array(
+                        "side = '" . $blockMove['side'] . "'"),
+                    array(
+                        "position DESC"),
+                    "1"
                 );
 
                 if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -206,14 +206,14 @@ class Module_Management_Block extends ModuleModel
                     if ($blockMove['position'] < $blockDown['position']) {
                         // Requête de Sélection des autres blocks
                         CoreSql::getInstance()->select(
-                                CoreTable::BLOCKS_TABLE,
-                                array(
-                            "block_id",
-                            "position"),
-                                array(
-                            "side = '" . $blockMove['side'] . "' AND",
-                            "(position = '" . $blockMove['position'] . "' OR position = '"
-                            . ($blockMove['position'] + 1) . "')")
+                            CoreTable::BLOCKS_TABLE,
+                            array(
+                                "block_id",
+                                "position"),
+                            array(
+                                "side = '" . $blockMove['side'] . "' AND",
+                                "(position = '" . $blockMove['position'] . "' OR position = '"
+                                . ($blockMove['position'] + 1) . "')")
                         );
                         if (CoreSql::getInstance()->affectedRows() > 0) {
                             CoreSql::getInstance()->addArrayBuffer("blockMoveDown");
@@ -222,11 +222,11 @@ class Module_Management_Block extends ModuleModel
                                 $row['position'] = ($row['block_id'] == $blockId) ? $row['position'] + 1 : $row['position'] - 1;
 
                                 CoreSql::getInstance()->update(
-                                        CoreTable::BLOCKS_TABLE,
-                                        array(
-                                    "position" => $row['position']),
-                                        array(
-                                    "block_id = '" . $row['block_id'] . "'")
+                                    CoreTable::BLOCKS_TABLE,
+                                    array(
+                                        "position" => $row['position']),
+                                    array(
+                                        "block_id = '" . $row['block_id'] . "'")
                                 );
                             }
                             CoreLogger::addInformationMessage(DATA_SAVED);
@@ -250,17 +250,17 @@ class Module_Management_Block extends ModuleModel
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE,
-                    array(
-                "side",
-                "position",
-                "title",
-                "content",
-                "type",
-                "rank",
-                "mods"),
-                    array(
-                "block_id = '" . $blockId . "'")
+                CoreTable::BLOCKS_TABLE,
+                array(
+                    "side",
+                    "position",
+                    "title",
+                    "content",
+                    "type",
+                    "rank",
+                    "mods"),
+                array(
+                    "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
@@ -363,11 +363,11 @@ class Module_Management_Block extends ModuleModel
 
         if ($blockId > -1) { // Si l'id semble valide
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE,
-                    array(
-                "type"),
-                    array(
-                "block_id = '" . $blockId . "'")
+                CoreTable::BLOCKS_TABLE,
+                array(
+                    "type"),
+                array(
+                    "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
@@ -384,9 +384,9 @@ class Module_Management_Block extends ModuleModel
                 }
 
                 CoreSql::getInstance()->delete(
-                        CoreTable::BLOCKS_TABLE,
-                        array(
-                    "block_id = '" . $blockId . "'")
+                    CoreTable::BLOCKS_TABLE,
+                    array(
+                        "block_id = '" . $blockId . "'")
                 );
                 CoreTranslate::removeCache("blocks/" . $block['type']);
                 CoreLogger::addInformationMessage(DATA_DELETED);
@@ -415,18 +415,18 @@ class Module_Management_Block extends ModuleModel
                 "rank",
                 "mods");
             CoreSql::getInstance()->select(
-                    CoreTable::BLOCKS_TABLE,
-                    $keys,
-                    array(
-                "block_id = '" . $blockId . "'")
+                CoreTable::BLOCKS_TABLE,
+                $keys,
+                array(
+                    "block_id = '" . $blockId . "'")
             );
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
                 $block['title'] = $block['title'] . " Copy";
                 CoreSql::getInstance()->insert(
-                        CoreTable::BLOCKS_TABLE,
-                        $keys,
-                        $block
+                    CoreTable::BLOCKS_TABLE,
+                    $keys,
+                    $block
                 );
                 CoreLogger::addInformationMessage(DATA_COPIED);
             } else {
