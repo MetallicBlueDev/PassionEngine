@@ -208,7 +208,7 @@ class CoreAccessType implements CoreAccessToken
     }
 
     /**
-     * Détermine si accès sont semblables.
+     * Détermine si les accès sont semblables.
      *
      * @param CoreAccessType $otherAccessType
      * @return bool

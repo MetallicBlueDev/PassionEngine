@@ -38,9 +38,7 @@ class LibBlockData extends LibEntityData
         }
 
         $this->newStorage($data);
-        $this->updateDataValue("mods",
-                               explode("|",
-                                       $this->getString("mods")));
+
         $this->updateDataValue("title",
                                ExecString::textDisplay($this->getString("title")));
 
@@ -197,9 +195,9 @@ class LibBlockData extends LibEntityData
      *
      * @return array
      */
-    public function &getTargetModules(): array
+    public function &getTargetModuleIds(): array
     {
-        $rslt = $this->getArray("mods",
+        $rslt = $this->getArray("modIds",
                                 array());
         return $rslt;
     }
@@ -260,7 +258,7 @@ class LibBlockData extends LibEntityData
             } else {
                 $selectedModuleId = LibModule::getInstance()->getSelectedModuleData()->getIdAsInt();
 
-                foreach ($this->getTargetModules() as $allowedModuleId) {
+                foreach ($this->getTargetModuleIds() as $allowedModuleId) {
                     if ($selectedModuleId === $allowedModuleId) {
                         $rslt = true;
                         break;

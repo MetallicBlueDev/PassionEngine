@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 06, 2018 at 07:25 PM
+-- Generation Time: Jul 10, 2018 at 07:40 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -52,7 +52,19 @@ CREATE TABLE `tr_blocks` (
   `content` text,
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `mods` text NOT NULL
+  `allMods` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_blocks_visibility`
+--
+
+CREATE TABLE `tr_blocks_visibility` (
+  `bvisibility_id` int(10) UNSIGNED NOT NULL,
+  `block_id` int(10) UNSIGNED NOT NULL,
+  `mod_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -180,6 +192,14 @@ ALTER TABLE `tr_blocks`
   ADD PRIMARY KEY (`block_id`);
 
 --
+-- Indexes for table `tr_blocks_visibility`
+--
+ALTER TABLE `tr_blocks_visibility`
+  ADD PRIMARY KEY (`bvisibility_id`),
+  ADD KEY `block_id` (`block_id`),
+  ADD KEY `mod_id` (`mod_id`);
+
+--
 -- Indexes for table `tr_configs`
 --
 ALTER TABLE `tr_configs`
@@ -242,6 +262,11 @@ ALTER TABLE `tr_banned`
 --
 ALTER TABLE `tr_blocks`
   MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tr_blocks_visibility`
+--
+ALTER TABLE `tr_blocks_visibility`
+  MODIFY `bvisibility_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_configs`
 --

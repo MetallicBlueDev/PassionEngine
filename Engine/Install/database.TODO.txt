@@ -1,6 +1,5 @@
 
 tr_blocks
-=> mods => tr_blocks_visibility
 => content => tr_blocks_configs
 
 tr_configs

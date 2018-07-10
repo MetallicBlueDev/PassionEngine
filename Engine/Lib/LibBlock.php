@@ -373,22 +373,27 @@ class LibBlock
             $coreSql = CoreSql::getInstance();
 
             $coreSql->select(CoreTable::BLOCKS,
-                             array(
-                    "block_id",
+                             array("block_id",
                     "side",
                     "position",
                     "title",
                     "content",
                     "type",
                     "rank",
-                    "mods"
-                ),
-                             array(
-                    "block_id =  '" . $blockId . "'"
-            ));
+                    "allMods"),
+                             array("block_id =  '" . $blockId . "'"));
 
             if ($coreSql->affectedRows() > 0) {
                 $blockData = $coreSql->fetchArray()[0];
+                $blockData['modIds'] = array();
+
+                $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
+                                 array("mod_id"),
+                                 array("block_id =  '" . $blockId . "'"));
+
+                if ($coreSql->affectedRows() > 0) {
+                    $blockData['modIds'] = $coreSql->fetchArray();
+                }
 
                 // Mise en cache
                 $content = $coreCache->serializeData($blockData);
