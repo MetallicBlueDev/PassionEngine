@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2018 at 07:40 PM
+-- Generation Time: Jul 10, 2018 at 08:18 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -53,7 +53,7 @@ CREATE TABLE `tr_blocks` (
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `allMods` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -65,7 +65,7 @@ CREATE TABLE `tr_blocks_visibility` (
   `bvisibility_id` int(10) UNSIGNED NOT NULL,
   `block_id` int(10) UNSIGNED NOT NULL,
   `mod_id` int(10) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE `tr_menus` (
   `sublevel` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
   `position` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -106,7 +106,7 @@ CREATE TABLE `tr_modules` (
   `name` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `count` int(11) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -119,7 +119,7 @@ CREATE TABLE `tr_modules_configs` (
   `mod_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -159,7 +159,7 @@ CREATE TABLE `tr_users` (
   `signature` varchar(100) DEFAULT NULL,
   `template` varchar(30) DEFAULT NULL,
   `langue` varchar(30) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -173,7 +173,7 @@ CREATE TABLE `tr_users_rights` (
   `zone` varchar(10) DEFAULT NULL,
   `page` varchar(10) DEFAULT NULL,
   `identifier` varchar(10) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Indexes for dumped tables
@@ -301,7 +301,30 @@ ALTER TABLE `tr_users`
 -- AUTO_INCREMENT for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
-  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;COMMIT;
+  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `tr_blocks_visibility`
+--
+ALTER TABLE `tr_blocks_visibility`
+  ADD CONSTRAINT `tr_blocks_visibility_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `tr_blocks_visibility_mod_id` FOREIGN KEY (`mod_id`) REFERENCES `tr_modules` (`mod_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tr_modules_configs`
+--
+ALTER TABLE `tr_modules_configs`
+  ADD CONSTRAINT `tr_modules_configs_mod_id` FOREIGN KEY (`mod_id`) REFERENCES `tr_modules` (`mod_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tr_users_rights`
+--
+ALTER TABLE `tr_users_rights`
+  ADD CONSTRAINT `tr_users_rights_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
