@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 10, 2018 at 08:18 PM
+-- Generation Time: Jul 11, 2018 at 07:36 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -53,6 +53,19 @@ CREATE TABLE `tr_blocks` (
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `allMods` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_blocks_configs`
+--
+
+CREATE TABLE `tr_blocks_configs` (
+  `bconfig_id` int(10) UNSIGNED NOT NULL,
+  `block_id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -192,6 +205,14 @@ ALTER TABLE `tr_blocks`
   ADD PRIMARY KEY (`block_id`);
 
 --
+-- Indexes for table `tr_blocks_configs`
+--
+ALTER TABLE `tr_blocks_configs`
+  ADD PRIMARY KEY (`bconfig_id`),
+  ADD KEY `block_id` (`block_id`),
+  ADD KEY `name` (`name`);
+
+--
 -- Indexes for table `tr_blocks_visibility`
 --
 ALTER TABLE `tr_blocks_visibility`
@@ -263,6 +284,11 @@ ALTER TABLE `tr_banned`
 ALTER TABLE `tr_blocks`
   MODIFY `block_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `tr_blocks_configs`
+--
+ALTER TABLE `tr_blocks_configs`
+  MODIFY `bconfig_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `tr_blocks_visibility`
 --
 ALTER TABLE `tr_blocks_visibility`
@@ -305,6 +331,12 @@ ALTER TABLE `tr_users_rights`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tr_blocks_configs`
+--
+ALTER TABLE `tr_blocks_configs`
+  ADD CONSTRAINT `tr_blocks_configs_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tr_blocks_visibility`
