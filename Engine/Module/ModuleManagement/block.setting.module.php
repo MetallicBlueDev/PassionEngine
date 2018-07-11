@@ -77,7 +77,7 @@ class Module_Management_Block extends ModuleModel
                 "content",
                 "type",
                 "rank",
-                "mods"),
+                "allMods"),
             array(),
             array(
                 "position")
@@ -101,7 +101,7 @@ class Module_Management_Block extends ModuleModel
                                                        "v"
                 );
                 $rank = CoreAccess::getRankAsLitteral($row['rank']);
-                $mods = ($row['allMods'] === 1) ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
+                $allMods = ($row['allMods'] === 1) ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
                 // Ajout de la ligne au tableau
                 $rack->addLine(array(
                     $title,
@@ -109,7 +109,7 @@ class Module_Management_Block extends ModuleModel
                     $side,
                     $position,
                     $rank,
-                    $mods));
+                    $allMods));
             }
         }
 
@@ -258,10 +258,11 @@ class Module_Management_Block extends ModuleModel
                     "content",
                     "type",
                     "rank",
-                    "mods"),
+                    "allMods"),
                 array(
                     "block_id = '" . $blockId . "'")
             );
+            // TODO gestion de blocks_visibility
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
                 LibBreadcrumb::getInstance()->addTrail($block['title'],
@@ -413,7 +414,7 @@ class Module_Management_Block extends ModuleModel
                 "content",
                 "type",
                 "rank",
-                "mods");
+                "allMods");
             CoreSql::getInstance()->select(
                 CoreTable::BLOCKS_TABLE,
                 $keys,
