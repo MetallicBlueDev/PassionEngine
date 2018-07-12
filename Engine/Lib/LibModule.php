@@ -92,7 +92,7 @@ class LibModule
             $moduleData = self::getRequestedOrDefaultModuleData($module,
                                                                 $page);
 
-            if ($moduleData == null && $module !== $defaultModule) {
+            if ($moduleData === null && $module !== $defaultModule) {
                 // Afficher une erreur 404
                 if (!empty($module) || !empty($page)) {
                     CoreLogger::addInfo(ERROR_404);
@@ -104,7 +104,7 @@ class LibModule
                 $moduleData->setView(self::DEFAULT_VIEW);
             }
 
-            self::$libModule->module = $moduleData->getName();
+            self::$libModule->module = ($moduleData !== null) ? $moduleData->getName() : "";
         }
     }
 
@@ -456,7 +456,7 @@ class LibModule
      * @return LibModuleData
      */
     private static function getRequestedOrDefaultModuleData(string $module,
-                                                            string $page): LibModuleData
+                                                            string $page): ?LibModuleData
     {
         $moduleData = self::$libModule->getModuleData($module);
 
