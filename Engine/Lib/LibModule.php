@@ -280,63 +280,63 @@ class LibModule
      */
     private function &loadModuleData(string $moduleName): array
     {
-        $moduleData = array();
+        $moduleArrayDatas = array();
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::MODULES,
                          array("mod_id", "name", "rank"),
                          array("name =  '" . $moduleName . "'"));
 
         if ($coreSql->affectedRows() > 0) {
-            $moduleData = $coreSql->fetchArray()[0];
-            $moduleData['modConfigs'] = array();
+            $moduleArrayDatas = $coreSql->fetchArray()[0];
+            $moduleArrayDatas['modConfigs'] = array();
 
             $coreSql->select(CoreTable::MODULES_CONFIGS,
                              array("name", "value"),
-                             array("mod_id =  '" . $moduleData['mod_id'] . "'"
+                             array("mod_id =  '" . $moduleArrayDatas['mod_id'] . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
-                $moduleData['modConfigs'] = $coreSql->fetchArray();
+                $moduleArrayDatas['modConfigs'] = $coreSql->fetchArray();
             }
         }
-        return $moduleData;
+        return $moduleArrayDatas;
     }
 
     /**
      * Récupère le module.
      *
-     * @param LibModuleData $moduleInfo
+     * @param LibModuleData $moduleData
      */
-    private function get(LibModuleData &$moduleInfo)
+    private function get(LibModuleData &$moduleData)
     {
-        $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleInfo->getClassName(),
-                                                                 $moduleInfo->getFolderName());
+        $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleData->getClassName(),
+                                                                 $moduleData->getFolderName());
         $loaded = CoreLoader::classLoader($moduleClassName);
 
         // Vérification de la sous page
-        $moduleInfo->setView($this->getValidViewPage(array($moduleClassName,
-                ($moduleInfo->installed()) ? $moduleInfo->getView() : "install")));
+        $moduleData->setView($this->getValidViewPage(array($moduleClassName,
+                ($moduleData->installed()) ? $moduleData->getView() : "install")));
 
         // Affichage du module si possible
-        if ($loaded && !empty($moduleInfo->getView())) {
-            $this->updateCount($moduleInfo->getId());
+        if ($loaded && !empty($moduleData->getView())) {
+            $this->updateCount($moduleData->getId());
 
             try {
                 /**
                  * @var ModuleModel
                  */
                 $moduleClass = new $moduleClassName();
-                $moduleClass->setModuleData($moduleInfo);
+                $moduleClass->setModuleData($moduleData);
 
                 // Capture des données d'affichage
                 ob_start();
-                echo $moduleClass->{$moduleInfo->getView()}();
-                $moduleInfo->setBuffer(ob_get_clean());
+                echo $moduleClass->{$moduleData->getView()}();
+                $moduleData->setBuffer(ob_get_clean());
             } catch (Exception $ex) {
                 CoreSecure::getInstance()->catchException($ex);
             }
         } else {
-            CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleInfo->getName() . ")");
+            CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
         }
     }
 
