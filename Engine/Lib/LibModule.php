@@ -221,7 +221,7 @@ class LibModule
      *
      * @return string
      */
-    public function &getBuildedModule(): string
+    public function &getModuleBuilded(): string
     {
         $requestedModuleData = $this->getRequestedModuleData();
         $buffer = $requestedModuleData->getBuffer();
@@ -252,7 +252,7 @@ class LibModule
         $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
 
         if (!$coreCache->cached($moduleName . ".php")) {
-            $moduleArrayDatas = $this->loadModuleData($moduleName);
+            $moduleArrayDatas = $this->loadModuleDatas($moduleName);
             $dbRequest = !empty($moduleArrayDatas);
         } else {
             $moduleArrayDatas = $coreCache->readCacheAsArray($moduleName . ".php");
@@ -278,7 +278,7 @@ class LibModule
      * @param string $moduleName Le nom du module.
      * @return array Informations sur le module.
      */
-    private function &loadModuleData(string $moduleName): array
+    private function &loadModuleDatas(string $moduleName): array
     {
         $moduleArrayDatas = array();
         $coreSql = CoreSql::getInstance();

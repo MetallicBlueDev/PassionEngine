@@ -272,7 +272,7 @@ class CoreMain
         $libModule = LibModule::getInstance();
         $libModule->buildRequestedModule();
 
-        echo $libModule->getBuildedModule();
+        echo $libModule->getModuleBuilded();
     }
 
     /**
