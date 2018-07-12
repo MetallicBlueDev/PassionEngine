@@ -19,7 +19,7 @@
                     <br /><?php echo $closeText; ?>
                     <br /><br /><?php echo $closeReason; ?>
                     <br />
-                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlock(); ?>
+                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getFirstBlockBuilded(); ?>
                 </div>
             </div>
         </div>

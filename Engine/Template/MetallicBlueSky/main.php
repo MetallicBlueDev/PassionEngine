@@ -34,7 +34,7 @@
                     <div id="wrapper_leftfix">
                         <div id="wrapper_rightfix">
                             <div id="wrapper_left">
-                                <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("left"); ?>
+                                <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("left"); ?>
                             </div>
                             <div id="wrapper_middlefix">
                                 <div id="wrapper_middle">
@@ -42,12 +42,12 @@
                                     <?php echo TREngine\Engine\Lib\LibBreadcrumb::getInstance()->getBreadcrumbTrail(); ?>
                                     <div class="spacer"></div>
                                     <?php TREngine\Engine\Core\CoreLogger::displayMessages(); ?>
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("top"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("top"); ?>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("moduleleft"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduleleft"); ?>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("moduletop"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduletop"); ?>
                                     </div>
                                     <div id="module_top">
                                         <div id="module_top_left"></div>
@@ -57,7 +57,7 @@
                                     <div id="module_content_leftfix">
                                         <div id="module_content_rightfix">
                                             <div id="module_content_middle">
-                                                <?php echo TREngine\Engine\Lib\LibModule::getInstance()->getModule(); ?>
+                                                <?php echo TREngine\Engine\Lib\LibModule::getInstance()->getBuildedModule(); ?>
                                             </div>
                                         </div>
                                     </div>
@@ -67,12 +67,12 @@
                                         <div id="module_bottom_right"></div>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("modulebottom"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("modulebottom"); ?>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("moduleright"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduleright"); ?>
                                     </div>
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("bottom"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("bottom"); ?>
                                 </div>
                             </div>
                             <div id="wrapper_right_compatibility">
@@ -81,7 +81,7 @@
                                 <div id="wrapper_quick_lighting_container3" class="wrapper_quick_lighting_container"></div>
                                 <div id="wrapper_quick_lighting_container4" class="wrapper_quick_lighting_container"></div>
                                 <div id="wrapper_right">
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBySideName("right"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("right"); ?>
                                 </div>
                             </div>
                         </div>

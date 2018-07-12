@@ -245,7 +245,7 @@ class CoreMain
     {
         if ($this->getConfigs()->doDumb()) {
             // Mode maintenance: possibilité de s'identifier
-            LibBlock::getInstance()->launchStandaloneBlockType("Login");
+            LibBlock::getInstance()->buildStandaloneBlockType("Login");
 
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
@@ -256,8 +256,8 @@ class CoreMain
             $libMakeStyle->display("close");
         } else {
             // Mode normal: exécution général
-            LibModule::getInstance()->launch();
-            LibBlock::getInstance()->launchAllBlock();
+            LibModule::getInstance()->buildRequestedModule();
+            LibBlock::getInstance()->buildAllBlocks();
 
             $libMakeStyle = new LibMakeStyle();
             $libMakeStyle->display("main");
@@ -270,9 +270,9 @@ class CoreMain
     private function displayModuleLayout()
     {
         $libModule = LibModule::getInstance();
-        $libModule->launch();
+        $libModule->buildRequestedModule();
 
-        echo $libModule->getModule();
+        echo $libModule->getBuildedModule();
     }
 
     /**
@@ -281,9 +281,9 @@ class CoreMain
     private function displayBlockLayout()
     {
         $libBlock = LibBlock::getInstance();
-        $libBlock->launchBlockRequested();
+        $libBlock->buildBlockRequested();
 
-        echo $libBlock->getBlock();
+        echo $libBlock->getFirstBlockBuilded();
     }
 
     /**

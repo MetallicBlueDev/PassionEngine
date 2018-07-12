@@ -262,7 +262,7 @@ class CoreHtml
                 $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable("LibModule")) {
-                    $title .= " / " . LibModule::getInstance()->getSelectedModuleData()->getName();
+                    $title .= " / " . LibModule::getInstance()->getRequestedModuleData()->getName();
                 }
             } else {
                 // Titre manuel

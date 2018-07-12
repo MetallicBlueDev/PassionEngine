@@ -256,7 +256,7 @@ class LibBlockData extends LibEntityData
             if ($this->isAllTargetedModules()) {
                 $rslt = true;
             } else {
-                $selectedModuleId = LibModule::getInstance()->getSelectedModuleData()->getIdAsInt();
+                $selectedModuleId = LibModule::getInstance()->getRequestedModuleData()->getIdAsInt();
 
                 foreach ($this->getTargetModuleIds() as $allowedModuleId) {
                     if ($selectedModuleId === $allowedModuleId) {

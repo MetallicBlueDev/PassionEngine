@@ -34,7 +34,7 @@ class BlockComment extends BlockModel
         $this->configure();
 
         // Si le module courant fait partie de la liste des affichages
-        if (ExecUtils::inArray(LibModule::getInstance()->getSelectedModuleData()->getName(),
+        if (ExecUtils::inArray(LibModule::getInstance()->getRequestedModuleData()->getName(),
                                $this->displayOnModule,
                                true)) {
             // Si la position est interieur au module (moduletop ou modulebottom)

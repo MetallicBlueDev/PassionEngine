@@ -87,10 +87,10 @@ class LibModule
             self::$libModule = new LibModule();
 
             $defaultModule = CoreMain::getInstance()->getConfigs()->getDefaultModule();
-            $module = self::getRequestedModule($defaultModule);
-            $page = self::getRequestedPage();
-            $moduleData = self::getRequestedModuleData($module,
-                                                       $page);
+            $module = self::getRequestedOrDefaultModule($defaultModule);
+            $page = self::getRequestedOrDefaultPage();
+            $moduleData = self::getRequestedOrDefaultModuleData($module,
+                                                                $page);
 
             if ($moduleData == null && $module !== $defaultModule) {
                 // Afficher une erreur 404
@@ -144,14 +144,14 @@ class LibModule
      * @param string $moduleName
      * @return bool true le module est actuellement sélectionné
      */
-    public static function &isSelectedModule(string $moduleName): bool
+    public static function &isRequestedModule(string $moduleName): bool
     {
-        $selected = false;
+        $requested = false;
 
         if (self::$libModule !== null) {
-            $selected = self::$libModule->module === $moduleName;
+            $requested = self::$libModule->module === $moduleName;
         }
-        return $selected;
+        return $requested;
     }
 
     /**
@@ -159,7 +159,7 @@ class LibModule
      *
      * @return LibModuleData Informations sur le module.
      */
-    public function &getSelectedModuleData(): LibModuleData
+    public function &getRequestedModuleData(): LibModuleData
     {
         return $this->getModuleData($this->module);
     }
@@ -172,47 +172,47 @@ class LibModule
      */
     public function &getModuleData(string $moduleName): LibModuleData
     {
-        $moduleInfo = null;
+        $moduleData = null;
 
         if (!empty($moduleName)) {
             $moduleName = ucfirst($moduleName);
 
             if (isset($this->moduleDatas[$moduleName])) {
-                $moduleInfo = $this->moduleDatas[$moduleName];
+                $moduleData = $this->moduleDatas[$moduleName];
             } else {
-                $moduleInfo = $this->requestModuleData($moduleName);
+                $moduleData = $this->requestModuleData($moduleName);
             }
         }
-        return $moduleInfo;
+        return $moduleData;
     }
 
     /**
-     * Démarrage du module courant.
+     * Compilation du module courant.
      */
-    public function launch()
+    public function buildRequestedModule()
     {
-        $moduleInfo = $this->getSelectedModuleData();
+        $moduleData = $this->getRequestedModuleData();
 
         // Vérification du niveau d'acces
-        if (($moduleInfo->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleInfo))) || (!$moduleInfo->installed() && CoreSession::getInstance()->getUserInfos()->hasAdminRank())) {
-            if ($moduleInfo->isValid()) {
-                CoreTranslate::getInstance()->translate($moduleInfo->getFolderName());
+        if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getUserInfos()->hasAdminRank())) {
+            if ($moduleData->isValid()) {
+                CoreTranslate::getInstance()->translate($moduleData->getFolderName());
 
                 $libBreadcrumb = LibBreadcrumb::getInstance();
-                $libBreadcrumb->addTrail($moduleInfo->getName(),
-                                         "?module=" . $moduleInfo->getName());
+                $libBreadcrumb->addTrail($moduleData->getName(),
+                                         "?module=" . $moduleData->getName());
 
                 // TODO A MODIFIER
                 // Juste une petite exception pour le module management qui est different
-                if ($moduleInfo->getName() !== "management") {
-                    $libBreadcrumb->addTrail($moduleInfo->getView(),
-                                             "?module=" . $moduleInfo->getName() . "&view=" . $moduleInfo->getView());
+                if ($moduleData->getName() !== "management") {
+                    $libBreadcrumb->addTrail($moduleData->getView(),
+                                             "?module=" . $moduleData->getName() . "&view=" . $moduleData->getView());
                 }
 
-                $this->get($moduleInfo);
+                $this->fireBuildModuleData($moduleData);
             }
         } else {
-            CoreLogger::addError(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleInfo));
+            CoreLogger::addError(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleData));
         }
     }
 
@@ -221,11 +221,11 @@ class LibModule
      *
      * @return string
      */
-    public function &getModule(): string
+    public function &getBuildedModule(): string
     {
-        $selectedModuleData = $this->getSelectedModuleData();
-        $buffer = $selectedModuleData->getBuffer();
-        $configs = $selectedModuleData->getConfigs();
+        $requestedModuleData = $this->getRequestedModuleData();
+        $buffer = $requestedModuleData->getBuffer();
+        $configs = $requestedModuleData->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
         if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
@@ -303,11 +303,11 @@ class LibModule
     }
 
     /**
-     * Récupère le module.
+     * Compilation du module.
      *
      * @param LibModuleData $moduleData
      */
-    private function get(LibModuleData &$moduleData)
+    private function fireBuildModuleData(LibModuleData &$moduleData)
     {
         $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleData->getClassName(),
                                                                  $moduleData->getFolderName());
@@ -353,13 +353,13 @@ class LibModule
         if (CoreLoader::isCallable($pageInfo[0],
                                    $pageInfo[1])) {
             $userInfos = CoreSession::getInstance()->getUserInfos();
-            $selectedModuleData = $this->getSelectedModuleData();
+            $requestedModuleData = $this->getRequestedModuleData();
 
-            if ($pageInfo[1] === "install" && ($selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            if ($pageInfo[1] === "install" && ($requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "uninstall" && (!$selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "uninstall" && (!$requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "setting" && (!$selectedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "setting" && (!$requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
                 $invalid = true;
             }
         } else {
@@ -408,7 +408,7 @@ class LibModule
      * @param string $defaultModule Le module par défaut.
      * @return string
      */
-    private static function getRequestedModule(string $defaultModule): string
+    private static function getRequestedOrDefaultModule(string $defaultModule): string
     {
         $module = CoreRequest::getWord("module");
 
@@ -423,7 +423,7 @@ class LibModule
      *
      * @return string
      */
-    private static function getRequestedPage(): string
+    private static function getRequestedOrDefaultPage(): string
     {
         $page = CoreRequest::getWord("page");
 
@@ -438,7 +438,7 @@ class LibModule
      *
      * @return string
      */
-    private static function &getRequestedView(): string
+    private static function &getRequestedOrDefaultView(): string
     {
         $view = CoreRequest::getWord("view");
 
@@ -455,13 +455,13 @@ class LibModule
      * @param string $page
      * @return LibModuleData
      */
-    private static function getRequestedModuleData(string $module,
-                                                   string $page): LibModuleData
+    private static function getRequestedOrDefaultModuleData(string $module,
+                                                            string $page): LibModuleData
     {
         $moduleData = self::$libModule->getModuleData($module);
 
         if ($moduleData != null) {
-            $view = self::getRequestedView();
+            $view = self::getRequestedOrDefaultView();
 
             $moduleData->setPage($page);
             $moduleData->setView($view);
