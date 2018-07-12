@@ -65,7 +65,9 @@ abstract class BaseModel extends CoreTransaction
      * @param array $failArgs
      * @throws FailSql
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    protected function throwException(string $message,
+                                      int $failCode = 0,
+                                      array $failArgs = array()): void
     {
         throw new FailSql($message,
                           $failCode,
@@ -111,7 +113,10 @@ abstract class BaseModel extends CoreTransaction
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    public function delete(string $table,
+                           array $where = array(),
+                           array $like = array(),
+                           string $limit = ""): void
     {
         // Nom complet de la table
         $table = $this->getTableName($table);
@@ -160,7 +165,9 @@ abstract class BaseModel extends CoreTransaction
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values)
+    public function insert(string $table,
+                           array $keys,
+                           array $values): void
     {
         // Nom complet de la table
         $table = $this->getTableName($table);
@@ -185,7 +192,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @param string $sql
      */
-    public function query(string $sql = "")
+    public function query(string $sql = ""): void
     {
         unset($sql);
     }
@@ -199,7 +206,11 @@ abstract class BaseModel extends CoreTransaction
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    public function select(string $table,
+                           array $values,
+                           array $where = array(),
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         // Nom complet de la table
         $table = $this->getTableName($table);
@@ -227,7 +238,11 @@ abstract class BaseModel extends CoreTransaction
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    public function update(string $table,
+                           array $values,
+                           array $where,
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         // Nom complet de la table
         $table = $this->getTableName($table);
@@ -289,7 +304,8 @@ abstract class BaseModel extends CoreTransaction
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addArrayBuffer(string $name, string $key = "")
+    public function addArrayBuffer(string $name,
+                                   string $key = ""): void
     {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchArray() as $row) {
@@ -309,7 +325,8 @@ abstract class BaseModel extends CoreTransaction
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addObjectBuffer(string $name, string $key = "")
+    public function addObjectBuffer(string $name,
+                                    string $key = ""): void
     {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchObject() as $row) {
@@ -367,7 +384,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @param string $key
      */
-    public function addQuotedKey(string $key)
+    public function addQuotedKey(string $key): void
     {
         if (!empty($key)) {
             $this->quoted[$key] = true;
@@ -423,7 +440,8 @@ abstract class BaseModel extends CoreTransaction
      * @param bool $isValue
      * @return string
      */
-    protected function &addQuote(string $s, bool $isValue = false): string
+    protected function &addQuote(string $s,
+                                 bool $isValue = false): string
     {
         // Ne pas quoter les champs avec la notation avec les point
         if (($isValue && !ExecUtils::inArray($s,
