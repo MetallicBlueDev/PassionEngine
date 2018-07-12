@@ -45,7 +45,7 @@ class LibModuleData extends LibEntityData
         }
 
         if ($initializeConfig) {
-            $data['configs'] = isset($data['configs']) ? ExecUtils::getArrayConfigs($data['configs']) : array();
+            $data['modConfigs'] = isset($data['modConfigs']) ? ExecUtils::getArrayConfigs($data['modConfigs']) : array();
         }
 
         $this->newStorage($data);
@@ -181,7 +181,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getConfigs(): array
     {
-        return $this->getArray("configs");
+        return $this->getArray("modConfigs");
     }
 
     /**
@@ -194,7 +194,7 @@ class LibModuleData extends LibEntityData
     public function &getConfigValue(string $key,
                                     string $defaultValue = ""): string
     {
-        return $this->getSubString("configs",
+        return $this->getSubString("modConfigs",
                                    $key,
                                    $defaultValue);
     }

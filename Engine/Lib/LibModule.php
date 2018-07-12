@@ -288,7 +288,7 @@ class LibModule
 
         if ($coreSql->affectedRows() > 0) {
             $moduleData = $coreSql->fetchArray()[0];
-            $moduleData['configs'] = array();
+            $moduleData['modConfigs'] = array();
 
             $coreSql->select(CoreTable::MODULES_CONFIGS,
                              array("name", "value"),
@@ -296,7 +296,7 @@ class LibModule
             ));
 
             if ($coreSql->affectedRows() > 0) {
-                $moduleData['configs'] = $coreSql->fetchArray();
+                $moduleData['modConfigs'] = $coreSql->fetchArray();
             }
         }
         return $moduleData;
