@@ -65,9 +65,9 @@ class LibModule
     /**
      * Tableau d'information sur les modules.
      *
-     * @var array
+     * @var LibModuleData[]
      */
-    private $modulesInfo = array();
+    private $moduleDatas = array();
 
     /**
      * Création du gestionnaire.
@@ -177,8 +177,8 @@ class LibModule
         if (!empty($moduleName)) {
             $moduleName = ucfirst($moduleName);
 
-            if (isset($this->modulesInfo[$moduleName])) {
-                $moduleInfo = $this->modulesInfo[$moduleName];
+            if (isset($this->moduleDatas[$moduleName])) {
+                $moduleInfo = $this->moduleDatas[$moduleName];
             } else {
                 $moduleInfo = $this->requestModuleData($moduleName);
             }
@@ -244,32 +244,32 @@ class LibModule
      */
     private function &requestModuleData(string $moduleName): LibModuleData
     {
-        $moduleInfo = null;
+        $moduleData = null;
         $dbRequest = false;
-        $moduleData = array();
+        $moduleArrayDatas = array();
 
         // Recherche dans le cache
         $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
 
         if (!$coreCache->cached($moduleName . ".php")) {
-            $moduleData = $this->loadModuleData($moduleName);
-            $dbRequest = !empty($moduleData);
+            $moduleArrayDatas = $this->loadModuleData($moduleName);
+            $dbRequest = !empty($moduleArrayDatas);
         } else {
-            $moduleData = $coreCache->readCacheAsArray($moduleName . ".php");
+            $moduleArrayDatas = $coreCache->readCacheAsArray($moduleName . ".php");
         }
 
         // Injection des informations du module
-        $moduleInfo = new LibModuleData($moduleData,
+        $moduleData = new LibModuleData($moduleArrayDatas,
                                         $dbRequest);
-        $this->modulesInfo[$moduleName] = $moduleInfo;
+        $this->moduleDatas[$moduleName] = $moduleData;
 
         if ($dbRequest) {
             // Mise en cache
-            $content = $coreCache->serializeData($moduleData);
+            $content = $coreCache->serializeData($moduleArrayDatas);
             $coreCache->writeCache($moduleName . ".php",
                                    $content);
         }
-        return $moduleInfo;
+        return $moduleData;
     }
 
     /**
