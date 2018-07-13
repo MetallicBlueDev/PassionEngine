@@ -396,7 +396,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @param string $value
      */
-    public function addQuotedValue(string $value)
+    public function addQuotedValue(string $value): void
     {
         if (!empty($value)) {
             $this->quoted[] = $value;
@@ -406,7 +406,7 @@ abstract class BaseModel extends CoreTransaction
     /**
      * Remise à zéro du tableau de clés déjà quoté.
      */
-    public function resetQuoted()
+    public function resetQuoted(): void
     {
         $this->quoted = array();
     }

@@ -8,6 +8,8 @@ use mysqli_result;
 use TREngine\Engine\Core\CoreLogger;
 
 /**
+ * MySql Improve.
+ *
  * Gestionnaire de transaction utilisant l'extension MySqli (nouvelle version de MySql).
  * Ne supporte que les bases de données MySQL 4.1 et supérieur.
  *
@@ -34,7 +36,7 @@ class BaseMysqli extends BaseModel
     /**
      * {@inheritDoc}
      */
-    public function netConnect()
+    public function netConnect(): void
     {
         try {
             // Permet de générer une exception à la place des avertissements qui spam
@@ -66,7 +68,7 @@ class BaseMysqli extends BaseModel
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
         if ($this->netConnected()) {
             $this->getMysqli()->close();
@@ -80,7 +82,7 @@ class BaseMysqli extends BaseModel
      *
      * @param string $sql
      */
-    public function query(string $sql = "")
+    public function query(string $sql = ""): void
     {
         $this->queries = $this->getMysqli()->query($sql);
 
@@ -213,7 +215,11 @@ class BaseMysqli extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    public function update(string $table,
+                           array $values,
+                           array $where,
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         parent::update($table,
                        $values,
@@ -231,7 +237,11 @@ class BaseMysqli extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    public function select(string $table,
+                           array $values,
+                           array $where = array(),
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         parent::select($table,
                        $values,
@@ -247,7 +257,9 @@ class BaseMysqli extends BaseModel
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values)
+    public function insert(string $table,
+                           array $keys,
+                           array $values): void
     {
         parent::insert($table,
                        $keys,
@@ -262,7 +274,10 @@ class BaseMysqli extends BaseModel
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    public function delete(string $table,
+                           array $where = array(),
+                           array $like = array(),
+                           string $limit = ""): void
     {
         parent::delete($table,
                        $where,

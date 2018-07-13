@@ -33,7 +33,7 @@ abstract class CoreTransaction extends CoreDataStorage
      * @param array $transaction
      * @throws FailEngine
      */
-    public function initialize(array &$transaction)
+    public function initialize(array &$transaction): void
     {
         if (!$this->initialized()) {
             $this->newStorage($transaction);
@@ -70,7 +70,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Etablie une connexion au serveur.
      */
-    public function netConnect()
+    public function netConnect(): void
     {
 
     }
@@ -88,7 +88,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Déconnexion du serveur.
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
 
     }
@@ -162,7 +162,9 @@ abstract class CoreTransaction extends CoreDataStorage
      * @param array $failArgs
      * @throws FailEngine
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    protected function throwException(string $message,
+                                      int $failCode = 0,
+                                      array $failArgs = array()): void
     {
         throw new FailEngine($message,
                              $failCode,

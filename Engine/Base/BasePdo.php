@@ -8,6 +8,9 @@ use PDOStatement;
 use TREngine\Engine\Core\CoreLogger;
 
 /**
+ * PDO: PHP Data Objects.
+ * Data-access abstraction layer.
+ *
  * Gestionnaire de transaction utilisant l'extension PHP Data Objects.
  *
  * Supporte de nombreuse type base de données :
@@ -60,7 +63,7 @@ class BasePdo extends BaseModel
     /**
      * {@inheritDoc}
      */
-    public function netConnect()
+    public function netConnect(): void
     {
         try {
             // Host = mysql:host=127.0.0.1
@@ -91,7 +94,7 @@ class BasePdo extends BaseModel
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
         $this->connId = null;
     }
@@ -101,7 +104,7 @@ class BasePdo extends BaseModel
      *
      * @param string $sql
      */
-    public function query(string $sql = "")
+    public function query(string $sql = ""): void
     {
         $this->queries = $this->getPdo()->query($sql);
 
@@ -222,7 +225,11 @@ class BasePdo extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    public function update(string $table,
+                           array $values,
+                           array $where,
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         parent::update($table,
                        $values,
@@ -240,7 +247,11 @@ class BasePdo extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    public function select(string $table,
+                           array $values,
+                           array $where = array(),
+                           array $orderby = array(),
+                           string $limit = ""): void
     {
         parent::select($table,
                        $values,
@@ -256,7 +267,9 @@ class BasePdo extends BaseModel
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values)
+    public function insert(string $table,
+                           array $keys,
+                           array $values): void
     {
         parent::insert($table,
                        $keys,
@@ -271,7 +284,10 @@ class BasePdo extends BaseModel
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    public function delete(string $table,
+                           array $where = array(),
+                           array $like = array(),
+                           string $limit = ""): void
     {
         parent::delete($table,
                        $where,
@@ -297,13 +313,13 @@ class BasePdo extends BaseModel
             '"',
             "\x1a"),
                            array(
-                    '\\\\',
-                    '\\0',
-                    '\\n',
-                    '\\r',
-                    "\\'",
-                    '\\"',
-                    '\\Z'),
+                '\\\\',
+                '\\0',
+                '\\n',
+                '\\r',
+                "\\'",
+                '\\"',
+                '\\Z'),
                            $str);
     }
 
@@ -312,7 +328,7 @@ class BasePdo extends BaseModel
      *
      * @return PDO
      */
-    private function &getPdo(): PDO
+    private function &getPdo(): ?PDO
     {
         return $this->connId;
     }
@@ -323,7 +339,7 @@ class BasePdo extends BaseModel
      * @param mixed $query
      * @return PDOStatement
      */
-    private function &getPdoResult($query = null): PDOStatement
+    private function &getPdoResult($query = null): ?PDOStatement
     {
         $object = null;
 
