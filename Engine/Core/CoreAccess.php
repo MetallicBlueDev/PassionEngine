@@ -16,19 +16,21 @@ class CoreAccess
      * @param CoreAccessToken $token
      * @return string
      */
-    public static function &getAccessErrorMessage(CoreAccessToken $token): string
+    public static function &getAccessErrorMessage(?CoreAccessToken $token): string
     {
         $error = ERROR_ACCES_FORBIDDEN;
 
-        if ($token->getRank() === -1) {
-            $error = ERROR_ACCES_OFF;
-        } else {
-            $userInfos = CoreSession::getInstance()->getUserInfos();
+        if ($token !== null) {
+            if ($token->getRank() === -1) {
+                $error = ERROR_ACCES_OFF;
+            } else {
+                $userInfos = CoreSession::getInstance()->getUserInfos();
 
-            if ($token->getRank() === 1 && !$userInfos->hasRegisteredRank()) {
-                $error = ERROR_ACCES_MEMBER;
-            } else if ($token->getRank() > 1 && $userInfos->getRank() < $token->getRank()) {
-                $error = ERROR_ACCES_ADMIN;
+                if ($token->getRank() === 1 && !$userInfos->hasRegisteredRank()) {
+                    $error = ERROR_ACCES_MEMBER;
+                } else if ($token->getRank() > 1 && $userInfos->getRank() < $token->getRank()) {
+                    $error = ERROR_ACCES_ADMIN;
+                }
             }
         }
         return $error;
@@ -41,7 +43,8 @@ class CoreAccess
      * @param bool $forceSpecificRank
      * @return bool
      */
-    public static function &autorize(CoreAccessType &$accessType, bool $forceSpecificRank = false): bool
+    public static function &autorize(CoreAccessType &$accessType,
+                                     bool $forceSpecificRank = false): bool
     {
         $rslt = false;
 
@@ -111,7 +114,8 @@ class CoreAccess
      * @param CoreSessionData $userInfos
      * @return bool
      */
-    private static function &autorizeSpecific(CoreAccessType &$accessType, CoreSessionData $userInfos): bool
+    private static function &autorizeSpecific(CoreAccessType &$accessType,
+                                              CoreSessionData $userInfos): bool
     {
         $rslt = false;
 

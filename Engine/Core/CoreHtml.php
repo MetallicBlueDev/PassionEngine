@@ -583,10 +583,10 @@ class CoreHtml
 
     /**
      * Vérification des scripts à inclure.
-     * 
+     *
      * @param bool $forceIncludes
      */
-    private function &checkMetaIncludeJavascript(bool $forceIncludes = false): void
+    private function checkMetaIncludeJavascript(bool $forceIncludes = false): void
     {
         $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->isDefaultLayout() : true;
 

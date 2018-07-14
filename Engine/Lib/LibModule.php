@@ -92,7 +92,7 @@ class LibModule
             $moduleData = self::getRequestedOrDefaultModuleData($module,
                                                                 $page);
 
-            if ($moduleData === null && $module !== $defaultModule) {
+            if (($moduleData === null || !$moduleData->isValid()) && $module !== $defaultModule) {
                 // Afficher une erreur 404
                 if (!empty($module) || !empty($page)) {
                     CoreLogger::addInfo(ERROR_404);
@@ -173,15 +173,12 @@ class LibModule
     public function &getModuleData(string $moduleName): LibModuleData
     {
         $moduleData = null;
+        $moduleName = ucfirst($moduleName);
 
-        if (!empty($moduleName)) {
-            $moduleName = ucfirst($moduleName);
-
-            if (isset($this->moduleDatas[$moduleName])) {
-                $moduleData = $this->moduleDatas[$moduleName];
-            } else {
-                $moduleData = $this->requestModuleData($moduleName);
-            }
+        if (isset($this->moduleDatas[$moduleName])) {
+            $moduleData = $this->moduleDatas[$moduleName];
+        } else {
+            $moduleData = $this->requestModuleData($moduleName);
         }
         return $moduleData;
     }
@@ -261,7 +258,7 @@ class LibModule
         // Injection des informations du module
         $moduleData = new LibModuleData($moduleArrayDatas,
                                         $dbRequest);
-        $this->moduleDatas[$moduleName] = $moduleData;
+        $this->moduleDatas[$moduleData->getName()] = $moduleData;
 
         if ($dbRequest) {
             // Mise en cache
@@ -465,10 +462,6 @@ class LibModule
 
             $moduleData->setPage($page);
             $moduleData->setView($view);
-
-            if (!$moduleData->isValid()) {
-                $moduleData = null;
-            }
         }
         return $moduleData;
     }
