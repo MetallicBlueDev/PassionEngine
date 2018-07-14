@@ -487,32 +487,44 @@ class CoreTranslate
         if (self::canUseExtension($extension)) {
             $validExtension = $extension;
         } else {
-            // Recherche de l'URL
-            if (!defined("TR_ENGINE_URL")) {
-                $url = CoreRequest::getString("SERVER_NAME",
-                                              "",
-                                              CoreRequestType::SERVER);
-            } else {
-                $url = TR_ENGINE_URL;
-            }
+            $validExtension = $this->getLanguageExtensionFromUrl();
+        }
+        return $validExtension;
+    }
 
-            // Recherche de l'extension de URL
-            $matches = array();
-            preg_match('@^(?:http://)?([^/]+)@i',
-                       $url,
-                       $matches);
-            preg_match('/[^.]+\.[^.]+$/',
-                       $matches[1],
-                       $matches);
-            preg_match('/[^.]+$/',
-                       $matches[0],
-                       $matches);
+    /**
+     * Recherche et retourne l'extension de la langue.
+     *
+     * @return string
+     */
+    private static function &getLanguageExtensionFromUrl(): string
+    {
+        // Recherche de l'URL
+        if (!defined("TR_ENGINE_URL")) {
+            $url = CoreRequest::getString("SERVER_NAME",
+                                          "",
+                                          CoreRequestType::SERVER);
+        } else {
+            $url = TR_ENGINE_URL;
+        }
 
-            $extension = $matches[0];
+        // Recherche de l'extension de URL
+        $matches = array();
+        preg_match('@^(?:http://)?([^/]+)@i',
+                   $url,
+                   $matches);
+        preg_match('/[^.]+\.[^.]+$/',
+                   $matches[1],
+                   $matches);
+        preg_match('/[^.]+$/',
+                   $matches[0],
+                   $matches);
 
-            if (self::canUseExtension($extension)) {
-                $validExtension = $extension;
-            }
+        $validExtension = "";
+        $extension = $matches[0];
+
+        if (self::canUseExtension($extension)) {
+            $validExtension = $extension;
         }
         return $validExtension;
     }
