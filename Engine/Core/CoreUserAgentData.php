@@ -9,12 +9,14 @@ use TREngine\Engine\Exec\ExecUserAgent;
  *
  * @author Sébastien Villemain
  */
-class CoreUserAgentData extends CoreDataStorage {
+class CoreUserAgentData extends CoreDataStorage
+{
 
     /**
      * Nouveau collecteur d'information sur le User-Agent.
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
 
         $data = array();
@@ -26,7 +28,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getAddressIp(): string {
+    public function &getAddressIp(): string
+    {
         if (!$this->exist("agentIp")) {
             $this->searchAddressIp();
         }
@@ -38,7 +41,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getHost(): string {
+    public function &getHost(): string
+    {
         if (!$this->exist("agentHost")) {
             $this->searchHost();
         }
@@ -50,7 +54,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getUserAgent(): string {
+    public function &getUserAgent(): string
+    {
         if (!$this->exist("userAgent")) {
             $this->searchUserAgent();
         }
@@ -62,7 +67,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getOsCategory(): string {
+    public function &getOsCategory(): string
+    {
         if (!$this->exist("agentOsCategory")) {
             $this->searchOs();
         }
@@ -74,7 +80,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getOsName(): string {
+    public function &getOsName(): string
+    {
         if (!$this->exist("agentOsName")) {
             $this->searchOs();
         }
@@ -86,7 +93,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getBrowserCategory(): string {
+    public function &getBrowserCategory(): string
+    {
         if (!$this->exist("agentBrowserCategory")) {
             $this->searchBrowserData();
         }
@@ -98,7 +106,8 @@ class CoreUserAgentData extends CoreDataStorage {
      *
      * @return string
      */
-    public function &getBrowserName(): string {
+    public function &getBrowserName(): string
+    {
         if (!$this->exist("agentBrowserName")) {
             $this->searchBrowserData();
         }
@@ -108,9 +117,10 @@ class CoreUserAgentData extends CoreDataStorage {
     /**
      * Version du navigateur du client.
      *
-     * string string
+     * @return string
      */
-    public function &getBrowserVersion(): string {
+    public function &getBrowserVersion(): string
+    {
         if (!$this->exist("agentBrowserVersion")) {
             $this->searchBrowserData();
         }
@@ -120,9 +130,10 @@ class CoreUserAgentData extends CoreDataStorage {
     /**
      * Chemin référent qu'a suivi le client.
      *
-     * @var string
+     * @return string
      */
-    public function &getReferer(): string {
+    public function &getReferer(): string
+    {
         if (!$this->exist("agentReferer")) {
             $this->searchReferer();
         }
@@ -132,50 +143,64 @@ class CoreUserAgentData extends CoreDataStorage {
     /**
      * Recherche l'adresse IP du client.
      */
-    private function searchAddressIp() {
-        $this->setDataValue("agentIp", ExecUserAgent::getAddressIp());
+    private function searchAddressIp(): void
+    {
+        $this->setDataValue("agentIp",
+                            ExecUserAgent::getAddressIp());
     }
 
     /**
      * Recherche l'hôte du client.
      */
-    private function searchHost() {
-        $this->setDataValue("agentHost", ExecUserAgent::getHost($this->getAddressIp()));
+    private function searchHost(): void
+    {
+        $this->setDataValue("agentHost",
+                            ExecUserAgent::getHost($this->getAddressIp()));
     }
 
     /**
      * Recherche la chaine User-Agent.
      */
-    private function searchUserAgent() {
-        $this->setDataValue("userAgent", ExecUserAgent::getRawUserAgent());
+    private function searchUserAgent(): void
+    {
+        $this->setDataValue("userAgent",
+                            ExecUserAgent::getRawUserAgent());
     }
 
     /**
      * Recherche le système d'exploitation du client.
      */
-    private function searchOs() {
+    private function searchOs(): void
+    {
         $osData = ExecUserAgent::getOsData($this->getUserAgent());
 
-        $this->setDataValue("agentOsCategory", $osData['category']);
-        $this->setDataValue("agentOsName", $osData['name']);
+        $this->setDataValue("agentOsCategory",
+                            $osData['category']);
+        $this->setDataValue("agentOsName",
+                            $osData['name']);
     }
 
     /**
      * Recherche le navigateur du client.
      */
-    private function searchBrowserData() {
+    private function searchBrowserData(): void
+    {
         $browserData = ExecUserAgent::getBrowserData($this->getUserAgent());
 
-        $this->setDataValue("agentBrowserCategory", $browserData['category']);
-        $this->setDataValue("agentBrowserName", $browserData['name']);
-        $this->setDataValue("agentBrowserVersion", $browserData['version']);
+        $this->setDataValue("agentBrowserCategory",
+                            $browserData['category']);
+        $this->setDataValue("agentBrowserName",
+                            $browserData['name']);
+        $this->setDataValue("agentBrowserVersion",
+                            $browserData['version']);
     }
 
     /**
      * Recherche le chemin référent que le client a suivi.
      */
-    private function searchReferer() {
-        $this->setDataValue("agentReferer", ExecUserAgent::getReferer());
+    private function searchReferer(): void
+    {
+        $this->setDataValue("agentReferer",
+                            ExecUserAgent::getReferer());
     }
-
 }

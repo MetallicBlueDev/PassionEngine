@@ -153,7 +153,7 @@ class CoreSecure
      *
      * @param Exception $ex L'exception interne levée.
      */
-    public function catchException(Exception $ex)
+    public function catchException(?Exception $ex)
     {
         $this->locked = true;
 
@@ -222,13 +222,11 @@ class CoreSecure
     private function appendException(Exception $ex,
                                      array &$messages): void
     {
-        if ($ex !== null) {
-            $this->appendExceptionMessage($ex,
-                                          $messages);
-            $messages[] = "";
-            $this->appendExceptionTrace($ex,
-                                        $messages);
-        }
+        $this->appendExceptionMessage($ex,
+                                      $messages);
+        $messages[] = "";
+        $this->appendExceptionTrace($ex,
+                                    $messages);
     }
 
     /**

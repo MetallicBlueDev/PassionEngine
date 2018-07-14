@@ -225,7 +225,7 @@ class CoreTranslate
     /**
      * Vérification de l'instance du gestionnaire de traduction.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreTranslate === null) {
             self::$coreTranslate = new CoreTranslate();
@@ -238,7 +238,7 @@ class CoreTranslate
      *
      * @param array $cache
      */
-    public function affectCache(array $cache)
+    public function affectCache(array $cache): void
     {
         if (!empty($cache) && empty($this->cache)) {
             $this->cache = $cache;
@@ -270,7 +270,7 @@ class CoreTranslate
      *
      * @param string $pathLang chemin du fichier de traduction.
      */
-    public function translate(string $pathLang)
+    public function translate(string $pathLang): void
     {
         if (!empty($pathLang) && !$this->translated($pathLang)) {
             $this->fireTranslation($pathLang);
@@ -294,7 +294,7 @@ class CoreTranslate
      *
      * @param string $pathLang
      */
-    public static function removeCache(string $pathLang = "")
+    public static function removeCache(string $pathLang = ""): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
         $langCacheFileName = self::getLangCachePrefixFileName($pathLang);
@@ -321,7 +321,7 @@ class CoreTranslate
      *
      * @param string $pathLang
      */
-    private function setTranslated(string $pathLang)
+    private function setTranslated(string $pathLang): void
     {
         $this->translated[$pathLang] = true;
     }
@@ -331,7 +331,7 @@ class CoreTranslate
      *
      * @param string $pathLang
      */
-    private function fireTranslation(string $pathLang)
+    private function fireTranslation(string $pathLang): void
     {
         if (!$this->translateWithCache($pathLang)) {
             $content = $this->getTranslation($pathLang);
@@ -427,7 +427,7 @@ class CoreTranslate
      * @param string $content
      */
     private function createTranslationCache(string $pathLang,
-                                            string $content)
+                                            string $content): void
     {
         if (CoreLoader::isCallable("CoreCache")) {
             $langCacheFileName = $this->getLangCacheFileName($pathLang);
@@ -441,7 +441,7 @@ class CoreTranslate
      *
      * @param string $content
      */
-    private function translateWithBuffer(string $content)
+    private function translateWithBuffer(string $content): void
     {
         ob_start();
         print eval(" $content ");
@@ -520,7 +520,7 @@ class CoreTranslate
     /**
      * Formate l'heure locale.
      */
-    private function configureLocale()
+    private function configureLocale(): void
     {
         if ($this->getCurrentLanguage() === "french" && TR_ENGINE_PHP_OS === "WIN") {
             setlocale(LC_TIME,

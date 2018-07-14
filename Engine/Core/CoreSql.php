@@ -72,7 +72,7 @@ class CoreSql extends BaseModel
      *
      * @param array $database
      */
-    public function initialize(array &$database)
+    public function initialize(array &$database): void
     {
         // NE RIEN FAIRE
         unset($database);
@@ -100,7 +100,7 @@ class CoreSql extends BaseModel
     /**
      * Vérification de l'instance du gestionnaire SQL.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreSql === null) {
             self::$coreSql = new CoreSql();
@@ -129,16 +129,14 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      */
-    public function netConnect()
+    public function netConnect(): void
     {
         $this->selectedBase->netConnect();
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return bool
@@ -149,10 +147,9 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
         if (self::hasConnection()) {
             $this->selectedBase->netDeconnect();
@@ -170,7 +167,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return int
@@ -181,7 +177,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -192,7 +187,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -203,7 +197,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -214,7 +207,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -225,7 +217,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -236,7 +227,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -247,7 +237,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $table Nom de la table
@@ -273,7 +262,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return array
@@ -284,7 +272,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $className
@@ -296,7 +283,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $table Nom de la table
@@ -305,7 +291,7 @@ class CoreSql extends BaseModel
      */
     public function insert(string $table,
                            array $keys,
-                           array $values)
+                           array $values): void
     {
         $this->selectedBase->insert($table,
                                     $keys,
@@ -319,7 +305,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -330,13 +315,12 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $sql
      * @throws FailSql
      */
-    public function query(string $sql = "")
+    public function query(string $sql = ""): void
     {
         $sql = (!empty($sql)) ? $sql : $this->getSql();
 
@@ -357,7 +341,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $table
@@ -370,7 +353,7 @@ class CoreSql extends BaseModel
                            array $values,
                            array $where = array(),
                            array $orderby = array(),
-                           string $limit = "")
+                           string $limit = ""): void
     {
         $this->selectedBase->select($table,
                                     $values,
@@ -386,7 +369,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $table Nom de la table
@@ -399,7 +381,7 @@ class CoreSql extends BaseModel
                            array $values,
                            array $where,
                            array $orderby = array(),
-                           string $limit = "")
+                           string $limit = ""): void
     {
         $this->selectedBase->update($table,
                                     $values,
@@ -415,7 +397,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return mixed
@@ -426,7 +407,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -437,7 +417,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param mixed $query
@@ -450,14 +429,13 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $name
      * @param string $key
      */
     public function addArrayBuffer(string $name,
-                                   string $key = "")
+                                   string $key = ""): void
     {
         $this->selectedBase->addArrayBuffer($name,
                                             $key);
@@ -465,14 +443,13 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $name
      * @param string $key clé à utiliser
      */
     public function addObjectBuffer(string $name,
-                                    string $key = "")
+                                    string $key = ""): void
     {
         $this->selectedBase->addObjectBuffer($name,
                                              $key);
@@ -480,7 +457,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $name
@@ -492,7 +468,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $name
@@ -504,7 +479,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return array
@@ -515,23 +489,21 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $key
      */
-    public function addQuotedKey(string $key)
+    public function addQuotedKey(string $key): void
     {
         $this->selectedBase->addQuotedKey($key);
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $value
      */
-    public function addQuotedValue(string $value)
+    public function addQuotedValue(string $value): void
     {
         $this->selectedBase->addQuotedValue($value);
     }
@@ -539,13 +511,12 @@ class CoreSql extends BaseModel
     /**
      * Aucune action réalisée dans ce contexte.
      */
-    public function resetQuoted()
+    public function resetQuoted(): void
     {
         // NE RIEN FAIRE
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string
@@ -556,7 +527,6 @@ class CoreSql extends BaseModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return string

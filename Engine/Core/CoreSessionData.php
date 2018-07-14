@@ -229,7 +229,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      * @param bool $force
      */
     public function setTemplate(string $template,
-                                bool $force = false)
+                                bool $force = false): void
     {
         if (!$this->hasValue("template") || $force) {
             $this->setDataValue("template",
@@ -255,7 +255,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      * @param bool $force
      */
     public function setLangue(string $langue,
-                              bool $force = false)
+                              bool $force = false): void
     {
         if (!$this->hasValue("langue") || $force) {
             $this->setDataValue("langue",
@@ -279,7 +279,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
     /**
      * Routine de vérification des droits du client.
      */
-    private function checkRights()
+    private function checkRights(): void
     {
         $accessTypes = array();
 
@@ -287,13 +287,13 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
             $coreSql = CoreSql::getInstance();
 
             $coreSql->select(
-                    CoreTable::USERS_RIGHTS,
-                    array(
-                        "zone",
-                        "page",
-                        "identifier"),
-                    array(
-                        "user_id = '" . $this->getId() . "'")
+                CoreTable::USERS_RIGHTS,
+                array(
+                    "zone",
+                    "page",
+                    "identifier"),
+                array(
+                    "user_id = '" . $this->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
