@@ -388,33 +388,10 @@ class CoreCache extends CacheModel
                                $content,
                                $matches,
                                PREG_PATTERN_ORDER) !== false) {
-                // Suppression des caractères d'échappements
-                $content = str_replace("\\\"",
-                                       "\"",
-                                       $content);
-
-                // Utilisation des variables en cache
-                ${$cacheVariableName} = $cacheVariables;
-                $hasEmpty = false;
-
-                // Remplacement de toutes les variables
-                foreach ($matches[2] as $value) {
-                    if ($value === "") {
-                        $hasEmpty = true;
-                        continue;
-                    }
-
-                    // Remplace la variable par sa valeur
-                    $content = str_replace("\$" . $cacheVariableName . "[" . $value . "]",
-                                           ${$cacheVariableName}[$value],
-                                           $content);
-                }
-
-                if ($hasEmpty) {
-                    $content = str_replace($cacheVariableName,
-                                           ${$cacheVariableName},
-                                           $content);
-                }
+                $content = $this->replaceVariable($content,
+                                                  $matches,
+                                                  $cacheVariableName,
+                                                  $cacheVariables);
             }
         }
         return $content;
@@ -749,6 +726,50 @@ class CoreCache extends CacheModel
                                                  $updateTime);
             }
         }
+    }
+
+    /**
+     * Retourne les données telles qu’elles seront écrites.
+     *
+     * @param string $content
+     * @param array $matches
+     * @param string $cacheVariableName
+     * @param array $cacheVariables
+     * @return string
+     */
+    private function &replaceVariable(string $content,
+                                      array $matches,
+                                      string $cacheVariableName,
+                                      array $cacheVariables): string
+    {
+        // Suppression des caractères d'échappements
+        $content = str_replace("\\\"",
+                               "\"",
+                               $content);
+
+        // Utilisation des variables en cache
+        ${$cacheVariableName} = $cacheVariables;
+        $hasEmpty = false;
+
+        // Remplacement de toutes les variables
+        foreach ($matches[2] as $value) {
+            if ($value === "") {
+                $hasEmpty = true;
+                continue;
+            }
+
+            // Remplace la variable par sa valeur
+            $content = str_replace("\$" . $cacheVariableName . "[" . $value . "]",
+                                   ${$cacheVariableName}[$value],
+                                   $content);
+        }
+
+        if ($hasEmpty) {
+            $content = str_replace($cacheVariableName,
+                                   ${$cacheVariableName},
+                                   $content);
+        }
+        return $content;
     }
 
     /**
