@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // -----------------------------------------------------------------------
 // -- TR ENGINE = PUISSANCE + SIMPLICITE + EVOLUTIVITE
 // -- Puissance par une quantité d'énergie fournie au meilleur de PHP
@@ -13,7 +15,8 @@ use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Exec\ExecTimeMarker;
 
 // Marque le passage dans l'index
-define("TR_ENGINE_INDEX", true);
+define("TR_ENGINE_INDEX",
+       true);
 
 // Chargement et exécution de la sécurité
 require 'Engine' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';

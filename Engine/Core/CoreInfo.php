@@ -49,7 +49,8 @@ class CoreInfo
      * @param string $name Pointeur vers le nom de la variable.
      * @param array $value Pointeur vers le contenu de la variable.
      */
-    public static function addGlobalVars(&$name, &$value)
+    public static function addGlobalVars(&$name,
+                                         &$value)
     {
         if (!self::$initialized) {
             self::$unsafeGlobalVars[$name] = $value;
@@ -231,54 +232,59 @@ class CoreInfo
      */
     private function getUrlAddress()
     {
+        $rslt = "";
+
         // Recherche de l'URL courante
         $urlTmp = self::getGlobalServer("REQUEST_URI");
 
-        if (substr($urlTmp,
-                   -1) === "/") {
-            $urlTmp = substr($urlTmp,
-                             0,
-                             -1);
-        }
-
-        if ($urlTmp[0] === "/") {
-            $urlTmp = substr($urlTmp,
-                             1);
-        }
-
-        $urlTmp = explode("/",
-                          $urlTmp);
-
-        // Recherche du dossier courant
-        $urlBase = explode(DIRECTORY_SEPARATOR,
-                           TR_ENGINE_INDEX_DIRECTORY);
-
-        // Construction du lien
-        $urlFinal = "";
-        $urlTmpCounter = count($urlTmp);
-        $urlBaseCounter = count($urlBase);
-
-        for ($i = $urlTmpCounter - 1; $i >= 0; $i--) {
-            for ($j = $urlBaseCounter - 1; $j >= 0; $j--) {
-                if (empty($urlBase[$j])) {
-                    continue;
-                }
-
-                if ($urlTmp[$i] !== $urlBase[$j]) {
-                    break;
-                }
-
-                if (empty($urlFinal)) {
-                    $urlFinal = $urlTmp[$i];
-                } else {
-                    $urlFinal = $urlTmp[$i] . "/" . $urlFinal;
-                }
-
-                $urlBase[$j] = "";
+        if (!empty($urlTmp)) {
+            if (substr($urlTmp,
+                       -1) === "/") {
+                $urlTmp = substr($urlTmp,
+                                 0,
+                                 -1);
             }
+
+            if ($urlTmp[0] === "/") {
+                $urlTmp = substr($urlTmp,
+                                 1);
+            }
+
+            $urlTmp = explode("/",
+                              $urlTmp);
+
+            // Recherche du dossier courant
+            $urlBase = explode(DIRECTORY_SEPARATOR,
+                               TR_ENGINE_INDEX_DIRECTORY);
+
+            // Construction du lien
+            $urlFinal = "";
+            $urlTmpCounter = count($urlTmp);
+            $urlBaseCounter = count($urlBase);
+
+            for ($i = $urlTmpCounter - 1; $i >= 0; $i--) {
+                for ($j = $urlBaseCounter - 1; $j >= 0; $j--) {
+                    if (empty($urlBase[$j])) {
+                        continue;
+                    }
+
+                    if ($urlTmp[$i] !== $urlBase[$j]) {
+                        break;
+                    }
+
+                    if (empty($urlFinal)) {
+                        $urlFinal = $urlTmp[$i];
+                    } else {
+                        $urlFinal = $urlTmp[$i] . "/" . $urlFinal;
+                    }
+
+                    $urlBase[$j] = "";
+                }
+            }
+            $serverName = self::getGlobalServer("SERVER_NAME");
+            $rslt = ((empty($urlFinal)) ? $serverName : $serverName . "/" . $urlFinal);
         }
-        $serverName = self::getGlobalServer("SERVER_NAME");
-        return ((empty($urlFinal)) ? $serverName : $serverName . "/" . $urlFinal);
+        return $rslt;
     }
 
     /**
@@ -321,6 +327,6 @@ class CoreInfo
      */
     private static function getGlobalServer($keyName)
     {
-        return self::$unsafeGlobalVars["_SERVER"][$keyName];
+        return (isset(self::$unsafeGlobalVars['_SERVER'])) ? self::$unsafeGlobalVars['_SERVER'][$keyName] : "";
     }
 }

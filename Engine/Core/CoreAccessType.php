@@ -230,7 +230,7 @@ class CoreAccessType implements CoreAccessToken
     /**
      * Routine de vérification du type d'accès.
      */
-    private function checkValidity()
+    private function checkValidity(): void
     {
         $valid = false;
 

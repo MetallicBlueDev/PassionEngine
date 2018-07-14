@@ -137,7 +137,7 @@ class CoreCache extends CacheModel
      *
      * @param array $cache
      */
-    public function initialize(array &$cache)
+    public function initialize(array &$cache): void
     {
 // NE RIEN FAIRE
         unset($cache);
@@ -170,7 +170,7 @@ class CoreCache extends CacheModel
     /**
      * Vérification de l'instance du gestionnaire de cache.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreCache === null) {
             self::$coreCache = new CoreCache();
@@ -191,7 +191,7 @@ class CoreCache extends CacheModel
     /**
      * {@inheritDoc}
      */
-    public function netConnect()
+    public function netConnect(): void
     {
         $this->selectedCache->netConnect();
     }
@@ -209,7 +209,7 @@ class CoreCache extends CacheModel
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
         $this->selectedCache->netDeconnect();
     }
@@ -289,7 +289,7 @@ class CoreCache extends CacheModel
      *
      * @param string $newRoot
      */
-    public function setServerRoot(string &$newRoot)
+    public function setServerRoot(string &$newRoot): void
     {
         $this->selectedCache->setServerRoot($newRoot);
     }
@@ -303,7 +303,7 @@ class CoreCache extends CacheModel
      */
     public function writeCache(string $path,
                                $content,
-                               bool $overwrite = true)
+                               bool $overwrite = true): void
     {
         $this->writeCacheAsString($path,
                                   $content,
@@ -448,7 +448,7 @@ class CoreCache extends CacheModel
      */
     public function readCache(string $path,
                               string $dynamicVariableName = "",
-                              array $dynamicVariableValue = [])
+                              array $dynamicVariableValue = []): void
     {
         $this->readCacheAsString($path,
                                  $dynamicVariableName,
@@ -520,7 +520,7 @@ class CoreCache extends CacheModel
      * @param int $updateTime
      */
     public function touchCache(string $path,
-                               int $updateTime = 0)
+                               int $updateTime = 0): void
     {
         if ($updateTime <= 0) {
             $updateTime = time();
@@ -536,7 +536,7 @@ class CoreCache extends CacheModel
      * @param int $timeLimit limite de temps
      */
     public function removeCache(string $path,
-                                int $timeLimit = 0)
+                                int $timeLimit = 0): void
     {
         $this->removeCache[$this->getCurrentSectionPath($path)] = $timeLimit;
     }
@@ -609,7 +609,7 @@ class CoreCache extends CacheModel
      *
      * @param string $newSectionPath
      */
-    public function changeCurrentSection(string $newSectionPath = CoreCacheSection::TMP)
+    public function changeCurrentSection(string $newSectionPath = CoreCacheSection::TMP): void
     {
         $newSectionPath = empty($newSectionPath) ? CoreCacheSection::TMP : $newSectionPath;
         $newSectionPath = str_replace("/",
@@ -680,7 +680,7 @@ class CoreCache extends CacheModel
      *
      * @param int $timeLimit la limite de temps
      */
-    public function cleanCache(int $timeLimit)
+    public function cleanCache(int $timeLimit): void
     {
         $exist = $this->cached(self::CHECKER_FILENAME);
         $valid = false;
@@ -714,7 +714,7 @@ class CoreCache extends CacheModel
     /**
      * Exécute la routine du cache.
      */
-    public function runJobs()
+    public function runJobs(): void
     {
         if (!empty($this->removeCache)) {
             // Suppression de cache demandée

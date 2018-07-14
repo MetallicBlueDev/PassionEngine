@@ -144,7 +144,7 @@ class CoreLoader
      *
      * @throws FailLoader
      */
-    public static function affectRegister()
+    public static function affectRegister(): void
     {
         try {
             if (!is_null(self::$loadedFiles)) {
@@ -155,8 +155,8 @@ class CoreLoader
             self::$loadedFiles = array();
 
             if (!spl_autoload_register(array(
-                        'TREngine\Engine\Core\CoreLoader',
-                        'classLoader'),
+                    'TREngine\Engine\Core\CoreLoader',
+                    'classLoader'),
                                        true)) {
                 throw new FailLoader("spl_autoload_register fail",
                                      4);
@@ -211,7 +211,9 @@ class CoreLoader
      * @param bool $static Appel d'instance ou statique
      * @return bool true l'appel peut être effectué
      */
-    public static function &isCallable(string $className, string $methodName = "", bool $static = false): bool
+    public static function &isCallable(string $className,
+                                       string $methodName = "",
+                                       bool $static = false): bool
     {
         $rslt = false;
         $fileType = "";
@@ -310,7 +312,8 @@ class CoreLoader
      * @param string $prefixName
      * @return string
      */
-    public static function &getFullQualifiedClassName(string $className, string $prefixName = ""): string
+    public static function &getFullQualifiedClassName(string $className,
+                                                      string $prefixName = ""): string
     {
         $fileType = "";
 
@@ -351,7 +354,8 @@ class CoreLoader
      * @param string $currentLanguage
      * @return string
      */
-    public static function &getFilePathFromTranslate(string $keyName, string $currentLanguage = ""): string
+    public static function &getFilePathFromTranslate(string $keyName,
+                                                     string $currentLanguage = ""): string
     {
         $path = $keyName . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
 
@@ -372,7 +376,8 @@ class CoreLoader
      * @param string $fileType
      * @return string chemin absolu ou nulle.
      */
-    private static function &getAbsolutePath(string $keyName, string $fileType): string
+    private static function &getAbsolutePath(string $keyName,
+                                             string $fileType): string
     {
         self::buildKeyNameAndFileType($keyName,
                                       $fileType);
@@ -387,7 +392,8 @@ class CoreLoader
      * @param string $fileType
      * @return string
      */
-    private static function &getLoadedFileKey(string $keyName, string $fileType): string
+    private static function &getLoadedFileKey(string $keyName,
+                                              string $fileType): string
     {
         $loadKeyName = $keyName;
 
@@ -407,7 +413,8 @@ class CoreLoader
      * @param string $fileType Type de fichier.
      * @return bool true si c'est déjà chargé.
      */
-    private static function isLoaded(string $keyName, string $fileType): bool
+    private static function isLoaded(string $keyName,
+                                     string $fileType): bool
     {
         return isset(self::$loadedFiles[self::getLoadedFileKey($keyName,
                                                                $fileType)]);
@@ -421,7 +428,8 @@ class CoreLoader
      * @return bool true chargé.
      * @throws FailLoader
      */
-    private static function &manageLoad(string &$keyName, string $fileType): bool
+    private static function &manageLoad(string &$keyName,
+                                        string $fileType): bool
     {
         $loaded = false;
 
@@ -456,7 +464,8 @@ class CoreLoader
      * @return bool
      * @throws FailLoader
      */
-    private static function &load(string $keyName, string $fileType): bool
+    private static function &load(string $keyName,
+                                  string $fileType): bool
     {
         $loaded = false;
         $path = self::getFilePath($keyName,
@@ -493,7 +502,9 @@ class CoreLoader
      * @param string $fileType
      * @param string $prefixName
      */
-    private static function buildKeyNameAndFileType(string &$keyName, string &$fileType, string $prefixName = "")
+    private static function buildKeyNameAndFileType(string &$keyName,
+                                                    string &$fileType,
+                                                    string $prefixName = ""): void
     {
         if (empty($fileType)) {
             self::buildGenericKeyNameAndFileType($keyName,
@@ -520,7 +531,9 @@ class CoreLoader
      * @param string $fileType
      * @param string $prefixName
      */
-    private static function buildGenericKeyNameAndFileType(string &$keyName, string &$fileType, string $prefixName)
+    private static function buildGenericKeyNameAndFileType(string &$keyName,
+                                                           string &$fileType,
+                                                           string $prefixName): void
     {
         if (strpos($keyName,
                    "\Block\Block") !== false) {
@@ -530,35 +543,52 @@ class CoreLoader
             $fileType = self::MODULE_FILE;
         } else if (strpos($keyName,
                           "\\") === false) {
-            foreach (self::NAMESPACE_TYPES as $namespaceType) {
-                if (strrpos($keyName,
-                            $namespaceType,
-                            -strlen($keyName)) !== false) {
-                    $fileType = $namespaceType;
-
-                    $keyName = str_replace("{KEYNAME}",
-                                           $keyName,
-                                           self::NAMESPACE_PATTERN);
-                    $keyName = str_replace("{PREFIX}",
-                                           $prefixName,
-                                           $keyName);
-                    $keyName = str_replace("{TYPE}",
-                                           $namespaceType,
-                                           $keyName);
-
-                    $namespaceOrigin = (strrpos($keyName,
-                                                $namespaceType . self::CUSTOM_SUBTYPE) !== false) ? self::CUSTOM_SUBTYPE : self::ENGINE_SUBTYPE;
-                    $keyName = str_replace("{ORIGIN}",
-                                           $namespaceOrigin,
-                                           $keyName);
-                    break;
-                }
-            }
+            self::buildGenericKeyNameAndFileTypeFromNamespace($keyName,
+                                                              $fileType,
+                                                              $prefixName);
         }
 
         if (empty($fileType)) {
             // Type par défaut
             $fileType = self::CLASS_FILE;
+        }
+    }
+
+    /**
+     * Construction du chemin et du type de fichier.
+     *
+     * @param string $keyName
+     * @param string $fileType
+     * @param string $prefixName
+     */
+    private static function buildGenericKeyNameAndFileTypeFromNamespace(string &$keyName,
+                                                                        string &$fileType,
+                                                                        string $prefixName): void
+    {
+
+        foreach (self::NAMESPACE_TYPES as $namespaceType) {
+            if (strrpos($keyName,
+                        $namespaceType,
+                        -strlen($keyName)) !== false) {
+                $fileType = $namespaceType;
+
+                $keyName = str_replace("{KEYNAME}",
+                                       $keyName,
+                                       self::NAMESPACE_PATTERN);
+                $keyName = str_replace("{PREFIX}",
+                                       $prefixName,
+                                       $keyName);
+                $keyName = str_replace("{TYPE}",
+                                       $namespaceType,
+                                       $keyName);
+
+                $namespaceOrigin = (strrpos($keyName,
+                                            $namespaceType . self::CUSTOM_SUBTYPE) !== false) ? self::CUSTOM_SUBTYPE : self::ENGINE_SUBTYPE;
+                $keyName = str_replace("{ORIGIN}",
+                                       $namespaceOrigin,
+                                       $keyName);
+                break;
+            }
         }
     }
 
@@ -570,7 +600,8 @@ class CoreLoader
      * @return string
      * @throws FailLoader
      */
-    private static function &getFilePath(string $keyName, string $fileType): string
+    private static function &getFilePath(string $keyName,
+                                         string $fileType): string
     {
         $path = "";
 
@@ -612,7 +643,9 @@ class CoreLoader
      * @param string $path
      * @return bool
      */
-    private static function &loadFilePath(string $keyName, string $fileType, string $path): bool
+    private static function &loadFilePath(string $keyName,
+                                          string $fileType,
+                                          string $path): bool
     {
         $loaded = false;
 
@@ -632,13 +665,13 @@ class CoreLoader
 
         switch ($fileType) {
             case self::TRANSLATE_FILE:
-                if (!empty($lang) && is_array($lang)) {
-                    CoreTranslate::getInstance()->affectCache($lang);
+                if (!empty(${self::TRANSLATE_EXTENSION}) && is_array(${self::TRANSLATE_EXTENSION})) {
+                    CoreTranslate::getInstance()->affectCache(${self::TRANSLATE_EXTENSION});
                 }
                 break;
             case self::INCLUDE_FILE:
                 CoreMain::getInstance()->getConfigs()->addInclude($keyName,
-                                                                  $inc);
+                                                                  ${self::INCLUDE_FILE});
                 break;
         }
         return $loaded;

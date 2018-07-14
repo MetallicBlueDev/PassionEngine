@@ -40,7 +40,7 @@ class CacheFtp extends CacheModel
     /**
      * {@inheritDoc}
      */
-    public function netConnect()
+    public function netConnect(): void
     {
         // Si aucune connexion engagé
         if ($this->connId === null) {
@@ -62,7 +62,7 @@ class CacheFtp extends CacheModel
     /**
      * {@inheritDoc}
      */
-    public function netDeconnect()
+    public function netDeconnect(): void
     {
         if ($this->netConnected()) {
             if (ftp_close($this->connId)) {
@@ -100,7 +100,9 @@ class CacheFtp extends CacheModel
      * @param mixed $content
      * @param bool $overwrite
      */
-    public function writeCache(string $path, $content, bool $overwrite = true)
+    public function writeCache(string $path,
+                               $content,
+                               bool $overwrite = true): void
     {
         if (!is_file($this->getRootPath($path))) {
             // Soit le fichier n'exite pas, soit tout le dossier n'existe pas
@@ -120,7 +122,8 @@ class CacheFtp extends CacheModel
      * @param string $path
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0)
+    public function touchCache(string $path,
+                               int $updateTime = 0): void
     {
         // TODO mise a jour de la date de modif a coder
         parent::touchCache($path,
@@ -133,7 +136,8 @@ class CacheFtp extends CacheModel
      * @param string $path
      * @param int $timeLimit
      */
-    public function removeCache(string $path, int $timeLimit = 0)
+    public function removeCache(string $path,
+                                int $timeLimit = 0): void
     {
         if (!empty($path) && is_file($this->getRootPath($path))) {
             // C'est un fichier a supprimer
@@ -175,22 +179,22 @@ class CacheFtp extends CacheModel
 
         // On supprime les mauvaises clés
         $dirListKeys = array_merge(
-                array_keys($dirList,
-                           ".."),
-                           array_keys($dirList,
-                                      "."),
-                                      array_keys($dirList,
-                                                 "index.html"),
-                                                 array_keys($dirList,
-                                                            "index.htm"),
-                                                            array_keys($dirList,
-                                                                       "index.php"),
-                                                                       array_keys($dirList,
-                                                                                  ".htaccess"),
-                                                                                  array_keys($dirList,
-                                                                                             ".svn"),
-                                                                                             array_keys($dirList,
-                                                                                                        "checker.txt")
+            array_keys($dirList,
+                       ".."),
+                       array_keys($dirList,
+                                  "."),
+                                  array_keys($dirList,
+                                             "index.html"),
+                                             array_keys($dirList,
+                                                        "index.htm"),
+                                                        array_keys($dirList,
+                                                                   "index.php"),
+                                                                   array_keys($dirList,
+                                                                              ".htaccess"),
+                                                                              array_keys($dirList,
+                                                                                         ".svn"),
+                                                                                         array_keys($dirList,
+                                                                                                    "checker.txt")
         );
 
         if (is_array($dirListKeys)) {
@@ -220,7 +224,7 @@ class CacheFtp extends CacheModel
 
             if ($mTime === -1) { // Une erreur est survenue
                 CoreLogger::addException("Bad response for ftp_mdtm command. Path : " . $path
-                        . " Turn off the native command.");
+                    . " Turn off the native command.");
             }
         }
         return $mTime;
@@ -254,7 +258,7 @@ class CacheFtp extends CacheModel
     /**
      * Configuration du dossier root du FTP.
      */
-    private function rootConfig()
+    private function rootConfig(): void
     {
         // Si aucun root n'est précisé
         if ($this->getServerRoot() === DIRECTORY_SEPARATOR) {
@@ -303,7 +307,8 @@ class CacheFtp extends CacheModel
      * @param string $path : chemin du dossier
      * @param int $mode : droit à attribuer en OCTAL (en octal: 0777 -> 777)
      */
-    private function chmod(string $path, int $mode)
+    private function chmod(string $path,
+                           int $mode): void
     {
         if (ftp_site($this->connId,
                      "CHMOD " . $mode . " " . $this->getRootPath($path))) {
@@ -318,7 +323,9 @@ class CacheFtp extends CacheModel
      * @param string $content
      * @param bool $overwrite
      */
-    private function writeFile(string $path, string $content, bool $overwrite = true)
+    private function writeFile(string $path,
+                               string $content,
+                               bool $overwrite = true): void
     {
         $content = ($overwrite) ? self::getFileHeader($path,
                                                       $content) : $content;
@@ -351,7 +358,7 @@ class CacheFtp extends CacheModel
      *
      * @param string $path : chemin valide à créer
      */
-    private function writeDirectory(string $path)
+    private function writeDirectory(string $path): void
     {
         // Savoir si le path est un dossier ou un fichier
         $pathIsDir = self::isDirectoryPath($path);
@@ -399,7 +406,7 @@ class CacheFtp extends CacheModel
      *
      * @param string $path
      */
-    private function makeDirectory(string $path)
+    private function makeDirectory(string $path): void
     {
         if (!ftp_mkdir($this->connId,
                        $path)) {
@@ -417,7 +424,8 @@ class CacheFtp extends CacheModel
      * @param string $path : chemin valide à supprimer
      * @param int $timeLimit
      */
-    private function removeFile(string $path, int $timeLimit)
+    private function removeFile(string $path,
+                                int $timeLimit): void
     {
         // Vérification de la date d'expiration
         $deleteFile = false;
@@ -449,7 +457,8 @@ class CacheFtp extends CacheModel
      * @param string $path : chemin valide à supprimer
      * @param int $timeLimit
      */
-    private function removeDirectory(string $path, int $timeLimit)
+    private function removeDirectory(string $path,
+                                     int $timeLimit): void
     {
         // Récuperation des éléments présents
         $dirList = $this->getNameList($path);
@@ -492,7 +501,9 @@ class CacheFtp extends CacheModel
      * @param int $timeLimit
      * @return bool
      */
-    private function &canRemove(string $path, string $dirPath, int $timeLimit): bool
+    private function &canRemove(string $path,
+                                string $dirPath,
+                                int $timeLimit): bool
     {
         $rslt = true;
 

@@ -52,7 +52,9 @@ class CachePhp extends CacheModel
      * @param mixed $content
      * @param bool $overwrite
      */
-    public function writeCache(string $path, $content, bool $overwrite = true)
+    public function writeCache(string $path,
+                               $content,
+                               bool $overwrite = true): void
     {
         if (!is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
             // Soit le fichier n'exite pas soit tout le dossier n'existe pas
@@ -72,7 +74,8 @@ class CachePhp extends CacheModel
      * @param string $path
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0)
+    public function touchCache(string $path,
+                               int $updateTime = 0): void
     {
         if (!touch(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path,
                    $updateTime)) {
@@ -86,7 +89,8 @@ class CachePhp extends CacheModel
      * @param string $path
      * @param int $timeLimit
      */
-    public function removeCache(string $path, int $timeLimit = 0)
+    public function removeCache(string $path,
+                                int $timeLimit = 0): void
     {
         if (!empty($path) && is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
             // C'est un fichier a supprimer
@@ -155,7 +159,9 @@ class CachePhp extends CacheModel
      * @param string $content contenu du fichier cache
      * @param bool $overwrite écrasement du fichier
      */
-    private function writeFile(string $pathFile, string $content, bool $overwrite = true)
+    private function writeFile(string $pathFile,
+                               string $content,
+                               bool $overwrite = true): void
     {
         $content = ($overwrite) ? self::getFileHeader($pathFile,
                                                       $content) : $content;
@@ -187,7 +193,7 @@ class CachePhp extends CacheModel
                 @unlink(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
 
                 CoreLogger::addException("Bad response for fwrite command. Path : " . $pathFile . ". "
-                        . "Server response : " . $nbBytesCmd . " bytes writed, " . $nbBytesFile . " bytes readed");
+                    . "Server response : " . $nbBytesCmd . " bytes writed, " . $nbBytesFile . " bytes readed");
             }
 
             // Libere le verrou
@@ -208,7 +214,9 @@ class CachePhp extends CacheModel
      * @param string $content
      * @param bool $overwrite
      */
-    private function manageFileOpenError(string $pathFile, string $content, bool $overwrite)
+    private function manageFileOpenError(string $pathFile,
+                                         string $content,
+                                         bool $overwrite): void
     {
         // Recherche d'un fichier htaccess
         $strlen = strlen($pathFile);
@@ -239,7 +247,7 @@ class CachePhp extends CacheModel
      *
      * @param string $path chemin voulu
      */
-    private function writeDirectory(string $path)
+    private function writeDirectory(string $path): void
     {
         // Savoir si le path est un dossier ou un fichier
         $pathIsDir = self::isDirectoryPath($path);
@@ -285,7 +293,7 @@ class CachePhp extends CacheModel
      *
      * @param string $path
      */
-    private function makeDirectory(string $path)
+    private function makeDirectory(string $path): void
     {
         // Création du dossier
         mkdir($path,
@@ -305,7 +313,8 @@ class CachePhp extends CacheModel
      * @param string $path
      * @param int $timeLimit
      */
-    private function removeFile(string $path, int $timeLimit)
+    private function removeFile(string $path,
+                                int $timeLimit): void
     {
         if ($this->canRemoveFile($path,
                                  $timeLimit)) {
@@ -339,7 +348,8 @@ class CachePhp extends CacheModel
      * @param int $timeLimit
      * @return boolean
      */
-    private function &canRemoveFile(string $path, int $timeLimit): bool
+    private function &canRemoveFile(string $path,
+                                    int $timeLimit): bool
     {
         $deleteFile = false;
 
@@ -363,7 +373,8 @@ class CachePhp extends CacheModel
      * @param string $dirPath
      * @param int $timeLimit
      */
-    private function removeDirectory(string $dirPath, int $timeLimit)
+    private function removeDirectory(string $dirPath,
+                                     int $timeLimit): void
     {
         // Ouverture du dossier
         $handle = opendir(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
@@ -417,7 +428,9 @@ class CachePhp extends CacheModel
      * @param int $timeLimit
      * @return bool
      */
-    private function &canRemove(string $dirPath, string $file, int $timeLimit): bool
+    private function &canRemove(string $dirPath,
+                                string $file,
+                                int $timeLimit): bool
     {
         $rslt = true;
 

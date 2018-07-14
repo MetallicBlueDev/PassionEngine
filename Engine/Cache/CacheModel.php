@@ -31,7 +31,9 @@ abstract class CacheModel extends CoreTransaction
      * @param array $failArgs
      * @throws FailCache
      */
-    protected function throwException(string $message, int $failCode = 0, array $failArgs = array())
+    protected function throwException(string $message,
+                                      int $failCode = 0,
+                                      array $failArgs = array()): void
     {
         throw new FailCache($message,
                             $failCode,
@@ -44,7 +46,7 @@ abstract class CacheModel extends CoreTransaction
      * @param array $transaction
      * @throws FailCache
      */
-    public function initialize(array &$transaction)
+    public function initialize(array &$transaction): void
     {
         if (!empty($transaction)) {
             $matches = array();
@@ -99,7 +101,7 @@ abstract class CacheModel extends CoreTransaction
      *
      * @param string $newRoot
      */
-    public function setServerRoot(string &$newRoot)
+    public function setServerRoot(string &$newRoot): void
     {
         $this->setDataValue("root",
                             $newRoot);
@@ -112,7 +114,9 @@ abstract class CacheModel extends CoreTransaction
      * @param mixed $content contenu du fichier cache
      * @param bool $overwrite écrasement du fichier
      */
-    public function writeCache(string $path, $content, bool $overwrite = true)
+    public function writeCache(string $path,
+                               $content,
+                               bool $overwrite = true): void
     {
         unset($path);
         unset($content);
@@ -125,7 +129,8 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path chemin vers le fichier cache
      * @param int $updateTime
      */
-    public function touchCache(string $path, int $updateTime = 0)
+    public function touchCache(string $path,
+                               int $updateTime = 0): void
     {
         unset($path);
         unset($updateTime);
@@ -137,7 +142,8 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path chemin vers le fichier ou le dossier
      * @param int $timeLimit limite de temps
      */
-    public function removeCache(string $path, int $timeLimit = 0)
+    public function removeCache(string $path,
+                                int $timeLimit = 0): void
     {
         unset($path);
         unset($timeLimit);
@@ -211,7 +217,8 @@ abstract class CacheModel extends CoreTransaction
      * @param string $content
      * @return string $content
      */
-    protected static function &getFileHeader(string $filePath, string $content): string
+    protected static function &getFileHeader(string $filePath,
+                                             string $content): string
     {
         $ext = substr($filePath,
                       -3);
@@ -239,12 +246,12 @@ abstract class CacheModel extends CoreTransaction
 
             // Ecriture de l'entête
             $content = "<?php\n"
-                    . "if (!defined(\"TR_ENGINE_INDEX\")){"
-                    . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
-                    . "}"
-                    . "// Generated on " . date('Y-m-d H:i:s') . "\n"
-                    . $content
-                    . "\n?>";
+                . "if (!defined(\"TR_ENGINE_INDEX\")){"
+                . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
+                . "}"
+                . "// Generated on " . date('Y-m-d H:i:s') . "\n"
+                . $content
+                . "\n?>";
         }
         return $content;
     }

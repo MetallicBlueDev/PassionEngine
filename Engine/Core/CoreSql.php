@@ -255,7 +255,10 @@ class CoreSql extends BaseModel
      * @param array $like
      * @param string $limit
      */
-    public function delete(string $table, array $where = array(), array $like = array(), string $limit = "")
+    public function delete(string $table,
+                           array $where = array(),
+                           array $like = array(),
+                           string $limit = ""): void
     {
         $this->selectedBase->delete($table,
                                     $where,
@@ -300,7 +303,9 @@ class CoreSql extends BaseModel
      * @param array $keys
      * @param array $values
      */
-    public function insert(string $table, array $keys, array $values)
+    public function insert(string $table,
+                           array $keys,
+                           array $values)
     {
         $this->selectedBase->insert($table,
                                     $keys,
@@ -361,7 +366,11 @@ class CoreSql extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function select(string $table, array $values, array $where = array(), array $orderby = array(), string $limit = "")
+    public function select(string $table,
+                           array $values,
+                           array $where = array(),
+                           array $orderby = array(),
+                           string $limit = "")
     {
         $this->selectedBase->select($table,
                                     $values,
@@ -386,7 +395,11 @@ class CoreSql extends BaseModel
      * @param array $orderby
      * @param string $limit
      */
-    public function update(string $table, array $values, array $where, array $orderby = array(), string $limit = "")
+    public function update(string $table,
+                           array $values,
+                           array $where,
+                           array $orderby = array(),
+                           string $limit = "")
     {
         $this->selectedBase->update($table,
                                     $values,
@@ -443,7 +456,8 @@ class CoreSql extends BaseModel
      * @param string $name
      * @param string $key
      */
-    public function addArrayBuffer(string $name, string $key = "")
+    public function addArrayBuffer(string $name,
+                                   string $key = "")
     {
         $this->selectedBase->addArrayBuffer($name,
                                             $key);
@@ -457,7 +471,8 @@ class CoreSql extends BaseModel
      * @param string $name
      * @param string $key clé à utiliser
      */
-    public function addObjectBuffer(string $name, string $key = "")
+    public function addObjectBuffer(string $name,
+                                    string $key = "")
     {
         $this->selectedBase->addObjectBuffer($name,
                                              $key);

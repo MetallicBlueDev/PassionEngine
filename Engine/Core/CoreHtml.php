@@ -122,7 +122,7 @@ class CoreHtml
     /**
      * Vérification de l'instance du gestionnaire de HTML.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreHtml === null) {
             self::$coreHtml = new CoreHtml();
@@ -134,7 +134,7 @@ class CoreHtml
      *
      * @param string $javaScript
      */
-    public function addJavascriptJquery(string $javaScript)
+    public function addJavascriptJquery(string $javaScript): void
     {
         if (!empty($this->javaScriptJquery)) {
             $this->javaScriptJquery .= "\n";
@@ -148,7 +148,7 @@ class CoreHtml
      *
      * @param string $javaScript
      */
-    public function addJavascriptCode(string $javaScript)
+    public function addJavascriptCode(string $javaScript): void
     {
         if (!empty($this->javaScriptCode)) {
             $this->javaScriptCode .= "\n";
@@ -162,7 +162,7 @@ class CoreHtml
      *
      * @param string $javaScript
      */
-    public function addJavascript(string $javaScript)
+    public function addJavascript(string $javaScript): void
     {
         if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->isDefaultLayout()) {
             $this->addJavascriptJquery($javaScript);
@@ -188,7 +188,7 @@ class CoreHtml
      * @param string $options
      */
     public function addJavascriptFile(string $fileName,
-                                      string $options = "")
+                                      string $options = ""): void
     {
         if (!array_key_exists($fileName,
                               $this->javaScriptFile)) {
@@ -223,7 +223,7 @@ class CoreHtml
      * @param string $options
      */
     public function addCssResourceFile(string $fileName,
-                                       string $options = "")
+                                       string $options = ""): void
     {
         $this->addCssFile("Resources" . DIRECTORY_SEPARATOR . "Css" . DIRECTORY_SEPARATOR . $fileName,
                           $options);
@@ -236,7 +236,7 @@ class CoreHtml
      * @param string $options
      */
     public function addCssTemplateFile(string $fileName,
-                                       string $options = "")
+                                       string $options = ""): void
     {
         if (CoreLoader::isCallable("LibMakeStyle")) {
             $this->addCssFile(LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . $fileName,
@@ -315,7 +315,7 @@ class CoreHtml
      *
      * @param string $title
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): void
     {
         $this->title = strip_tags($title);
     }
@@ -325,7 +325,7 @@ class CoreHtml
      *
      * @param array $keywords un tableau de mots clés
      */
-    public function setKeywords(array $keywords)
+    public function setKeywords(array $keywords): void
     {
         if (empty($this->keywords)) {
             array_push($this->keywords,
@@ -340,7 +340,7 @@ class CoreHtml
      *
      * @param string $description
      */
-    public function setDescription(string $description)
+    public function setDescription(string $description): void
     {
         $this->description = strip_tags($description);
     }
@@ -423,7 +423,7 @@ class CoreHtml
      */
     public function redirect(string $url = "",
                              int $tps = 0,
-                             string $method = "window")
+                             string $method = "window"): void
     {
         // Configuration du temps
         $tps = ((!is_numeric($tps)) ? 0 : $tps) * 1000;
@@ -451,7 +451,7 @@ class CoreHtml
     /**
      * Inclus et exécute le javascript de facon autonome.
      */
-    public function selfJavascript()
+    public function selfJavascript(): void
     {
         echo $this->getMetaIncludeJavascript(true) . $this->getMetaExecuteJavascript();
     }
@@ -491,7 +491,7 @@ class CoreHtml
     /**
      * Détection du javascript chez le client.
      */
-    private function checkJavascriptEnabled()
+    private function checkJavascriptEnabled(): void
     {
         // Récuperation du cookie en php
         $cookieTest = ExecCookie::getCookie($this->cookieTestName);
@@ -507,7 +507,7 @@ class CoreHtml
      * @param string $options
      */
     private function addCssFile(string $filePath,
-                                string $options = "")
+                                string $options = ""): void
     {
         if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace("/",
                                                                                   DIRECTORY_SEPARATOR,
@@ -611,7 +611,7 @@ class CoreHtml
     /**
      * Reset des codes et fichier inclus javascript.
      */
-    private function resetJavascript()
+    private function resetJavascript(): void
     {
         $this->javaScriptCode = "";
         $this->javaScriptJquery = "";

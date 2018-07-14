@@ -25,7 +25,7 @@ abstract class BlockModel
     /**
      * Affichage par défaut.
      */
-    public function display()
+    public function display(): void
     {
         CoreLogger::addError(ERROR_BLOCK_IMPLEMENT . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
     }
@@ -33,7 +33,7 @@ abstract class BlockModel
     /**
      * Procédure d'installation du block.
      */
-    public function install()
+    public function install(): void
     {
 
     }
@@ -41,7 +41,7 @@ abstract class BlockModel
     /**
      * Procédure de désinstallation du block.
      */
-    public function uninstall()
+    public function uninstall(): void
     {
 
     }
@@ -51,7 +51,7 @@ abstract class BlockModel
      *
      * @param LibBlockData $data
      */
-    public function setBlockData(LibBlockData &$data)
+    public function setBlockData(LibBlockData &$data): void
     {
         $this->data = $data;
     }
