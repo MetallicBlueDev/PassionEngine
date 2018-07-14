@@ -567,34 +567,7 @@ class CoreHtml
     private function &getMetaIncludeJavascript(bool $forceIncludes = false): string
     {
         if (CoreRequest::getRequestMethod() !== CoreRequestType::POST || $forceIncludes) {
-            $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->isDefaultLayout() : true;
-
-            if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
-                if (!empty($this->javaScriptJquery)) {
-                    $this->addJavascriptFile("jquery.js");
-                }
-
-                $this->addJavascriptFile("tr_engine.js");
-            } else {
-                $this->resetJavascript();
-            }
-
-            // Lorsque l'on ne force pas l'inclusion on fait un nouveau test
-            if (!$forceIncludes) {
-                if (!$this->javascriptEnabled() && !CoreSecure::getInstance()->locked()) {
-                    $this->addJavascriptFile("javascriptenabled.js");
-                    $this->addJavascriptCode("javascriptEnabled('" . $this->cookieTestName . "');");
-                }
-            }
-
-            if (CoreLoader::isCallable("CoreMain")) {
-                $coreMain = CoreMain::getInstance();
-
-                if ($coreMain->getAgentInfos()->getBrowserName() === "Internet Explorer" && $coreMain->getAgentInfos()->getBrowserVersion() < "7") {
-                    $this->addJavascriptFile("pngfix.js",
-                                             "defer");
-                }
-            }
+            $this->checkMetaIncludeJavascript($forceIncludes);
         } else {
             $this->resetJavascript();
         }
@@ -606,6 +579,43 @@ class CoreHtml
             $meta .= "<script" . ((!empty($options)) ? " " . $options : "") . " type=\"text/javascript\" src=\"Resources/Js/" . $fileName . "\"></script>\n";
         }
         return $meta;
+    }
+
+    /**
+     * Vérification des scripts à inclure.
+     * 
+     * @param bool $forceIncludes
+     */
+    private function &checkMetaIncludeJavascript(bool $forceIncludes = false): void
+    {
+        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->isDefaultLayout() : true;
+
+        if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
+            if (!empty($this->javaScriptJquery)) {
+                $this->addJavascriptFile("jquery.js");
+            }
+
+            $this->addJavascriptFile("tr_engine.js");
+        } else {
+            $this->resetJavascript();
+        }
+
+        // Lorsque l'on ne force pas l'inclusion on fait un nouveau test
+        if (!$forceIncludes) {
+            if (!$this->javascriptEnabled() && !CoreSecure::getInstance()->locked()) {
+                $this->addJavascriptFile("javascriptenabled.js");
+                $this->addJavascriptCode("javascriptEnabled('" . $this->cookieTestName . "');");
+            }
+        }
+
+        if (CoreLoader::isCallable("CoreMain")) {
+            $coreMain = CoreMain::getInstance();
+
+            if ($coreMain->getAgentInfos()->getBrowserName() === "Internet Explorer" && $coreMain->getAgentInfos()->getBrowserVersion() < "7") {
+                $this->addJavascriptFile("pngfix.js",
+                                         "defer");
+            }
+        }
     }
 
     /**
