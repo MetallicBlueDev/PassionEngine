@@ -108,7 +108,7 @@ class CoreInfo
              * @var string
              */
             define("TR_ENGINE_INDEX_DIRECTORY",
-                   $info->getBaseDir());
+                   $info->getIndexDirectory());
 
             /**
              * Adresse URL complète jusqu'à TR ENGINE.
@@ -169,7 +169,7 @@ class CoreInfo
      *
      * @return string
      */
-    private function getBaseDir()
+    private function getIndexDirectory()
     {
         $baseDir = "";
 
@@ -178,51 +178,86 @@ class CoreInfo
             // Nous sommes dans l'index
             $baseDir = getcwd();
         } else {
-            // Chemin de base
-            $baseName = str_replace(self::getGlobalServer("SCRIPT_NAME"),
-                                                          "",
-                                                          self::getGlobalServer("SCRIPT_FILENAME"));
+            $baseDir = $this->getIndexDirectoryFromCustomFolder();
+        }
+        return $baseDir;
+    }
+
+    /**
+     * Retourne le chemin jusqu'à la racine depuis le dossier actuel.
+     *
+     * @return string
+     */
+    private function getIndexDirectoryFromCustomFolder()
+    {
+        $pathFromWorkingFolder = "";
+
+        // Chemin de base
+        $baseName = str_replace(self::getGlobalServer("SCRIPT_NAME"),
+                                                      "",
+                                                      self::getGlobalServer("SCRIPT_FILENAME"));
+
+        if (!empty($baseName)) {
             $baseName = str_replace("/",
                                     DIRECTORY_SEPARATOR,
                                     $baseName);
             $workingDirectory = getcwd();
 
             if (!empty($workingDirectory)) {
-                // Nous isolons le chemin en plus jusqu'au fichier
-                $path = str_replace($baseName,
-                                    "",
-                                    $workingDirectory);
-
-                if (!empty($path)) {
-                    // Suppression du slash supplémentaire
-                    if ($path[0] === DIRECTORY_SEPARATOR) {
-                        $path = substr($path,
-                                       1);
-                    }
-
-                    // Vérification en se repérant sur l'emplacement du fichier de configuration
-                    while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
-                        // Nous remontons d'un cran
-                        $path = dirname($path);
-
-                        // La recherche n'aboutira pas
-                        if ($path === ".") {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Verification du résultat
-            if (!empty($path) && is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
-                $baseDir = $baseName . DIRECTORY_SEPARATOR . $path;
-            } else if (is_file($baseName . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
-                $baseDir = $baseName;
-            } else {
-                $baseDir = $baseName;
+                $pathFromWorkingFolder = $this->getPathFromWorkingFolder($baseName,
+                                                                         $workingDirectory);
             }
         }
+
+        // Verification du résultat
+        $baseDir = "";
+
+        if (!empty($pathFromWorkingFolder) && is_file($baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+            $baseDir = $baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder;
+        } else if (is_file($baseName . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+            $baseDir = $baseName;
+        } else {
+            $baseDir = $baseName;
+        }
         return $baseDir;
+    }
+
+    /**
+     * Retourne le chemin relatif jusqu'à la racine depuis le dossier actuel.
+     *
+     * @param string $baseName
+     * @param string $workingDirectory
+     * @return string
+     */
+    private function getPathFromWorkingFolder($baseName,
+                                              $workingDirectory)
+    {
+        $path = "";
+
+        // Nous isolons le chemin en plus jusqu'au fichier
+        $path = str_replace($baseName,
+                            "",
+                            $workingDirectory);
+
+        if (!empty($path)) {
+            // Suppression du slash supplémentaire
+            if ($path[0] === DIRECTORY_SEPARATOR) {
+                $path = substr($path,
+                               1);
+            }
+
+            // Vérification en se repérant sur l'emplacement du fichier de configuration
+            while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+                // Nous remontons d'un cran
+                $path = dirname($path);
+
+                // La recherche n'aboutira pas
+                if ($path === ".") {
+                    break;
+                }
+            }
+        }
+        return $path;
     }
 
     /**
@@ -235,56 +270,83 @@ class CoreInfo
         $rslt = "";
 
         // Recherche de l'URL courante
-        $urlTmp = self::getGlobalServer("REQUEST_URI");
+        $requestUri = self::getGlobalServer("REQUEST_URI");
 
-        if (!empty($urlTmp)) {
-            if (substr($urlTmp,
-                       -1) === "/") {
-                $urlTmp = substr($urlTmp,
-                                 0,
-                                 -1);
-            }
-
-            if ($urlTmp[0] === "/") {
-                $urlTmp = substr($urlTmp,
-                                 1);
-            }
-
-            $urlTmp = explode("/",
-                              $urlTmp);
+        if (!empty($requestUri)) {
+            $currentUrlArray = $this->getUrlAddressExploded($requestUri);
 
             // Recherche du dossier courant
-            $urlBase = explode(DIRECTORY_SEPARATOR,
-                               TR_ENGINE_INDEX_DIRECTORY);
+            $urlBaseArray = explode(DIRECTORY_SEPARATOR,
+                                    TR_ENGINE_INDEX_DIRECTORY);
 
             // Construction du lien
-            $urlFinal = "";
-            $urlTmpCounter = count($urlTmp);
-            $urlBaseCounter = count($urlBase);
-
-            for ($i = $urlTmpCounter - 1; $i >= 0; $i--) {
-                for ($j = $urlBaseCounter - 1; $j >= 0; $j--) {
-                    if (empty($urlBase[$j])) {
-                        continue;
-                    }
-
-                    if ($urlTmp[$i] !== $urlBase[$j]) {
-                        break;
-                    }
-
-                    if (empty($urlFinal)) {
-                        $urlFinal = $urlTmp[$i];
-                    } else {
-                        $urlFinal = $urlTmp[$i] . "/" . $urlFinal;
-                    }
-
-                    $urlBase[$j] = "";
-                }
-            }
+            $urlFinal = $this->getUrlAddressBuilded($currentUrlArray,
+                                                    $urlBaseArray);
             $serverName = self::getGlobalServer("SERVER_NAME");
             $rslt = ((empty($urlFinal)) ? $serverName : $serverName . "/" . $urlFinal);
         }
         return $rslt;
+    }
+
+    /**
+     * Retourne un tableau contenant les fragments de l'URL.
+     *
+     * @param string $requestUri
+     * @return array
+     */
+    private function getUrlAddressExploded($requestUri)
+    {
+        if (substr($requestUri,
+                   -1) === "/") {
+            $requestUri = substr($requestUri,
+                                 0,
+                                 -1);
+        }
+
+        if ($requestUri[0] === "/") {
+            $requestUri = substr($requestUri,
+                                 1);
+        }
+
+        $requestUri = explode("/",
+                              $requestUri);
+        return $requestUri;
+    }
+
+    /**
+     * Retourne l'adresse URL reconstruite.
+     *
+     * @param array $currentUrlArray
+     * @param array $urlBaseArray
+     * @return string
+     */
+    private function getUrlAddressBuilded($currentUrlArray,
+                                          $urlBaseArray)
+    {
+        $urlFinal = "";
+        $currentUrlCounter = count($currentUrlArray);
+        $urlBaseCounter = count($urlBaseArray);
+
+        for ($i = $currentUrlCounter - 1; $i >= 0; $i--) {
+            for ($j = $urlBaseCounter - 1; $j >= 0; $j--) {
+                if (empty($urlBaseArray[$j])) {
+                    continue;
+                }
+
+                if ($currentUrlArray[$i] !== $urlBaseArray[$j]) {
+                    break;
+                }
+
+                if (empty($urlFinal)) {
+                    $urlFinal = $currentUrlArray[$i];
+                } else {
+                    $urlFinal = $currentUrlArray[$i] . "/" . $urlFinal;
+                }
+
+                $urlBaseArray[$j] = "";
+            }
+        }
+        return $urlFinal;
     }
 
     /**
