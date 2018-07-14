@@ -7,6 +7,7 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Exec\ExecString;
+use TREngine\Engine\Exec\ExecUtils;
 
 /**
  * Information de base sur un block.
@@ -28,13 +29,18 @@ class LibBlockData extends LibEntityData
      *
      * @param array $data
      */
-    public function __construct(array &$data)
+    public function __construct(array &$data,
+                                bool $initializeConfig = false)
     {
         parent::__construct();
 
         // Vérification des informations
         if (count($data) < 3) {
             $data = array();
+        }
+
+        if ($initializeConfig) {
+            $data['bConfigs'] = isset($data['bConfigs']) ? ExecUtils::getArrayConfigs($data['bConfigs']) : array();
         }
 
         $this->newStorage($data);
@@ -169,25 +175,14 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne le contenu du block.
+     * Retourne la configuration du block.
      * Valeur nulle possible, notamment en base de données.
      *
-     * @return string
+     * @return array
      */
-    public function &getContent(): string
+    public function &getConfigs(): array
     {
-        return $this->getString("content");
-    }
-
-    /**
-     * Affecte le contenu du block.
-     *
-     * @param string $content
-     */
-    public function setContent(string $content): void
-    {
-        $this->setDataValue("content",
-                            $content);
+        return $this->getArray("bConfigs");
     }
 
     /**

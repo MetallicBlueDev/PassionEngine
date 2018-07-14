@@ -74,7 +74,6 @@ class Module_Management_Block extends ModuleModel
                 "side",
                 "position",
                 "title",
-                "content",
                 "type",
                 "rank",
                 "allMods"),
@@ -83,7 +82,9 @@ class Module_Management_Block extends ModuleModel
                 "position")
         );
         if (CoreSql::getInstance()->affectedRows() > 0) {
-            while ($row = CoreSql::getInstance()->fetchArray()) {
+            $rslt = CoreSql::getInstance()->fetchArray();
+
+            foreach ($rslt as $row) {
                 // Parametre de la ligne
                 $title = CoreHtml::getLink("?module=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'],
                                            $row['title']);
@@ -255,14 +256,13 @@ class Module_Management_Block extends ModuleModel
                     "side",
                     "position",
                     "title",
-                    "content",
                     "type",
                     "rank",
                     "allMods"),
                 array(
                     "block_id = '" . $blockId . "'")
             );
-            // TODO gestion de blocks_visibility
+            // TODO gestion de blocks_visibility +  blocks_configs
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
                 LibBreadcrumb::getInstance()->addTrail($block['title'],
@@ -332,10 +332,6 @@ class Module_Management_Block extends ModuleModel
                 $form->addInputText("blockTitle",
                                     BLOCK_VIEW_MODULE_PAGE,
                                     $block['mods']);
-
-                $form->addInputText("blockTitle",
-                                    "content",
-                                    $block['content']);
 
                 $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
                                                        "?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
@@ -411,7 +407,6 @@ class Module_Management_Block extends ModuleModel
                 "side ",
                 "position",
                 "title",
-                "content",
                 "type",
                 "rank",
                 "allMods");

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 11, 2018 at 07:36 PM
+-- Generation Time: Jul 14, 2018 at 07:35 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -49,7 +49,6 @@ CREATE TABLE `tr_blocks` (
   `side` tinyint(1) UNSIGNED NOT NULL,
   `position` tinyint(2) UNSIGNED NOT NULL,
   `title` varchar(45) NOT NULL,
-  `content` text,
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `allMods` tinyint(1) NOT NULL DEFAULT '0'

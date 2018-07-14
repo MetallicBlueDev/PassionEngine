@@ -14,6 +14,7 @@ use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreUrlRewriting;
+use TREngine\Engine\Exec\ExecUtils;
 use Exception;
 
 /**
@@ -347,10 +348,13 @@ class LibBlock
         if (isset($this->blockDatas[$blockId])) {
             $blockData = $this->blockDatas[$blockId];
         } else {
-            $blockArrayDatas = $this->requestBlockData($blockId);
+            $dbRequest = false;
+            $blockArrayDatas = $this->requestBlockData($blockId,
+                                                       $dbRequest);
 
             // Injection des informations du block
-            $blockData = new LibBlockData($blockArrayDatas);
+            $blockData = new LibBlockData($blockArrayDatas,
+                                          $dbRequest);
             $this->addBlockData($blockData);
         }
         return $blockData;
@@ -360,9 +364,11 @@ class LibBlock
      * Création des informations sur le block.
      *
      * @param int $blockId
+     * @param int $dbRequest
      * @return array
      */
-    private function &requestBlockData(int $blockId): array
+    private function &requestBlockData(int $blockId,
+                                       bool &$dbRequest): array
     {
         $blockArrayDatas = array();
 
@@ -371,6 +377,15 @@ class LibBlock
 
         if (!$coreCache->cached($blockId . ".php")) {
             $blockArrayDatas = $this->loadBlockDatas($blockId);
+            $dbRequest = !empty($blockArrayDatas);
+
+            if ($dbRequest) {
+                // Mise en cache
+                $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
+                $content = $coreCache->serializeData($blockArrayDatas);
+                $coreCache->writeCache($blockId . ".php",
+                                       $content);
+            }
         } else {
             $blockArrayDatas = $coreCache->readCacheAsArray($blockId . ".php");
         }
@@ -393,7 +408,6 @@ class LibBlock
                 "side",
                 "position",
                 "title",
-                "content",
                 "type",
                 "rank",
                 "allMods"),
@@ -402,6 +416,7 @@ class LibBlock
         if ($coreSql->affectedRows() > 0) {
             $blockArrayDatas = $coreSql->fetchArray()[0];
             $blockArrayDatas['modIds'] = array();
+            $blockArrayDatas['bConfigs'] = array();
 
             $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
                              array("mod_id"),
@@ -411,11 +426,13 @@ class LibBlock
                 $blockArrayDatas['modIds'] = $coreSql->fetchArray();
             }
 
-            // Mise en cache
-            $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
-            $content = $coreCache->serializeData($blockArrayDatas);
-            $coreCache->writeCache($blockId . ".php",
-                                   $content);
+            $coreSql->select(CoreTable::BLOCKS_CONFIGS,
+                             array("name", "value"),
+                             array("block_id =  '" . $blockId . "'"));
+
+            if ($coreSql->affectedRows() > 0) {
+                $blockArrayDatas['bConfigs'] = $coreSql->fetchArray();
+            }
         }
         return $blockArrayDatas;
     }
@@ -489,8 +506,9 @@ class LibBlock
                 $currentBuffer = $blockData->getBuffer();
 
                 // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-                if (strpos($blockData->getContent(),
-                           "rewriteBuffer") !== false) {
+                if (ExecUtils::inArray("rewriteBuffer",
+                                       $blockData->getConfigs(),
+                                       false)) {
                     $currentBuffer = CoreUrlRewriting::getInstance()->rewriteBuffer($currentBuffer);
                 }
 

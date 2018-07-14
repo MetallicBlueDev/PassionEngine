@@ -23,28 +23,24 @@ class BlockMenutree extends BlockMenu
 
         $libMakeStyle = new LibMakeStyle();
         $libMakeStyle->assignString("blockTitle",
-                                    $this->getBlockData()
-                        ->getTitle());
+                                    $this->getBlockData()->getTitle());
         $libMakeStyle->assignString("blockContent",
                                     $menus->render());
-        $libMakeStyle->display($this->getBlockData()
-                        ->getTemplateName());
+        $libMakeStyle->display($this->getBlockData()->getTemplateName());
     }
 
     private function configure()
     {
-        // Configure le style pour la classe
-        $this->getBlockData()->setContent(strtolower($this->getBlockData()
-                                ->getContent()));
+        $configs = $this->getBlockData()->getConfigs();
 
-        switch ($this->getBlockData()->getContent()) {
-            case "black":
-            case "red":
-            case "gray":
-            case "famfamfam":
-                break;
-            default:
-                $this->getBlockData()->setContent("");
+        if (isset($configs['type'])) {
+            switch (strtolower($configs['type'])) {
+                case "black":
+                case "red":
+                case "gray":
+                case "famfamfam":
+                    break;
+            }
         }
 
         ExecJQuery::checkTreeView("#block" . $this->getBlockData()->getId());

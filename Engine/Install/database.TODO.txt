@@ -1,9 +1,20 @@
+tr_banned
+TODO
 
 tr_blocks
-=> content => tr_blocks_configs
+=>OK
+
+tr_blocks_configs
+=>OK
+
+tr_blocks_visibility
+=>OK
 
 tr_configs
 =>OK
+
+tr_menus
+TODO
 
 tr_modules
 =>OK

@@ -32,6 +32,13 @@ class CoreTable
     public const BLOCKS_VISIBILITY = "blocks_visibility";
 
     /**
+     * Table de configuration des blocks.
+     *
+     * @var string
+     */
+    public const BLOCKS_CONFIGS = "blocks_configs";
+
+    /**
      * Table de la configuration du moteur.
      *
      * @var string

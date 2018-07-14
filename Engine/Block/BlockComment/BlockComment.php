@@ -17,10 +17,7 @@ class BlockComment extends BlockModel
 
     private function configure()
     {
-        list($displayOnModule) = explode('|',
-                                         $this->getBlockData()->getContent());
-        $this->displayOnModule = explode('>:>',
-                                         $displayOnModule); // on r�cup�re une chaine sous forme monModule>:>monModule2
+        $this->displayOnModule = $this->getBlockData()->getConfigs();
     }
 
     private function &render()

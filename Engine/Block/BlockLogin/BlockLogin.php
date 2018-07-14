@@ -60,11 +60,11 @@ class BlockLogin extends BlockModel
             $libMakeStyle = new LibMakeStyle();
             $libMakeStyle->assignString("blockTitle",
                                         $this->getBlockData()
-                            ->getTitle());
+                    ->getTitle());
             $libMakeStyle->assignString("blockContent",
                                         $this->render());
             $libMakeStyle->display($this->getBlockData()
-                            ->getTemplateName());
+                    ->getTemplateName());
         }
     }
 
@@ -84,8 +84,7 @@ class BlockLogin extends BlockModel
 
     private function configure()
     {
-        $options = explode('|',
-                           $this->getBlockData()->getContent());
+        $options = $this->getBlockData()->getConfigs();
 
         foreach ($options as $key => $value) {
             switch ($key) {

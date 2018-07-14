@@ -178,7 +178,14 @@ class LibModule
         if (isset($this->moduleDatas[$moduleName])) {
             $moduleData = $this->moduleDatas[$moduleName];
         } else {
-            $moduleData = $this->requestModuleData($moduleName);
+            $dbRequest = false;
+            $moduleArrayDatas = $this->requestModuleData($moduleName,
+                                                         $dbRequest);
+
+            // Injection des informations du module
+            $moduleData = new LibModuleData($moduleArrayDatas,
+                                            $dbRequest);
+            $this->addModuleData($moduleData);
         }
         return $moduleData;
     }
@@ -237,12 +244,11 @@ class LibModule
      * Demande le chargement des informations du module.
      *
      * @param string $moduleName Le nom du module.
-     * @return LibModuleData Informations sur le module.
+     * @return array Informations sur le module.
      */
-    private function &requestModuleData(string $moduleName): LibModuleData
+    private function &requestModuleData(string $moduleName,
+                                        bool & $dbRequest): array
     {
-        $moduleData = null;
-        $dbRequest = false;
         $moduleArrayDatas = array();
 
         // Recherche dans le cache
@@ -251,22 +257,17 @@ class LibModule
         if (!$coreCache->cached($moduleName . ".php")) {
             $moduleArrayDatas = $this->loadModuleDatas($moduleName);
             $dbRequest = !empty($moduleArrayDatas);
+
+            if ($dbRequest) {
+                // Mise en cache
+                $content = $coreCache->serializeData($moduleArrayDatas);
+                $coreCache->writeCache($moduleName . ".php",
+                                       $content);
+            }
         } else {
             $moduleArrayDatas = $coreCache->readCacheAsArray($moduleName . ".php");
         }
-
-        // Injection des informations du module
-        $moduleData = new LibModuleData($moduleArrayDatas,
-                                        $dbRequest);
-        $this->moduleDatas[$moduleData->getName()] = $moduleData;
-
-        if ($dbRequest) {
-            // Mise en cache
-            $content = $coreCache->serializeData($moduleArrayDatas);
-            $coreCache->writeCache($moduleName . ".php",
-                                   $content);
-        }
-        return $moduleData;
+        return $moduleArrayDatas;
     }
 
     /**
@@ -297,6 +298,16 @@ class LibModule
             }
         }
         return $moduleArrayDatas;
+    }
+
+    /**
+     * Alimente le cache des modules.
+     *
+     * @param LibModuleData $moduleData
+     */
+    private function addModuleData(LibModuleData $moduleData): void
+    {
+        $this->moduleDatas[$moduleData->getName()] = $moduleData;
     }
 
     /**
