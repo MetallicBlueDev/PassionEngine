@@ -53,7 +53,8 @@ class LibBreadcrumb
      * @param string $trail
      * @param string $link
      */
-    public function addTrail(string $trail, string $link = "")
+    public function addTrail(string $trail,
+                             string $link = ""): void
     {
         if (!empty($trail)) {
             $constant = "TRAIL_" . strtoupper($trail);

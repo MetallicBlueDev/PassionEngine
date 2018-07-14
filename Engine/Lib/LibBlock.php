@@ -169,7 +169,7 @@ class LibBlock
      *
      * @param string $blockTypeName
      */
-    public function addStandaloneBlockType(string $blockTypeName)
+    public function addStandaloneBlockType(string $blockTypeName): void
     {
         $this->standaloneBlocksType[] = $blockTypeName;
     }
@@ -189,7 +189,7 @@ class LibBlock
     /**
      * Compilation de tous les blocks.
      */
-    public function buildAllBlocks()
+    public function buildAllBlocks(): void
     {
         // Recherche dans l'indexeur
         $blocksIndexer = $this->getBlocksIndexer();
@@ -205,7 +205,7 @@ class LibBlock
     /**
      * Compilation du block demandé depuis une requête.
      */
-    public function buildBlockRequested()
+    public function buildBlockRequested(): void
     {
         $blockId = CoreRequest::getInteger("blockId",
                                            -1);
@@ -224,7 +224,7 @@ class LibBlock
      *
      * @param string $blockTypeName
      */
-    public function buildStandaloneBlockType(string $blockTypeName)
+    public function buildStandaloneBlockType(string $blockTypeName): void
     {
         if (!$this->isStandaloneBlockType($blockTypeName)) {
             CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
@@ -425,7 +425,7 @@ class LibBlock
      *
      * @param LibBlockData $blockData
      */
-    private function addBlockData(LibBlockData $blockData)
+    private function addBlockData(LibBlockData $blockData): void
     {
         $this->blockDatas[$blockData->getId()] = $blockData;
     }
@@ -511,7 +511,7 @@ class LibBlock
      * @param bool $checkModule
      */
     private function buildBlockById(int $blockId,
-                                    bool $checkModule)
+                                    bool $checkModule): void
     {
         $blockData = $this->getBlockData($blockId);
         $this->buildBlockData($blockData,
@@ -525,7 +525,7 @@ class LibBlock
      * @param bool $checkModule
      */
     private function buildBlockData(LibBlockData $blockData,
-                                    bool $checkModule)
+                                    bool $checkModule): void
     {
         if ($blockData->isValid() && $blockData->canActive($checkModule)) {
             $this->fireBuildBlockData($blockData);
@@ -537,7 +537,7 @@ class LibBlock
      *
      * @param LibBlockData $blockData
      */
-    private function fireBuildBlockData(LibBlockData &$blockData)
+    private function fireBuildBlockData(LibBlockData &$blockData): void
     {
         $blockClassName = CoreLoader::getFullQualifiedClassName($blockData->getClassName(),
                                                                 $blockData->getFolderName());

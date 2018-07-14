@@ -117,7 +117,7 @@ class LibCaptcha
                 }
             } else {
                 $rslt = $this->question . " <input name=\"cles\" type=\"text\" value=\"\" />"
-                        . "<input name=\"" . $this->inputRobotName . "\" type=\"hidden\" value=\"\" />";
+                    . "<input name=\"" . $this->inputRobotName . "\" type=\"hidden\" value=\"\" />";
             }
         }
 
@@ -155,7 +155,7 @@ class LibCaptcha
      *
      * @param int $mode
      */
-    private function createMode(int &$mode)
+    private function createMode(int &$mode): void
     {
         switch ($mode) {
             case 0:
@@ -215,7 +215,8 @@ class LibCaptcha
      * @param int $max
      * @return int
      */
-    private function randInt(int $mini, int $max): int
+    private function randInt(int $mini,
+                             int $max): int
     {
         if (!self::$iniRand) {
             self::initRand();
@@ -227,7 +228,7 @@ class LibCaptcha
     /**
      * Créé un calcul simple.
      */
-    private function makeSimpleCalculation()
+    private function makeSimpleCalculation(): void
     {
         $numberOne = $this->randInt(0,
                                     9);
@@ -276,7 +277,7 @@ class LibCaptcha
     /**
      * Ecrire un certain nombre de lettre de l'alphabet.
      */
-    private function makeLetters()
+    private function makeLetters(): void
     {
         $number = $this->randInt(1,
                                  6);
@@ -290,7 +291,7 @@ class LibCaptcha
     /**
      * Ecrire la lettre de l'alphabet correspondant au chiffre.
      */
-    private function makeLetter()
+    private function makeLetter(): void
     {
         $number = $this->randInt(1,
                                  6);
@@ -304,7 +305,7 @@ class LibCaptcha
     /**
      * Ecrire un certain nombre de chiffre.
      */
-    private function makeNumbers()
+    private function makeNumbers(): void
     {
         $number = $this->randInt(1,
                                  6);
@@ -318,7 +319,7 @@ class LibCaptcha
     /**
      * Convertir en lettre un mois demandé en chiffre et inversement.
      */
-    private function makeNumberMonth()
+    private function makeNumberMonth(): void
     {
         $number = $this->randInt(1,
                                  12);
@@ -381,7 +382,7 @@ class LibCaptcha
     /**
      * Génére une image.
      */
-    private function makePicture()
+    private function makePicture(): void
     {// TODO a vérifier
         $this->response = ExecCrypt::makeIdentifier($this->randInt(3,
                                                                    6));
@@ -391,7 +392,7 @@ class LibCaptcha
     /**
      * Initialise le compteur de donnée aléatoire.
      */
-    private static function initRand()
+    private static function initRand(): void
     {
         mt_srand((double) microtime() * 1000000);
         self::$iniRand = true;

@@ -109,7 +109,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param array $tree
      */
-    public function setTree(array &$tree)
+    public function setTree(array &$tree): void
     {
         $this->tree = $tree;
     }
@@ -130,7 +130,8 @@ class LibMenuElement extends CoreDataStorage
      * @param string $name nom de l'attribut
      * @param string $value valeur de l'attribut
      */
-    public function addAttributs(string $name, string $value)
+    public function addAttributs(string $name,
+                                 string $value): void
     {
         if (!isset($this->attributs[$name])) {
             $this->attributs[$name] = $value;
@@ -172,7 +173,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param string $name nom de l'attribut
      */
-    public function removeAttributs(string $name = "")
+    public function removeAttributs(string $name = ""): void
     {
         if (!empty($name)) {
             unset($this->attributs[$name]);
@@ -223,7 +224,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param bool $active
      */
-    public function setActive(bool $active)
+    public function setActive(bool $active): void
     {
         $this->active = $active;
     }
@@ -233,7 +234,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param string $tag
      */
-    public function addTags(string $tag)
+    public function addTags(string $tag): void
     {
         $this->tags[] = $tag;
     }
@@ -243,7 +244,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param LibMenuElement  $child
      */
-    public function addChild(LibMenuElement &$child)
+    public function addChild(LibMenuElement &$child): void
     {
         // Ajout du tag UL si c'est un nouveau parent
         if (empty($this->child)) {
@@ -272,7 +273,7 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param LibMenuElement $child
      */
-    public function removeChild(LibMenuElement &$child = null)
+    public function removeChild(?LibMenuElement &$child = null): void
     {
         if ($child === null) {
             foreach (array_keys($this->child) as $key) {
@@ -287,8 +288,9 @@ class LibMenuElement extends CoreDataStorage
      * Retourne une représentation de la classe en chaine de caractères.
      *
      * @param string $callback
+     * @return string
      */
-    public function &toString(string $callback = "")
+    public function &toString(string $callback = ""): string
     {
         $text = $this->getContent();
 

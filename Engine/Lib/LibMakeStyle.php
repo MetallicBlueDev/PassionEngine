@@ -91,7 +91,7 @@ class LibMakeStyle
      * @param LibMakeStyle $value Valeur de la variable
      */
     public function assignStyle(string $key,
-                                LibMakeStyle $value)
+                                LibMakeStyle $value): void
     {
         $this->fileVars[$key] = $value->display();
     }
@@ -103,7 +103,7 @@ class LibMakeStyle
      * @param string $value Valeur de la variable
      */
     public function assignString(string $key,
-                                 string $value)
+                                 string $value): void
     {
         $this->fileVars[$key] = $value;
     }
@@ -115,7 +115,7 @@ class LibMakeStyle
      * @param string $value Valeur de la variable
      */
     public function assignArray(string $key,
-                                array $value)
+                                array $value): void
     {
         $this->fileVars[$key] = $value;
     }
@@ -127,7 +127,7 @@ class LibMakeStyle
      * @param bool $debugMode Si le fichier de template debug n'est pas trouvé, le fichier debug par défaut est utilisé.
      */
     public function display(string $fileName = "",
-                            bool $debugMode = false)
+                            bool $debugMode = false): void
     {
         if ($debugMode) {
             $this->setFileName($fileName);
@@ -178,7 +178,7 @@ class LibMakeStyle
      *
      * @param string $directory
      */
-    public static function configureTemplateDirectory(string $directory)
+    public static function configureTemplateDirectory(string $directory): void
     {
         if (!self::isTemplateDirectory($directory)) {
             CoreSecure::getInstance()->catchException(new FailTemplate("invalid template directory"),
@@ -236,7 +236,7 @@ class LibMakeStyle
      *
      * @param string $fileName Nom du fichier
      */
-    private function setFileName(string $fileName)
+    private function setFileName(string $fileName): void
     {
         if (!empty($fileName)) {
             if (substr($fileName,
@@ -254,7 +254,7 @@ class LibMakeStyle
     /**
      * Activation du mode sans échec.
      */
-    private function setDebugMode()
+    private function setDebugMode(): void
     {
         $this->debugMode = true;
         $this->valid = null;

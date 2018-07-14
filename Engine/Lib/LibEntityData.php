@@ -65,7 +65,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      *
      * @param string $buffer
      */
-    public function setBuffer(string $buffer)
+    public function setBuffer(string $buffer): void
     {
         $this->buffer = $buffer;
     }

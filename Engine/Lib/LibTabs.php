@@ -72,18 +72,19 @@ class LibTabs
      * @param string $title Le titre de l'onglet
      * @param string $htmlContent Le contenu de l'onglet
      */
-    public function addTab(string $title, string $htmlContent)
+    public function addTab(string $title,
+                           string $htmlContent): void
     {
         $tabId = $this->getTabId();
         $tabSelected = ($this->selected === $tabId);
 
         $this->tabsBuffer .= "<li>"
-                . "<input type=\"radio\" name=\"" . $this->getTabsName() . "\" id=\"" . $tabId . "\""
-                . ($tabSelected ? " checked" : "") . ">"
-                . "<label for=\"" . $tabId . "\">"
-                . ExecString::textDisplay($title)
-                . "</label>"
-                . "</li>";
+            . "<input type=\"radio\" name=\"" . $this->getTabsName() . "\" id=\"" . $tabId . "\""
+            . ($tabSelected ? " checked" : "") . ">"
+            . "<label for=\"" . $tabId . "\">"
+            . ExecString::textDisplay($title)
+            . "</label>"
+            . "</li>";
 
         $purHtml = "";
 
@@ -103,11 +104,11 @@ class LibTabs
     public function &render(string $class = ""): string
     {
         $content = "<div id=\"" . $this->name . "\" class=\"" . ((!empty($class)) ? $class : "tabs") . "\">"
-                . "<ul>"
-                . $this->tabsBuffer
-                . "</ul>"
-                . $this->tabsContentBuffer
-                . "</div>";
+            . "<ul>"
+            . $this->tabsBuffer
+            . "</ul>"
+            . $this->tabsContentBuffer
+            . "</div>";
         return $content;
     }
 

@@ -80,7 +80,7 @@ class LibModule
     /**
      * Vérification de l'instance du gestionnaire des modules.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$libModule === null) {
             // Création d'un instance autonome
@@ -189,7 +189,7 @@ class LibModule
     /**
      * Compilation du module courant.
      */
-    public function buildRequestedModule()
+    public function buildRequestedModule(): void
     {
         $moduleData = $this->getRequestedModuleData();
 
@@ -307,7 +307,7 @@ class LibModule
      *
      * @param LibModuleData $moduleData
      */
-    private function fireBuildModuleData(LibModuleData &$moduleData)
+    private function fireBuildModuleData(LibModuleData &$moduleData): void
     {
         $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleData->getClassName(),
                                                                  $moduleData->getFolderName());
@@ -388,7 +388,7 @@ class LibModule
      *
      * @param int $modId
      */
-    private function updateCount(int $modId)
+    private function updateCount(int $modId): void
     {
         $coreSql = CoreSql::getInstance();
 

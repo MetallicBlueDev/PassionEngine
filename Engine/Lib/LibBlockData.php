@@ -184,7 +184,7 @@ class LibBlockData extends LibEntityData
      *
      * @param string $content
      */
-    public function setContent(string $content)
+    public function setContent(string $content): void
     {
         $this->setDataValue("content",
                             $content);

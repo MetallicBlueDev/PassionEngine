@@ -138,7 +138,7 @@ class LibModuleData extends LibEntityData
      *
      * @param string $page
      */
-    public function setPage(string $page)
+    public function setPage(string $page): void
     {
         $this->page = ucfirst($page);
     }
@@ -158,7 +158,7 @@ class LibModuleData extends LibEntityData
      *
      * @param string $view
      */
-    public function setView(string $view)
+    public function setView(string $view): void
     {
         $this->view = $view;
     }

@@ -82,7 +82,7 @@ class LibMenu
      * @param string $value
      */
     public function addAttributs(string $name,
-                                 string $value)
+                                 string $value): void
     {
         $this->attribtus .= " " . $name . "=\"" . $value . "\"";
     }
@@ -274,7 +274,7 @@ class LibMenu
      *
      * @return LibMenuElement
      */
-    private function getActiveItem(): LibMenuElement
+    private function getActiveItem(): ?LibMenuElement
     {
         $item = null;
 
@@ -287,7 +287,7 @@ class LibMenu
     /**
      * Chargement du menu via le cache.
      */
-    private function loadFromCache()
+    private function loadFromCache(): void
     {
         $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->identifier . ".php");
     }
@@ -307,16 +307,16 @@ class LibMenu
      *
      * @param array $sql parametre de Sélection
      */
-    private function loadFromDb(array $sql)
+    private function loadFromDb(array $sql): void
     {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->select(
-                $sql['table'],
-                $sql['select'],
-                $sql['where'],
-                $sql['orderby'],
-                $sql['limit']
+            $sql['table'],
+            $sql['select'],
+            $sql['where'],
+            $sql['orderby'],
+            $sql['limit']
         );
 
         if ($coreSql->affectedRows() > 0) {
