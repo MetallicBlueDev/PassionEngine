@@ -29,7 +29,7 @@ class ExecTimeMarker
      *
      * @param string $name Nom de la mesure.
      */
-    public static function startMeasurement(string $name)
+    public static function startMeasurement(string $name): void
     {
         self::$startTime[$name] = self::getMaker();
     }
@@ -39,7 +39,7 @@ class ExecTimeMarker
      *
      * @param string $name Nom de la mesure.
      */
-    public static function stopMeasurement(string $name)
+    public static function stopMeasurement(string $name): void
     {
         self::$finishTime[$name] = self::getMaker();
     }

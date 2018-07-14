@@ -12,7 +12,7 @@ use TREngine\Engine\Core\CoreHtml;
 class ExecJQuery
 {
 
-    public static function checkTreeView(string $identifier)
+    public static function checkTreeView(string $identifier): void
     {
         $coreHtml = CoreHtml::getInstance();
         $coreHtml->addCssResourceFile("jquery.treeview.css");
@@ -20,7 +20,7 @@ class ExecJQuery
         $coreHtml->addJavascriptJquery("$('" . $identifier . "').treeview({animated: 'fast', collapsed: true, unique: true, persist: 'location'});");
     }
 
-    public static function checkJdMenu()
+    public static function checkJdMenu(): void
     {
         $coreHtml = CoreHtml::getInstance();
         // Ajout du fichier de style
@@ -36,7 +36,7 @@ class ExecJQuery
         $coreHtml->addJavascriptJquery("$('ul.jd_menu').jdMenu();");
     }
 
-    public static function checkSlimbox()
+    public static function checkSlimbox(): void
     {
         $coreHtml = CoreHtml::getInstance();
         $coreHtml->addJavascriptFile("jquery.slimbox.js");

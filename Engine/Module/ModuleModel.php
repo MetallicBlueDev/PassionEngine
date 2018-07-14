@@ -30,7 +30,7 @@ abstract class ModuleModel
     /**
      * Fonction d'affichage par défaut.
      */
-    public function display()
+    public function display(): void
     {
         CoreLogger::addError(ERROR_MODULE_IMPLEMENT . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
     }
@@ -38,7 +38,7 @@ abstract class ModuleModel
     /**
      * Configuration du module courant.
      */
-    public function setting()
+    public function setting(): void
     {
         // TODO mettre un forumlaire basique pour changer quelques configurations
     }
@@ -46,7 +46,7 @@ abstract class ModuleModel
     /**
      * Installation du module courant.
      */
-    public function install()
+    public function install(): void
     {
         $coreSql = CoreSql::getInstance();
         $coreSql->insert(
@@ -65,7 +65,7 @@ abstract class ModuleModel
     /**
      * Désinstallation du module courant.
      */
-    public function uninstall()
+    public function uninstall(): void
     {
         CoreSql::getInstance()->delete(
             CoreTable::MODULES,
@@ -81,7 +81,7 @@ abstract class ModuleModel
      *
      * @param LibModuleData $data
      */
-    public function setModuleData(LibModuleData &$data)
+    public function setModuleData(LibModuleData &$data): void
     {
         $this->data = $data;
     }
