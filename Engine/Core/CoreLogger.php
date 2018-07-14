@@ -59,7 +59,7 @@ class CoreLogger
      *
      * @param string $msg
      */
-    public static function addException(string $msg)
+    public static function addException(string $msg): void
     {
         $msg = strtolower($msg);
         $msg[0] = strtoupper($msg[0]);
@@ -71,7 +71,7 @@ class CoreLogger
      *
      * @param string $sql
      */
-    public static function addSqlRequest(string $sql)
+    public static function addSqlRequest(string $sql): void
     {
         self::$sqlRequest[] = $sql;
     }
@@ -81,7 +81,7 @@ class CoreLogger
      *
      * @param string $msg
      */
-    public static function addError(string $msg)
+    public static function addError(string $msg): void
     {
         self::addMessage($msg,
                          self::TYPE_ALERT);
@@ -92,7 +92,7 @@ class CoreLogger
      *
      * @param string $msg
      */
-    public static function addWarning(string $msg)
+    public static function addWarning(string $msg): void
     {
         self::addMessage($msg,
                          self::TYPE_INFO);
@@ -103,7 +103,7 @@ class CoreLogger
      *
      * @param string $msg
      */
-    public static function addInfo(string $msg)
+    public static function addInfo(string $msg): void
     {
         self::addMessage($msg,
                          self::TYPE_NOTE);
@@ -112,7 +112,7 @@ class CoreLogger
     /**
      * Retourne les messages pré-formatées.
      */
-    public static function displayMessages()
+    public static function displayMessages(): void
     {
         if (CoreLoader::isCallable("CoreMain")) {
             $hasMessages = !empty(self::$messages);
@@ -153,7 +153,7 @@ class CoreLogger
     /**
      * Affichage des informations de debug.
      */
-    public static function displayDebugInformations()
+    public static function displayDebugInformations(): void
     {
         if (CoreLoader::isCallable("CoreMain") && CoreLoader::isCallable("CoreSession")) {
             if (CoreSession::getInstance()->getUserInfos()->hasRegisteredRank()) {
@@ -203,7 +203,7 @@ class CoreLogger
     /**
      * Ecriture du rapport d'erreur dans un fichier log.
      */
-    public static function logException()
+    public static function logException(): void
     {
         if (CoreLoader::isCallable("CoreCache")) {
             if (self::hasExceptions()) {
@@ -222,7 +222,7 @@ class CoreLogger
      * @param string $type Le type d'erreur (alert / note / info).
      */
     private static function addMessage(string $msg,
-                                       string $type)
+                                       string $type): void
     {
         switch ($type) {
             case self::TYPE_ALERT:

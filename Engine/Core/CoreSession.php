@@ -125,7 +125,7 @@ class CoreSession
     /**
      * Vérification de l'instance du gestionnaire des sessions.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreSession === null) {
             // Création d'un instance autonome
@@ -161,8 +161,8 @@ class CoreSession
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
             $userInfos = self::getUserInfo(array(
-                        "name = '" . $userName . "'",
-                        "&& pass = '" . $userPass . "'"
+                    "name = '" . $userName . "'",
+                    "&& pass = '" . $userPass . "'"
             ));
 
             if (count($userInfos) > 1) {
@@ -198,7 +198,7 @@ class CoreSession
     /**
      * Coupe proprement une session ouverte.
      */
-    public static function closeSession()
+    public static function closeSession(): void
     {
         if (self::connected()) {
             self::$coreSession->destroySession();
@@ -308,12 +308,12 @@ class CoreSession
     /**
      * Actualise la session courante.
      */
-    public function refreshSession()
+    public function refreshSession(): void
     {
         if ($this->userLogged()) {
             // Rafraichir le cache de session
             $userInfos = self::getUserInfo(array(
-                        "user_id = '" . $this->userInfos->getId() . "'"
+                    "user_id = '" . $this->userInfos->getId() . "'"
             ));
 
             if (count($userInfos) > 1) {
@@ -338,7 +338,7 @@ class CoreSession
     /**
      * Routine de vérification des bannissements.
      */
-    public function checkBanishment()
+    public function checkBanishment(): void
     {
         $this->cleanOldBanishment();
 
@@ -355,16 +355,16 @@ class CoreSession
     /**
      * Affichage de l'isoloire pour le bannissement.
      */
-    public function displayBanishment()
+    public function displayBanishment(): void
     {
         $coreSql = CoreSql::getInstance();
 
         $coreSql->select(CoreTable::BANNED,
                          array(
-                    "reason"
-                ),
+                "reason"
+            ),
                          array(
-                    "ip = '" . $this->userIpBan . "'"
+                "ip = '" . $this->userIpBan . "'"
         ));
 
         if ($coreSql->affectedRows() > 0) {
@@ -388,7 +388,7 @@ class CoreSession
     /**
      * Nettoyage des bannissements périmés.
      */
-    private function cleanOldBanishment()
+    private function cleanOldBanishment(): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::TMP);
         $cleanBanishment = false;
@@ -407,10 +407,10 @@ class CoreSession
         if ($cleanBanishment) {
             CoreSql::getInstance()->delete(CoreTable::BANNED,
                                            array(
-                        "ip != ''",
-                        "&& (name = 'Hacker' || name = '')",
-                        "&& type = '0'",
-                        "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
+                    "ip != ''",
+                    "&& (name = 'Hacker' || name = '')",
+                    "&& type = '0'",
+                    "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
             ));
         }
     }
@@ -418,7 +418,7 @@ class CoreSession
     /**
      * Mise à jour automatique du bannissmenent.
      */
-    private function updateBanishment()
+    private function updateBanishment(): void
     {
         $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
 
@@ -429,10 +429,10 @@ class CoreSession
             // Vérification en base (au cas ou il y aurait un débannissement)
             $coreSql->select(CoreTable::BANNED,
                              array(
-                        "ban_id"
-                    ),
+                    "ban_id"
+                ),
                              array(
-                        "ip = '" . $this->userIpBan . "'"
+                    "ip = '" . $this->userIpBan . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -442,10 +442,10 @@ class CoreSession
                 // Mise à jour de l'ip
                 $coreSql->update(CoreTable::BANNED,
                                  array(
-                            "ip" => $userIp
-                        ),
+                        "ip" => $userIp
+                    ),
                                  array(
-                            "ban_id = '" . $banId . "'"
+                        "ban_id = '" . $banId . "'"
                 ));
 
                 // Durée de connexion automatique via cookie
@@ -467,7 +467,7 @@ class CoreSession
     /**
      * Recherche avancée d'un bannissement de session.
      */
-    private function searchBanishment()
+    private function searchBanishment(): void
     {
         $coreSql = CoreSql::getInstance();
         $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
@@ -475,12 +475,12 @@ class CoreSession
         // Sinon on recherche dans la base les bannis; leurs ip et leurs pseudo
         $coreSql->select(CoreTable::BANNED,
                          array(
-                    "ip",
-                    "name"
-                ),
+                "ip",
+                "name"
+            ),
                          array(),
                          array(
-                    "ban_id"
+                "ban_id"
         ));
 
         foreach ($coreSql->fetchArray() as $value) {
@@ -502,7 +502,7 @@ class CoreSession
      * @param array $value
      */
     private function searchBanishmentUser(string $userIp,
-                                          array $value)
+                                          array $value): void
     {
         $banned = false;
 
@@ -519,7 +519,7 @@ class CoreSession
     /**
      * Nettoyage du cache de session utilisateur.
      */
-    private function cleanCache()
+    private function cleanCache(): void
     {
         CoreCache::getInstance(CoreCacheSection::SESSIONS)->cleanCache($this->timer - $this->sessionTimeLimit);
     }
@@ -652,7 +652,7 @@ class CoreSession
     /**
      * Ferme une session ouverte.
      */
-    private function destroySession()
+    private function destroySession(): void
     {
         // Destruction du fichier de session
         $coreCache = CoreCache::getInstance(CoreCacheSection::SESSIONS);
@@ -732,7 +732,7 @@ class CoreSession
     /**
      * Injection d'un client anonyme.
      */
-    private function setUserAnonymous()
+    private function setUserAnonymous(): void
     {
         $empty = array();
         $this->setUser($empty);
@@ -745,7 +745,7 @@ class CoreSession
      * @param bool $refreshAll
      */
     private function setUser(array $session,
-                             bool $refreshAll = false)
+                             bool $refreshAll = false): void
     {
         if ($this->userInfos === null || $refreshAll) {
             $this->userInfos = new CoreSessionData($session);
@@ -774,10 +774,10 @@ class CoreSession
         // Envoi la requête Sql de mise à jour
         $coreSql->update(CoreTable::USERS,
                          array(
-                    "last_connect" => "NOW()"
-                ),
+                "last_connect" => "NOW()"
+            ),
                          array(
-                    "user_id = '" . $userId . "'"
+                "user_id = '" . $userId . "'"
         ));
         return ($coreSql->affectedRows() === 1) ? true : false;
     }
@@ -831,17 +831,17 @@ class CoreSession
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::USERS,
                          array(
-                    "user_id",
-                    "name",
-                    "email",
-                    "rank",
-                    "registration_date",
-                    "avatar",
-                    "website",
-                    "signature",
-                    "template",
-                    "langue"
-                ),
+                "user_id",
+                "name",
+                "email",
+                "rank",
+                "registration_date",
+                "avatar",
+                "website",
+                "signature",
+                "template",
+                "langue"
+            ),
                          $where);
 
         if ($coreSql->affectedRows() === 1) {

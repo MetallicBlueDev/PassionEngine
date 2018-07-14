@@ -73,7 +73,7 @@ class CoreMain
     /**
      * Vérification de l'instance principal du moteur.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$coreMain === null) {
             if (CoreSecure::debuggingMode()) {
@@ -145,7 +145,7 @@ class CoreMain
     /**
      * Démarrage TR ENGINE.
      */
-    public function start()
+    public function start(): void
     {
         if (CoreSecure::debuggingMode()) {
             ExecTimeMarker::startMeasurement("launcher");
@@ -197,7 +197,7 @@ class CoreMain
     /**
      * Démarrage de l'installeur.
      */
-    public function install()
+    public function install(): void
     {
         // TODO installation a coder
 //        $installPath = TR_ENGINE_INDEX_DIRECTORY . "/install/index.php";
@@ -209,7 +209,7 @@ class CoreMain
     /**
      * Routine d'exécution principal.
      */
-    private function runJobs()
+    private function runJobs(): void
     {
         // Vérification du type d'affichage
         if ($this->isDefaultLayout()) {
@@ -241,7 +241,7 @@ class CoreMain
     /**
      * Affichage classique du site.
      */
-    private function displayDefaultLayout()
+    private function displayDefaultLayout(): void
     {
         if ($this->getConfigs()->doDumb()) {
             // Mode maintenance: possibilité de s'identifier
@@ -267,7 +267,7 @@ class CoreMain
     /**
      * Affichage du module uniquement.
      */
-    private function displayModuleLayout()
+    private function displayModuleLayout(): void
     {
         $libModule = LibModule::getInstance();
         $libModule->buildRequestedModule();
@@ -278,7 +278,7 @@ class CoreMain
     /**
      * Affichage du block uniquement.
      */
-    private function displayBlockLayout()
+    private function displayBlockLayout(): void
     {
         $libBlock = LibBlock::getInstance();
         $libBlock->buildBlockRequested();
@@ -289,7 +289,7 @@ class CoreMain
     /**
      * Vérification et assignation du layout.
      */
-    private function checkLayout()
+    private function checkLayout(): void
     {
         // Assignation et vérification de fonction layout
         $layout = strtolower(CoreRequest::getWord("layout"));
@@ -305,7 +305,7 @@ class CoreMain
     /**
      * Vérification et assignation du template.
      */
-    private function checkMakeStyle()
+    private function checkMakeStyle(): void
     {
         // Tentative d'utilisation du template du client
         $templateName = CoreSession::getInstance()->getUserInfos()->getTemplate();
@@ -322,7 +322,7 @@ class CoreMain
      * Lance le tampon de sortie.
      * Entête & tamporisation de sortie.
      */
-    private function compressionOpen()
+    private function compressionOpen(): void
     {
         header("Vary: Cookie, Accept-Encoding");
         // HTTP_ACCEPT_ENCODING => gzip
@@ -336,7 +336,7 @@ class CoreMain
     /**
      * Relachement des tampons de sortie.
      */
-    private function compressionClose()
+    private function compressionClose(): void
     {
         $canContinue = false;
 
@@ -350,7 +350,7 @@ class CoreMain
      * Procédure de préparation du moteur.
      * Une étape avant le démarrage réel.
      */
-    private function prepare()
+    private function prepare(): void
     {
         if (!$this->loadCache()) {
             CoreSecure::getInstance()->catchException(new FailCache("unable to load cache config",
@@ -445,7 +445,7 @@ class CoreMain
     /**
      * Chargement de la configuration générique (via table de données).
      */
-    private function loadGenericConfig()
+    private function loadGenericConfig(): void
     {
         $configs = array();
         $coreCache = CoreCache::getInstance(CoreCacheSection::TMP);

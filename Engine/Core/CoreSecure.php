@@ -109,7 +109,7 @@ class CoreSecure
     /**
      * Vérification de l'instance du gestionnaire de sécurité.
      */
-    public static function checkInstance()
+    public static function checkInstance(): void
     {
         if (self::$secure === null) {
             self::$secure = new CoreSecure();
@@ -220,7 +220,7 @@ class CoreSecure
      * @param array $messages
      */
     private function appendException(Exception $ex,
-                                     array &$messages)
+                                     array &$messages): void
     {
         if ($ex !== null) {
             $this->appendExceptionMessage($ex,
@@ -238,7 +238,7 @@ class CoreSecure
      * @param array $messages
      */
     private function appendExceptionMessage(Exception $ex,
-                                            array &$messages)
+                                            array &$messages): void
     {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
@@ -258,7 +258,7 @@ class CoreSecure
      * @param array $messages
      */
     private function appendExceptionTrace(Exception $ex,
-                                          array &$messages)
+                                          array &$messages): void
     {
         foreach ($ex->getTrace() as $traceValue) {
             $errorLine = "";
@@ -287,7 +287,7 @@ class CoreSecure
      *
      * @param array $messages
      */
-    private function appendSqlErrors(array &$messages)
+    private function appendSqlErrors(array &$messages): void
     {
         if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
             if (CoreSql::hasConnection()) {
@@ -314,7 +314,7 @@ class CoreSecure
      *
      * @param array $messages
      */
-    private function appendLoggerErrors(array &$messages)
+    private function appendLoggerErrors(array &$messages): void
     {
         if (CoreLoader::isCallable("CoreLogger")) {
             $loggerExceptions = CoreLogger::getExceptions();
@@ -332,7 +332,7 @@ class CoreSecure
      * Réglages de la sortie d'erreurs.
      * Affichage de toutes les erreurs.
      */
-    private function configureOutput()
+    private function configureOutput(): void
     {
         error_reporting(defined("E_ALL") ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
     }
@@ -340,7 +340,7 @@ class CoreSecure
     /**
      * Vérification des données reçues (depuis QUERY_STRING).
      */
-    private function checkServerQueryString()
+    private function checkServerQueryString(): void
     {
         $query = CoreRequest::getQueryString();
 
@@ -360,7 +360,7 @@ class CoreSecure
     /**
      * Vérification de la provenance des requêtes.
      */
-    private function checkServerRequest()
+    private function checkServerRequest(): void
     {
         if (CoreRequest::getRequestMethod() === CoreRequestType::POST && !empty(CoreRequest::getHttpReferer())) {
             // Vérification du demandeur de la méthode POST
@@ -377,7 +377,7 @@ class CoreSecure
     /**
      * Vérification des variables globales.
      */
-    private function checkGlobals()
+    private function checkGlobals(): void
     {
         $this->addSlashesForQuotes(self::getGlobalGet());
         $this->addSlashesForQuotes(self::getGlobalPost());
@@ -389,7 +389,7 @@ class CoreSecure
      *
      * @param mixed $key objet sans antislash
      */
-    private function addSlashesForQuotes(&$key)
+    private function addSlashesForQuotes(&$key): void
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {

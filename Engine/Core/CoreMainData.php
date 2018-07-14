@@ -53,7 +53,7 @@ class CoreMainData extends CoreDataStorage
      *
      * @param array
      */
-    public function addConfig(array $configuration)
+    public function addConfig(array $configuration): void
     {
         foreach ($configuration as $key => $value) {
             if (is_array($value)) {
@@ -73,7 +73,7 @@ class CoreMainData extends CoreDataStorage
      * @param array $include
      */
     public function addInclude(string $name,
-                               array $include)
+                               array $include): void
     {
         $this->addConfig(array(
             $name => $include));
@@ -316,7 +316,7 @@ class CoreMainData extends CoreDataStorage
      *
      * @param array $rawConfig
      */
-    private function loadSpecificConfig(array $rawConfig)
+    private function loadSpecificConfig(array $rawConfig): void
     {
         $newConfig = array();
 
