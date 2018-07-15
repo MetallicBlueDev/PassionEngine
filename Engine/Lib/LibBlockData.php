@@ -192,7 +192,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getTargetModuleIds(): array
     {
-        $rslt = $this->getArray("modIds",
+        $rslt = $this->getArray("module_ids",
                                 array());
         return $rslt;
     }

@@ -99,7 +99,7 @@ class LibModuleData extends LibEntityData
      */
     public function installed(): bool
     {
-        return $this->hasValue("mod_id");
+        return $this->hasValue("module_id");
     }
 
     /**
@@ -170,7 +170,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getIdAsInt(): int
     {
-        return $this->getInt("mod_id");
+        return $this->getInt("module_id");
     }
 
     /**

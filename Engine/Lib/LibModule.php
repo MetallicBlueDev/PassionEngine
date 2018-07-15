@@ -281,7 +281,7 @@ class LibModule
         $moduleArrayDatas = array();
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::MODULES,
-                         array("mod_id", "name", "rank"),
+                         array("module_id", "name", "rank"),
                          array("name =  '" . $moduleName . "'"));
 
         if ($coreSql->affectedRows() > 0) {
@@ -290,7 +290,7 @@ class LibModule
 
             $coreSql->select(CoreTable::MODULES_CONFIGS,
                              array("name", "value"),
-                             array("mod_id =  '" . $moduleArrayDatas['mod_id'] . "'"
+                             array("module_id =  '" . $moduleArrayDatas['module_id'] . "'"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -394,9 +394,9 @@ class LibModule
     /**
      * Mise à jour du compteur de visite du module courant.
      *
-     * @param int $modId
+     * @param int $moduleId
      */
-    private function updateCount(int $modId): void
+    private function updateCount(int $moduleId): void
     {
         $coreSql = CoreSql::getInstance();
 
@@ -406,7 +406,7 @@ class LibModule
                 "count" => "count + 1"
             ),
                          array(
-                "mod_id = '" . $modId . "'"
+                "module_id = '" . $moduleId . "'"
         ));
     }
 

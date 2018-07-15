@@ -54,11 +54,11 @@ abstract class ModuleModel
             array("name", "rank"),
             array($this->getModuleData()->getName(), 0)
         );
-        $modId = $coreSql->insertId();
+        $moduleId = $coreSql->insertId();
         CoreSql::getInstance()->insert(
             CoreTable::MODULES_CONFIGS,
-            array("mod_id", "name", "value"),
-            array($modId, "key", "value")
+            array("module_id", "name", "value"),
+            array($moduleId, "key", "value")
         );
     }
 
@@ -69,7 +69,7 @@ abstract class ModuleModel
     {
         CoreSql::getInstance()->delete(
             CoreTable::MODULES,
-            array("mod_id = '" . $this->getModuleData()->getId() . "'")
+            array("module_id = '" . $this->getModuleData()->getId() . "'")
         );
 
         CoreCache::getInstance(CoreCacheSection::MODULES)->removeCache($this->getModuleData()->getName() . ".php");
