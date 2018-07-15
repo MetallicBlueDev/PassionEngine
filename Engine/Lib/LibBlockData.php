@@ -204,7 +204,7 @@ class LibBlockData extends LibEntityData
      */
     public function &isAllTargetedModules(): bool
     {
-        return $this->getBool("allMods");
+        return $this->getBool("all_modules");
     }
 
     /**

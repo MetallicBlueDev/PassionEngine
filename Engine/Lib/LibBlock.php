@@ -237,7 +237,7 @@ class LibBlock
             "block_id" => 1,
             "type" => $blockTypeName,
             "side" => self::SIDE_RIGHT,
-            "allMods" => 1,
+            "all_modules" => 1,
             "title" => $blockTypeName
         );
         $blockData = new LibBlockData($empty);
@@ -410,7 +410,7 @@ class LibBlock
                 "title",
                 "type",
                 "rank",
-                "allMods"),
+                "all_modules"),
                          array("block_id =  '" . $blockId . "'"));
 
         if ($coreSql->affectedRows() > 0) {

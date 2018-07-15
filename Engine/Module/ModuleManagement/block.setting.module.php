@@ -76,7 +76,7 @@ class Module_Management_Block extends ModuleModel
                 "title",
                 "type",
                 "rank",
-                "allMods"),
+                "all_modules"),
             array(),
             array(
                 "position")
@@ -102,7 +102,7 @@ class Module_Management_Block extends ModuleModel
                                                        "v"
                 );
                 $rank = CoreAccess::getRankAsLitteral($row['rank']);
-                $allMods = ($row['allMods'] === 1) ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
+                $allModules = ($row['all_modules'] === 1) ? BLOCK_ALL_PAGE : BLOCK_VARIES_PAGE;
                 // Ajout de la ligne au tableau
                 $rack->addLine(array(
                     $title,
@@ -110,7 +110,7 @@ class Module_Management_Block extends ModuleModel
                     $side,
                     $position,
                     $rank,
-                    $allMods));
+                    $allModules));
             }
         }
 
@@ -258,7 +258,7 @@ class Module_Management_Block extends ModuleModel
                     "title",
                     "type",
                     "rank",
-                    "allMods"),
+                    "all_modules"),
                 array(
                     "block_id = '" . $blockId . "'")
             );
@@ -409,7 +409,7 @@ class Module_Management_Block extends ModuleModel
                 "title",
                 "type",
                 "rank",
-                "allMods");
+                "all_modules");
             CoreSql::getInstance()->select(
                 CoreTable::BLOCKS_TABLE,
                 $keys,
