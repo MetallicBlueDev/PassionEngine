@@ -59,11 +59,11 @@ class CoreSession
     private $sessionTimeLimit = 0;
 
     /**
-     * Adresse Ip du client bannis.
+     * Adresse IP du client banni.
      *
      * @var string
      */
-    private $userIpBan = "";
+    private $userIpBanned = "";
 
     /**
      * Identifiant de la session courante du client.
@@ -332,7 +332,7 @@ class CoreSession
      */
     public function bannedSession(): bool
     {
-        return empty($this->userIpBan) ? false : true;
+        return empty($this->userIpBanned) ? false : true;
     }
 
     /**
@@ -343,7 +343,7 @@ class CoreSession
         $this->cleanOldBanishment();
 
         // Bannissement par cookie
-        $this->userIpBan = self::getCookie($this->getBanishmentCookieName());
+        $this->userIpBanned = self::getCookie($this->getBanishmentCookieName());
 
         if ($this->bannedSession()) {
             $this->updateBanishment();
@@ -361,7 +361,7 @@ class CoreSession
 
         $coreSql->select(CoreTable::BANNED,
                          array("reason"),
-                         array("ip = '" . $this->userIpBan . "'"));
+                         array("ip = '" . $this->userIpBanned . "'"));
 
         if ($coreSql->affectedRows() > 0) {
             $coreMain = CoreMain::getInstance();
@@ -376,7 +376,7 @@ class CoreSession
             $libMakeStyle->assignString("reason",
                                         ExecString::textDisplay($reason));
             $libMakeStyle->assignString("ip",
-                                        $this->userIpBan);
+                                        $this->userIpBanned);
             $libMakeStyle->display("banishment");
         }
     }
@@ -418,34 +418,34 @@ class CoreSession
     {
         $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
 
-        if ($this->userIpBan != $userIp) {
+        if ($this->userIpBanned != $userIp) {
             $coreSql = CoreSql::getInstance();
 
             // Vérification en base (au cas ou il y aurait un débannissement)
             $coreSql->select(CoreTable::BANNED,
-                             array("ban_id"),
-                             array("ip = '" . $this->userIpBan . "'"));
+                             array("banned_id"),
+                             array("ip = '" . $this->userIpBanned . "'"));
 
             if ($coreSql->affectedRows() > 0) {
                 // Bannissement toujours en place
-                $banId = $coreSql->fetchArray()[0]['ban_id'];
+                $bannedId = $coreSql->fetchArray()[0]['banned_id'];
 
                 // Mise à jour de l'ip
                 $coreSql->update(CoreTable::BANNED,
                                  array("ip" => $userIp),
-                                 array("ban_id = '" . $banId . "'"));
+                                 array("banned_id = '" . $bannedId . "'"));
 
                 // Durée de connexion automatique via cookie
                 $cookieTimeLimit = $this->timer + $this->sessionTimeLimit;
 
-                $this->userIpBan = $userIp;
+                $this->userIpBanned = $userIp;
                 ExecCookie::createCookie($this->getBanishmentCookieName(),
                                          ExecCrypt::md5Encrypt($userIp,
                                                                self::getSalt()),
                                                                $cookieTimeLimit);
             } else {
                 // Suppression du bannissement
-                $this->userIpBan = "";
+                $this->userIpBanned = "";
                 ExecCookie::destroyCookie($this->getBanishmentCookieName());
             }
         }
@@ -462,9 +462,9 @@ class CoreSession
         // TODO ajouter dans le cache
         // Sinon on recherche dans la base les bannis; leurs ip et leurs pseudo
         $coreSql->select(CoreTable::BANNED,
-                         array("ip", "name"),
+                         array("ip", "name", "email"),
                          array(),
-                         array("ban_id"));
+                         array("banned_id"));
 
         foreach ($coreSql->fetchArray() as $value) {
             $this->searchBanishmentUser($userIp,
@@ -492,11 +492,11 @@ class CoreSession
         if (!empty($userIp) && $userIp == $value['ip']) {
             // Bannissement par IP
             $banned = true;
-        } else if ($this->userInfos !== null && $this->userInfos->getName() === $value['name']) {
-            // Bannissement par pseudo
+        } else if ($this->userInfos !== null && ($this->userInfos->getName() === $value['name'] || $this->userInfos->getEmail() === $value['email'])) {
+            // Bannissement par pseudo ou email
             $banned = true;
         }
-        $this->userIpBan = $banned ? $userIp : "";
+        $this->userIpBanned = $banned ? $userIp : "";
     }
 
     /**
@@ -697,7 +697,7 @@ class CoreSession
     private function &serializeSession(): string
     {
         $data = $this->userInfos->getData();
-        $data['userIpBan'] = $this->userIpBan;
+        $data['userIpBan'] = $this->userIpBanned;
         $data['sessionId'] = $this->sessionId;
         return CoreCache::getInstance(CoreCacheSection::SESSIONS)->serializeData($data);
     }
@@ -739,7 +739,7 @@ class CoreSession
         }
 
         if (!empty($session['userIpBan'])) {
-            $this->userIpBan = $session['userIpBan'];
+            $this->userIpBanned = $session['userIpBan'];
         }
     }
 
