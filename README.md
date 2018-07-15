@@ -6,10 +6,10 @@
 This project is executed with PHP 7.1.
 
 ## Contributing
-See [this] (https://github.com/Tr4ncer/TREngine/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/Tr4ncer/TREngine/blob/master/CONTRIBUTING.md)
 
 ## Licence
-See [this] (https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
+See [LICENSE](https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
 
 ## Source
 * GitHub: https://github.com/Tr4ncer/TREngine
