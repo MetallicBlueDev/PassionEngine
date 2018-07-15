@@ -61,7 +61,7 @@ class LibMenuElement extends CoreDataStorage
         parent::__construct();
 
         if ($initializeConfig) {
-            $data['mConfig'] = isset($data['mConfig']) ? ExecUtils::getArrayConfigs($data['mConfig']) : array();
+            $data['menu_config'] = isset($data['menu_config']) ? ExecUtils::getArrayConfigs($data['menu_config']) : array();
         }
 
         $this->newStorage($item);
@@ -97,7 +97,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getConfigs(): array
     {
-        return $this->getArray("mConfig");
+        return $this->getArray("menu_config");
     }
 
     /**
@@ -108,7 +108,7 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &getText(): array
     {
-        return $this->getSubString("mConfig",
+        return $this->getSubString("menu_config",
                                    "text",
                                    "");
     }
