@@ -25,27 +25,22 @@ Pure PHP with standard functions.
 
 # Coding Style
 Rather than writing hundreds of lines on the standards, try to just soak in what already exists.
-
-## Use the standards
 Readability is important, but not doing too much is even more important.
 
 Use the *PHP Standards Recommendations* :
 https://www.php-fig.org/psr/#accepted
 
-## PSR respected
-If possible, we will try to do as they do. In more simple.
-
-### PSR-4: Autoloader 
+## PSR-4: Autoloader 
 (As of 2014-10-21 PSR-0 has been marked as deprecated. PSR-4 is now recommended as an alternative.)
 https://www.php-fig.org/psr/psr-4/
 
-### PSR-1: Basic Coding Standard
+## PSR-1: Basic Coding Standard
 https://www.php-fig.org/psr/psr-1/
 
 > **Note**
 > 4.2. Properties : MUST be in lower case.
 
-### PSR-2: Coding Style Guide
+## PSR-2: Coding Style Guide
 https://www.php-fig.org/psr/psr-2/
 
 ## Rule for the database
