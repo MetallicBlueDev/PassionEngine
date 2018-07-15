@@ -53,10 +53,16 @@ class LibMenuElement extends CoreDataStorage
      * Construction de l'élément du menu
      *
      * @param array $item
+     * @param array $initializeConfig
      */
-    public function __construct(array $item)
+    public function __construct(array $item,
+                                bool $initializeConfig = false)
     {
         parent::__construct();
+
+        if ($initializeConfig) {
+            $data['mConfig'] = isset($data['mConfig']) ? ExecUtils::getArrayConfigs($data['mConfig']) : array();
+        }
 
         $this->newStorage($item);
         $this->addTags("li");
@@ -84,14 +90,27 @@ class LibMenuElement extends CoreDataStorage
     }
 
     /**
-     * Retourne le contenu du menu.
+     * Retourne la configuration du menu.
      * Valeur nulle possible, notamment en base de données.
      *
-     * @return string
+     * @return array
      */
-    public function &getContent(): string
+    public function &getConfigs(): array
     {
-        return $this->getString("content");
+        return $this->getArray("mConfig");
+    }
+
+    /**
+     * Retourne le texte du menu.
+     * Valeur nulle possible, notamment en base de données.
+     *
+     * @return array
+     */
+    public function &getText(): array
+    {
+        return $this->getSubString("mConfig",
+                                   "text",
+                                   "");
     }
 
     /**
@@ -292,12 +311,13 @@ class LibMenuElement extends CoreDataStorage
      */
     public function &toString(string $callback = ""): string
     {
-        $text = $this->getContent();
+        $text = $this->getText();
 
         // Mise en forme du texte via la callback
         if (!empty($callback) && !empty($text)) {
             $text = CoreLoader::callback($callback,
-                                         $text);
+                                         $text,
+                                         $this->getConfigs());
         }
 
         // Ajout de la classe active

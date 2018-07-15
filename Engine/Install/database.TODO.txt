@@ -16,6 +16,9 @@ tr_configs
 tr_menus
 TODO
 
+tr_menus_configs
+TODO
+
 tr_modules
 =>OK
 

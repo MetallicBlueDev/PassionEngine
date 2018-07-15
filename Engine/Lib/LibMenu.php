@@ -129,40 +129,28 @@ class LibMenu
     }
 
     /**
-     * Retourne une ligne de menu propre sous forme HTML
+     * Retourne une ligne de menu propre sous forme HTML.
      *
-     * Exemple :
-     * Link example__OPTIONS__BOLD.ITALIC.UNDERLINE.A.?module=home__OPTIONS__
-     *
-     * @param string $line
+     * @param string $text Texte du lien.
+     * @param array $configs array("BOLD"=>1,"ITALIC"=>1,"UNDERLINE"=>1,"A"=>"?module=home")
      * @return string
      */
-    public static function getLine(string $line): string
+    public static function getLine(string $text,
+                                   array $configs): string
     {
-        $output = "";
-        $matches = array();
+        $text = ExecString::textDisplay($text);
 
-        if (preg_match("/(.+)" . self::OPTIONS_TAG . "(.*?)" . self::OPTIONS_TAG . "/",
-                       $line,
-                       $matches)) {
-            // Conversion du texte
-            $text = ExecString::textDisplay($matches[1]);
-
+        if (!empty($configs)) {
             $bold = false;
             $italic = false;
             $underline = false;
             $big = false;
             $small = false;
-            $popup = false;
             $link = false;
 
-            // Recherche des options et style
-            $options = explode(".",
-                               $matches[2]);
-
             // Application des options et styles
-            foreach ($options as $key => $value) {
-                switch ($value) {
+            foreach ($configs as $key => $value) {
+                switch ($key) {
                     case "BOLD":
                         if (!$bold) {
                             $text = "<span class=\"text_bold\">" . $text . "</span>";
@@ -195,78 +183,20 @@ class LibMenu
                         break;
                     case "A":
                         if (!$link) {
-                            $linkValue = (isset($options[$key + 1]) ? $options[$key + 1] : null);
-
-                            if (!empty($linkValue)) {
-                                $text = CoreHtml::getLink($linkValue,
-                                                          $text,
-                                                          false,
-                                                          ($popup ? "window.open('" . $linkValue . "');return false;" : ""));
-                            }
+                            $text = CoreHtml::getLink($value,
+                                                      $text,
+                                                      false);
                             $link = true;
                         }
-                        break;
-                    case "POPUP":
-                        $popup = true;
                         break;
                 }
             }
 
             $output = $text;
         } else {
-            // Aucun style appliquer
-            // Conversion du texte
-            $output = ExecString::textDisplay($line);
+            $output = $text;
         }
         return $output;
-    }
-
-    /**
-     * Retourne une ligne avec les TAGS
-     *
-     * @param string $text Texte du menu
-     * @param array $options Options choisis
-     * @return string
-     */
-    public static function setLine(string $text,
-                                   array $options = array()): string
-    {
-        $optionsString = "";
-
-        // Formate les options
-        foreach ($options as $key => $value) {
-            // Les options sont uniquement en majuscule
-            $key = strtoupper($key);
-
-            if ($key == "BOLD") {
-                $optionsString .= "BOLD";
-            }
-            if ($key == "ITALIC") {
-                $optionsString .= "ITALIC";
-            }
-            if ($key == "UNDERLINE") {
-                $optionsString .= "UNDERLINE";
-            }
-            if ($key == "BIG") {
-                $optionsString .= "BIG";
-            }
-            if ($key == "SMALL") {
-                $optionsString .= "SMALL";
-            }
-            if ($key == "A") {
-                $optionsString .= "A." . $value;
-            }
-            if ($key == "POPUP") {
-                $optionsString .= "POPUP";
-            }
-        }
-
-        // Termine le tag des options
-        if (!empty($optionsString)) {
-            $optionsString = self::OPTIONS_TAG . $optionsString . self::OPTIONS_TAG;
-        }
-
-        return $text . $optionsString;
     }
 
     /**
@@ -327,7 +257,8 @@ class LibMenu
 
             // Création de tous les menus
             foreach ($menus as $key => $item) {
-                $this->items[$key] = new LibMenuElement($item);
+                $this->items[$key] = new LibMenuElement($item,
+                                                        true);
             }
 
             // Création du chemin des menus
