@@ -14,10 +14,10 @@ tr_configs
 =>OK
 
 tr_menus
-TODO
+=>OK
 
 tr_menus_configs
-TODO
+=>OK
 
 tr_modules
 =>OK

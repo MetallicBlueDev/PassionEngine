@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 15, 2018 at 11:32 AM
+-- Generation Time: Jul 15, 2018 at 02:47 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `tr_banned` (
-  `ban_id` int(10) UNSIGNED NOT NULL,
+  `banned_id` int(10) UNSIGNED NOT NULL,
   `ip` varchar(50) NOT NULL,
   `name` varchar(45) NOT NULL,
   `mail` varchar(80) DEFAULT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE `tr_blocks` (
   `title` varchar(45) NOT NULL,
   `type` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
-  `allMods` tinyint(1) NOT NULL DEFAULT '0'
+  `all_modules` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -62,7 +62,7 @@ CREATE TABLE `tr_blocks` (
 --
 
 CREATE TABLE `tr_blocks_configs` (
-  `bconfig_id` int(10) UNSIGNED NOT NULL,
+  `block_config_id` int(10) UNSIGNED NOT NULL,
   `block_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `value` text NOT NULL
@@ -75,9 +75,9 @@ CREATE TABLE `tr_blocks_configs` (
 --
 
 CREATE TABLE `tr_blocks_visibility` (
-  `bvisibility_id` int(10) UNSIGNED NOT NULL,
+  `block_visibility_id` int(10) UNSIGNED NOT NULL,
   `block_id` int(10) UNSIGNED NOT NULL,
-  `mod_id` int(10) UNSIGNED NOT NULL
+  `module_id` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -102,10 +102,22 @@ CREATE TABLE `tr_menus` (
   `menu_id` int(10) UNSIGNED NOT NULL,
   `block_id` int(10) UNSIGNED NOT NULL,
   `parent_id` int(10) UNSIGNED DEFAULT NULL,
-  `content` text,
   `sublevel` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
   `position` smallint(10) UNSIGNED NOT NULL DEFAULT '0',
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tr_menus_configs`
+--
+
+CREATE TABLE `tr_menus_configs` (
+  `menu_config_id` int(10) UNSIGNED NOT NULL,
+  `menu_id` int(10) UNSIGNED NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -115,7 +127,7 @@ CREATE TABLE `tr_menus` (
 --
 
 CREATE TABLE `tr_modules` (
-  `mod_id` int(10) UNSIGNED NOT NULL,
+  `module_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `rank` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
   `count` int(11) DEFAULT NULL
@@ -128,8 +140,8 @@ CREATE TABLE `tr_modules` (
 --
 
 CREATE TABLE `tr_modules_configs` (
-  `modconf_id` int(10) UNSIGNED NOT NULL,
-  `mod_id` int(10) UNSIGNED NOT NULL,
+  `module_config_id` int(10) UNSIGNED NOT NULL,
+  `module_id` int(10) UNSIGNED NOT NULL,
   `name` varchar(45) NOT NULL,
   `value` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -181,7 +193,7 @@ CREATE TABLE `tr_users` (
 --
 
 CREATE TABLE `tr_users_rights` (
-  `right_id` int(10) UNSIGNED NOT NULL,
+  `user_right_id` int(10) UNSIGNED NOT NULL,
   `user_id` int(10) UNSIGNED NOT NULL,
   `zone` varchar(10) DEFAULT NULL,
   `page` varchar(10) DEFAULT NULL,
@@ -196,7 +208,7 @@ CREATE TABLE `tr_users_rights` (
 -- Indexes for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
-  ADD PRIMARY KEY (`ban_id`),
+  ADD PRIMARY KEY (`banned_id`),
   ADD KEY `ip` (`ip`),
   ADD KEY `name` (`name`),
   ADD KEY `mail` (`mail`),
@@ -212,7 +224,7 @@ ALTER TABLE `tr_blocks`
 -- Indexes for table `tr_blocks_configs`
 --
 ALTER TABLE `tr_blocks_configs`
-  ADD PRIMARY KEY (`bconfig_id`),
+  ADD PRIMARY KEY (`block_config_id`),
   ADD KEY `block_id` (`block_id`),
   ADD KEY `name` (`name`);
 
@@ -220,9 +232,9 @@ ALTER TABLE `tr_blocks_configs`
 -- Indexes for table `tr_blocks_visibility`
 --
 ALTER TABLE `tr_blocks_visibility`
-  ADD PRIMARY KEY (`bvisibility_id`),
+  ADD PRIMARY KEY (`block_visibility_id`),
   ADD KEY `block_id` (`block_id`),
-  ADD KEY `mod_id` (`mod_id`);
+  ADD KEY `module_id` (`module_id`) USING BTREE;
 
 --
 -- Indexes for table `tr_configs`
@@ -235,22 +247,32 @@ ALTER TABLE `tr_configs`
 -- Indexes for table `tr_menus`
 --
 ALTER TABLE `tr_menus`
-  ADD PRIMARY KEY (`menu_id`);
+  ADD PRIMARY KEY (`menu_id`),
+  ADD KEY `block_id` (`block_id`),
+  ADD KEY `menus_parent_id` (`parent_id`);
+
+--
+-- Indexes for table `tr_menus_configs`
+--
+ALTER TABLE `tr_menus_configs`
+  ADD PRIMARY KEY (`menu_config_id`),
+  ADD KEY `menu_id` (`menu_id`),
+  ADD KEY `name` (`name`);
 
 --
 -- Indexes for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
-  ADD PRIMARY KEY (`mod_id`),
+  ADD PRIMARY KEY (`module_id`),
   ADD KEY `name` (`name`);
 
 --
 -- Indexes for table `tr_modules_configs`
 --
 ALTER TABLE `tr_modules_configs`
-  ADD PRIMARY KEY (`modconf_id`),
+  ADD PRIMARY KEY (`module_config_id`),
   ADD KEY `name` (`name`),
-  ADD KEY `mod_id` (`mod_id`);
+  ADD KEY `module_id` (`module_id`) USING BTREE;
 
 --
 -- Indexes for table `tr_project`
@@ -270,7 +292,7 @@ ALTER TABLE `tr_users`
 -- Indexes for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
-  ADD PRIMARY KEY (`right_id`),
+  ADD PRIMARY KEY (`user_right_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -281,7 +303,7 @@ ALTER TABLE `tr_users_rights`
 -- AUTO_INCREMENT for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
-  MODIFY `ban_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `banned_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_blocks`
 --
@@ -291,12 +313,12 @@ ALTER TABLE `tr_blocks`
 -- AUTO_INCREMENT for table `tr_blocks_configs`
 --
 ALTER TABLE `tr_blocks_configs`
-  MODIFY `bconfig_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `block_config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_blocks_visibility`
 --
 ALTER TABLE `tr_blocks_visibility`
-  MODIFY `bvisibility_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `block_visibility_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_configs`
 --
@@ -308,15 +330,20 @@ ALTER TABLE `tr_configs`
 ALTER TABLE `tr_menus`
   MODIFY `menu_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
+-- AUTO_INCREMENT for table `tr_menus_configs`
+--
+ALTER TABLE `tr_menus_configs`
+  MODIFY `menu_config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `tr_modules`
 --
 ALTER TABLE `tr_modules`
-  MODIFY `mod_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `module_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_modules_configs`
 --
 ALTER TABLE `tr_modules_configs`
-  MODIFY `modconf_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `module_config_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `tr_project`
 --
@@ -331,7 +358,7 @@ ALTER TABLE `tr_users`
 -- AUTO_INCREMENT for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
-  MODIFY `right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `user_right_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
@@ -340,32 +367,45 @@ ALTER TABLE `tr_users_rights`
 -- Constraints for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
-  ADD CONSTRAINT `tr_banned_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `banned_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `tr_blocks_configs`
 --
 ALTER TABLE `tr_blocks_configs`
-  ADD CONSTRAINT `tr_blocks_configs_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `blocks_configs_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tr_blocks_visibility`
 --
 ALTER TABLE `tr_blocks_visibility`
-  ADD CONSTRAINT `tr_blocks_visibility_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `tr_blocks_visibility_mod_id` FOREIGN KEY (`mod_id`) REFERENCES `tr_modules` (`mod_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `blocks_visibility_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `blocks_visibility_module_id` FOREIGN KEY (`module_id`) REFERENCES `tr_modules` (`module_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tr_menus`
+--
+ALTER TABLE `tr_menus`
+  ADD CONSTRAINT `menus_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `menus_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `tr_menus` (`menu_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `tr_menus_configs`
+--
+ALTER TABLE `tr_menus_configs`
+  ADD CONSTRAINT `menus_configs_menu_id` FOREIGN KEY (`menu_id`) REFERENCES `tr_menus` (`menu_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tr_modules_configs`
 --
 ALTER TABLE `tr_modules_configs`
-  ADD CONSTRAINT `tr_modules_configs_mod_id` FOREIGN KEY (`mod_id`) REFERENCES `tr_modules` (`mod_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `modules_configs_module_id` FOREIGN KEY (`module_id`) REFERENCES `tr_modules` (`module_id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
-  ADD CONSTRAINT `tr_users_rights_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `users_rights_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
