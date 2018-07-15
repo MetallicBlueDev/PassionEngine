@@ -7,7 +7,7 @@ Search the issues page to see if the bug has already been reported.
 If not, create a new issue and write the steps to reproduce.
 
 # Translation
-There is a lot to do here. the major problem is that the translation scheme is not yet finished.
+There is a lot to do here. The major problem is that the translation scheme is not yet finished.
 You have to start from the French translation to go to the other languages.
 
 # Contributing code
@@ -20,33 +20,5 @@ You have to start from the French translation to go to the other languages.
 ## Credits
 If you are contributing to TR Engine, please add your name to ```./contributors.md``` so that you can be credited for your work outside and inside the game.
 
-## Language
-Pure PHP with standard functions.
-
-# Coding Style
-Rather than writing hundreds of lines on the standards, try to just soak in what already exists.
-Readability is important, but not doing too much is even more important.
-
-Use the *PHP Standards Recommendations* :
-https://www.php-fig.org/psr/#accepted
-
-## PSR-4: Autoloader 
-(As of 2014-10-21 PSR-0 has been marked as deprecated. PSR-4 is now recommended as an alternative.)
-https://www.php-fig.org/psr/psr-4/
-
-## PSR-1: Basic Coding Standard
-https://www.php-fig.org/psr/psr-1/
-
-> **Note**
-> 4.2. Properties : MUST be in lower case.
-
-## PSR-2: Coding Style Guide
-https://www.php-fig.org/psr/psr-2/
-
-## Rule for the database
-1. Put everything in lowercase
-2. Separate words with the underscore
-3. Put the names of the tables in the plural
-4. Avoid abbreviations
-5. Use the UTF-8 charset
-6. Use SQL constraints (FOREIGN KEY, REFERENCES, ...)
+## Coding Style
+See [wiki](https://github.com/Tr4ncer/TREngine/wiki/Coding-Style)
