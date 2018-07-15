@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 14, 2018 at 07:35 PM
+-- Generation Time: Jul 15, 2018 at 11:32 AM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -33,10 +33,11 @@ CREATE TABLE `tr_banned` (
   `ip` varchar(50) NOT NULL,
   `name` varchar(45) NOT NULL,
   `mail` varchar(80) DEFAULT NULL,
+  `user_id` int(10) UNSIGNED DEFAULT NULL,
   `reason` text NOT NULL,
   `banishment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `type` tinyint(1) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -195,7 +196,11 @@ CREATE TABLE `tr_users_rights` (
 -- Indexes for table `tr_banned`
 --
 ALTER TABLE `tr_banned`
-  ADD PRIMARY KEY (`ban_id`);
+  ADD PRIMARY KEY (`ban_id`),
+  ADD KEY `ip` (`ip`),
+  ADD KEY `name` (`name`),
+  ADD KEY `mail` (`mail`),
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `tr_blocks`
@@ -330,6 +335,12 @@ ALTER TABLE `tr_users_rights`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `tr_banned`
+--
+ALTER TABLE `tr_banned`
+  ADD CONSTRAINT `tr_banned_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `tr_blocks_configs`

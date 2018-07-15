@@ -1,5 +1,5 @@
 tr_banned
-TODO
+=>OK
 
 tr_blocks
 =>OK
