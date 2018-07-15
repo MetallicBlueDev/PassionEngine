@@ -416,7 +416,7 @@ class LibBlock
         if ($coreSql->affectedRows() > 0) {
             $blockArrayDatas = $coreSql->fetchArray()[0];
             $blockArrayDatas['modIds'] = array();
-            $blockArrayDatas['bConfigs'] = array();
+            $blockArrayDatas['block_config'] = array();
 
             $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
                              array("mod_id"),
@@ -431,7 +431,7 @@ class LibBlock
                              array("block_id =  '" . $blockId . "'"));
 
             if ($coreSql->affectedRows() > 0) {
-                $blockArrayDatas['bConfigs'] = $coreSql->fetchArray();
+                $blockArrayDatas['block_config'] = $coreSql->fetchArray();
             }
         }
         return $blockArrayDatas;

@@ -40,7 +40,7 @@ class LibBlockData extends LibEntityData
         }
 
         if ($initializeConfig) {
-            $data['bConfigs'] = isset($data['bConfigs']) ? ExecUtils::getArrayConfigs($data['bConfigs']) : array();
+            $data['block_config'] = isset($data['block_config']) ? ExecUtils::getArrayConfigs($data['block_config']) : array();
         }
 
         $this->newStorage($data);
@@ -182,7 +182,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getConfigs(): array
     {
-        return $this->getArray("bConfigs");
+        return $this->getArray("block_config");
     }
 
     /**
