@@ -5,9 +5,15 @@
 
 This project is executed with PHP 7.1.
 
+## Contributing
+See [this] (https://github.com/Tr4ncer/TREngine/blob/master/CONTRIBUTING.md)
+
+## Licence
+See [this] (https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
+
 ## Source
-* GitHub: https://github.com/Tr4ncer/trengine
-* Git clone: https://github.com/Tr4ncer/trengine.git
+* GitHub: https://github.com/Tr4ncer/TREngine
+* Git clone: https://github.com/Tr4ncer/TREngine.git
 * Old warehouse: https://sourceforge.net/projects/trengine/
 
 ## Links
