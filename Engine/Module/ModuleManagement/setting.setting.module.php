@@ -56,11 +56,11 @@ class Module_Management_Setting extends ModuleModel
                                  $value)
     {
         CoreSql::getInstance()->update(
-                CoreTable::CONFIG_TABLE,
-                array(
-                    "value" => $value),
-                array(
-                    "name = '" . $key . "'")
+            CoreTable::CONFIG_TABLE,
+            array(
+                "value" => $value),
+            array(
+                "name = '" . $key . "'")
         );
     }
 
@@ -131,7 +131,7 @@ class Module_Management_Setting extends ModuleModel
         }
         $form->addSelectCloseTag();
 
-        $form->addSelectOpenTag("defaultMod",
+        $form->addSelectOpenTag("defaultModule",
                                 SETTING_GENERAL_DEFAULT_MODULE);
         $modules = LibModule::getModuleList();
         $currentModule = $coreMain->getConfigs()->getDefaultModule();
@@ -283,13 +283,13 @@ class Module_Management_Setting extends ModuleModel
             }
         }
         // Module par défaut
-        $defaultMod = CoreRequest::getString("defaultMod",
-                                             "",
-                                             CoreRequestType::POST);
-        if ($coreMain->getConfigs()->getDefaultModule() != $defaultMod) {
-            if (!empty($defaultMod)) {
-                $this->updateTable("defaultMod",
-                                   $defaultMod);
+        $defaultModule = CoreRequest::getString("defaultModule",
+                                                "",
+                                                CoreRequestType::POST);
+        if ($coreMain->getConfigs()->getDefaultModule() != $defaultModule) {
+            if (!empty($defaultModule)) {
+                $this->updateTable("defaultModule",
+                                   $defaultModule);
                 $deleteCache = true;
             } else {
                 CoreLogger::addErrorMessage(SETTING_GENERAL_DEFAULT_MODULE_INVALID);

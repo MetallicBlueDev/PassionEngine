@@ -305,7 +305,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getDefaultModule(): string
     {
-        return $this->getStringValueWithDefault("defaultMod",
+        return $this->getStringValueWithDefault("defaultModule",
                                                 function() {
                 return "home";
             });
