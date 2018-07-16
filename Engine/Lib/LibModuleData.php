@@ -179,7 +179,7 @@ class LibModuleData extends LibEntityData
      *
      * @return array
      */
-    public function &getConfigs(): array
+    public function &getConfigs(): ?array
     {
         return $this->getArray("module_config");
     }

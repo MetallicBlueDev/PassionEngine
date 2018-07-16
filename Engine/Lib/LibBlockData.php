@@ -180,7 +180,7 @@ class LibBlockData extends LibEntityData
      *
      * @return array
      */
-    public function &getConfigs(): array
+    public function &getConfigs(): ?array
     {
         return $this->getArray("block_config");
     }

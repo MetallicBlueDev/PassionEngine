@@ -10,7 +10,7 @@ use TREngine\Engine\Lib\LibModule;
  *
  * @author Sébastien Villemain
  */
-class CoreAccessType implements CoreAccessToken
+class CoreAccessType extends CoreDataStorage implements CoreAccessToken
 {
 
     /**
@@ -28,20 +28,14 @@ class CoreAccessType implements CoreAccessToken
     private static $cache = array();
 
     /**
-     * Données complètes des droits.
-     *
-     * @var array
-     */
-    private $rights = array();
-
-    /**
      * Nouveau type d'accès à vérifier.
      *
      * @param array $rights
      */
     private function __construct(array &$rights)
     {
-        $this->rights = $rights;
+        parent::__construct();
+        $this->newStorage($rights);
     }
 
     /**
@@ -96,8 +90,8 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getRank(): int
     {
-        $rank = isset($this->rights['rank']) ? (int) $this->rights['rank'] : CoreAccessRank::NONE;
-        return $rank;
+        return $this->getInt("rank",
+                             CoreAccessRank::NONE);
     }
 
     /**
@@ -108,7 +102,7 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getZone(): string
     {
-        return $this->rights['zone'];
+        return $this->getString("zone");
     }
 
     /**
@@ -119,7 +113,7 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getPage(): string
     {
-        return $this->rights['page'];
+        return $this->getString("page");
     }
 
     /**
@@ -129,8 +123,9 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &setPage(string $newPage)
     {
-        $this->rights['page'] = $newPage;
-        unset($this->rights['validity']);
+        $this->updateDataValue("page",
+                               $newPage);
+        $this->unsetValue("validity");
     }
 
     /**
@@ -141,7 +136,7 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getId(): string
     {
-        return $this->rights['identifier'];
+        return $this->getString("identifier");
     }
 
     /**
@@ -151,7 +146,7 @@ class CoreAccessType implements CoreAccessToken
      */
     public function &getName(): string
     {
-        return $this->rights['name'];
+        return $this->getString("name");
     }
 
     /**
@@ -204,7 +199,7 @@ class CoreAccessType implements CoreAccessToken
         if (!$this->alreadyChecked()) {
             $this->checkValidity();
         }
-        return $this->rights['validity'];
+        return $this->getBool("validity");
     }
 
     /**
@@ -244,7 +239,8 @@ class CoreAccessType implements CoreAccessToken
             }
         }
 
-        $this->rights['validity'] = $valid;
+        $this->updateDataValue("validity",
+                               $valid);
     }
 
     /**
@@ -263,15 +259,17 @@ class CoreAccessType implements CoreAccessToken
             }
         } else {
             // Recherche d'informations sur le module
-            $moduleInfo = null;
+            $moduleData = null;
 
             if (CoreLoader::isCallable("LibModule")) {
-                $moduleInfo = LibModule::getInstance()->getModuleData($this->getName());
+                $moduleData = LibModule::getInstance()->getModuleData($this->getName());
             }
 
-            if ($moduleInfo !== null && is_numeric($moduleInfo->getId())) {
-                $this->rights['page'] = $moduleInfo->getName();
-                $this->rights['identifier'] = $moduleInfo->getId();
+            if ($moduleData !== null && is_numeric($moduleData->getId())) {
+                $this->updateDataValue("page",
+                                       $moduleData->getName());
+                $this->updateDataValue("identifier",
+                                       $moduleData->getId());
                 $valid = true;
             }
         }
@@ -294,8 +292,10 @@ class CoreAccessType implements CoreAccessToken
         }
 
         if ($blockInfo !== null && is_numeric($blockInfo->getId())) {
-            $this->rights['page'] = $blockInfo->getType();
-            $this->rights['identifier'] = $blockInfo->getId();
+            $this->updateDataValue("page",
+                                   $blockInfo->getType());
+            $this->updateDataValue("identifier",
+                                   $blockInfo->getId());
             $valid = true;
         }
         return $valid;
@@ -308,6 +308,6 @@ class CoreAccessType implements CoreAccessToken
      */
     private function alreadyChecked(): bool
     {
-        return isset($this->rights['validity']);
+        return $this->exist("validity");
     }
 }
