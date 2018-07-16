@@ -5,7 +5,7 @@ namespace TREngine\Engine\Core;
 use TREngine\Engine\Fail\FailCache;
 use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
-use Exception;
+use Throwable;
 
 /**
  * Gestionnaire de fichier cache.
@@ -126,7 +126,7 @@ class CoreCache extends CacheModel
         try {
             $this->selectedCache = new $cacheClassName();
             $this->selectedCache->initialize($cacheConfig);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $this->selectedCache = null;
             CoreSecure::getInstance()->catchException($ex);
         }

@@ -2,7 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
-use Exception;
+use Throwable;
 use TREngine\Engine\Fail\FailLoader;
 
 /**
@@ -141,8 +141,6 @@ class CoreLoader
 
     /**
      * Inscription du chargeur de classe.
-     *
-     * @throws FailLoader
      */
     public static function affectRegister(): void
     {
@@ -161,7 +159,7 @@ class CoreLoader
                 throw new FailLoader("spl_autoload_register fail",
                                      4);
             }
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
     }
@@ -426,7 +424,6 @@ class CoreLoader
      * @param string $keyName Nom de la classe ou du fichier.
      * @param string $fileType Type de fichier.
      * @return bool true chargé.
-     * @throws FailLoader
      */
     private static function &manageLoad(string &$keyName,
                                         string $fileType): bool
@@ -450,7 +447,7 @@ class CoreLoader
                 $loaded = self::load($keyName,
                                      $fileType);
             }
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
         return $loaded;

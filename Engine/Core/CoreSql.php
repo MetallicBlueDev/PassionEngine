@@ -4,7 +4,7 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Base\BaseModel;
 use TREngine\Engine\Fail\FailSql;
-use Exception;
+use Throwable;
 
 /**
  * Gestionnaire de la communication SQL.
@@ -61,7 +61,7 @@ class CoreSql extends BaseModel
         try {
             $this->selectedBase = new $baseClassName();
             $this->selectedBase->initialize($databaseConfig);
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             $this->selectedBase = null;
             CoreSecure::getInstance()->catchException($ex);
         }
@@ -256,7 +256,7 @@ class CoreSql extends BaseModel
 
         try {
             $this->query();
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
     }
@@ -299,7 +299,7 @@ class CoreSql extends BaseModel
 
         try {
             $this->query();
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
     }
@@ -363,7 +363,7 @@ class CoreSql extends BaseModel
 
         try {
             $this->query();
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
     }
@@ -391,7 +391,7 @@ class CoreSql extends BaseModel
 
         try {
             $this->query();
-        } catch (Exception $ex) {
+        } catch (Throwable $ex) {
             CoreSecure::getInstance()->catchException($ex);
         }
     }

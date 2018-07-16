@@ -17,7 +17,7 @@ use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreUrlRewriting;
 use TREngine\Engine\Exec\ExecUtils;
-use Exception;
+use Throwable;
 
 /**
  * Gestionnaire de module.
@@ -340,7 +340,7 @@ class LibModule
                 ob_start();
                 echo $moduleClass->{$moduleData->getView()}();
                 $moduleData->setBuffer(ob_get_clean());
-            } catch (Exception $ex) {
+            } catch (Throwable $ex) {
                 CoreSecure::getInstance()->catchException($ex);
             }
         } else {

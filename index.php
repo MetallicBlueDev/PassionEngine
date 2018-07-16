@@ -31,13 +31,17 @@ ExecTimeMarker::startMeasurement("main");
 // Préparation du moteur
 CoreMain::checkInstance();
 
-// Recherche de nouveaux composants
-if (CoreMain::getInstance()->newComponentDetected()) {
-    // Installation des nouveaux composants
-    CoreMain::getInstance()->install();
-} else {
-    // Démarrage classique
-    CoreMain::getInstance()->start();
+try {
+    // Recherche de nouveaux composants
+    if (CoreMain::getInstance()->newComponentDetected()) {
+        // Installation des nouveaux composants
+        CoreMain::getInstance()->install();
+    } else {
+        // Démarrage classique
+        CoreMain::getInstance()->start();
+    }
+} catch (\Throwable $ex) {
+    CoreSecure::getInstance()->catchException($ex);
 }
 
 if (CoreSecure::debuggingMode()) {

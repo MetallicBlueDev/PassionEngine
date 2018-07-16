@@ -32,7 +32,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      *
      * @param array $rights
      */
-    private function __construct(array &$rights)
+    protected function __construct(array &$rights)
     {
         parent::__construct();
         $this->newStorage($rights);
@@ -100,7 +100,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      *
      * @return string
      */
-    public function &getZone(): string
+    public function &getZone(): ?string
     {
         return $this->getString("zone");
     }

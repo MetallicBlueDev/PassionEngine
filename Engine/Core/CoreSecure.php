@@ -2,7 +2,8 @@
 
 namespace TREngine\Engine\Core;
 
-use Exception;
+use Throwable;
+use ErrorException;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailEngine;
@@ -151,9 +152,9 @@ class CoreSecure
      * Affiche un message d'erreur au client, mettra fin à l'exécution du moteur.
      * Cette fonction est activé si une erreur est détectée.
      *
-     * @param Exception $ex L'exception interne levée.
+     * @param Throwable $ex L'exception interne levée.
      */
-    public function catchException(?Exception $ex)
+    public function catchException(?Throwable $ex)
     {
         $this->locked = true;
 
@@ -179,10 +180,10 @@ class CoreSecure
     /**
      * Retourne le type d'erreur courant sous forme de message.
      *
-     * @param Exception $ex L'exception interne levée.
+     * @param Throwable $ex L'exception interne levée.
      * @return string
      */
-    private function &getErrorMessageTitle(Exception $ex): string
+    private function &getErrorMessageTitle(Throwable $ex): string
     {
         // Message d'erreur depuis une constante
         $errorMessageTitle = FailBase::getErrorCodeDescription($ex->getCode());
@@ -200,10 +201,10 @@ class CoreSecure
     /**
      * Analyse l'erreur et prépare l'affichage de l'erreur.
      *
-     * @param Exception $ex L'exception interne levée.
+     * @param Throwable $ex L'exception interne levée.
      * @return array
      */
-    private function &getDebugMessages(Exception $ex): array
+    private function &getDebugMessages(Throwable $ex): array
     {
         $messages = array();
         $this->appendException($ex,
@@ -216,10 +217,10 @@ class CoreSecure
     /**
      * Ajoute des informations sur l'exception.
      *
-     * @param Exception $ex
+     * @param Throwable $ex
      * @param array $messages
      */
-    private function appendException(Exception $ex,
+    private function appendException(Throwable $ex,
                                      array &$messages): void
     {
         $this->appendExceptionMessage($ex,
@@ -232,10 +233,10 @@ class CoreSecure
     /**
      * Ajoute une information générale sur l'exception.
      *
-     * @param Exception $ex
+     * @param Throwable $ex
      * @param array $messages
      */
-    private function appendExceptionMessage(Exception $ex,
+    private function appendExceptionMessage(Throwable $ex,
                                             array &$messages): void
     {
         if ($this->debuggingMode) {
@@ -252,10 +253,10 @@ class CoreSecure
     /**
      * Ajoute la trace (pile d'appel) de l'exception.
      *
-     * @param Exception $ex
+     * @param Throwable $ex
      * @param array $messages
      */
-    private function appendExceptionTrace(Exception $ex,
+    private function appendExceptionTrace(Throwable $ex,
                                           array &$messages): void
     {
         foreach ($ex->getTrace() as $traceValue) {
@@ -332,7 +333,7 @@ class CoreSecure
      */
     private function configureOutput(): void
     {
-        error_reporting(defined("E_ALL") ? E_ALL : E_ERROR | E_WARNING | E_PARSE);
+        error_reporting(E_ALL);
     }
 
     /**
