@@ -23,6 +23,7 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
         require 'Core' . DIRECTORY_SEPARATOR . 'CoreInfo.php';
 
         // Les Superglobales ne peuvent pas être appelées directement dans une classe.
+        // Injection des informations dans un environnement sécurisé
         // http://php.net/manual/fr/language.variables.variable.php
         // http://php.net/manual/fr/language.variables.superglobals.php
         foreach ($GLOBALS as $gvName => $gvValue) {
@@ -32,6 +33,8 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
                 CoreInfo::addGlobalVars($gvName,
                                         $gvValue);
             }
+
+            unset(${$gvName});
         }
 
         unset($GLOBALS);

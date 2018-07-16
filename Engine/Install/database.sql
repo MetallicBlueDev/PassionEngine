@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 15, 2018 at 02:47 PM
+-- Generation Time: Jul 16, 2018 at 06:17 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -32,7 +32,7 @@ CREATE TABLE `tr_banned` (
   `banned_id` int(10) UNSIGNED NOT NULL,
   `ip` varchar(50) NOT NULL,
   `name` varchar(45) NOT NULL,
-  `mail` varchar(80) DEFAULT NULL,
+  `email` varchar(80) DEFAULT NULL,
   `user_id` int(10) UNSIGNED DEFAULT NULL,
   `reason` text NOT NULL,
   `banishment_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -211,8 +211,8 @@ ALTER TABLE `tr_banned`
   ADD PRIMARY KEY (`banned_id`),
   ADD KEY `ip` (`ip`),
   ADD KEY `name` (`name`),
-  ADD KEY `mail` (`mail`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `email` (`email`) USING BTREE;
 
 --
 -- Indexes for table `tr_blocks`
