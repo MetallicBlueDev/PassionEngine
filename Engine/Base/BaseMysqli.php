@@ -40,13 +40,13 @@ class BaseMysqli extends BaseModel
     public function netConnect(): void
     {
         try {
-            $this->connId = new mysqli($this->getTransactionHost(),
-                                       $this->getTransactionUser(),
-                                       $this->getTransactionPass());
-
             // Permet de générer une exception à la place des avertissements
             $driver = new mysqli_driver();
             $driver->report_mode = MYSQLI_REPORT_STRICT;
+
+            $this->connId = new mysqli($this->getTransactionHost(),
+                                       $this->getTransactionUser(),
+                                       $this->getTransactionPass());
 
             // Utilisation du typage natif en base de données.
             $this->getMysqli()->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,
