@@ -5,6 +5,7 @@ namespace TREngine\Engine\Base;
 use mysqli;
 use mysqli_sql_exception;
 use mysqli_result;
+use mysqli_driver;
 use TREngine\Engine\Core\CoreLogger;
 
 /**
@@ -46,6 +47,10 @@ class BaseMysqli extends BaseModel
             // Permet de générer une exception à la place des avertissements
             $driver = new mysqli_driver();
             $driver->report_mode = MYSQLI_REPORT_STRICT;
+
+            // Utilisation du typage natif en base de données.
+            $this->getMysqli()->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,
+                                        true);
         } catch (mysqli_sql_exception $ex) {
             CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
             $this->connId = null;

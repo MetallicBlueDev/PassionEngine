@@ -70,6 +70,12 @@ class BasePdo extends BaseModel
             $this->connId = new PDO($this->getTransactionHost(),
                                     $this->getTransactionUser(),
                                     $this->getTransactionPass());
+
+            // Utilisation du typage natif en base de données.
+            $this->getPdo()->setAttribute(PDO::ATTR_EMULATE_PREPARES,
+                                          false);
+            $this->getPdo()->setAttribute(PDO::ATTR_STRINGIFY_FETCHES,
+                                          false);
         } catch (PDOException $ex) {
             CoreLogger::addException("PDO exception: " . $ex->getMessage());
             $this->connId = null;
