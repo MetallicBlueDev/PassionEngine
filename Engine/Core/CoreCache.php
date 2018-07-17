@@ -620,7 +620,7 @@ class CoreCache extends CacheModel
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 if (is_array($value)) {
-                    $lastKey = "['" . $key . "']";
+                    $lastKey .= "['" . $key . "']";
                     $content .= $this->serializeData($value,
                                                      $lastKey);
                 } else {
