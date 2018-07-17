@@ -190,7 +190,7 @@ class LibBlockData extends LibEntityData
      *
      * @return array
      */
-    public function &getTargetModules(): array
+    public function &getAllowedModules(): array
     {
         $rslt = $this->getArray("module_ids",
                                 array());
@@ -202,7 +202,7 @@ class LibBlockData extends LibEntityData
      *
      * @return bool
      */
-    public function &isAllTargetedModules(): bool
+    public function &canDisplayOnAllModules(): bool
     {
         return $this->getBool("all_modules");
     }
@@ -248,12 +248,12 @@ class LibBlockData extends LibEntityData
         $rslt = false;
 
         if (CoreLoader::isCallable("LibModule")) {
-            if ($this->isAllTargetedModules()) {
+            if ($this->canDisplayOnAllModules()) {
                 $rslt = true;
             } else {
                 $selectedModuleId = LibModule::getInstance()->getRequestedModuleData()->getIdAsInt();
 
-                foreach ($this->getTargetModules() as $allowedModule) {
+                foreach ($this->getAllowedModules() as $allowedModule) {
                     if ($selectedModuleId === $allowedModule['module_id']) {
                         $rslt = true;
                         break;
