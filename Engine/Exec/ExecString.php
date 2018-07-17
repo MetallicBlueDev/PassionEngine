@@ -223,4 +223,24 @@ class ExecString
         }
         return $text;
     }
+
+    /**
+     * Ajout de caractères de citation (quote) pour les valeurs non numérique.
+     *
+     * @param mixed $data
+     * @param bool $simpleQuote
+     * @return string
+     */
+    public static function &addQuotesForNonNumeric($data,
+                                                   bool $simpleQuote): string
+    {
+        $rslt = $data;
+        $addQuotes = !is_bool($data) && !is_int($data) && !is_float($data) && !is_double($data);
+
+        if ($addQuotes) {
+            $quote = $simpleQuote ? "'" : "\"";
+            $rslt = $quote . self::addSlashes($data) . $quote;
+        }
+        return $rslt;
+    }
 }

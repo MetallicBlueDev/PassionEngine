@@ -619,18 +619,21 @@ class CoreCache extends CacheModel
 
         if (is_array($data)) {
             foreach ($data as $key => $value) {
+                $newKey = $lastKey . "[" . ExecString::addQuotesForNonNumeric($key,
+                                                                              true) . "]";
+
                 if (is_array($value)) {
-                    $lastKey .= "['" . $key . "']";
                     $content .= $this->serializeData($value,
-                                                     $lastKey);
+                                                     $newKey);
                 } else {
-                    $content .= $this->serializeVariable($lastKey . "['" . $key . "']",
+                    $content .= $this->serializeVariable($newKey,
                                                          $value);
                 }
             }
         } else {
             if (!empty($lastKey)) {
-                $lastKey = "['" . $lastKey . "']";
+                $lastKey = "[" . ExecString::addQuotesForNonNumeric($lastKey,
+                                                                    true) . "]";
             }
 
             $content .= $this->serializeVariable($lastKey,
@@ -794,13 +797,14 @@ class CoreCache extends CacheModel
      * Serialize la variable en chaine de caractères pour une mise en cache
      *
      * @param string $key
-     * @param string $value
+     * @param mixed $value
      * @return string
      */
     private function &serializeVariable(string $key,
-                                        string $value): string
+                                        $value): string
     {
-        $content = "$" . $this->getVariableName($key) . " = \"" . ExecString::addSlashes($value) . "\"; ";
+        $content = "$" . $this->getVariableName($key) . " = " . ExecString::addQuotesForNonNumeric($value,
+                                                                                                   false) . "; ";
         return $content;
     }
 
