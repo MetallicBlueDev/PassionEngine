@@ -3,11 +3,12 @@
 // -------------------------------------------------------------------------//
 // Database settings
 //
-// Transaction type to use (mysqli / pdo)
-$inc['type'] = "pdo";
+// Transaction type to use (pdo / mysqli)
+$inc['type'] = "mysqli";
 //
 // Host address of the base or the complete chain of DSN (Data Source Name)
 // Example for PDO DSN : mysql:host=127.0.0.1
+// Example for mysqli : 127.0.0.1
 $inc['host'] = "mysql:host=127.0.0.1";
 //
 // Username
