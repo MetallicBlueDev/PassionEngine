@@ -25,10 +25,10 @@ class BaseMysqli extends BaseModel
      */
     protected function canUse(): bool
     {
-        $rslt = function_exists("mysqli_connect");
+        $rslt = class_exists("mysqli");
 
         if (!$rslt) {
-            CoreLogger::addException("MySqli function not found");
+            CoreLogger::addException("MySqli driver not found");
         }
         return $rslt;
     }
@@ -39,11 +39,13 @@ class BaseMysqli extends BaseModel
     public function netConnect(): void
     {
         try {
-            // Permet de générer une exception à la place des avertissements qui spam
-            mysqli_report(MYSQLI_REPORT_STRICT);
             $this->connId = new mysqli($this->getTransactionHost(),
                                        $this->getTransactionUser(),
                                        $this->getTransactionPass());
+
+            // Permet de générer une exception à la place des avertissements
+            $driver = new mysqli_driver();
+            $driver->report_mode = MYSQLI_REPORT_STRICT;
         } catch (mysqli_sql_exception $ex) {
             CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
             $this->connId = null;
