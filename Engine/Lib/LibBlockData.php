@@ -190,7 +190,7 @@ class LibBlockData extends LibEntityData
      *
      * @return array
      */
-    public function &getTargetModuleIds(): array
+    public function &getTargetModules(): array
     {
         $rslt = $this->getArray("module_ids",
                                 array());
@@ -253,8 +253,8 @@ class LibBlockData extends LibEntityData
             } else {
                 $selectedModuleId = LibModule::getInstance()->getRequestedModuleData()->getIdAsInt();
 
-                foreach ($this->getTargetModuleIds() as $allowedModuleId) {
-                    if ($selectedModuleId === $allowedModuleId) {
+                foreach ($this->getTargetModules() as $allowedModule) {
+                    if ($selectedModuleId === $allowedModule['module_id']) {
                         $rslt = true;
                         break;
                     }
