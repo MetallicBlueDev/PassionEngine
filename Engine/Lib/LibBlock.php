@@ -54,7 +54,7 @@ class LibBlock
     private const SIDE_NONE = 0;
 
     /**
-     * Postion le plus à droite.
+     * Position le plus à droite.
      *
      * @var int
      */

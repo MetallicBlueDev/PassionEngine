@@ -50,7 +50,7 @@ class BlockLogin extends BlockModel
      */
     private $localView = "";
 
-    public function display()
+    public function display(): void
     {
         $this->configure();
 
@@ -68,12 +68,7 @@ class BlockLogin extends BlockModel
         }
     }
 
-    public function install()
-    {
-
-    }
-
-    public function uninstall()
+    public function uninstall(): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
         $coreCache->removeCache("login-logonblock.php");
@@ -82,7 +77,7 @@ class BlockLogin extends BlockModel
         $coreCache->removeCache("login-registrationblock.php");
     }
 
-    private function configure()
+    private function configure(): void
     {
         $options = $this->getBlockData()->getConfigs();
 
@@ -107,7 +102,7 @@ class BlockLogin extends BlockModel
         }
     }
 
-    private function &render()
+    private function &render(): string
     {
         $content = "";
 
@@ -181,7 +176,7 @@ class BlockLogin extends BlockModel
      * @param $moreLink string
      * @return string
      */
-    private function &logon($moreLink)
+    private function &logon($moreLink): string
     {
         $form = new LibForm("login-logonblock");
         $form->addInputText("login",
@@ -212,7 +207,7 @@ class BlockLogin extends BlockModel
      * @param $moreLink string
      * @return string
      */
-    private function &forgetlogin($moreLink)
+    private function &forgetlogin($moreLink): string
     {
         $form = new LibForm("login-forgetloginblock");
         $form->addInputText("email",
@@ -236,7 +231,7 @@ class BlockLogin extends BlockModel
      * @param $moreLink string
      * @return string
      */
-    private function &forgetpass($moreLink)
+    private function &forgetpass($moreLink): string
     {
         $form = new LibForm("login-forgetpassblock");
         $form->addInputText("login",
@@ -254,7 +249,7 @@ class BlockLogin extends BlockModel
         return $form->render("login-forgetpassblock");
     }
 
-    private function &registration($moreLink)
+    private function &registration($moreLink): string
     { // TODO registration block a coder
         $form = new LibForm("login-registrationblock");
         $form->addInputText("login",
