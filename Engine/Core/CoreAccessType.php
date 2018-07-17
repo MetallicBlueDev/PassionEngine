@@ -100,7 +100,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      *
      * @return string
      */
-    public function &getZone(): ?string
+    public function &getZone(): string
     {
         return $this->getString("zone");
     }
@@ -123,8 +123,8 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &setPage(string $newPage)
     {
-        $this->updateDataValue("page",
-                               $newPage);
+        $this->setDataValue("page",
+                            $newPage);
         $this->unsetValue("validity");
     }
 
@@ -239,8 +239,8 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
             }
         }
 
-        $this->updateDataValue("validity",
-                               $valid);
+        $this->setDataValue("validity",
+                            $valid);
     }
 
     /**
@@ -266,10 +266,10 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
             }
 
             if ($moduleData !== null && is_numeric($moduleData->getId())) {
-                $this->updateDataValue("page",
-                                       $moduleData->getName());
-                $this->updateDataValue("identifier",
-                                       $moduleData->getId());
+                $this->setDataValue("page",
+                                    $moduleData->getName());
+                $this->setDataValue("identifier",
+                                    $moduleData->getId());
                 $valid = true;
             }
         }
@@ -292,10 +292,10 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
         }
 
         if ($blockInfo !== null && is_numeric($blockInfo->getId())) {
-            $this->updateDataValue("page",
-                                   $blockInfo->getType());
-            $this->updateDataValue("identifier",
-                                   $blockInfo->getId());
+            $this->setDataValue("page",
+                                $blockInfo->getType());
+            $this->setDataValue("identifier",
+                                $blockInfo->getId());
             $valid = true;
         }
         return $valid;
