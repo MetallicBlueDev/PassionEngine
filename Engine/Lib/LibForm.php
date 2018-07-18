@@ -4,6 +4,7 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreCacheSection;
+use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Exec\ExecString;
 
 /**
@@ -183,6 +184,42 @@ class LibForm
                         $defaultValue,
                         $options,
                         "");
+    }
+
+    /**
+     * Ajoute un champs masqué nommé 'referer' contenant le lien référent.
+     */
+    public function addInputHiddenReferer(): void
+    {
+        $this->addInputHidden("referer",
+                              CoreRequest::getRefererQueryString());
+    }
+
+    /**
+     * Ajoute un champs masqué nommé 'module' contenant le nom du module.
+     */
+    public function addInputHiddenModule(string $module): void
+    {
+        $this->addInputHidden("module",
+                              $module);
+    }
+
+    /**
+     * Ajoute un champs masqué nommé 'view' contenant le nom du viewer.
+     */
+    public function addInputHiddenView(string $view): void
+    {
+        $this->addInputHidden("view",
+                              $view);
+    }
+
+    /**
+     * Ajoute un champs masqué nommé 'layout' contenant le nom du type d'affichage.
+     */
+    public function addInputHiddenLayout(string $layout): void
+    {
+        $this->addInputHidden("layout",
+                              $layout);
     }
 
     /**
@@ -525,7 +562,8 @@ class LibForm
         $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
         $content = "";
 
-        if ($this->cached) { // Récupèration des données mise en cache
+        if ($this->cached) {
+            // Récupération des données mise en cache.
             $content = $coreCache->readCacheAsString($this->name . ".php",
                                                      self::CACHE_VARIABLE_NAME,
                                                      $this->cacheVars);
