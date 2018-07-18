@@ -10,6 +10,7 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreSecure;
+use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
@@ -208,14 +209,14 @@ class LibBlock
      */
     public function buildBlockRequested(): void
     {
-        $blockId = CoreRequest::getInteger("blockId",
+        $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
                                            -1);
 
         if ($blockId >= 0) {
             $this->buildBlockById($blockId,
                                   false);
         } else {
-            $blockType = CoreRequest::getString("blockType");
+            $blockType = CoreRequest::getString(CoreLayout::REQUEST_BLOCKTYPE);
             $this->buildStandaloneBlockType($blockType);
         }
     }

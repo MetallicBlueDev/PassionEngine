@@ -132,7 +132,7 @@ class LibMenu
      * Retourne une ligne de menu propre sous forme HTML.
      *
      * @param string $text Texte du lien.
-     * @param array $configs array("BOLD"=>1,"ITALIC"=>1,"UNDERLINE"=>1,"A"=>"?module=home")
+     * @param array $configs array("BOLD"=>1,"ITALIC"=>1,"UNDERLINE"=>1,"A"=>"?" . CoreLayout::REQUEST_MODULE . "=home")
      * @return string
      */
     public static function getLine(string $text,

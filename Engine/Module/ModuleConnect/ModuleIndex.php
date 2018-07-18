@@ -70,12 +70,9 @@ class ModuleIndex extends ModuleModel
                            ACCOUNT_PROFILE_SIGNATURE,
                            CoreSession::getInstance()->getUserInfos()->getSignature(),
                            "style=\"display: block;\" rows=\"5\" cols=\"50\"");
-        $form->addInputHidden("module",
-                              "connect");
-        $form->addInputHidden("view",
-                              "sendProfile");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("connect");
+        $form->addInputHiddenView("sendProfile");
+        $form->addInputHiddenLayout("module");
         $form->addInputSubmit("submit",
                               VALID);
         return $form->render();
@@ -103,10 +100,10 @@ class ModuleIndex extends ModuleModel
             $coreSession = CoreSession::getInstance();
 
             $coreSql->update(
-                    CoreTable::USERS,
-                    $values,
-                    array(
-                        "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
+                CoreTable::USERS,
+                $values,
+                array(
+                    "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
@@ -115,7 +112,7 @@ class ModuleIndex extends ModuleModel
             }
         }
         if (CoreMain::getInstance()->isDefaultLayout()) {
-            CoreHtml::getInstance()->redirect("index.php?module=connect&view=account&selectedTab=accounttabsidTab0",
+            CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab0",
                                               1);
         }
     }
@@ -176,12 +173,9 @@ class ModuleIndex extends ModuleModel
         }
         $form->addSelectCloseTag();
         $form->addSpace();
-        $form->addInputHidden("module",
-                              "connect");
-        $form->addInputHidden("view",
-                              "sendAccount");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("connect");
+        $form->addInputHiddenView("sendAccount");
+        $form->addInputHiddenLayout("module");
         $form->addInputSubmit("submit",
                               VALID);
         CoreHtml::getInstance()->addJavascript("validAccount('#form-account-accountprivate', '#form-account-accountprivate-name-input', '#form-account-accountprivate-pass-input', '#form-account-accountprivate-pass2-input', '#form-account-accountprivate-mail-input');");
@@ -219,11 +213,11 @@ class ModuleIndex extends ModuleModel
                     $name = ExecString::secureText($name);
 
                     CoreSql::getInstance()->select(
-                            CoreTable::USERS,
-                            array(
-                                "user_id"),
-                            array(
-                                "name = '" . $name . "'")
+                        CoreTable::USERS,
+                        array(
+                            "user_id"),
+                        array(
+                            "name = '" . $name . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -250,10 +244,10 @@ class ModuleIndex extends ModuleModel
                         $values['langue'] = $langue;
                         $values['template'] = $template;
                         CoreSql::getInstance()->update(
-                                CoreTable::USERS,
-                                $values,
-                                array(
-                                    "user_id = '" . $userInfos->getId() . "'")
+                            CoreTable::USERS,
+                            $values,
+                            array(
+                                "user_id = '" . $userInfos->getId() . "'")
                         );
 
                         if (CoreSql::getInstance()->affectedRows() > 0) {
@@ -269,7 +263,7 @@ class ModuleIndex extends ModuleModel
             }
         }
         if (CoreMain::getInstance()->isDefaultLayout()) {
-            CoreHtml::getInstance()->redirect("index.php?module=connect&view=account&selectedTab=accounttabsidTab1",
+            CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab1",
                                               1);
         }
     }
@@ -280,12 +274,9 @@ class ModuleIndex extends ModuleModel
         $form->setTitle(ACCOUNT_AVATAR_TITLE);
         $form->setDescription(ACCOUNT_AVATAR_DESCRIPTION);
         $form->addSpace();
-        $form->addInputHidden("module",
-                              "connect");
-        $form->addInputHidden("view",
-                              "account");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("connect");
+        $form->addInputHiddenView("account");
+        $form->addInputHiddenLayout("module");
         $form->addInputSubmit("submit",
                               VALID);
         return $form->render();
@@ -337,12 +328,9 @@ class ModuleIndex extends ModuleModel
             }
         }
 
-        $form->addInputHidden("module",
-                              "connect");
-        $form->addInputHidden("view",
-                              "account");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("connect");
+        $form->addInputHiddenView("account");
+        $form->addInputHiddenLayout("module");
         return $form->render();
     }
 
@@ -371,7 +359,7 @@ class ModuleIndex extends ModuleModel
                         $url = $referer;
                     } else {
                         $url = $this->getModuleData()->getConfigValue("defaultUrlAfterLogon",
-                                                                      "module=home");
+                                                                      CoreLayout::REQUEST_MODULE . "=home");
                     }
                     CoreHtml::getInstance()->redirect("index.php?" . $url);
                 } else {
@@ -390,26 +378,22 @@ class ModuleIndex extends ModuleModel
                 $form->addInputPassword("password",
                                         PASSWORD,
                                         "maxlength=\"180\"");
-                $form->addInputHidden("referer",
-                                      CoreRequest::getRefererQueryString());
-                $form->addInputHidden("module",
-                                      "connect");
-                $form->addInputHidden("view",
-                                      "logon");
-                $form->addInputHidden("layout",
-                                      "module");
+                $form->addInputHiddenReferer();
+                $form->addInputHiddenModule("connect");
+                $form->addInputHiddenView("logon");
+                $form->addInputHiddenLayout("module");
                 $form->addInputSubmit("submit",
                                       CONNECT);
 
                 $moreLink = "<ul>";
                 if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                    $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration",
+                    $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
                                                                                       LINK_TO_NEW_ACCOUNT) . "</span></li>";
                 }
-                $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin",
+                $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
                                                         LINK_TO_FORGET_LOGIN) . "</li>"
-                        . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass",
-                                                     LINK_TO_FORGET_PASS) . "</li></ul>";
+                    . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
+                                                 LINK_TO_FORGET_PASS) . "</li></ul>";
 
                 $form->addHtmlInFieldset($moreLink);
 
@@ -455,11 +439,11 @@ class ModuleIndex extends ModuleModel
             if (!empty($email)) {
                 if (ExecEmail::isValidEmail($email)) {
                     CoreSql::getInstance()->select(
-                            CoreTable::USERS,
-                            array(
-                                "name"),
-                            array(
-                                "email = '" . $email . "'")
+                        CoreTable::USERS,
+                        array(
+                            "name"),
+                        array(
+                            "email = '" . $email . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() == 1) {
@@ -483,24 +467,21 @@ class ModuleIndex extends ModuleModel
                     $form->setDescription(FORGET_LOGIN_DESCRIPTION);
                     $form->addInputText("email",
                                         EMAIL);
-                    $form->addInputHidden("module",
-                                          "connect");
-                    $form->addInputHidden("view",
-                                          "forgetlogin");
-                    $form->addInputHidden("layout",
-                                          "module");
+                    $form->addInputHiddenModule("connect");
+                    $form->addInputHiddenView("forgetlogin");
+                    $form->addInputHiddenLayout("module");
                     $form->addInputSubmit("submit",
                                           FORGET_LOGIN_SUBMIT);
 
                     $moreLink = "<ul>";
                     if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration",
+                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
                                                                                           LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
-                    $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon",
+                    $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
                                                             LINK_TO_LOGON) . "</li>"
-                            . "<li>" . CoreHtml::getLink("module=connect&view=forgetpass",
-                                                         LINK_TO_FORGET_PASS) . "</li></ul>";
+                        . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
+                                                     LINK_TO_FORGET_PASS) . "</li></ul>";
 
                     $form->addHtmlInFieldset($moreLink);
 
@@ -528,11 +509,11 @@ class ModuleIndex extends ModuleModel
             if (!empty($login)) {
                 if (CoreSession::validLogin($login)) {
                     CoreSql::getInstance()->select(
-                            CoreTable::USERS,
-                            array(
-                                "name, email"),
-                            array(
-                                "name = '" . $login . "'")
+                        CoreTable::USERS,
+                        array(
+                            "name, email"),
+                        array(
+                            "name = '" . $login . "'")
                     );
 
                     if (CoreSql::getInstance()->affectedRows() == 1) {
@@ -559,24 +540,21 @@ class ModuleIndex extends ModuleModel
                     $form->setDescription(FORGET_PASSWORD_DESCRIPTION);
                     $form->addInputText("login",
                                         LOGIN);
-                    $form->addInputHidden("module",
-                                          "connect");
-                    $form->addInputHidden("view",
-                                          "forgetpass");
-                    $form->addInputHidden("layout",
-                                          "module");
+                    $form->addInputHiddenModule("connect");
+                    $form->addInputHiddenView("forgetpass");
+                    $form->addInputHiddenLayout("module");
                     $form->addInputSubmit("submit",
                                           FORGET_PASSWORD_SUBMIT);
 
                     $moreLink = "<ul>";
                     if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink("module=connect&view=registration",
+                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
                                                                                           LINK_TO_NEW_ACCOUNT) . "</span></li>";
                     }
-                    $moreLink .= "<li>" . CoreHtml::getLink("module=connect&view=logon",
+                    $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
                                                             LINK_TO_LOGON) . "</li>"
-                            . "<li>" . CoreHtml::getLink("module=connect&view=forgetlogin",
-                                                         LINK_TO_FORGET_LOGIN) . "</li></ul>";
+                        . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
+                                                     LINK_TO_FORGET_LOGIN) . "</li></ul>";
 
                     $form->addHtmlInFieldset($moreLink);
 

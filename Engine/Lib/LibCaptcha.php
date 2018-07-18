@@ -4,6 +4,7 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Core\CoreMain;
+use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
@@ -386,7 +387,7 @@ class LibCaptcha
     {// TODO a vérifier
         $this->response = ExecCrypt::makeIdentifier($this->randInt(3,
                                                                    6));
-        $this->question = CAPTCHA_MAKE_PICTURE_CODE . ": " . "<img src=\"index.php?layout=block&amp;blockType=ImageGenerator&amp;mode=code&amp;code=" . $this->response . "\" alt=\"\" />\n";
+        $this->question = CAPTCHA_MAKE_PICTURE_CODE . ": " . "<img src=\"index.php?" . CoreLayout::REQUEST_LAYOUT . "=" . CoreLayout::BLOCK . "&amp;" . CoreLayout::REQUEST_BLOCKTYPE . "=ImageGenerator&amp;mode=code&amp;code=" . $this->response . "\" alt=\"\" />\n";
     }
 
     /**

@@ -179,10 +179,8 @@ class Module_Management_Setting extends ModuleModel
                              "0");
         $form->addSpace();
 
-        $form->addInputHidden("module",
-                              "management");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("management");
+        $form->addInputHiddenLayout("module");
         $form->addInputHidden("manage",
                               "setting");
         $form->addInputHidden("localView",
@@ -424,10 +422,8 @@ class Module_Management_Setting extends ModuleModel
         $form->addSelectCloseTag();
 
         $form->addSpace();
-        $form->addInputHidden("module",
-                              "management");
-        $form->addInputHidden("layout",
-                              "module");
+        $form->addInputHiddenModule("management");
+        $form->addInputHiddenLayout("module");
         $form->addInputHidden("manage",
                               "setting");
         $form->addInputHidden("localView",

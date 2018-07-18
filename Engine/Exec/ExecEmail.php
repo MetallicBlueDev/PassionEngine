@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Exec;
 
+use TREngine\Engine\Core\CoreLayout;
+
 /**
  * Outil de manipulation des emails.
  *
@@ -42,7 +44,7 @@ class ExecEmail
         $protected = "<a href=\"mailto:" . $email . "\">" . $name . "</a>";
 
         if (extension_loaded('gd')) {
-            $rslt = "<img src=\"index.php?layout=block&amp;blockType=ImageGenerator&amp;mode=text&amp;text=" . urlencode(base64_encode($email)) . "\" alt=\"\" title=\"" . $name . "\" />";
+            $rslt = "<img src=\"index.php?" . CoreLayout::REQUEST_LAYOUT . "=" . CoreLayout::BLOCK . "&amp;" . CoreLayout::REQUEST_BLOCKTYPE . "=ImageGenerator&amp;mode=text&amp;text=" . urlencode(base64_encode($email)) . "\" alt=\"\" title=\"" . $name . "\" />";
         } else {
             $rslt = $protected;
         }

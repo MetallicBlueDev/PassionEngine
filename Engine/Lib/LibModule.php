@@ -14,6 +14,7 @@ use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
+use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreUrlRewriting;
 use TREngine\Engine\Exec\ExecUtils;
@@ -204,13 +205,13 @@ class LibModule
 
                 $libBreadcrumb = LibBreadcrumb::getInstance();
                 $libBreadcrumb->addTrail($moduleData->getName(),
-                                         "?module=" . $moduleData->getName());
+                                         "?" . CoreLayout::REQUEST_MODULE . "=" . $moduleData->getName());
 
                 // TODO A MODIFIER
                 // Juste une petite exception pour le module management qui est different
                 if ($moduleData->getName() !== "management") {
                     $libBreadcrumb->addTrail($moduleData->getView(),
-                                             "?module=" . $moduleData->getName() . "&view=" . $moduleData->getView());
+                                             "?" . CoreLayout::REQUEST_MODULE . "=" . $moduleData->getName() . "&" . CoreLayout::REQUEST_VIEW . "=" . $moduleData->getView());
                 }
 
                 $this->fireBuildModuleData($moduleData);
@@ -377,7 +378,7 @@ class LibModule
         $rslt = "";
 
         if ($invalid) {
-            $default = "display";
+            $default = self::DEFAULT_VIEW;
 
             if ($pageInfo[1] !== $default) {
                 $rslt = $this->getValidViewPage(array(
@@ -418,7 +419,7 @@ class LibModule
      */
     private static function getRequestedOrDefaultModule(string $defaultModule): string
     {
-        $module = CoreRequest::getWord("module");
+        $module = CoreRequest::getWord(CoreLayout::REQUEST_MODULE);
 
         if (empty($module)) {
             $module = $defaultModule;
@@ -433,7 +434,7 @@ class LibModule
      */
     private static function getRequestedOrDefaultPage(): string
     {
-        $page = CoreRequest::getWord("page");
+        $page = CoreRequest::getWord(CoreLayout::REQUEST_PAGE);
 
         if (empty($page)) {
             $page = self::DEFAULT_PAGE;
@@ -448,7 +449,7 @@ class LibModule
      */
     private static function &getRequestedOrDefaultView(): string
     {
-        $view = CoreRequest::getWord("view");
+        $view = CoreRequest::getWord(CoreLayout::REQUEST_VIEW);
 
         if (empty($view)) {
             $view = self::DEFAULT_VIEW;

@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreCache;
+use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Exec\ExecString;
@@ -143,7 +144,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs de type texte.
+     * Ajoute un champ de type texte.
      *
      * @param string $name
      * @param string $description
@@ -167,7 +168,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs masqué.
+     * Ajoute un champ masqué.
      *
      * @param string $name
      * @param string $defaultValue
@@ -187,7 +188,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs masqué nommé 'referer' contenant le lien référent.
+     * Ajoute un champ masqué nommé 'referer' contenant le lien référent.
      */
     public function addInputHiddenReferer(): void
     {
@@ -196,29 +197,29 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs masqué nommé 'module' contenant le nom du module.
+     * Ajoute le nom du module en champ masqué.
      */
     public function addInputHiddenModule(string $module): void
     {
-        $this->addInputHidden("module",
+        $this->addInputHidden(CoreLayout::REQUEST_MODULE,
                               $module);
     }
 
     /**
-     * Ajoute un champs masqué nommé 'view' contenant le nom du viewer.
+     * Ajoute le viewer en champ masqué.
      */
     public function addInputHiddenView(string $view): void
     {
-        $this->addInputHidden("view",
+        $this->addInputHidden(CoreLayout::REQUEST_VIEW,
                               $view);
     }
 
     /**
-     * Ajoute un champs masqué nommé 'layout' contenant le nom du type d'affichage.
+     * Ajoute le type d'affichage en champ masqué.
      */
     public function addInputHiddenLayout(string $layout): void
     {
-        $this->addInputHidden("layout",
+        $this->addInputHidden(CoreLayout::REQUEST_LAYOUT,
                               $layout);
     }
 
@@ -245,7 +246,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs de type bouton radio.
+     * Ajoute un champ de type bouton radio.
      *
      * @param string $id
      * @param string $name
@@ -281,7 +282,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs de type case à cocher.
+     * Ajoute un champ de type case à cocher.
      *
      * @param string $id
      * @param string $name
@@ -341,7 +342,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs de type mot de passe.
+     * Ajoute un champ de type mot de passe.
      *
      * @param string $name
      * @param string $description
@@ -646,7 +647,7 @@ class LibForm
     }
 
     /**
-     * Retourne l'identifiant du champs.
+     * Retourne l'identifiant du champ.
      *
      * @param string $name
      * @param string $options
@@ -671,7 +672,7 @@ class LibForm
     }
 
     /**
-     * Ajoute un champs.
+     * Ajoute un champ.
      *
      * @param string $id
      * @param string $name

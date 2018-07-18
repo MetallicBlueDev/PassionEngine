@@ -70,22 +70,23 @@ class CoreUrlRewriting
      * @param bool $layout true ajouter le layout.
      * @return string
      */
-    public static function &getLink(string $link, bool $layout = false): string
+    public static function &getLink(string $link,
+                                    bool $layout = false): string
     {
         if ($link[0] !== "#") {
             // Configuration du layout
             if ($layout) {
-                $layout = "&amp;layout=";
+                $layout = "&amp;" . CoreLayout::REQUEST_LAYOUT . "=";
 
                 if (strpos($link,
-                           "blockId=") !== false || strpos($link,
-                                                           "blockType=") !== false) {
-                    $layout .= "block";
+                           CoreLayout::REQUEST_BLOCKID . "=") !== false || strpos($link,
+                                                                                  CoreLayout::REQUEST_BLOCKTYPE . "=") !== false) {
+                    $layout .= CoreLayout::BLOCK;
                 } else if (strpos($link,
-                                  "module=") !== false) {
-                    $layout .= "module";
+                                  CoreLayout::REQUEST_MODULE . "=") !== false) {
+                    $layout .= CoreLayout::MODULE;
                 } else {
-                    $layout .= "default";
+                    $layout .= CoreLayout::DEFAULT;
                 }
 
                 $link .= $layout;

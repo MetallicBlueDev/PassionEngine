@@ -67,7 +67,7 @@ class Module_Management_Index extends ModuleModel
                     if (CoreMain::getInstance()->isDefaultLayout()) {
                         LibBreadcrumb::getInstance()->addTrail(
                                 $currentPageName,
-                                "?module=management&manage=" . $pageSelected
+                                "?" . CoreLayout::REQUEST_MODULE . "=management&manage=" . $pageSelected
                         );
                     }
 

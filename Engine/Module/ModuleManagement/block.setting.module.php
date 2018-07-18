@@ -86,18 +86,18 @@ class Module_Management_Block extends ModuleModel
 
             foreach ($rslt as $row) {
                 // Parametre de la ligne
-                $title = CoreHtml::getLink("?module=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'],
+                $title = CoreHtml::getLink("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'],
                                            $row['title']);
                 $type = $row['type'];
                 $side = LibBlock::getSideAsLitteral($row['side']);
-                $position = CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
-                                                      "?module=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
+                $position = CoreHtml::getLinkWithAjax("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
+                                                      "?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
                                                       "#block_main_setting",
                                                       "^"
                 );
                 $position .= $row['position'];
-                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
-                                                       "?module=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
+                $position .= CoreHtml::getLinkWithAjax("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
+                                                       "?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveDown&blockId=" . $row['block_id'],
                                                        "#block_main_setting",
                                                        "v"
                 );
@@ -120,7 +120,7 @@ class Module_Management_Block extends ModuleModel
 
     private function sendMoveUp()
     {
-        $blockId = CoreRequest::getInteger("blockId",
+        $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
                                            -1);
 
         if ($blockId > -1) { // Si l'id semble valide
@@ -174,7 +174,7 @@ class Module_Management_Block extends ModuleModel
 
     private function sendMoveDown()
     {
-        $blockId = CoreRequest::getInteger("blockId",
+        $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
                                            -1);
 
         if ($blockId > -1) { // Si l'id semble valide
@@ -245,7 +245,7 @@ class Module_Management_Block extends ModuleModel
     private function tabEdit($blockId = -1)
     {
         if ($blockId < 0) {
-            $blockId = CoreRequest::getInteger("blockId",
+            $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
                                                -1);
         }
 
@@ -266,7 +266,7 @@ class Module_Management_Block extends ModuleModel
             if (CoreSql::getInstance()->affectedRows() > 0) { // Si le block existe
                 $block = CoreSql::getInstance()->fetchArray();
                 LibBreadcrumb::getInstance()->addTrail($block['title'],
-                                                       "?module=management&manage=block&localView=tabEdit&blockId=" . $blockId);
+                                                       "?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=tabEdit&blockId=" . $blockId);
 
                 $form = new LibForm("management-block-blockedit");
                 $form->setTitle(BLOCK_EDIT_TITLE);
@@ -279,7 +279,7 @@ class Module_Management_Block extends ModuleModel
                                     $block['title']);
 
                 $blockList = LibBlock::getBlockList();
-                $form->addSelectOpenTag("blockType",
+                $form->addSelectOpenTag(CoreLayout::REQUEST_BLOCKTYPE,
                                         BLOCK_TYPE);
                 $form->addSelectItemTag($block['type'],
                                         "",
@@ -333,8 +333,8 @@ class Module_Management_Block extends ModuleModel
                                     BLOCK_VIEW_MODULE_PAGE,
                                     $block['mods']);
 
-                $position .= CoreHtml::getLinkWithAjax("?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
-                                                       "?module=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
+                $position .= CoreHtml::getLinkWithAjax("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
+                                                       "?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=movedown&blockId=" . $row['block_id'],
                                                        "#block_main_setting",
                                                        "v"
                 );
@@ -355,7 +355,7 @@ class Module_Management_Block extends ModuleModel
 
     private function sendDelete()
     {
-        $blockId = CoreRequest::getInteger("blockId",
+        $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
                                            -1);
 
         if ($blockId > -1) { // Si l'id semble valide

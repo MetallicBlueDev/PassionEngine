@@ -44,15 +44,10 @@ class CoreMain
 
     /**
      * Mode de mise en page courante.
-     * default : affichage normale et complet
-     * module : affichage uniquement du module si javascript activé
-     * block : affichage uniquement du block si javascript activé
-     * modulepage : affichage uniquement du module forcé
-     * blockpage : affichage uniquement du block forcé
      *
      * @var string
      */
-    private $layout = "default";
+    private $layout = CoreLayout::DEFAULT;
 
     private function __construct()
     {
@@ -119,7 +114,7 @@ class CoreMain
      */
     public function isDefaultLayout(): bool
     {
-        return (($this->layout === "default") ? true : false);
+        return (($this->layout === CoreLayout::DEFAULT) ? true : false);
     }
 
     /**
@@ -129,7 +124,7 @@ class CoreMain
      */
     public function isModuleLayout(): bool
     {
-        return (($this->layout === "module" || $this->layout === "modulepage") ? true : false);
+        return (($this->layout === CoreLayout::MODULE || $this->layout === CoreLayout::MODULE_PAGE) ? true : false);
     }
 
     /**
@@ -139,7 +134,7 @@ class CoreMain
      */
     public function isBlockLayout(): bool
     {
-        return (($this->layout === "block" || $this->layout == "blockpage") ? true : false);
+        return (($this->layout === CoreLayout::BLOCK || $this->layout == CoreLayout::BLOCK_PAGE) ? true : false);
     }
 
     /**
@@ -292,11 +287,11 @@ class CoreMain
     private function checkLayout(): void
     {
         // Assignation et vérification de fonction layout
-        $layout = strtolower(CoreRequest::getWord("layout"));
+        $layout = strtolower(CoreRequest::getWord(CoreLayout::REQUEST_LAYOUT));
 
         // Configuration du layout
-        if ($layout !== "default" && $layout !== "modulepage" && $layout !== "blockpage" && (($layout !== "block" && $layout !== "module") || (!CoreHtml::getInstance()->javascriptEnabled()))) {
-            $layout = "default";
+        if ($layout !== CoreLayout::DEFAULT && $layout !== CoreLayout::MODULE_PAGE && $layout !== CoreLayout::BLOCK_PAGE && (($layout !== CoreLayout::MODULE && $layout !== CoreLayout::BLOCK) || (!CoreHtml::getInstance()->javascriptEnabled()))) {
+            $layout = CoreLayout::DEFAULT;
         }
 
         $this->layout = $layout;

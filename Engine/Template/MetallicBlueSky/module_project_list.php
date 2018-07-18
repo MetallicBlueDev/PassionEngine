@@ -20,7 +20,7 @@ foreach ($projects as $key => $projectItem) {
     ?>
 
     <?php
-    echo TREngine\Engine\Core\CoreHtml::getLink('?module=project&view=displayProject&projectId=' . $projectItem['projectid'], '
+    echo TREngine\Engine\Core\CoreHtml::getLink('?module=project&" . CoreLayout::REQUEST_VIEW . "=displayProject&projectId=' . $projectItem['projectid'], '
         <div class="project_body' . $progress . '">
             <div>
                 <div class="project_img"><img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/project/' . strtolower($projectItem['language']) . '.png" /></div>

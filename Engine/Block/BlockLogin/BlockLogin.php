@@ -10,6 +10,7 @@ use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSession;
+use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Exec\ExecImage;
 use TREngine\Engine\Lib\LibForm;
 use TREngine\Engine\Lib\LibMakeStyle;
@@ -131,20 +132,20 @@ class BlockLogin extends BlockModel
         }
 
         if ($this->displayAvatar && !empty($userInfos->getAvatar())) {
-            $content .= CoreHtml::getLink("module=connect&view=account",
+            $content .= CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=account",
                                           ExecImage::resize($userInfos->getAvatar(),
                                                             80))
                 . "<br />";
         }
 
         if ($this->displayIcons) {
-            $content .= CoreHtml::getLink("module=connect&view=logout",
+            $content .= CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logout",
                                           BLOCKLOGIN_LOGOUT)
                 . "<br />"
-                . CoreHtml::getLink("module=connect&view=account",
+                . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=account",
                                     BLOCKLOGIN_MY_ACCOUNT)
                 . "<br />"
-                . CoreHtml::getLink("module=receiptbox",
+                . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=receiptbox",
                                     BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
                 . "<br />";
         }
@@ -166,26 +167,26 @@ class BlockLogin extends BlockModel
 
         if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
             $moreLink .= "<li><span class=\"text_bold\">"
-                . CoreHtml::getLinkWithAjax("module=connect&view=registration",
-                                            "blockType=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_REGISTRATION,
+                . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
+                                            CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_REGISTRATION,
                                             "#login-logonblock",
                                             BLOCKLOGIN_GET_ACCOUNT)
                 . "</span></li>";
         }
 
         $moreLink .= "<li>"
-            . CoreHtml::getLinkWithAjax("module=connect&view=logon",
-                                        "blockType=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_LOGON,
+            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
+                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_LOGON,
                                         "#login-logonblock",
                                         BLOCKLOGIN_GET_LOGON)
             . "</li>" . "<li>"
-            . CoreHtml::getLinkWithAjax("module=connect&view=forgetlogin",
-                                        "blockType=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_LOGIN,
+            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
+                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_LOGIN,
                                         "#login-logonblock",
                                         BLOCKLOGIN_GET_FORGET_LOGIN)
             . "</li>" . "<li>"
-            . CoreHtml::getLinkWithAjax("module=connect&view=forgetpass",
-                                        "blockType=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_PASS,
+            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
+                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_PASS,
                                         "#login-logonblock",
                                         BLOCKLOGIN_GET_FORGET_PASS)
             . "</li></ul>";
@@ -235,7 +236,7 @@ class BlockLogin extends BlockModel
         $form->addInputHiddenReferer();
         $form->addInputHiddenModule("connect");
         $form->addInputHiddenView("logon");
-        $form->addInputHiddenLayout("module");
+        $form->addInputHiddenLayout(CoreLayout::MODULE);
         $form->addInputSubmit("submit",
                               BLOCKLOGIN_GET_LOGON);
         $form->addHtmlInFieldset($redirectionLinks);
@@ -256,7 +257,7 @@ class BlockLogin extends BlockModel
                             EMAIL . " ");
         $form->addInputHiddenModule("connect");
         $form->addInputHiddenView("forgetlogin");
-        $form->addInputHiddenLayout("module");
+        $form->addInputHiddenLayout(CoreLayout::MODULE);
         $form->addInputSubmit("submit",
                               VALID);
         $form->addHtmlInFieldset($redirectionLinks);
@@ -277,7 +278,7 @@ class BlockLogin extends BlockModel
                             LOGIN . " ");
         $form->addInputHiddenModule("connect");
         $form->addInputHiddenView("forgetpass");
-        $form->addInputHiddenLayout("module");
+        $form->addInputHiddenLayout(CoreLayout::MODULE);
         $form->addInputSubmit("submit",
                               VALID);
         $form->addHtmlInFieldset($redirectionLinks);
