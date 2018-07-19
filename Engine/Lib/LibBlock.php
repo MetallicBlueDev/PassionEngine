@@ -41,92 +41,6 @@ class LibBlock
     private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . "s";
 
     /**
-     * Demande le premier block compilé (toute position confondu).
-     *
-     * @var int
-     */
-    private const SIDE_FIRST_BLOCK = -1;
-
-    /**
-     * Postion inconnue (cas de désactivation).
-     *
-     * @var int
-     */
-    private const SIDE_NONE = 0;
-
-    /**
-     * Position le plus à droite.
-     *
-     * @var int
-     */
-    private const SIDE_RIGHT = 1;
-
-    /**
-     * Position le plus à gauche.
-     *
-     * @var int
-     */
-    private const SIDE_LEFT = 2;
-
-    /**
-     * Position le plus en haut.
-     *
-     * @var int
-     */
-    private const SIDE_TOP = 3;
-
-    /**
-     * Position le plus en bas.
-     *
-     * @var int
-     */
-    private const SIDE_BOTTOM = 4;
-
-    /**
-     * Position dans le module à droite.
-     *
-     * @var int
-     */
-    private const SIDE_MODULE_RIGHT = 5;
-
-    /**
-     * Position dans le module à gauche.
-     *
-     * @var int
-     */
-    private const SIDE_MODULE_LEFT = 6;
-
-    /**
-     * Position dans le module en haut.
-     *
-     * @var int
-     */
-    private const SIDE_MODULE_TOP = 7;
-
-    /**
-     * Position dans le module en bas.
-     *
-     * @var int
-     */
-    private const SIDE_MODULE_BOTTOM = 8;
-
-    /**
-     * Liste des positions valides.
-     *
-     * @var array array("name" => 0)
-     */
-    private const SIDE_LIST = array(
-        "right" => self::SIDE_RIGHT,
-        "left" => self::SIDE_LEFT,
-        "top" => self::SIDE_TOP,
-        "bottom" => self::SIDE_BOTTOM,
-        "moduleright" => self::SIDE_MODULE_RIGHT,
-        "moduleleft" => self::SIDE_MODULE_LEFT,
-        "moduletop" => self::SIDE_MODULE_TOP,
-        "modulebottom" => self::SIDE_MODULE_BOTTOM
-    );
-
-    /**
      * Gestionnnaire de blocks.
      *
      * @var LibBlock
@@ -197,7 +111,7 @@ class LibBlock
         $blocksIndexer = $this->getBlocksIndexer();
 
         foreach ($blocksIndexer as $blockRawInfo) {
-            if ($blockRawInfo['side'] > self::SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::NONE) {
+            if ($blockRawInfo['side'] > CoreLayout::BLOCK_SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::NONE) {
                 $this->buildBlockById($blockRawInfo['block_id'],
                                       true);
             }
@@ -237,7 +151,7 @@ class LibBlock
         $empty = array(
             "block_id" => 1,
             "type" => $blockTypeName,
-            "side" => self::SIDE_RIGHT,
+            "side" => CoreLayout::BLOCK_SIDE_RIGHT,
             "all_modules" => 1,
             "title" => $blockTypeName
         );
@@ -266,7 +180,7 @@ class LibBlock
      */
     public function &getFirstBlockBuilded(): string
     {
-        return $this->getBlocksBuildedBySidePosition(self::SIDE_FIRST_BLOCK);
+        return $this->getBlocksBuildedBySidePosition(CoreLayout::BLOCK_SIDE_FIRST_BUILDED);
     }
 
     /**
@@ -278,7 +192,7 @@ class LibBlock
     {
         $sideList = array();
 
-        foreach (self::SIDE_LIST as $sideNumeric) {
+        foreach (CoreLayout::BLOCK_SIDE_LIST as $sideNumeric) {
             $sideList[] = array(
                 "numeric" => $sideNumeric,
                 "letters" => self::getSideAsLitteral($sideNumeric)
@@ -315,7 +229,7 @@ class LibBlock
     public static function &getSideAsLetters(int $side): string
     {
         $sideLetters = array_search($side,
-                                    self::SIDE_LIST);
+                                    CoreLayout::BLOCK_SIDE_LIST);
 
         if ($sideLetters === false) {
             CoreSecure::getInstance()->catchException(new FailBlock("invalid block side number",
@@ -498,9 +412,9 @@ class LibBlock
     {
         $buffer = "";
 
-        if ($selectedSide === self::SIDE_FIRST_BLOCK || $selectedSide >= self::SIDE_NONE) {
+        if ($selectedSide === CoreLayout::BLOCK_SIDE_FIRST_BUILDED || $selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
             foreach ($this->blockDatas as $blockData) {
-                if ($selectedSide >= self::SIDE_NONE && $blockData->getSide() !== $selectedSide) {
+                if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE && $blockData->getSide() !== $selectedSide) {
                     continue;
                 }
 
@@ -515,7 +429,7 @@ class LibBlock
 
                 $buffer .= $currentBuffer;
 
-                if ($selectedSide === self::SIDE_FIRST_BLOCK) {
+                if ($selectedSide === CoreLayout::BLOCK_SIDE_FIRST_BUILDED) {
                     break;
                 }
             }
@@ -594,13 +508,13 @@ class LibBlock
      */
     private static function &getSideAsNumeric(string $sideName): int
     {
-        if (!isset(self::SIDE_LIST[$sideName])) {
+        if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
             CoreSecure::getInstance()->catchException(new FailBlock("invalid block side name",
                                                                     16,
                                                                     array($sideName)));
         }
 
-        $sideNumeric = self::SIDE_LIST[$sideName];
+        $sideNumeric = CoreLayout::BLOCK_SIDE_LIST[$sideName];
         return $sideNumeric;
     }
 }

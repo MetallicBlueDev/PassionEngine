@@ -29,20 +29,6 @@ class LibModule
 {
 
     /**
-     * Nom de la page par défaut.
-     *
-     * @var string
-     */
-    private const DEFAULT_PAGE = "index";
-
-    /**
-     * Nom de la méthode d'affichage par défaut.
-     *
-     * @var string
-     */
-    private const DEFAULT_VIEW = "display";
-
-    /**
      * Nom du fichier listant les modules.
      *
      * @var string
@@ -101,8 +87,8 @@ class LibModule
 
                 // Utilisation du module par défaut
                 $moduleData = self::$libModule->getModuleData($defaultModule);
-                $moduleData->setPage(self::DEFAULT_PAGE);
-                $moduleData->setView(self::DEFAULT_VIEW);
+                $moduleData->setPage(CoreLayout::DEFAULT_PAGE);
+                $moduleData->setView(CoreLayout::DEFAULT_VIEW);
             }
 
             self::$libModule->module = ($moduleData !== null) ? $moduleData->getName() : "";
@@ -378,7 +364,7 @@ class LibModule
         $rslt = "";
 
         if ($invalid) {
-            $default = self::DEFAULT_VIEW;
+            $default = CoreLayout::DEFAULT_VIEW;
 
             if ($pageInfo[1] !== $default) {
                 $rslt = $this->getValidViewPage(array(
@@ -437,7 +423,7 @@ class LibModule
         $page = CoreRequest::getWord(CoreLayout::REQUEST_PAGE);
 
         if (empty($page)) {
-            $page = self::DEFAULT_PAGE;
+            $page = CoreLayout::DEFAULT_PAGE;
         }
         return $page;
     }
@@ -452,7 +438,7 @@ class LibModule
         $view = CoreRequest::getWord(CoreLayout::REQUEST_VIEW);
 
         if (empty($view)) {
-            $view = self::DEFAULT_VIEW;
+            $view = CoreLayout::DEFAULT_VIEW;
         }
         return $view;
     }

@@ -86,7 +86,7 @@ class CoreUrlRewriting
                                   CoreLayout::REQUEST_MODULE . "=") !== false) {
                     $layout .= CoreLayout::MODULE;
                 } else {
-                    $layout .= CoreLayout::DEFAULT;
+                    $layout .= CoreLayout::DEFAULT_LAYOUT;
                 }
 
                 $link .= $layout;

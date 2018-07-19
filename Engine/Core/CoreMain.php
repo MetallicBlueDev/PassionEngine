@@ -47,7 +47,7 @@ class CoreMain
      *
      * @var string
      */
-    private $layout = CoreLayout::DEFAULT;
+    private $layout = CoreLayout::DEFAULT_LAYOUT;
 
     private function __construct()
     {
@@ -114,7 +114,7 @@ class CoreMain
      */
     public function isDefaultLayout(): bool
     {
-        return (($this->layout === CoreLayout::DEFAULT) ? true : false);
+        return (($this->layout === CoreLayout::DEFAULT_LAYOUT) ? true : false);
     }
 
     /**
@@ -290,8 +290,8 @@ class CoreMain
         $layout = strtolower(CoreRequest::getWord(CoreLayout::REQUEST_LAYOUT));
 
         // Configuration du layout
-        if ($layout !== CoreLayout::DEFAULT && $layout !== CoreLayout::MODULE_PAGE && $layout !== CoreLayout::BLOCK_PAGE && (($layout !== CoreLayout::MODULE && $layout !== CoreLayout::BLOCK) || (!CoreHtml::getInstance()->javascriptEnabled()))) {
-            $layout = CoreLayout::DEFAULT;
+        if ($layout !== CoreLayout::DEFAULT_LAYOUT && $layout !== CoreLayout::MODULE_PAGE && $layout !== CoreLayout::BLOCK_PAGE && (($layout !== CoreLayout::MODULE && $layout !== CoreLayout::BLOCK) || (!CoreHtml::getInstance()->javascriptEnabled()))) {
+            $layout = CoreLayout::DEFAULT_LAYOUT;
         }
 
         $this->layout = $layout;
