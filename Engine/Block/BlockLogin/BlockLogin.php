@@ -132,21 +132,25 @@ class BlockLogin extends BlockModel
         }
 
         if ($this->displayAvatar && !empty($userInfos->getAvatar())) {
-            $content .= CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=account",
-                                          ExecImage::resize($userInfos->getAvatar(),
-                                                            80))
+            $content .= CoreHtml::getLinkForModule("connect",
+                                                "account",
+                                                ExecImage::getTag($userInfos->getAvatar(),
+                                                                  80))
                 . "<br />";
         }
 
         if ($this->displayIcons) {
-            $content .= CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logout",
-                                          BLOCKLOGIN_LOGOUT)
+            $content .= CoreHtml::getLinkForModule("connect",
+                                                "logout",
+                                                BLOCKLOGIN_LOGOUT)
                 . "<br />"
-                . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=account",
-                                    BLOCKLOGIN_MY_ACCOUNT)
+                . CoreHtml::getLinkForModule("connect",
+                                          "account",
+                                          BLOCKLOGIN_MY_ACCOUNT)
                 . "<br />"
-                . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=receiptbox",
-                                    BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
+                . CoreHtml::getLinkForModule("receiptbox",
+                                          "",
+                                          BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
                 . "<br />";
         }
         return $content;

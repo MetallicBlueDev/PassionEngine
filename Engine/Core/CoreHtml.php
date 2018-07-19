@@ -346,6 +346,23 @@ class CoreHtml
     }
 
     /**
+     * Retourne un lien cliquable sans javascript vers un module.
+     *
+     * @param string $module Nom du module.
+     * @param string $view Nom de la méthode d'affichage.
+     * @param string $displayContent Données à afficher (texte simple ou code html).
+     * @return string
+     */
+    public static function &getLinkForModule(string $module,
+                                             string $view = "",
+                                             string $displayContent = ""): string
+    {
+        return self::getLink(CoreLayout::REQUEST_MODULE . "=" . $module
+                . (!empty($view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $view : ""),
+                          $displayContent);
+    }
+
+    /**
      * Retourne un lien cliquable sans javascript.
      *
      * @param string $link Adresse URL de base.
@@ -364,7 +381,7 @@ class CoreHtml
         $htmlLink = "<a href=\"" . CoreUrlRewriting::getLink($link,
                                                              $layout) . "\"";
 
-        // TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie
+        // TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
         if (preg_match("/^[A-Za-z0-9.\s]+$/ie",
                        $displayContent)) {
             $htmlLink .= " title=\"" . $displayContent . "\"";
