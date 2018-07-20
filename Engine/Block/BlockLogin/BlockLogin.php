@@ -10,6 +10,7 @@ use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSession;
+use TREngine\Engine\Core\CoreSessionData;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Exec\ExecImage;
 use TREngine\Engine\Lib\LibForm;
@@ -128,31 +129,53 @@ class BlockLogin extends BlockModel
         $userInfos = CoreSession::getInstance()->getUserInfos();
 
         if ($this->displayText) {
-            $content .= WELCOME . " <span class=\"text_bold\">" . $userInfos->getName() . "</span> !<br />";
+            $content .= $this->getUserName($userInfos);
         }
 
         if ($this->displayAvatar && !empty($userInfos->getAvatar())) {
-            $content .= CoreHtml::getLinkForModule("connect",
-                                                "account",
-                                                ExecImage::getTag($userInfos->getAvatar(),
-                                                                  80))
-                . "<br />";
+            $content .= $this->getUserAvatar($userInfos);
         }
 
         if ($this->displayIcons) {
-            $content .= CoreHtml::getLinkForModule("connect",
-                                                "logout",
-                                                BLOCKLOGIN_LOGOUT)
-                . "<br />"
-                . CoreHtml::getLinkForModule("connect",
-                                          "account",
-                                          BLOCKLOGIN_MY_ACCOUNT)
-                . "<br />"
-                . CoreHtml::getLinkForModule("receiptbox",
-                                          "",
-                                          BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
-                . "<br />";
+            $content .= $this->getUserIcons();
         }
+        return $content;
+    }
+
+    private function &getUserName(CoreSessionData $userInfos): string
+    {
+        $content = WELCOME . " <span class=\"text_bold\">" . $userInfos->getName() . "</span> !<br />";
+        return $content;
+    }
+
+    private function &getUserAvatar(CoreSessionData $userInfos): string
+    {
+        $content = CoreHtml::getLinkForModule("connect",
+                                              "",
+                                              "account",
+                                              ExecImage::getTag($userInfos->getAvatar(),
+                                                                80))
+            . "<br />";
+        return $content;
+    }
+
+    private function &getUserIcons(): string
+    {
+        $content = CoreHtml::getLinkForModule("connect",
+                                              "",
+                                              "logout",
+                                              BLOCKLOGIN_LOGOUT)
+            . "<br />"
+            . CoreHtml::getLinkForModule("connect",
+                                         "",
+                                         "account",
+                                         BLOCKLOGIN_MY_ACCOUNT)
+            . "<br />"
+            . CoreHtml::getLinkForModule("receiptbox",
+                                         "",
+                                         "",
+                                         BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
+            . "<br />";
         return $content;
     }
 

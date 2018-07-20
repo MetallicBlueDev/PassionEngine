@@ -349,15 +349,18 @@ class CoreHtml
      * Retourne un lien cliquable sans javascript vers un module.
      *
      * @param string $module Nom du module.
+     * @param string $page Nom de la page à afficher.
      * @param string $view Nom de la méthode d'affichage.
      * @param string $displayContent Données à afficher (texte simple ou code html).
      * @return string
      */
     public static function &getLinkForModule(string $module,
+                                             string $page = "",
                                              string $view = "",
                                              string $displayContent = ""): string
     {
         return self::getLink(CoreLayout::REQUEST_MODULE . "=" . $module
+                . (!empty($page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $page : "")
                 . (!empty($view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $view : ""),
                           $displayContent);
     }
