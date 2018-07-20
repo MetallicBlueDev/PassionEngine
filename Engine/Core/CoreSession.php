@@ -5,6 +5,7 @@ namespace TREngine\Engine\Core;
 use TREngine\Engine\Exec\ExecCookie;
 use TREngine\Engine\Exec\ExecCrypt;
 use TREngine\Engine\Exec\ExecEmail;
+use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Lib\LibMakeStyle;
 
@@ -45,13 +46,6 @@ class CoreSession
     private static $errorMessage = array();
 
     /**
-     * Timer générale.
-     *
-     * @var int
-     */
-    private $timer = 0;
-
-    /**
      * Limite de temps pour le cache.
      *
      * @var int
@@ -77,7 +71,7 @@ class CoreSession
      *
      * @var CoreSessionData
      */
-    private $userInfos = null;
+    private $sessionData = null;
 
     /**
      * Nom des cookies.
@@ -97,9 +91,6 @@ class CoreSession
      */
     private function __construct()
     {
-        // Marque le timer
-        $this->timer = time();
-
         $coreMain = CoreMain::getInstance();
 
         // Durée de validité du cache en jours
@@ -160,7 +151,7 @@ class CoreSession
 
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
-            $userInfos = self::getUserInfo(array(
+            $userInfos = self::loadUserData(array(
                     "name = '" . $userName . "'",
                     "&& pass = '" . $userPass . "'"
             ));
@@ -169,8 +160,8 @@ class CoreSession
                 $newSession = self::getInstance();
 
                 // Injection des informations du client
-                $newSession->setUser($userInfos,
-                                     true);
+                $newSession->makeSessionData($userInfos,
+                                             true);
 
                 // Tentative d'ouverture de session
                 $rslt = $newSession->createSession();
@@ -299,10 +290,10 @@ class CoreSession
      */
     public function getUserInfos(): CoreSessionData
     {
-        if ($this->userInfos === null) {
-            $this->setUserAnonymous();
+        if ($this->sessionData === null) {
+            $this->makeAnonymousSessionData();
         }
-        return $this->userInfos;
+        return $this->sessionData;
     }
 
     /**
@@ -312,15 +303,15 @@ class CoreSession
     {
         if ($this->userLogged()) {
             // Rafraichir le cache de session
-            $userInfos = self::getUserInfo(array(
-                    "user_id = '" . $this->userInfos->getId() . "'"
+            $userInfos = self::loadUserData(array(
+                    "user_id = '" . $this->sessionData->getId() . "'"
             ));
 
             if (count($userInfos) > 1) {
-                $this->setUser($userInfos,
-                               true);
+                $this->makeSessionData($userInfos,
+                                       true);
                 CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php",
-                                                                               $this->serializeSession());
+                                                                               $this->getSerializedSession());
             }
         }
     }
@@ -394,7 +385,7 @@ class CoreSession
             $cleanBanishment = true;
             $coreCache->writeCache(self::BANISHMENT_FILENAME,
                                    "1");
-        } else if ((time() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getCacheMTime(self::BANISHMENT_FILENAME)) {
+        } else if ((ExecUtils::getMemorizedTimestamp() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getCacheMTime(self::BANISHMENT_FILENAME)) {
             $cleanBanishment = true;
             $coreCache->touchCache(self::BANISHMENT_FILENAME);
         }
@@ -416,39 +407,45 @@ class CoreSession
      */
     private function updateBanishment(): void
     {
-        $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
+        if (!empty($this->userIpBanned)) {
+            $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
 
-        if ($this->userIpBanned != $userIp) {
-            $coreSql = CoreSql::getInstance();
+            if (!empty($userIp) && $this->userIpBanned != $userIp) {
+                $coreSql = CoreSql::getInstance();
 
-            // Vérification en base (au cas ou il y aurait un débannissement)
-            $coreSql->select(CoreTable::BANNED,
-                             array("banned_id"),
-                             array("ip = '" . $this->userIpBanned . "'"));
-
-            if ($coreSql->affectedRows() > 0) {
-                // Bannissement toujours en place
-                $bannedId = $coreSql->fetchArray()[0]['banned_id'];
-
-                // Mise à jour de l'ip
+                // Mise à jour de l'ancienne IP
                 $coreSql->update(CoreTable::BANNED,
                                  array("ip" => $userIp),
-                                 array("banned_id = '" . $bannedId . "'"));
+                                 array("ip = '" . $this->userIpBanned . "'"));
 
-                // Durée de connexion automatique via cookie
-                $cookieTimeLimit = $this->timer + $this->sessionTimeLimit;
-
-                $this->userIpBanned = $userIp;
-                ExecCookie::createCookie($this->getBanishmentCookieName(),
-                                         ExecCrypt::md5Encrypt($userIp,
-                                                               self::getSalt()),
-                                                               $cookieTimeLimit);
-            } else {
-                // Suppression du bannissement
-                $this->userIpBanned = "";
-                ExecCookie::destroyCookie($this->getBanishmentCookieName());
+                if ($coreSql->affectedRows() === 1) {
+                    $this->updateUserIpBanned($userIp);
+                } else {
+                    $this->deleteUserIpBanned();
+                }
             }
         }
+    }
+
+    private function updateUserIpBanned(string $userIp): void
+    {
+        // Durée de connexion automatique via cookie
+        $cookieTimeLimit = ExecUtils::getMemorizedTimestamp() + $this->sessionTimeLimit;
+
+        $this->userIpBanned = $userIp;
+        ExecCookie::createCookie($this->getBanishmentCookieName(),
+                                 ExecCrypt::md5Encrypt($userIp,
+                                                       self::getSalt()),
+                                                       $cookieTimeLimit);
+    }
+
+    /**
+     * Suppression du bannissement.
+     */
+    private function deleteUserIpBanned(): void
+    {
+        $this->userIpBanned = "";
+        ExecCookie::destroyCookie($this->getBanishmentCookieName());
     }
 
     /**
@@ -467,8 +464,8 @@ class CoreSession
                          array("banned_id"));
 
         foreach ($coreSql->fetchArray() as $value) {
-            $this->searchBanishmentUser($userIp,
-                                        $value);
+            $this->checkUserBanned($userIp,
+                                   $value);
 
             // La vérification a déjà aboutie, on arrête
             if ($this->bannedSession()) {
@@ -484,18 +481,19 @@ class CoreSession
      * @param string $userIp
      * @param array $value
      */
-    private function searchBanishmentUser(string $userIp,
-                                          array $value): void
+    private function checkUserBanned(string $userIp,
+                                     array $value): void
     {
         $banned = false;
 
         if (!empty($userIp) && $userIp == $value['ip']) {
             // Bannissement par IP
             $banned = true;
-        } else if ($this->userInfos !== null && ($this->userInfos->getName() === $value['name'] || $this->userInfos->getEmail() === $value['email'])) {
+        } else if ($this->sessionData !== null && ($this->sessionData->getName() === $value['name'] || $this->sessionData->getEmail() === $value['email'])) {
             // Bannissement par pseudo ou email
             $banned = true;
         }
+
         $this->userIpBanned = $banned ? $userIp : "";
     }
 
@@ -504,11 +502,11 @@ class CoreSession
      */
     private function cleanCache(): void
     {
-        CoreCache::getInstance(CoreCacheSection::SESSIONS)->cleanCache($this->timer - $this->sessionTimeLimit);
+        CoreCache::getInstance(CoreCacheSection::SESSIONS)->cleanCache(ExecUtils::getMemorizedTimestamp() - $this->sessionTimeLimit);
     }
 
     /**
-     * Récupèration d'une session ouverte.
+     * Récupération d'une session ouverte.
      *
      * @return bool false session corrompue
      */
@@ -530,9 +528,9 @@ class CoreSession
                 $userLanguage = self::getCookie($this->getLangueCookieName());
                 $userTemplate = self::getCookie($this->getTemplateCookieName());
 
-                $this->setUserAnonymous();
-                $this->userInfos->setLangue($userLanguage);
-                $this->userInfos->setTemplate($userTemplate);
+                $this->makeAnonymousSessionData();
+                $this->sessionData->setLangue($userLanguage);
+                $this->sessionData->setTemplate($userTemplate);
             }
         }
         return $isValidSession;
@@ -554,16 +552,18 @@ class CoreSession
 
         if ($coreCache->cached($sessionId . ".php")) {
             // Si fichier cache trouvé, on l'utilise
-            $sessions = $coreCache->readCacheAsArray($sessionId . ".php");
+            $sessionArrayDatas = $coreCache->readCacheAsArray($sessionId . ".php");
 
-            if ($sessions['user_id'] === $userId && $sessions['sessionId'] === $sessionId) {
+            if ($sessionArrayDatas['user_id'] === $userId && $sessionArrayDatas['sessionId'] === $sessionId) {
                 // Mise a jour du dernier accès toute les 5 min
-                if (($coreCache->getCacheMTime($sessionId . ".php") + 5 * 60) < $this->timer) {
+                if (($coreCache->getCacheMTime($sessionId . ".php") + 5 * 60) < ExecUtils::getMemorizedTimestamp()) {
                     // En base
                     $isValidSession = $this->updateLastConnect($userId);
 
-                    // En cache
-                    $coreCache->touchCache($sessionId . ".php");
+                    if ($isValidSession) {
+                        // En cache
+                        $coreCache->touchCache($sessionId . ".php");
+                    }
                 } else {
                     $isValidSession = true;
                 }
@@ -574,9 +574,9 @@ class CoreSession
                 $userTemplate = self::getCookie($this->getTemplateCookieName());
 
                 // Injection des informations du client
-                $this->setUser($sessions);
-                $this->userInfos->setLangue($userLanguage);
-                $this->userInfos->setTemplate($userTemplate);
+                $this->makeSessionData($sessionArrayDatas);
+                $this->sessionData->setLangue($userLanguage);
+                $this->sessionData->setTemplate($userTemplate);
             }
         }
         return $isValidSession;
@@ -666,11 +666,11 @@ class CoreSession
         $this->sessionId = ExecCrypt::makeIdentifier(32);
 
         // Durée de connexion automatique via cookie
-        $cookieTimeLimit = $this->timer + $this->sessionTimeLimit;
+        $cookieTimeLimit = ExecUtils::getMemorizedTimestamp() + $this->sessionTimeLimit;
 
         // Creation des cookies
         $cookieUser = ExecCookie::createCookie($this->getUserCookieName(),
-                                               ExecCrypt::md5Encrypt($this->userInfos->getId(),
+                                               ExecCrypt::md5Encrypt($this->sessionData->getId(),
                                                                      self::getSalt()),
                                                                      $cookieTimeLimit);
         $cookieSession = ExecCookie::createCookie($this->getSessionCookieName(),
@@ -681,7 +681,7 @@ class CoreSession
         if ($cookieUser && $cookieSession) {
             // Ecriture du cache
             CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php",
-                                                                           $this->serializeSession());
+                                                                           $this->getSerializedSession());
             $rslt = true;
         } else {
             CoreLogger::addWarning(ERROR_SESSION_COOKIE);
@@ -694,12 +694,12 @@ class CoreSession
      *
      * @return string
      */
-    private function &serializeSession(): string
+    private function &getSerializedSession(): string
     {
-        $data = $this->userInfos->getData();
-        $data['userIpBan'] = $this->userIpBanned;
-        $data['sessionId'] = $this->sessionId;
-        return CoreCache::getInstance(CoreCacheSection::SESSIONS)->serializeData($data);
+        $sessionArrayDatas = $this->sessionData->getData();
+        $sessionArrayDatas['userIpBan'] = $this->userIpBanned;
+        $sessionArrayDatas['sessionId'] = $this->sessionId;
+        return CoreCache::getInstance(CoreCacheSection::SESSIONS)->serializeData($sessionArrayDatas);
     }
 
     /**
@@ -709,37 +709,37 @@ class CoreSession
      */
     private function userLogged(): bool
     {
-        return (!empty($this->sessionId) && $this->userInfos !== null);
+        return (!empty($this->sessionId) && $this->sessionData !== null);
     }
 
     /**
      * Injection d'un client anonyme.
      */
-    private function setUserAnonymous(): void
+    private function makeAnonymousSessionData(): void
     {
         $empty = array();
-        $this->setUser($empty);
+        $this->makeSessionData($empty);
     }
 
     /**
      * Injection des informations du client.
      *
-     * @param array $session
+     * @param array $sessionArrayDatas
      * @param bool $refreshAll
      */
-    private function setUser(array $session,
-                             bool $refreshAll = false): void
+    private function makeSessionData(array $sessionArrayDatas,
+                                     bool $refreshAll = false): void
     {
-        if ($this->userInfos === null || $refreshAll) {
-            $this->userInfos = new CoreSessionData($session);
+        if ($this->sessionData === null || $refreshAll) {
+            $this->sessionData = new CoreSessionData($sessionArrayDatas);
         }
 
-        if (!empty($session['sessionId'])) {
-            $this->sessionId = $session['sessionId'];
+        if (!empty($sessionArrayDatas['sessionId'])) {
+            $this->sessionId = $sessionArrayDatas['sessionId'];
         }
 
-        if (!empty($session['userIpBan'])) {
-            $this->userIpBanned = $session['userIpBan'];
+        if (!empty($sessionArrayDatas['userIpBan'])) {
+            $this->userIpBanned = $sessionArrayDatas['userIpBan'];
         }
     }
 
@@ -799,14 +799,13 @@ class CoreSession
     }
 
     /**
-     * Retourne les informations utilisateur via la base de données.
+     * Chargement les informations utilisateur via la base de données.
      *
      * @return array
      */
-    private static function &getUserInfo(array $where): array
+    private static function &loadUserData(array $where): array
     {
-        $info = array();
-
+        $userArrayDatas = array();
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::USERS,
                          array(
@@ -822,10 +821,10 @@ class CoreSession
                 "langue"
             ),
                          $where);
-        // TODO vérifier si l'utilisateur n'est pas bannit
+        // TODO vérifier si l'utilisateur n'est pas banni
         if ($coreSql->affectedRows() === 1) {
-            $info = $coreSql->fetchArray()[0];
+            $userArrayDatas = $coreSql->fetchArray()[0];
         }
-        return $info;
+        return $userArrayDatas;
     }
 }

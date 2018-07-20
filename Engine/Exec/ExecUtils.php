@@ -11,6 +11,14 @@ class ExecUtils
 {
 
     /**
+     * Le timestamp UNIX actuellemnt mémorisé.
+     * Evite d'appeler plusieurs fois la fonction <code>timer()</code>.
+     *
+     * @var int
+     */
+    private static $memorizedTimestamp = 0;
+
+    /**
      * Indique si une valeur appartient à un tableau.
      * in_array() optimized function.
      *
@@ -80,5 +88,18 @@ class ExecUtils
             $newConfigs[$row['name']] = ExecString::stripSlashes($row['value']);
         }
         return $newConfigs;
+    }
+
+    /**
+     * Retourne le timestamp UNIX actuellement mémorisé.
+     *
+     * @return int
+     */
+    public static function getMemorizedTimestamp(): int
+    {
+        if (self::$memorizedTimestamp < 1) {
+            self::$memorizedTimestamp = time();
+        }
+        return self::$memorizedTimestamp;
     }
 }

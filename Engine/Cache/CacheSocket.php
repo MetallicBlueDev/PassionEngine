@@ -391,7 +391,7 @@ class CacheSocket extends CacheModel
         $rslt = false;
 
         // Attente du serveur
-        $endTime = time() + $this->timeOut;
+        $endTime = ExecUtils::getMemorizedTimestamp() + $this->timeOut;
 
         // Réponse du serveur
         $response = "";

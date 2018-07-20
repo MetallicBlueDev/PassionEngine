@@ -81,7 +81,8 @@ class ExecCrypt
      * @param string $salt
      * @return string
      */
-    public static function &cryptBySmd5(string $data, string $salt = ""): string
+    public static function &cryptBySmd5(string $data,
+                                        string $salt = ""): string
     {
         $cryptData = "";
 
@@ -113,7 +114,8 @@ class ExecCrypt
      * @param string $salt
      * @return string
      */
-    public static function &cryptByStandard(string $data, string $salt = ""): string
+    public static function &cryptByStandard(string $data,
+                                            string $salt = ""): string
     {
         if (empty($salt)) {
             $salt = self::makeIdentifier(8);
@@ -134,7 +136,8 @@ class ExecCrypt
      * @param string $salt
      * @return string
      */
-    public static function &cryptByDes(string $data, string $salt = ""): string
+    public static function &cryptByDes(string $data,
+                                       string $salt = ""): string
     {
         $cryptData = "";
 
@@ -179,7 +182,8 @@ class ExecCrypt
      * @param string $salt
      * @return string
      */
-    public static function &cryptBySsha(string $data, string $salt = ""): string
+    public static function &cryptBySsha(string $data,
+                                        string $salt = ""): string
     {
         if (empty($salt)) {
             $salt = self::makeIdentifier(4);
@@ -219,7 +223,9 @@ class ExecCrypt
      * @param int $ivLen
      * @return string
      */
-    public static function &md5Encrypt(string $plainText, string $password, int $ivLen = 16): string
+    public static function &md5Encrypt(string $plainText,
+                                       string $password,
+                                       int $ivLen = 16): string
     {
         $plainText .= "\x13";
         $n = strlen($plainText);
@@ -260,7 +266,9 @@ class ExecCrypt
      * @param int $ivLen
      * @return string
      */
-    public static function &md5Decrypt(string $encText, string $password, int $ivLen = 16): string
+    public static function &md5Decrypt(string $encText,
+                                       string $password,
+                                       int $ivLen = 16): string
     {
         $encText = base64_decode($encText);
         $n = strlen($encText);
@@ -299,7 +307,10 @@ class ExecCrypt
      * @param bool $caseSensitive
      * @return string
      */
-    private static function &makeNewKey(int $size = 32, bool $letter = true, bool $number = true, bool $caseSensitive = true): string
+    private static function &makeNewKey(int $size = 32,
+                                        bool $letter = true,
+                                        bool $number = true,
+                                        bool $caseSensitive = true): string
     {
         $randKey = "";
         $string = "";

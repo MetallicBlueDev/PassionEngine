@@ -5,6 +5,7 @@ namespace TREngine\Engine\Core;
 use TREngine\Engine\Fail\FailCache;
 use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
+use TREngine\Engine\Exec\ExecUtils;
 use Throwable;
 
 /**
@@ -500,7 +501,7 @@ class CoreCache extends CacheModel
                                int $updateTime = 0): void
     {
         if ($updateTime <= 0) {
-            $updateTime = time();
+            $updateTime = ExecUtils::getMemorizedTimestamp();
         }
 
         $this->touchCache[$this->getCurrentSectionPath($path)] = $updateTime;
