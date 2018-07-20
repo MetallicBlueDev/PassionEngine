@@ -608,7 +608,7 @@ class CoreTranslate
         $language = "";
 
         if (CoreLoader::isCallable("CoreSession")) {
-            $language = strtolower(trim(CoreSession::getInstance()->getUserInfos()->getLangue()));
+            $language = strtolower(trim(CoreSession::getInstance()->getSessionData()->getLangue()));
 
             if (!self::canUseLanguage($language)) {
                 $language = "";

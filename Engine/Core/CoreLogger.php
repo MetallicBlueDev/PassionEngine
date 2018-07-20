@@ -156,7 +156,7 @@ class CoreLogger
     public static function displayDebugInformations(): void
     {
         if (CoreLoader::isCallable("CoreMain") && CoreLoader::isCallable("CoreSession")) {
-            if (CoreSession::getInstance()->getUserInfos()->hasRegisteredRank()) {
+            if (CoreSession::getInstance()->getSessionData()->hasRegisteredRank()) {
                 echo "<div style=\"color: blue;\"><br />"
                 . "***********************SQL REQUESTS (" . count(self::$sqlRequest) . ") :<br />";
 

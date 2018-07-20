@@ -126,14 +126,14 @@ class BlockLogin extends BlockModel
     private function &getUserInfos(): string
     {
         $content = "";
-        $userInfos = CoreSession::getInstance()->getUserInfos();
+        $sessionData = CoreSession::getInstance()->getSessionData();
 
         if ($this->displayText) {
-            $content .= $this->getUserName($userInfos);
+            $content .= $this->getUserName($sessionData);
         }
 
-        if ($this->displayAvatar && !empty($userInfos->getAvatar())) {
-            $content .= $this->getUserAvatar($userInfos);
+        if ($this->displayAvatar && !empty($sessionData->getAvatar())) {
+            $content .= $this->getUserAvatar($sessionData);
         }
 
         if ($this->displayIcons) {
@@ -142,18 +142,18 @@ class BlockLogin extends BlockModel
         return $content;
     }
 
-    private function &getUserName(CoreSessionData $userInfos): string
+    private function &getUserName(CoreSessionData $sessionData): string
     {
-        $content = WELCOME . " <span class=\"text_bold\">" . $userInfos->getName() . "</span> !<br />";
+        $content = WELCOME . " <span class=\"text_bold\">" . $sessionData->getName() . "</span> !<br />";
         return $content;
     }
 
-    private function &getUserAvatar(CoreSessionData $userInfos): string
+    private function &getUserAvatar(CoreSessionData $sessionData): string
     {
         $content = CoreHtml::getLinkForModule("connect",
                                               "",
                                               "account",
-                                              ExecImage::getTag($userInfos->getAvatar(),
+                                              ExecImage::getTag($sessionData->getAvatar(),
                                                                 80))
             . "<br />";
         return $content;

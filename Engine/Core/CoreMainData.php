@@ -114,9 +114,9 @@ class CoreMainData extends CoreDataStorage
      *
      * @return bool
      */
-    public function doDumb(): bool
+    public function isInMaintenanceMode(): bool
     {
-        return (!$this->doOpening() && !CoreSession::getInstance()->getUserInfos()->hasAdminRank());
+        return (!$this->isOpen() && !CoreSession::getInstance()->getSessionData()->hasAdminRank());
     }
 
     /**
@@ -124,7 +124,7 @@ class CoreMainData extends CoreDataStorage
      *
      * @return bool
      */
-    public function doOpening(): bool
+    public function isOpen(): bool
     {
         return ($this->getDefaultSiteStatut() === "open");
     }

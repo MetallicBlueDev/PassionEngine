@@ -24,11 +24,11 @@ class CoreAccess
             if ($token->getRank() === -1) {
                 $error = ERROR_ACCES_OFF;
             } else {
-                $userInfos = CoreSession::getInstance()->getUserInfos();
+                $sessionData = CoreSession::getInstance()->getSessionData();
 
-                if ($token->getRank() === 1 && !$userInfos->hasRegisteredRank()) {
+                if ($token->getRank() === 1 && !$sessionData->hasRegisteredRank()) {
                     $error = ERROR_ACCES_MEMBER;
-                } else if ($token->getRank() > 1 && $userInfos->getRank() < $token->getRank()) {
+                } else if ($token->getRank() > 1 && $sessionData->getRank() < $token->getRank()) {
                     $error = ERROR_ACCES_ADMIN;
                 }
             }
@@ -49,12 +49,12 @@ class CoreAccess
         $rslt = false;
 
         if ($accessType->valid()) {
-            $userInfos = CoreSession::getInstance()->getUserInfos();
+            $sessionData = CoreSession::getInstance()->getSessionData();
 
-            if ($userInfos->getRank() >= $accessType->getRank()) {
+            if ($sessionData->getRank() >= $accessType->getRank()) {
                 if ($accessType->getRank() === CoreAccessRank::SPECIFIC_RIGHT || $forceSpecificRank) {
                     $rslt = self::autorizeSpecific($accessType,
-                                                   $userInfos);
+                                                   $sessionData);
                 } else {
                     $rslt = true;
                 }
@@ -111,15 +111,15 @@ class CoreAccess
      * Autorise ou refuse l'accès à la ressource cible.
      *
      * @param CoreAccessType $accessType
-     * @param CoreSessionData $userInfos
+     * @param CoreSessionData $sessionData
      * @return bool
      */
     private static function &autorizeSpecific(CoreAccessType &$accessType,
-                                              CoreSessionData $userInfos): bool
+                                              CoreSessionData $sessionData): bool
     {
         $rslt = false;
 
-        foreach ($userInfos->getRights() as $userAccessType) {
+        foreach ($sessionData->getRights() as $userAccessType) {
             if (!$userAccessType->valid()) {
                 continue;
             }

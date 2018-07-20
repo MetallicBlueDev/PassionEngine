@@ -48,7 +48,7 @@ class ModuleIndex extends ModuleModel
             $accountTabs->addTab(ACCOUNT_AVATAR,
                                  $this->tabAvatar());
 
-            if (CoreSession::getInstance()->getUserInfos()->hasAdminRank()) {
+            if (CoreSession::getInstance()->getSessionData()->hasAdminRank()) {
                 $accountTabs->addTab(ACCOUNT_ADMIN,
                                      $this->tabAdmin());
             }
@@ -68,7 +68,7 @@ class ModuleIndex extends ModuleModel
                             ACCOUNT_PROFILE_WEBSITE);
         $form->addTextarea("signature",
                            ACCOUNT_PROFILE_SIGNATURE,
-                           CoreSession::getInstance()->getUserInfos()->getSignature(),
+                           CoreSession::getInstance()->getSessionData()->getSignature(),
                            "style=\"display: block;\" rows=\"5\" cols=\"50\"");
         $form->addInputHiddenModule("connect");
         $form->addInputHiddenView("sendProfile");
@@ -103,11 +103,11 @@ class ModuleIndex extends ModuleModel
                 CoreTable::USERS,
                 $values,
                 array(
-                    "user_id = '" . $coreSession->getUserInfos()->getId() . "'")
+                    "user_id = '" . $coreSession->getSessionData()->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
-                $coreSession->refreshSession();
+                $coreSession->refreshSessionData();
                 CoreLogger::addInfo(DATA_SAVED);
             }
         }
@@ -119,7 +119,7 @@ class ModuleIndex extends ModuleModel
 
     private function tabAccount(): string
     {
-        $userInfos = CoreSession::getInstance()->getUserInfos();
+        $sessionData = CoreSession::getInstance()->getSessionData();
 
         $form = new LibForm("account-accountprivate");
         $form->setTitle(ACCOUNT_PRIVATE_TITLE);
@@ -127,14 +127,14 @@ class ModuleIndex extends ModuleModel
         $form->addSpace();
         $form->addInputText("name",
                             LOGIN,
-                            $userInfos->getName());
+                            $sessionData->getName());
         $form->addInputPassword("pass",
                                 PASSWORD);
         $form->addInputPassword("pass2",
                                 ACCOUNT_PRIVATE_PASSWORD_CONFIRME);
         $form->addInputText("email",
                             EMAIL,
-                            $userInfos->getEmail());
+                            $sessionData->getEmail());
 
         $form->addSpace();
         $form->addSelectOpenTag("langue",
@@ -184,7 +184,7 @@ class ModuleIndex extends ModuleModel
 
     public function sendAccount()
     {
-        $userInfos = CoreSession::getInstance()->getUserInfos();
+        $sessionData = CoreSession::getInstance()->getSessionData();
 
         $name = CoreRequest::getWord("name",
                                      "",
@@ -205,11 +205,11 @@ class ModuleIndex extends ModuleModel
                                            "",
                                            CoreRequestType::POST);
 
-        if ($userInfos->getName() != $name || $userInfos->getEmail() != $email || $userInfos->getLangue() != $langue || $userInfos->getTemplate() != $template) {
+        if ($sessionData->getName() != $name || $sessionData->getEmail() != $email || $sessionData->getLangue() != $langue || $sessionData->getTemplate() != $template) {
             if (CoreSession::validLogin($name)) {
                 $validName = true;
 
-                if ($userInfos->getName() != $name) {
+                if ($sessionData->getName() != $name) {
                     $name = ExecString::secureText($name);
 
                     CoreSql::getInstance()->select(
@@ -247,11 +247,11 @@ class ModuleIndex extends ModuleModel
                             CoreTable::USERS,
                             $values,
                             array(
-                                "user_id = '" . $userInfos->getId() . "'")
+                                "user_id = '" . $sessionData->getId() . "'")
                         );
 
                         if (CoreSql::getInstance()->affectedRows() > 0) {
-                            CoreSession::getInstance()->refreshSession();
+                            CoreSession::getInstance()->refreshSessionData();
                             CoreLogger::addInfo(DATA_SAVED);
                         }
                     } else {
@@ -284,7 +284,7 @@ class ModuleIndex extends ModuleModel
 
     private function tabAdmin(): string
     {
-        $userInfos = CoreSession::getInstance()->getUserInfos();
+        $sessionData = CoreSession::getInstance()->getSessionData();
 
         $form = new LibForm("account-admin");
         $form->setTitle(ACCOUNT_ADMIN_TITLE);
@@ -294,9 +294,9 @@ class ModuleIndex extends ModuleModel
         $form->addSpace();
         $form->addHtmlInFieldset("<span class=\"text_bold\">");
 
-        if ($userInfos->hasSuperAdminRank()) {
+        if ($sessionData->hasSuperAdminRank()) {
             $form->addHtmlInFieldset(ACCOUNT_ADMIN_RIGHT_MAX);
-        } else if ($userInfos->hasAdminWithRightsRank()) {
+        } else if ($sessionData->hasAdminWithRightsRank()) {
             $form->addHtmlInFieldset(ACCOUNT_ADMIN_RIGHT_HIG);
         } else {
             $form->addHtmlInFieldset(ACCOUNT_ADMIN_RIGHT_MED);
@@ -308,10 +308,10 @@ class ModuleIndex extends ModuleModel
         $form->addSpace();
         $form->addHtmlInFieldset("<span class=\"text_underline\">" . ACCOUNT_ADMIN_RIGHT . ":</span>");
 
-        if ($userInfos->hasSuperAdminRank()) {
+        if ($sessionData->hasSuperAdminRank()) {
             $form->addHtmlInFieldset(ADMIN_RIGHT_ALL);
         } else {
-            foreach ($userInfos->getRights() as $userAccessType) {
+            foreach ($sessionData->getRights() as $userAccessType) {
                 if (!$userAccessType->valid()) {
                     continue;
                 }

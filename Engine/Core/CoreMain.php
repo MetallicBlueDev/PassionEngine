@@ -238,7 +238,7 @@ class CoreMain
      */
     private function displayDefaultLayout(): void
     {
-        if ($this->getConfigs()->doDumb()) {
+        if ($this->getConfigs()->isInMaintenanceMode()) {
             // Mode maintenance: possibilité de s'identifier
             LibBlock::getInstance()->buildStandaloneBlockType("Login");
 
@@ -303,7 +303,7 @@ class CoreMain
     private function checkMakeStyle(): void
     {
         // Tentative d'utilisation du template du client
-        $templateName = CoreSession::getInstance()->getUserInfos()->getTemplate();
+        $templateName = CoreSession::getInstance()->getSessionData()->getTemplate();
 
         if (empty($templateName) || !LibMakeStyle::isTemplateDirectory($templateName)) {
             // Tentative d'utilisation du template du site

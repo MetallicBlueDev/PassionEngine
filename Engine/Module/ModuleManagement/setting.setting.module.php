@@ -73,7 +73,7 @@ class Module_Management_Setting extends ModuleModel
 
         $coreMain = CoreMain::getInstance();
 
-        $online = $coreMain->getConfigs()->doOpening();
+        $online = $coreMain->getConfigs()->isOpen();
         $form->addHtmlInFieldset(SETTING_GENERAL_SITE_SETTING_SITE_STATUT);
         $form->addInputRadio("defaultSiteStatut1",
                              "defaultSiteStatut",

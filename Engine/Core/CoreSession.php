@@ -151,16 +151,16 @@ class CoreSession
 
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
-            $userInfos = self::loadUserData(array(
+            $userArrayDatas = self::loadUserData(array(
                     "name = '" . $userName . "'",
                     "&& pass = '" . $userPass . "'"
             ));
 
-            if (count($userInfos) > 1) {
+            if (count($userArrayDatas) > 1) {
                 $newSession = self::getInstance();
 
                 // Injection des informations du client
-                $newSession->makeSessionData($userInfos,
+                $newSession->makeSessionData($userArrayDatas,
                                              true);
 
                 // Tentative d'ouverture de session
@@ -183,7 +183,7 @@ class CoreSession
      */
     public static function connected(): bool
     {
-        return (self::$coreSession !== null && self::$coreSession->userLogged());
+        return (self::$coreSession !== null && self::$coreSession->hasValidSessionData());
     }
 
     /**
@@ -288,7 +288,7 @@ class CoreSession
      *
      * @return CoreSessionData
      */
-    public function getUserInfos(): CoreSessionData
+    public function getSessionData(): CoreSessionData
     {
         if ($this->sessionData === null) {
             $this->makeAnonymousSessionData();
@@ -299,16 +299,16 @@ class CoreSession
     /**
      * Actualise la session courante.
      */
-    public function refreshSession(): void
+    public function refreshSessionData(): void
     {
-        if ($this->userLogged()) {
+        if ($this->hasValidSessionData()) {
             // Rafraichir le cache de session
-            $userInfos = self::loadUserData(array(
+            $userArrayDatas = self::loadUserData(array(
                     "user_id = '" . $this->sessionData->getId() . "'"
             ));
 
-            if (count($userInfos) > 1) {
-                $this->makeSessionData($userInfos,
+            if (count($userArrayDatas) > 1) {
+                $this->makeSessionData($userArrayDatas,
                                        true);
                 CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php",
                                                                                $this->getSerializedSession());
@@ -418,7 +418,7 @@ class CoreSession
                                  array("ip" => $userIp),
                                  array("ip = '" . $this->userIpBanned . "'"));
 
-                if ($coreSql->affectedRows() === 1) {
+                if ($coreSql->affectedRows() >= 1) {
                     $this->updateUserIpBanned($userIp);
                 } else {
                     $this->deleteUserIpBanned();
@@ -515,7 +515,7 @@ class CoreSession
         // Par défaut, la session actuel est valide
         $isValidSession = true;
 
-        if (!$this->userLogged()) {
+        if (!$this->hasValidSessionData()) {
             $userId = self::getCookie($this->getUserCookieName());
             $sessionId = self::getCookie($this->getSessionCookieName());
 
@@ -707,7 +707,7 @@ class CoreSession
      *
      * @return bool true c'est un client valide
      */
-    private function userLogged(): bool
+    private function hasValidSessionData(): bool
     {
         return (!empty($this->sessionId) && $this->sessionData !== null);
     }

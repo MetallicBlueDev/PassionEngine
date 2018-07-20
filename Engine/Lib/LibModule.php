@@ -185,7 +185,7 @@ class LibModule
         $moduleData = $this->getRequestedModuleData();
 
         // Vérification du niveau d'acces
-        if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getUserInfos()->hasAdminRank())) {
+        if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getSessionData()->hasAdminRank())) {
             if ($moduleData->isValid()) {
                 CoreTranslate::getInstance()->translate($moduleData->getFolderName());
 
@@ -347,14 +347,14 @@ class LibModule
 
         if (CoreLoader::isCallable($pageInfo[0],
                                    $pageInfo[1])) {
-            $userInfos = CoreSession::getInstance()->getUserInfos();
+            $sessionData = CoreSession::getInstance()->getSessionData();
             $requestedModuleData = $this->getRequestedModuleData();
 
-            if ($pageInfo[1] === "install" && ($requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            if ($pageInfo[1] === "install" && ($requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "uninstall" && (!$requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "uninstall" && (!$requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "setting" && (!$requestedModuleData->installed() || !$userInfos->hasAdminRank())) {
+            } else if ($pageInfo[1] === "setting" && (!$requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
             }
         } else {
