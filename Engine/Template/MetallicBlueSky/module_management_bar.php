@@ -1,7 +1,7 @@
 <?php
 use TREngine\Engine\Core\CoreUrlRewriting;
 
-if (TREngine\Engine\Core\CoreMain::getInstance()->isDefaultLayout()) {
+if (TREngine\Engine\Core\CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
     ?>
     <div id="management_bar">
         <div>

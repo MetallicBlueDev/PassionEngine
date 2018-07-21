@@ -133,7 +133,7 @@ class CoreLogger
             }
 
             // Réaction différente en fonction du type d'affichage demandée
-            if (CoreMain::getInstance()->isDefaultLayout()) {
+            if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
                 echo "<div id=\"panel_message\" style=\"display: " . $display . ";\">" . $rslt . "</div>";
             } else if ($hasMessages) {
                 if (CoreLoader::isCallable("CoreHtml")) {

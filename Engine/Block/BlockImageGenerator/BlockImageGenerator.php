@@ -21,7 +21,7 @@ class BlockImageGenerator extends BlockModel
     {
         $mode = null;
 
-        if (CoreMain::getInstance()->isBlockLayout()) {
+        if (CoreMain::getInstance()->getCurrentRoute()->isBlockLayout()) {
             $mode = CoreRequest::getString("mode",
                                            "",
                                            CoreRequestType::GET);

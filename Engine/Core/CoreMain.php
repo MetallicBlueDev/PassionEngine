@@ -43,15 +43,16 @@ class CoreMain
     private $agentInfos = null;
 
     /**
-     * Mode de mise en page courante.
+     * Représente le chemin actuel.
      *
-     * @var string
+     * @var CoreRoute
      */
-    private $layout = CoreLayout::DEFAULT_LAYOUT;
+    private $currentRoute = null;
 
     private function __construct()
     {
         $this->configs = new CoreMainData();
+        $this->currentRoute = new CoreRoute();
     }
 
     /**
@@ -108,33 +109,13 @@ class CoreMain
     }
 
     /**
-     * Détermine si l'affichage se fait en écran complet (affichage classique).
+     * Retourne le chemin actuel.
      *
-     * @return bool true c'est en plein écran.
+     * @return CoreRoute
      */
-    public function isDefaultLayout(): bool
+    public function getCurrentRoute(): CoreRoute
     {
-        return (($this->layout === CoreLayout::DEFAULT_LAYOUT) ? true : false);
-    }
-
-    /**
-     * Détermine si l'affichage se fait en écran minimal ciblé module.
-     *
-     * @return bool true c'est un affichage de module uniquement.
-     */
-    public function isModuleLayout(): bool
-    {
-        return (($this->layout === CoreLayout::MODULE || $this->layout === CoreLayout::MODULE_PAGE) ? true : false);
-    }
-
-    /**
-     * Détermine si l'affichage se fait en écran minimal ciblé block.
-     *
-     * @return bool true c'est un affichage de block uniquement.
-     */
-    public function isBlockLayout(): bool
-    {
-        return (($this->layout === CoreLayout::BLOCK || $this->layout == CoreLayout::BLOCK_PAGE) ? true : false);
+        return $this->currentRoute;
     }
 
     /**
@@ -155,7 +136,7 @@ class CoreMain
         CoreHtml::checkInstance();
 
         // Configure les informations de page demandées
-        $this->checkLayout();
+        $this->currentRoute->requestLayout();
         $this->checkMakeStyle();
 
         if (!CoreSecure::debuggingMode()) {
@@ -207,13 +188,13 @@ class CoreMain
     private function runJobs(): void
     {
         // Vérification du type d'affichage
-        if ($this->isDefaultLayout()) {
+        if ($this->getCurrentRoute()->isDefaultLayout()) {
             $this->displayDefaultLayout();
         } else {
             // Affichage autonome des modules et blocks
-            if ($this->isModuleLayout()) {
+            if ($this->getCurrentRoute()->isModuleLayout()) {
                 $this->displayModuleLayout();
-            } else if ($this->isBlockLayout()) {
+            } else if ($this->getCurrentRoute()->isBlockLayout()) {
                 $this->displayBlockLayout();
             }
 
@@ -279,22 +260,6 @@ class CoreMain
         $libBlock->buildBlockRequested();
 
         echo $libBlock->getFirstBlockBuilded();
-    }
-
-    /**
-     * Vérification et assignation du layout.
-     */
-    private function checkLayout(): void
-    {
-        // Assignation et vérification de fonction layout
-        $layout = strtolower(CoreRequest::getWord(CoreLayout::REQUEST_LAYOUT));
-
-        // Configuration du layout
-        if ($layout !== CoreLayout::DEFAULT_LAYOUT && $layout !== CoreLayout::MODULE_PAGE && $layout !== CoreLayout::BLOCK_PAGE && (($layout !== CoreLayout::MODULE && $layout !== CoreLayout::BLOCK) || (!CoreHtml::getInstance()->javascriptEnabled()))) {
-            $layout = CoreLayout::DEFAULT_LAYOUT;
-        }
-
-        $this->layout = $layout;
     }
 
     /**

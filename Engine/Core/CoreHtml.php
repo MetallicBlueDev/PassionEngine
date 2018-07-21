@@ -164,7 +164,7 @@ class CoreHtml
      */
     public function addJavascript(string $javaScript): void
     {
-        if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->isDefaultLayout()) {
+        if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
             $this->addJavascriptJquery($javaScript);
         } else {
             $this->addJavascriptCode($javaScript);
@@ -608,7 +608,7 @@ class CoreHtml
      */
     private function checkMetaIncludeJavascript(bool $forceIncludes = false): void
     {
-        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->isDefaultLayout() : true;
+        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout() : true;
 
         if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
             if (!empty($this->javaScriptJquery)) {

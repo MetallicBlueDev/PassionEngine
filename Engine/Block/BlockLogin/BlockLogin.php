@@ -103,7 +103,7 @@ class BlockLogin extends BlockModel
             }
         }
 
-        if (CoreMain::getInstance()->isBlockLayout()) {
+        if (CoreMain::getInstance()->getCurrentRoute()->isBlockLayout()) {
             // Si nous sommes dans un affichage type block
             $this->localView = CoreRequest::getString("localView",
                                                       "",
