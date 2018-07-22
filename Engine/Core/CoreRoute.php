@@ -7,7 +7,7 @@ use TREngine\Engine\Lib\LibModuleData;
 use TREngine\Engine\Lib\LibModule;
 
 /**
- *
+ * Gestionnaire de chemin.
  *
  * @author Sébastien Villemain
  */
