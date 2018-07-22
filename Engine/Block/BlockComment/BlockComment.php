@@ -2,7 +2,7 @@
 
 namespace TREngine\Engine\Block;
 
-use TREngine\Engine\Lib\LibModule;
+use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Exec\ExecUtils;
 
 /**
@@ -31,7 +31,7 @@ class BlockComment extends BlockModel
         $this->configure();
 
         // Si le module courant fait partie de la liste des affichages
-        if (ExecUtils::inArray(LibModule::getInstance()->getRequestedModuleData()->getName(),
+        if (ExecUtils::inArray(CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getName(),
                                $this->displayOnModule,
                                true)) {
             // Si la position est interieur au module (moduletop ou modulebottom)

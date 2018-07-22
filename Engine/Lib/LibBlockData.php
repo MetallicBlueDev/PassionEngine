@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Lib;
 
+use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreAccessZone;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreAccess;
@@ -251,7 +252,7 @@ class LibBlockData extends LibEntityData
             if ($this->canDisplayOnAllModules()) {
                 $rslt = true;
             } else {
-                $selectedModuleId = LibModule::getInstance()->getRequestedModuleData()->getIdAsInt();
+                $selectedModuleId = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getIdAsInt();
 
                 foreach ($this->getAllowedModules() as $allowedModule) {
                     if ($selectedModuleId === $allowedModule['module_id']) {

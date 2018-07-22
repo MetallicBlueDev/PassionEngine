@@ -43,13 +43,6 @@ class LibModule
     private static $libModule = null;
 
     /**
-     * Nom du module courant.
-     *
-     * @var string
-     */
-    private $module = "";
-
-    /**
      * Tableau d'information sur les modules.
      *
      * @var LibModuleData[]
@@ -72,26 +65,6 @@ class LibModule
         if (self::$libModule === null) {
             // Création d'un instance autonome
             self::$libModule = new LibModule();
-
-            $defaultModule = CoreMain::getInstance()->getConfigs()->getDefaultModule();
-            $module = self::getRequestedOrDefaultModule($defaultModule);
-            $page = self::getRequestedOrDefaultPage();
-            $moduleData = self::getRequestedOrDefaultModuleData($module,
-                                                                $page);
-
-            if (($moduleData === null || !$moduleData->isValid()) && $module !== $defaultModule) {
-                // Afficher une erreur 404
-                if (!empty($module) || !empty($page)) {
-                    CoreLogger::addInfo(ERROR_404);
-                }
-
-                // Utilisation du module par défaut
-                $moduleData = self::$libModule->getModuleData($defaultModule);
-                $moduleData->setPage(CoreLayout::DEFAULT_PAGE);
-                $moduleData->setView(CoreLayout::DEFAULT_VIEW);
-            }
-
-            self::$libModule->module = ($moduleData !== null) ? $moduleData->getName() : "";
         }
     }
 
@@ -144,16 +117,6 @@ class LibModule
     /**
      * Retourne les informations du module cible.
      *
-     * @return LibModuleData Informations sur le module.
-     */
-    public function &getRequestedModuleData(): LibModuleData
-    {
-        return $this->getModuleData($this->module);
-    }
-
-    /**
-     * Retourne les informations du module cible.
-     *
      * @param string $moduleName Le nom du module, par défaut le module courant.
      * @return LibModuleData Informations sur le module.
      */
@@ -182,7 +145,7 @@ class LibModule
      */
     public function buildRequestedModule(): void
     {
-        $moduleData = $this->getRequestedModuleData();
+        $moduleData = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData();
 
         // Vérification du niveau d'acces
         if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getSessionData()->hasAdminRank())) {
@@ -214,7 +177,7 @@ class LibModule
      */
     public function &getModuleBuilded(): string
     {
-        $requestedModuleData = $this->getRequestedModuleData();
+        $requestedModuleData = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData();
         $buffer = $requestedModuleData->getBuffer();
         $configs = $requestedModuleData->getConfigs();
 
@@ -309,8 +272,9 @@ class LibModule
         $loaded = CoreLoader::classLoader($moduleClassName);
 
         // Vérification de la sous page
-        $moduleData->setView($this->getValidViewPage(array($moduleClassName,
-                ($moduleData->installed()) ? $moduleData->getView() : "install")));
+        $moduleData->setView($this->getValidViewPage($moduleData,
+                                                     array($moduleClassName,
+                    ($moduleData->installed()) ? $moduleData->getView() : "install")));
 
         // Affichage du module si possible
         if ($loaded && !empty($moduleData->getView())) {
@@ -338,23 +302,24 @@ class LibModule
     /**
      * Retourne un view valide sinon une chaine vide.
      *
+     * @param LibModuleData $moduleData
      * @param array $pageInfo
      * @return string
      */
-    private function &getValidViewPage(array $pageInfo): string
+    private function &getValidViewPage(LibModuleData &$moduleData,
+                                       array $pageInfo): string
     {
         $invalid = false;
 
         if (CoreLoader::isCallable($pageInfo[0],
                                    $pageInfo[1])) {
             $sessionData = CoreSession::getInstance()->getSessionData();
-            $requestedModuleData = $this->getRequestedModuleData();
 
-            if ($pageInfo[1] === "install" && ($requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
+            if ($pageInfo[1] === "install" && ($moduleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "uninstall" && (!$requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
+            } else if ($pageInfo[1] === "uninstall" && (!$moduleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
-            } else if ($pageInfo[1] === "setting" && (!$requestedModuleData->installed() || !$sessionData->hasAdminRank())) {
+            } else if ($pageInfo[1] === "setting" && (!$moduleData->installed() || !$sessionData->hasAdminRank())) {
                 $invalid = true;
             }
         } else {

@@ -3,7 +3,6 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Lib\LibModule;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecCookie;
 use TREngine\Engine\Exec\ExecCrypt;
@@ -262,7 +261,7 @@ class CoreHtml
                 $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable("LibModule")) {
-                    $title .= " / " . LibModule::getInstance()->getRequestedModuleData()->getName();
+                    $title .= " / " . CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getName();
                 }
             } else {
                 // Titre manuel

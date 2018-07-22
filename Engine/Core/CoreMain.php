@@ -188,13 +188,13 @@ class CoreMain
     private function runJobs(): void
     {
         // Vérification du type d'affichage
-        if ($this->getCurrentRoute()->isDefaultLayout()) {
+        if ($this->currentRoute->isDefaultLayout()) {
             $this->displayDefaultLayout();
         } else {
             // Affichage autonome des modules et blocks
-            if ($this->getCurrentRoute()->isModuleLayout()) {
+            if ($this->currentRoute->isModuleLayout()) {
                 $this->displayModuleLayout();
-            } else if ($this->getCurrentRoute()->isBlockLayout()) {
+            } else if ($this->currentRoute->isBlockLayout()) {
                 $this->displayBlockLayout();
             }
 
@@ -231,6 +231,8 @@ class CoreMain
                                         $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");
         } else {
+            $this->currentRoute->requestModule();
+
             // Mode normal: exécution général
             LibModule::getInstance()->buildRequestedModule();
             LibBlock::getInstance()->buildAllBlocks();
@@ -245,6 +247,7 @@ class CoreMain
      */
     private function displayModuleLayout(): void
     {
+        $this->currentRoute->requestModule();
         $libModule = LibModule::getInstance();
         $libModule->buildRequestedModule();
 
