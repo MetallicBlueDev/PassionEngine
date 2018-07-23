@@ -43,6 +43,20 @@ class CoreRoute
     private $view = "";
 
     /**
+     * Identifiant du block demandé.
+     *
+     * @var int
+     */
+    private $blockId = -1;
+
+    /**
+     * Type de block demandé.
+     *
+     * @var string
+     */
+    private $blockType = "";
+
+    /**
      * Retourne le mode de mise en page.
      *
      * @return string
@@ -98,6 +112,15 @@ class CoreRoute
     {
         $this->requestedOrDefaultModule();
         $this->checkModule();
+    }
+
+    /**
+     * Vérification et assignation du block demandé.
+     */
+    public function requestBlock(): void
+    {
+        $this->requestedOrDefaultBlock();
+        $this->checkBlock();
     }
 
     /**
@@ -182,6 +205,14 @@ class CoreRoute
         }
 
         $this->module = ($moduleData !== null) ? $moduleData->getName() : "";
+    }
+
+    /**
+     * Vérification du block.
+     */
+    private function checkBlock(): void
+    {
+
     }
 
     /**
@@ -273,5 +304,18 @@ class CoreRoute
         }
 
         $this->view = $view;
+    }
+
+    /**
+     * Assignation du block (par son identifiant ou par son type).
+     */
+    private function requestedOrDefaultBlock(): void
+    {
+        $this->blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
+                                                 -1);
+
+        if ($this->blockId < 0) {
+            $this->blockType = CoreRequest::getString(CoreLayout::REQUEST_BLOCKTYPE);
+        }
     }
 }
