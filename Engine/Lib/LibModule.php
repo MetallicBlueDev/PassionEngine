@@ -9,7 +9,6 @@ use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSql;
@@ -360,72 +359,5 @@ class LibModule
                          array(
                 "module_id = '" . $moduleId . "'"
         ));
-    }
-
-    /**
-     * Retourne le module demandée.
-     *
-     * @param string $defaultModule Le module par défaut.
-     * @return string
-     */
-    private static function getRequestedOrDefaultModule(string $defaultModule): string
-    {
-        $module = CoreRequest::getWord(CoreLayout::REQUEST_MODULE);
-
-        if (empty($module)) {
-            $module = $defaultModule;
-        }
-        return $module;
-    }
-
-    /**
-     * Retourne la page demandée.
-     *
-     * @return string
-     */
-    private static function getRequestedOrDefaultPage(): string
-    {
-        $page = CoreRequest::getWord(CoreLayout::REQUEST_PAGE);
-
-        if (empty($page)) {
-            $page = CoreLayout::DEFAULT_PAGE;
-        }
-        return $page;
-    }
-
-    /**
-     * Retourne la méthode d'affichage.
-     *
-     * @return string
-     */
-    private static function &getRequestedOrDefaultView(): string
-    {
-        $view = CoreRequest::getWord(CoreLayout::REQUEST_VIEW);
-
-        if (empty($view)) {
-            $view = CoreLayout::DEFAULT_VIEW;
-        }
-        return $view;
-    }
-
-    /**
-     * Retourne les informations sur le module demandé.
-     *
-     * @param string $module
-     * @param string $page
-     * @return LibModuleData
-     */
-    private static function getRequestedOrDefaultModuleData(string $module,
-                                                            string $page): ?LibModuleData
-    {
-        $moduleData = self::$libModule->getModuleData($module);
-
-        if ($moduleData != null) {
-            $view = self::getRequestedOrDefaultView();
-
-            $moduleData->setPage($page);
-            $moduleData->setView($view);
-        }
-        return $moduleData;
     }
 }

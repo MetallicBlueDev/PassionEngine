@@ -54,17 +54,9 @@ class LibBlock
      */
     private $blockDatas = array();
 
-    /**
-     * Liste des blocks qui peuvent être appelés en standalone.
-     *
-     * @var array
-     */
-    private $standaloneBlocksType = array();
-
     private function __construct()
     {
-        $this->addStandaloneBlockType("Login");
-        $this->addStandaloneBlockType("ImageGenerator");
+
     }
 
     /**
@@ -78,28 +70,6 @@ class LibBlock
             self::$libBlock = new LibBlock();
         }
         return self::$libBlock;
-    }
-
-    /**
-     * Ajout d'un type de block qui peut être appelé en standalone.
-     *
-     * @param string $blockTypeName
-     */
-    public function addStandaloneBlockType(string $blockTypeName): void
-    {
-        $this->standaloneBlocksType[] = $blockTypeName;
-    }
-
-    /**
-     * Détermine si le block est utilisable en standalone.
-     *
-     * @param string $blockTypeName
-     * @return bool
-     */
-    public function isStandaloneBlockType(string $blockTypeName): bool
-    {
-        return !empty($blockTypeName) && (array_search($blockTypeName,
-                                                       $this->standaloneBlocksType) !== false);
     }
 
     /**
@@ -273,6 +243,69 @@ class LibBlock
             $this->addBlockData($blockData);
         }
         return $blockData;
+    }
+
+    /**
+     * Retourne les informations du block cible via son type.
+     *
+     * @param string $blockTypeName
+     * @return LibBlockData Informations sur le block.
+     */
+    public function &getBlockDataByType(string $blockTypeName): LibBlockData
+    {
+        $blockId = $this->requestBlockId($blockTypeName);
+
+        if ($blockId < 0) {
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
+                                                                    15,
+                                                                    array($blockTypeName)));
+        }
+        return $this->getBlockData($blockId);
+    }
+
+    /**
+     * Retourne l'identifiant du block.
+     *
+     * @param string $blockTypeName
+     * @return int
+     */
+    private function &requestBlockId(string $blockTypeName): int
+    {
+        $blockId = -1;
+
+        if (!empty($this->blockDatas)) {
+            foreach ($this->blockDatas as $blockData) {
+                if ($blockData->getType() === $blockTypeName) {
+                    $blockId = $blockData->getIdAsInt();
+                    break;
+                }
+            }
+        }
+
+        if ($blockId < 0) {
+            $blockId = $this->loadBlockId($blockTypeName);
+        }
+        return $blockId;
+    }
+
+    /**
+     * Charge l'identifiant du block.
+     *
+     * @param string $blockTypeName
+     * @return int
+     */
+    private function &loadBlockId(string $blockTypeName): int
+    {
+        $blockId = -1;
+        $coreSql = CoreSql::getInstance();
+        $coreSql->select(CoreTable::BLOCKS,
+                         array("block_id"),
+                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"));
+
+        if ($coreSql->affectedRows() > 0) {
+            $blockId = $coreSql->fetchArray()[0];
+        }
+        return $blockId;
     }
 
     /**

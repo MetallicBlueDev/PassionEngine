@@ -4,6 +4,7 @@ namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Lib\LibBlockData;
 use TREngine\Engine\Lib\LibModuleData;
+use TREngine\Engine\Lib\LibBlock;
 use TREngine\Engine\Lib\LibModule;
 
 /**
@@ -133,6 +134,26 @@ class CoreRoute
         return LibModule::getInstance()->getModuleData($this->module);
     }
 
+    /**
+     * Retourne les informations du block demandé.
+     *
+     * @return LibBlockData Informations sur le block.
+     */
+    public function &getRequestedBlockDataById(): LibBlockData
+    {
+        return LibBlock::getInstance()->getBlockData($this->blockId);
+    }
+
+    /**
+     * Retourne les informations du block demandé.
+     *
+     * @return LibBlockData Informations sur le block.
+     */
+    public function &getRequestedBlockDataByType(): LibBlockData
+    {
+        return LibBlock::getInstance()->getBlockDataByType($this->blockType);
+    }
+
     public function setModule(string $module): CoreRoute
     {
         $this->module = $module;
@@ -212,7 +233,38 @@ class CoreRoute
      */
     private function checkBlock(): void
     {
+        $blockData = $this->requestBlockData();
 
+        if ($blockData !== null && !$blockData->isValid()) {
+            $blockData = null;
+        }
+
+        $this->blockId = ($blockData !== null) ? $blockData->getIdAsInt() : -1;
+
+        if (!empty($this->blockType)) {
+            $this->blockType = ($blockData !== null) ? $blockData->getType() : "";
+        }
+    }
+
+    /**
+     * Retourne les informations sur le block demandé.
+     *
+     * @return LibBlockData
+     */
+    private function &requestBlockData(): ?LibBlockData
+    {
+        $blockData = null;
+
+        if ($this->blockId >= 0) {
+            $blockData = $this->getRequestedBlockDataById();
+        } else if (!empty($this->blockType)) {
+            $blockData = $this->getRequestedBlockDataByType();
+        }
+
+        if ($blockData !== null && $blockData->getIdAsInt() < 0) {
+            $blockData = null;
+        }
+        return $blockData;
     }
 
     /**
@@ -227,12 +279,14 @@ class CoreRoute
         if (!empty($this->module)) {
             $moduleData = $this->getRequestedModuleData();
 
-            if ($moduleData != null) {
+            if ($moduleData->getIdAsInt() >= 0) {
                 $this->requestedOrDefaultPage();
                 $this->requestedOrDefaultView();
 
                 $moduleData->setPage($this->page);
                 $moduleData->setView($this->view);
+            } else {
+                $moduleData = null;
             }
         }
         return $moduleData;

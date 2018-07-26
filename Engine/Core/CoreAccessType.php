@@ -265,7 +265,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
                 $moduleData = LibModule::getInstance()->getModuleData($this->getName());
             }
 
-            if ($moduleData !== null && is_numeric($moduleData->getId())) {
+            if ($moduleData !== null && $moduleData->getIdAsInt() >= 0) {
                 $this->setDataValue("page",
                                     $moduleData->getName());
                 $this->setDataValue("identifier",

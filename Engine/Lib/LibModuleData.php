@@ -170,7 +170,8 @@ class LibModuleData extends LibEntityData
      */
     public function &getIdAsInt(): int
     {
-        return $this->getInt("module_id");
+        return $this->getInt("module_id",
+                             -1);
     }
 
     /**

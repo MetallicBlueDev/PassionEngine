@@ -153,7 +153,7 @@ class CoreSession
             $userPass = self::cryptPass($userPass);
             $userArrayDatas = self::loadUserData(array(
                     "name = '" . $userName . "'",
-                    "&& pass = '" . $userPass . "'"
+                    "AND pass = '" . $userPass . "'"
             ));
 
             if (count($userArrayDatas) > 1) {

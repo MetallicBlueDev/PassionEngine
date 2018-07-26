@@ -131,7 +131,8 @@ class LibBlockData extends LibEntityData
      */
     public function &getIdAsInt(): int
     {
-        return $this->getInt("block_id");
+        return $this->getInt("block_id",
+                             -1);
     }
 
     /**
