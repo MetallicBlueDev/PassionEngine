@@ -5,6 +5,7 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Core\CoreAccessZone;
+use TREngine\Engine\Core\CoreUrlRewriting;
 
 /**
  * Information de base sur un module.
@@ -111,6 +112,33 @@ class LibModuleData extends LibEntityData
     {
         $zone = CoreAccessZone::MODULE;
         return $zone;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildFinalOutput(): void
+    {
+        LibModule::getInstance()->buildModuleData($this);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function &getFinalOutput(): string
+    {
+        $buffer = $this->getTemporyOutputBuffer();
+        $configs = $this->getConfigs();
+
+        // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
+        if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
+                                                    $configs,
+                                                    false)) {
+            $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
+        }
+        return $buffer;
     }
 
     /**

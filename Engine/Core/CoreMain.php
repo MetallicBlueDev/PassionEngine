@@ -231,10 +231,11 @@ class CoreMain
                                         $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");
         } else {
+            // Mode normal: exécution générale
             $this->currentRoute->requestModule();
+            $requestedModuleData = $this->currentRoute->getRequestedModuleData();
+            $requestedModuleData->buildFinalOutput();
 
-            // Mode normal: exécution général
-            LibModule::getInstance()->buildRequestedModule();
             LibBlock::getInstance()->buildAllBlocks();
 
             $libMakeStyle = new LibMakeStyle();
@@ -248,10 +249,9 @@ class CoreMain
     private function displayModuleLayout(): void
     {
         $this->currentRoute->requestModule();
-        $libModule = LibModule::getInstance();
-        $libModule->buildRequestedModule();
-
-        echo $libModule->getModuleBuilded();
+        $requestedModuleData = $this->currentRoute->getRequestedModuleData();
+        $requestedModuleData->buildFinalOutput();
+        echo $requestedModuleData->getFinalOutput();
     }
 
     /**

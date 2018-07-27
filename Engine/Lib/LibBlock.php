@@ -451,7 +451,7 @@ class LibBlock
                     continue;
                 }
 
-                $currentBuffer = $blockData->getBuffer();
+                $currentBuffer = $blockData->getTemporyOutputBuffer();
 
                 // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
                 if (ExecUtils::inArray("rewriteBuffer",
@@ -524,7 +524,7 @@ class LibBlock
                 // Capture des données d'affichage
                 ob_start();
                 $blockClass->display();
-                $blockData->setBuffer(ob_get_clean());
+                $blockData->setTemporyOutputBuffer(ob_get_clean());
             } catch (Throwable $ex) {
                 CoreSecure::getInstance()->catchException($ex);
             }

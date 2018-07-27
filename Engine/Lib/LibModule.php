@@ -8,15 +8,12 @@ use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Core\CoreUrlRewriting;
-use TREngine\Engine\Exec\ExecUtils;
 use Throwable;
 
 /**
@@ -98,22 +95,6 @@ class LibModule
     }
 
     /**
-     * Détermine si le module est en cours d'utilisation.
-     *
-     * @param string $moduleName
-     * @return bool true le module est actuellement sélectionné
-     */
-    public static function &isRequestedModule(string $moduleName): bool
-    {
-        $requested = false;
-
-        if (self::$libModule !== null) {
-            $requested = self::$libModule->module === $moduleName;
-        }
-        return $requested;
-    }
-
-    /**
      * Retourne les informations du module cible.
      *
      * @param string $moduleName Le nom du module, par défaut le module courant.
@@ -140,12 +121,12 @@ class LibModule
     }
 
     /**
-     * Compilation du module courant.
+     * Compilation du module demandé.
+     *
+     * @param LibModuleData $moduleData
      */
-    public function buildRequestedModule(): void
+    public function buildModuleData(LibModuleData &$moduleData): void
     {
-        $moduleData = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData();
-
         // Vérification du niveau d'acces
         if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getSessionData()->hasAdminRank())) {
             if ($moduleData->isValid()) {
@@ -167,26 +148,6 @@ class LibModule
         } else {
             CoreLogger::addError(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleData));
         }
-    }
-
-    /**
-     * Retourne le module compilé.
-     *
-     * @return string
-     */
-    public function &getModuleBuilded(): string
-    {
-        $requestedModuleData = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData();
-        $buffer = $requestedModuleData->getBuffer();
-        $configs = $requestedModuleData->getConfigs();
-
-        // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
-                                                    $configs,
-                                                    false)) {
-            $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
-        }
-        return $buffer;
     }
 
     /**
@@ -289,7 +250,7 @@ class LibModule
                 // Capture des données d'affichage
                 ob_start();
                 echo $moduleClass->{$moduleData->getView()}();
-                $moduleData->setBuffer(ob_get_clean());
+                $moduleData->setTemporyOutputBuffer(ob_get_clean());
             } catch (Throwable $ex) {
                 CoreSecure::getInstance()->catchException($ex);
             }

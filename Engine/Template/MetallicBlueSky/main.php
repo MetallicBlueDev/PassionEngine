@@ -57,7 +57,7 @@
                                     <div id="module_content_leftfix">
                                         <div id="module_content_rightfix">
                                             <div id="module_content_middle">
-                                                <?php echo TREngine\Engine\Lib\LibModule::getInstance()->getModuleBuilded(); ?>
+                                                <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getFinalOutput(); ?>
                                             </div>
                                         </div>
                                     </div>

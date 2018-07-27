@@ -19,7 +19,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      *
      * @var string
      */
-    private $buffer = "";
+    private $temporyOutputBuffer = "";
 
     /**
      * Nouvelle information d'une entité.
@@ -51,23 +51,35 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     abstract public function installed(): bool;
 
     /**
-     * Retourne les données compilées.
+     * Compilation de données de sortie.
+     */
+    abstract public function buildFinalOutput(): void;
+
+    /**
+     * Retourne les données de sortie compilées.
      *
      * @return string
      */
-    public function &getBuffer(): string
+    abstract public function &getFinalOutput(): string;
+
+    /**
+     * Retourne les données temporaires de sortie compilées.
+     *
+     * @return string
+     */
+    public function &getTemporyOutputBuffer(): string
     {
-        return $this->buffer;
+        return $this->temporyOutputBuffer;
     }
 
     /**
-     * Affecte les données compilées.
+     * Affecte les données temporaires de sortie compilées.
      *
-     * @param string $buffer
+     * @param string $temporyOutputBuffer
      */
-    public function setBuffer(string $buffer): void
+    public function setTemporyOutputBuffer(string $temporyOutputBuffer): void
     {
-        $this->buffer = $buffer;
+        $this->temporyOutputBuffer = $temporyOutputBuffer;
     }
 
     /**
