@@ -14,8 +14,6 @@ use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Core\CoreUrlRewriting;
-use TREngine\Engine\Exec\ExecUtils;
 use Throwable;
 
 /**
@@ -89,49 +87,6 @@ class LibBlock
     }
 
     /**
-     * Compilation du block demandé depuis une requête.
-     */
-    public function buildBlockRequested(): void
-    {
-        $blockId = CoreRequest::getInteger(CoreLayout::REQUEST_BLOCKID,
-                                           -1);
-
-        if ($blockId >= 0) {
-            $this->buildBlockById($blockId,
-                                  false);
-        } else {
-            $blockType = CoreRequest::getString(CoreLayout::REQUEST_BLOCKTYPE);
-            $this->buildStandaloneBlockType($blockType);
-        }
-    }
-
-    /**
-     * Compilation d'un block via son type.
-     *
-     * @param string $blockTypeName
-     */
-    public function buildStandaloneBlockType(string $blockTypeName): void
-    {
-        if (!$this->isStandaloneBlockType($blockTypeName)) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
-                                                                    15,
-                                                                    array($blockTypeName)));
-        }
-
-        $empty = array(
-            "block_id" => 1,
-            "type" => $blockTypeName,
-            "side" => CoreLayout::BLOCK_SIDE_RIGHT,
-            "all_modules" => 1,
-            "title" => $blockTypeName
-        );
-        $blockData = new LibBlockData($empty);
-        $this->addBlockData($blockData);
-        $this->buildBlockData($blockData,
-                              false);
-    }
-
-    /**
      * Retourne les blocks compilés via le nom de leurs positions.
      *
      * @param string $sideName
@@ -141,16 +96,6 @@ class LibBlock
     {
         $sideNumeric = self::getSideAsNumeric($sideName);
         return $this->getBlocksBuildedBySidePosition($sideNumeric);
-    }
-
-    /**
-     * Retourne le premier block compilé.
-     *
-     * @return string
-     */
-    public function &getFirstBlockBuilded(): string
-    {
-        return $this->getBlocksBuildedBySidePosition(CoreLayout::BLOCK_SIDE_FIRST_BUILDED);
     }
 
     /**
@@ -261,6 +206,20 @@ class LibBlock
                                                                     array($blockTypeName)));
         }
         return $this->getBlockData($blockId);
+    }
+
+    /**
+     * Compilation d'un block.
+     *
+     * @param LibBlockData $blockData
+     * @param bool $checkModule
+     */
+    public function buildBlockData(LibBlockData $blockData,
+                                   bool $checkModule): void
+    {
+        if ($blockData->isValid() && $blockData->canActive($checkModule)) {
+            $this->fireBuildBlockData($blockData);
+        }
     }
 
     /**
@@ -445,26 +404,13 @@ class LibBlock
     {
         $buffer = "";
 
-        if ($selectedSide === CoreLayout::BLOCK_SIDE_FIRST_BUILDED || $selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
+        if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
             foreach ($this->blockDatas as $blockData) {
-                if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE && $blockData->getSide() !== $selectedSide) {
+                if ($blockData->getSide() !== $selectedSide) {
                     continue;
                 }
 
-                $currentBuffer = $blockData->getTemporyOutputBuffer();
-
-                // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-                if (ExecUtils::inArray("rewriteBuffer",
-                                       $blockData->getConfigs(),
-                                       false)) {
-                    $currentBuffer = CoreUrlRewriting::getInstance()->rewriteBuffer($currentBuffer);
-                }
-
-                $buffer .= $currentBuffer;
-
-                if ($selectedSide === CoreLayout::BLOCK_SIDE_FIRST_BUILDED) {
-                    break;
-                }
+                $buffer .= $blockData->getFinalOutput();
             }
         }
         return $buffer;
@@ -482,20 +428,6 @@ class LibBlock
         $blockData = $this->getBlockData($blockId);
         $this->buildBlockData($blockData,
                               $checkModule);
-    }
-
-    /**
-     * Compilation d'un block.
-     *
-     * @param LibBlockData $blockData
-     * @param bool $checkModule
-     */
-    private function buildBlockData(LibBlockData $blockData,
-                                    bool $checkModule): void
-    {
-        if ($blockData->isValid() && $blockData->canActive($checkModule)) {
-            $this->fireBuildBlockData($blockData);
-        }
     }
 
     /**

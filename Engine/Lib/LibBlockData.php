@@ -9,6 +9,7 @@ use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
+use TREngine\Engine\Core\CoreUrlRewriting;
 
 /**
  * Information de base sur un block.
@@ -122,6 +123,35 @@ class LibBlockData extends LibEntityData
     {
         $zone = CoreAccessZone::BLOCK;
         return $zone;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function buildFinalOutput(): void
+    {
+        LibBlock::getInstance()->buildBlockData($this,
+                                                false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function &getFinalOutput(): string
+    {
+        $buffer = $this->getTemporyOutputBuffer();
+        $configs = $this->getConfigs();
+
+        // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
+        if (ExecUtils::inArray("rewriteBuffer",
+                               $configs,
+                               false)) {
+            $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
+        }
+
+        return $buffer;
     }
 
     /**

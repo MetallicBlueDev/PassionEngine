@@ -7,7 +7,6 @@ use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailCache;
 use TREngine\Engine\Fail\FailEngine;
 use TREngine\Engine\Fail\FailSql;
-use TREngine\Engine\Lib\LibModule;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Exec\ExecTimeMarker;
 use TREngine\Engine\Exec\ExecUtils;
@@ -221,7 +220,10 @@ class CoreMain
     {
         if ($this->getConfigs()->isInMaintenanceMode()) {
             // Mode maintenance: possibilité de s'identifier
-            LibBlock::getInstance()->buildStandaloneBlockType("Login");
+            $this->currentRoute->setBlockType("Login");
+            $this->currentRoute->requestBlock();
+            $requestedBlockData = $this->currentRoute->getRequestedBlockDataByType();
+            $requestedBlockData->buildFinalOutput();
 
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
@@ -259,10 +261,10 @@ class CoreMain
      */
     private function displayBlockLayout(): void
     {
-        $libBlock = LibBlock::getInstance();
-        $libBlock->buildBlockRequested();
-
-        echo $libBlock->getFirstBlockBuilded();
+        $this->currentRoute->requestBlock();
+        $requestedBlockData = $this->currentRoute->getRequestedBlockDataById();
+        $requestedBlockData->buildFinalOutput();
+        echo $requestedBlockData->getFinalOutput();
     }
 
     /**

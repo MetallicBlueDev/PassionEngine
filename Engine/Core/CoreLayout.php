@@ -116,13 +116,6 @@ class CoreLayout
     public const REQUEST_PAGE = "page";
 
     /**
-     * Demande le premier block compilé (toutes positions confondues).
-     *
-     * @var int
-     */
-    public const BLOCK_SIDE_FIRST_BUILDED = -1;
-
-    /**
      * Block désactivé (position inconnue).
      *
      * @var int

@@ -171,22 +171,27 @@ class CoreRoute
 
     public function setBlockId(int $blockId): CoreRoute
     {
-        $this->module = $module;
+        $this->blockId = $blockId;
 
-        if (!$this->isModuleLayout()) {
-            $this->layout = CoreLayout::MODULE;
+        if (!$this->isBlockLayout()) {
+            $this->layout = CoreLayout::BLOCK;
         }
         return $this;
     }
 
     public function setBlockType(string $blockType): CoreRoute
     {
+        $this->blockType = $blockType;
+
+        if (!$this->isBlockLayout()) {
+            $this->layout = CoreLayout::BLOCK;
+        }
         return $this;
     }
 
     public function setBlockData(LibBlockData $blockData): CoreRoute
     {
-        return $this;
+        return $this->setBlockId($blockData->getIdAsInt());
     }
 
     public function setPage(string $page): CoreRoute
