@@ -295,7 +295,7 @@ class LibBlock
                          array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"));
 
         if ($coreSql->affectedRows() > 0) {
-            $blockId = $coreSql->fetchArray()[0];
+            $blockId = $coreSql->fetchArray()[0]['block_id'];
         }
         return $blockId;
     }
