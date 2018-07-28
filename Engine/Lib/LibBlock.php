@@ -8,7 +8,6 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreSql;
@@ -87,19 +86,29 @@ class LibBlock
     }
 
     /**
-     * Retourne les blocks compilés via le nom de leurs positions.
+     * Retourne les blocks compilés via leurs positions.
      *
-     * @param string $sideName
+     * @param int $selectedSide
      * @return string
      */
-    public function &getBlocksBuildedBySideName(string $sideName): string
+    public function &getBlocksBuildedBySide(int $selectedSide): string
     {
-        $sideNumeric = self::getSideAsNumeric($sideName);
-        return $this->getBlocksBuildedBySidePosition($sideNumeric);
+        $buffer = "";
+
+        if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
+            foreach ($this->blockDatas as $blockData) {
+                if ($blockData->getSide() !== $selectedSide) {
+                    continue;
+                }
+
+                $buffer .= $blockData->getFinalOutput();
+            }
+        }
+        return $buffer;
     }
 
     /**
-     * Liste des orientations possible.
+     * Liste des positions possibles.
      *
      * @return array array("numeric" => identifiant int, "letters" => nom de la position).
      */
@@ -107,51 +116,75 @@ class LibBlock
     {
         $sideList = array();
 
-        foreach (CoreLayout::BLOCK_SIDE_LIST as $sideNumeric) {
+        foreach (CoreLayout::BLOCK_SIDE_LIST as $side) {
             $sideList[] = array(
-                "numeric" => $sideNumeric,
-                "letters" => self::getSideAsLitteral($sideNumeric)
+                "numeric" => $side,
+                "letters" => self::getSideNumericDescription($side)
             );
         }
         return $sideList;
     }
 
     /**
-     * Retourne le type d'orientation avec la traduction.
+     * Retourne la description de la position.
      *
-     * @param mixed $side
-     * @return string postion traduit (si possible).
+     * @param int $side
+     * @return string Description de la position.
      */
-    public static function &getSideAsLitteral($side): string
+    public static function &getSideNumericDescription(int $side): string
     {
-        // Assignation par défaut
-        $litteralSideName = $side;
-
-        if (is_numeric($side)) {
-            $litteralSideName = strtoupper(self::getSideAsLetters($side));
-        }
-
-        $litteralSideName = defined($litteralSideName) ? constant($litteralSideName) : $litteralSideName;
-        return $litteralSideName;
+        $sideName = self::getSideAsLetters($side);
+        return self::getSideNameDescription($sideName);
     }
 
     /**
-     * Retourne le type d'orientation/postion en lettres.
+     * Retourne la description de la position.
      *
-     * @param int $side
-     * @return string identifiant de la position (right, left...).
+     * @param string $sideName
+     * @return string Description de la position.
+     */
+    public static function &getSideNameDescription(string $sideName): string
+    {
+        $sideDescription = strtoupper($sideName);
+        $sideDescription = defined($sideDescription) ? constant($sideDescription) : $sideDescription;
+        return $sideDescription;
+    }
+
+    /**
+     * Retourne le nom de position.
+     *
+     * @param int $side Identifiant de la position (1, 2, ...).
+     * @return string Le nom de la position (right, left...).
      */
     public static function &getSideAsLetters(int $side): string
     {
-        $sideLetters = array_search($side,
-                                    CoreLayout::BLOCK_SIDE_LIST);
+        $sideName = array_search($side,
+                                 CoreLayout::BLOCK_SIDE_LIST);
 
-        if ($sideLetters === false) {
+        if ($sideName === false) {
             CoreSecure::getInstance()->catchException(new FailBlock("invalid block side number",
                                                                     16,
                                                                     array($side)));
         }
-        return $sideLetters;
+        return $sideName;
+    }
+
+    /**
+     * Retourne l'identifiant de la position.
+     *
+     * @param string $sideName Nom de la position (right, left...).
+     * @return int Identifiant de la position (1, 2..).
+     */
+    public static function &getSideAsNumeric(string $sideName): int
+    {
+        if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side name",
+                                                                    16,
+                                                                    array($sideName)));
+        }
+
+        $side = CoreLayout::BLOCK_SIDE_LIST[$sideName];
+        return $side;
     }
 
     /**
@@ -163,6 +196,24 @@ class LibBlock
     {
         return CoreCache::getInstance()->getFileList(self::BLOCKS_FILELISTER,
                                                      CoreLoader::BLOCK_FILE);
+    }
+
+    /**
+     * Retourne les informations du block cible via son type.
+     *
+     * @param string $blockTypeName
+     * @return LibBlockData Informations sur le block.
+     */
+    public function &getBlockDataByType(string $blockTypeName): LibBlockData
+    {
+        $blockId = $this->requestBlockId($blockTypeName);
+
+        if ($blockId < 0) {
+            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
+                                                                    15,
+                                                                    array($blockTypeName)));
+        }
+        return $this->getBlockData($blockId);
     }
 
     /**
@@ -188,24 +239,6 @@ class LibBlock
             $this->addBlockData($blockData);
         }
         return $blockData;
-    }
-
-    /**
-     * Retourne les informations du block cible via son type.
-     *
-     * @param string $blockTypeName
-     * @return LibBlockData Informations sur le block.
-     */
-    public function &getBlockDataByType(string $blockTypeName): LibBlockData
-    {
-        $blockId = $this->requestBlockId($blockTypeName);
-
-        if ($blockId < 0) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
-                                                                    15,
-                                                                    array($blockTypeName)));
-        }
-        return $this->getBlockData($blockId);
     }
 
     /**
@@ -395,28 +428,6 @@ class LibBlock
     }
 
     /**
-     * Retourne les blocks compilés via leurs positions.
-     *
-     * @param int $selectedSide
-     * @return string
-     */
-    private function &getBlocksBuildedBySidePosition(int $selectedSide): string
-    {
-        $buffer = "";
-
-        if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
-            foreach ($this->blockDatas as $blockData) {
-                if ($blockData->getSide() !== $selectedSide) {
-                    continue;
-                }
-
-                $buffer .= $blockData->getFinalOutput();
-            }
-        }
-        return $buffer;
-    }
-
-    /**
      * Compilation d'un block via son identifiant.
      *
      * @param int $blockId
@@ -463,23 +474,5 @@ class LibBlock
         } else {
             CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockData->getType() . ")");
         }
-    }
-
-    /**
-     * Retourne le type d'orientation/position en chiffre.
-     *
-     * @param string $sideName
-     * @return int identifiant de la position (1, 2..).
-     */
-    private static function &getSideAsNumeric(string $sideName): int
-    {
-        if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side name",
-                                                                    16,
-                                                                    array($sideName)));
-        }
-
-        $sideNumeric = CoreLayout::BLOCK_SIDE_LIST[$sideName];
-        return $sideNumeric;
     }
 }

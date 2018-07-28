@@ -89,7 +89,7 @@ class Module_Management_Block extends ModuleModel
                 $title = CoreHtml::getLink("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=tabEdit&blockId=" . $row['block_id'],
                                            $row['title']);
                 $type = $row['type'];
-                $side = LibBlock::getSideAsLitteral($row['side']);
+                $side = LibBlock::getSideNumericDescription($row['side']);
                 $position = CoreHtml::getLinkWithAjax("?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
                                                       "?" . CoreLayout::REQUEST_MODULE . "=management&manage=block&localView=sendMoveUp&blockId=" . $row['block_id'],
                                                       "#block_main_setting",

@@ -34,7 +34,7 @@
                     <div id="wrapper_leftfix">
                         <div id="wrapper_rightfix">
                             <div id="wrapper_left">
-                                <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("left"); ?>
+                                <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_LEFT); ?>
                             </div>
                             <div id="wrapper_middlefix">
                                 <div id="wrapper_middle">
@@ -42,12 +42,12 @@
                                     <?php echo TREngine\Engine\Lib\LibBreadcrumb::getInstance()->getBreadcrumbTrail(); ?>
                                     <div class="spacer"></div>
                                     <?php TREngine\Engine\Core\CoreLogger::displayMessages(); ?>
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("top"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_TOP); ?>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduleleft"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_MODULE_LEFT); ?>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduletop"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_MODULE_TOP); ?>
                                     </div>
                                     <div id="module_top">
                                         <div id="module_top_left"></div>
@@ -67,12 +67,12 @@
                                         <div id="module_bottom_right"></div>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("modulebottom"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_MODULE_BOTTOM); ?>
                                     </div>
                                     <div>
-                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("moduleright"); ?>
+                                        <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_MODULE_RIGHT); ?>
                                     </div>
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("bottom"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_BOTTOM); ?>
                                 </div>
                             </div>
                             <div id="wrapper_right_compatibility">
@@ -81,7 +81,7 @@
                                 <div id="wrapper_quick_lighting_container3" class="wrapper_quick_lighting_container"></div>
                                 <div id="wrapper_quick_lighting_container4" class="wrapper_quick_lighting_container"></div>
                                 <div id="wrapper_right">
-                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySideName("right"); ?>
+                                    <?php echo TREngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(TREngine\Engine\Core\CoreLayout::BLOCK_SIDE_RIGHT); ?>
                                 </div>
                             </div>
                         </div>
