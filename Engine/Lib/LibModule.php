@@ -292,7 +292,8 @@ class LibModule
             $default = CoreLayout::DEFAULT_VIEW;
 
             if ($pageInfo[1] !== $default) {
-                $rslt = $this->getValidViewPage(array(
+                $rslt = $this->getValidViewPage($moduleData,
+                                                array(
                     $pageInfo[0],
                     $default
                 ));
