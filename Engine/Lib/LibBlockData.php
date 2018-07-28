@@ -20,7 +20,7 @@ class LibBlockData extends LibEntityData
 {
 
     /**
-     * Position du block en lettre.
+     * Nom de la position du block.
      *
      * @var string
      */
@@ -50,7 +50,7 @@ class LibBlockData extends LibEntityData
         $this->updateDataValue("title",
                                ExecString::textDisplay($this->getString("title")));
 
-        // Affecte la position du block en lettre.
+        // Affecte le nom de la position du block.
         $this->sideName = LibBlock::getSideAsLetters($this->getSide());
     }
 
@@ -65,7 +65,7 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne la position du block en lettre.
+     * Retourne le nom de la position du block.
      *
      * @return string
      */
@@ -166,7 +166,7 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne la position du block en chiffre.
+     * Retourne l'identifiant de la position du block.
      *
      * @return int
      */
@@ -176,7 +176,7 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne la position du block en lettre.
+     * Retourne le nom de la position du block.
      *
      * @return string
      */
