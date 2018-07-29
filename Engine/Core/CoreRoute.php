@@ -154,6 +154,12 @@ class CoreRoute
         return LibBlock::getInstance()->getBlockDataByType($this->blockType);
     }
 
+    /**
+     * Aller vers le module demandé.
+     *
+     * @param string $module Nom du module.
+     * @return CoreRoute
+     */
     public function setModule(string $module): CoreRoute
     {
         $this->module = $module;
@@ -164,11 +170,23 @@ class CoreRoute
         return $this;
     }
 
+    /**
+     * Aller vers le module demandé.
+     *
+     * @param LibModuleData $moduleData
+     * @return CoreRoute
+     */
     public function setModuleData(LibModuleData $moduleData): CoreRoute
     {
         return $this->setModule($moduleData->getName());
     }
 
+    /**
+     * Aller vers le block demandé.
+     *
+     * @param int $blockId
+     * @return CoreRoute
+     */
     public function setBlockId(int $blockId): CoreRoute
     {
         $this->blockId = $blockId;
@@ -179,6 +197,12 @@ class CoreRoute
         return $this;
     }
 
+    /**
+     * Aller vers le block demandé.
+     *
+     * @param string $blockType
+     * @return CoreRoute
+     */
     public function setBlockType(string $blockType): CoreRoute
     {
         $this->blockType = $blockType;
@@ -189,6 +213,12 @@ class CoreRoute
         return $this;
     }
 
+    /**
+     * Aller vers le block demandé.
+     *
+     * @param LibBlockData $blockData
+     * @return CoreRoute
+     */
     public function setBlockData(LibBlockData $blockData): CoreRoute
     {
         return $this->setBlockId($blockData->getIdAsInt());
