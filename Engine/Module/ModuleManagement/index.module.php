@@ -64,7 +64,7 @@ class Module_Management_Index extends ModuleModel
                                                 $currentPageName);
 
                     // Ajout du repere au fil d'ariane
-                    if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
+                    if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
                         LibBreadcrumb::getInstance()->addTrail(
                                 $currentPageName,
                                 "?" . CoreLayout::REQUEST_MODULE . "=management&manage=" . $pageSelected

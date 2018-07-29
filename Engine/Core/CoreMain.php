@@ -46,12 +46,12 @@ class CoreMain
      *
      * @var CoreRoute
      */
-    private $currentRoute = null;
+    private $route = null;
 
     private function __construct()
     {
         $this->configs = new CoreMainData();
-        $this->currentRoute = CoreRoute::getNewRoute();
+        $this->route = CoreRoute::getNewRoute();
     }
 
     /**
@@ -112,9 +112,9 @@ class CoreMain
      *
      * @return CoreRoute
      */
-    public function getCurrentRoute(): CoreRoute
+    public function getRoute(): CoreRoute
     {
-        return $this->currentRoute;
+        return $this->route;
     }
 
     /**
@@ -135,7 +135,7 @@ class CoreMain
         CoreHtml::checkInstance();
 
         // Configure les informations de page demandées
-        $this->currentRoute->requestLayout();
+        $this->route->requestLayout();
         $this->checkMakeStyle();
 
         if (!CoreSecure::debuggingMode()) {
@@ -187,13 +187,13 @@ class CoreMain
     private function runJobs(): void
     {
         // Vérification du type d'affichage
-        if ($this->currentRoute->isDefaultLayout()) {
+        if ($this->route->isDefaultLayout()) {
             $this->displayDefaultLayout();
         } else {
             // Affichage autonome des modules et blocks
-            if ($this->currentRoute->isModuleLayout()) {
+            if ($this->route->isModuleLayout()) {
                 $this->displayModuleLayout();
-            } else if ($this->currentRoute->isBlockLayout()) {
+            } else if ($this->route->isBlockLayout()) {
                 $this->displayBlockLayout();
             }
 
@@ -220,9 +220,9 @@ class CoreMain
     {
         if ($this->getConfigs()->isInMaintenanceMode()) {
             // Mode maintenance: possibilité de s'identifier
-            $this->currentRoute->setBlockType("Login");
-            $this->currentRoute->requestBlock();
-            $requestedBlockData = $this->currentRoute->getRequestedBlockDataByType();
+            $this->route->setBlockType("Login");
+            $this->route->requestBlock();
+            $requestedBlockData = $this->route->getRequestedBlockDataByType();
             $requestedBlockData->buildFinalOutput();
 
             // Affichage des données de la page de maintenance (fermeture)
@@ -234,8 +234,8 @@ class CoreMain
             $libMakeStyle->display("close");
         } else {
             // Mode normal: exécution générale
-            $this->currentRoute->requestModule();
-            $requestedModuleData = $this->currentRoute->getRequestedModuleData();
+            $this->route->requestModule();
+            $requestedModuleData = $this->route->getRequestedModuleData();
             $requestedModuleData->buildFinalOutput();
 
             LibBlock::getInstance()->buildAllBlocks();
@@ -250,8 +250,8 @@ class CoreMain
      */
     private function displayModuleLayout(): void
     {
-        $this->currentRoute->requestModule();
-        $requestedModuleData = $this->currentRoute->getRequestedModuleData();
+        $this->route->requestModule();
+        $requestedModuleData = $this->route->getRequestedModuleData();
         $requestedModuleData->buildFinalOutput();
         echo $requestedModuleData->getFinalOutput();
     }
@@ -261,8 +261,8 @@ class CoreMain
      */
     private function displayBlockLayout(): void
     {
-        $this->currentRoute->requestBlock();
-        $requestedBlockData = $this->currentRoute->getRequestedBlockDataById();
+        $this->route->requestBlock();
+        $requestedBlockData = $this->route->getRequestedBlockDataById();
         $requestedBlockData->buildFinalOutput();
         echo $requestedBlockData->getFinalOutput();
     }

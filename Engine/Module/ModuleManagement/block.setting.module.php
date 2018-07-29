@@ -36,7 +36,7 @@ class Module_Management_Block extends ModuleModel
                 $content .= $this->tabHome();
         }
 
-        if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
+        if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
             return "<div id=\"block_main_setting\">"
                 . $content . "</div>";
         }

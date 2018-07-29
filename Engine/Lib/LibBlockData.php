@@ -283,7 +283,7 @@ class LibBlockData extends LibEntityData
             if ($this->canDisplayOnAllModules()) {
                 $rslt = true;
             } else {
-                $selectedModuleId = CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getIdAsInt();
+                $selectedModuleId = CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getIdAsInt();
 
                 foreach ($this->getAllowedModules() as $allowedModule) {
                     if ($selectedModuleId === $allowedModule['module_id']) {

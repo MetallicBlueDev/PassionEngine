@@ -112,7 +112,7 @@ class ModuleIndex extends ModuleModel
                 CoreLogger::addInfo(DATA_SAVED);
             }
         }
-        if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
+        if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
             CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab0",
                                               1);
         }
@@ -263,7 +263,7 @@ class ModuleIndex extends ModuleModel
                 $this->errorBox();
             }
         }
-        if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
+        if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
             CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab1",
                                               1);
         }
@@ -368,7 +368,7 @@ class ModuleIndex extends ModuleModel
                 }
             }
 
-            if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout() || (empty($login) && empty($password))) {
+            if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || (empty($login) && empty($password))) {
                 $form = new LibForm("login-logon");
                 $form->setTitle(LOGIN_FORM_TITLE);
                 $form->setDescription(LOGIN_FORM_DESCRIPTION);
@@ -452,7 +452,7 @@ class ModuleIndex extends ModuleModel
             if ($ok) {
                 CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . " " . $email);
             } else {
-                if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout() || empty($email)) {
+                if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($email)) {
                     $form = new LibForm("login-forgetlogin");
                     $form->setTitle(FORGET_LOGIN_TITLE);
                     $form->setDescription(FORGET_LOGIN_DESCRIPTION);
@@ -515,7 +515,7 @@ class ModuleIndex extends ModuleModel
             if ($ok) {
                 CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $email);
             } else {
-                if (CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout() || empty($login)) {
+                if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($login)) {
                     $form = new LibForm("login-forgetpass");
                     $form->setTitle(FORGET_PASSWORD_TITLE);
                     $form->setDescription(FORGET_PASSWORD_DESCRIPTION);

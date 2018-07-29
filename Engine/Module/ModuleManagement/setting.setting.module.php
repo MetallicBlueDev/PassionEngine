@@ -328,7 +328,7 @@ class Module_Management_Setting extends ModuleModel
             CoreLogger::addInformationMessage(DATA_SAVED);
         }
 
-        if ($coreMain->getCurrentRoute()->isDefaultLayout()) {
+        if ($coreMain->getRoute()->isDefaultLayout()) {
             CoreHtml::getInstance()->redirect("index.php?module=management&manage=setting&selectedTab=settingtabidTab0",
                                               1);
         }
@@ -621,7 +621,7 @@ class Module_Management_Setting extends ModuleModel
                                                $dbPrefix);
         }
 
-        if ($coreMain->getCurrentRoute()->isDefaultLayout()) {
+        if ($coreMain->getRoute()->isDefaultLayout()) {
             CoreHtml::getInstance()->redirect("index.php?module=management&manage=setting&selectedTab=settingtabidTab1",
                                               1);
         }

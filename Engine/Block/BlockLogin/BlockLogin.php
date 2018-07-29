@@ -55,7 +55,7 @@ class BlockLogin extends BlockModel
     public function display(): void
     {
         $this->configure();
-        $currentRoute = CoreMain::getInstance()->getCurrentRoute();
+        $currentRoute = CoreMain::getInstance()->getRoute();
         $contentOnly = $currentRoute->isBlockLayout() && !empty($currentRoute->getView());
 
         if ($contentOnly) {
@@ -203,7 +203,7 @@ class BlockLogin extends BlockModel
     {
         $content = "";
 
-        switch (CoreMain::getInstance()->getCurrentRoute()->getView()) {
+        switch (CoreMain::getInstance()->getRoute()->getView()) {
             case self::LOCAL_VIEW_LOGON:
                 $content .= $this->getLogonForm($redirectionLinks);
                 break;

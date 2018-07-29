@@ -163,7 +163,7 @@ class CoreHtml
      */
     public function addJavascript(string $javaScript): void
     {
-        if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout()) {
+        if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
             $this->addJavascriptJquery($javaScript);
         } else {
             $this->addJavascriptCode($javaScript);
@@ -261,7 +261,7 @@ class CoreHtml
                 $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable("LibModule")) {
-                    $title .= " / " . CoreMain::getInstance()->getCurrentRoute()->getRequestedModuleData()->getName();
+                    $title .= " / " . CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName();
                 }
             } else {
                 // Titre manuel
@@ -583,7 +583,7 @@ class CoreHtml
      */
     private function checkMetaIncludeJavascript(bool $forceIncludes = false): void
     {
-        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->getCurrentRoute()->isDefaultLayout() : true;
+        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->getRoute()->isDefaultLayout() : true;
 
         if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
             if (!empty($this->javaScriptJquery)) {
