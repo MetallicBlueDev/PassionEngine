@@ -52,28 +52,16 @@ class BlockLogin extends BlockModel
      */
     private $displayIcons = false;
 
-    /**
-     * Type d'affichage demandé.
-     *
-     * @var string
-     */
-    private $localView = "";
-
     public function display(): void
     {
         $this->configure();
+        $currentRoute = CoreMain::getInstance()->getCurrentRoute();
+        $contentOnly = $currentRoute->isBlockLayout() && !empty($currentRoute->getView());
 
-        if (!empty($this->localView)) {
-            echo $this->render();
+        if ($contentOnly) {
+            echo $this->renderContent();
         } else {
-            $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assignString("blockTitle",
-                                        $this->getBlockData()
-                    ->getTitle());
-            $libMakeStyle->assignString("blockContent",
-                                        $this->render());
-            $libMakeStyle->display($this->getBlockData()
-                    ->getTemplateName());
+            $this->renderTemplate();
         }
     }
 
@@ -103,16 +91,21 @@ class BlockLogin extends BlockModel
                     break;
             }
         }
-
-        if (CoreMain::getInstance()->getCurrentRoute()->isBlockLayout()) {
-            // Si nous sommes dans un affichage type block
-            $this->localView = CoreRequest::getString("localView",
-                                                      "",
-                                                      CoreRequestType::GET);
-        }
     }
 
-    private function &render(): string
+    private function renderTemplate(): void
+    {
+        $libMakeStyle = new LibMakeStyle();
+        $libMakeStyle->assignString("blockTitle",
+                                    $this->getBlockData()
+                ->getTitle());
+        $libMakeStyle->assignString("blockContent",
+                                    $this->renderContent());
+        $libMakeStyle->display($this->getBlockData()
+                ->getTemplateName());
+    }
+
+    private function &renderContent(): string
     {
         $content = "";
 
@@ -185,31 +178,23 @@ class BlockLogin extends BlockModel
     private function &getRedirectionLinks(): string
     {
         $moreLink = "<ul>";
+        $route = CoreRoute::getNewRoute()
+            ->setModule("connect")->setJsMode(true,
+                                              "#login-logonblock")
+            ->setBlockData($this->getBlockData());
 
         if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
             $moreLink .= "<li><span class=\"text_bold\">"
-                . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
-                                            CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_REGISTRATION,
-                                            "#login-logonblock",
-                                            BLOCKLOGIN_GET_ACCOUNT)
+                . $route->setView("registration")->getLink(BLOCKLOGIN_GET_ACCOUNT)
                 . "</span></li>";
         }
 
         $moreLink .= "<li>"
-            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
-                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_LOGON,
-                                        "#login-logonblock",
-                                        BLOCKLOGIN_GET_LOGON)
+            . $route->setView("logon")->getLink(BLOCKLOGIN_GET_LOGON)
             . "</li>" . "<li>"
-            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
-                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_LOGIN,
-                                        "#login-logonblock",
-                                        BLOCKLOGIN_GET_FORGET_LOGIN)
+            . $route->setView("forgetlogin")->getLink(BLOCKLOGIN_GET_FORGET_LOGIN)
             . "</li>" . "<li>"
-            . CoreHtml::getLinkWithAjax(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
-                                        CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->getBlockData()->getType() . "&localView=" . self::LOCAL_VIEW_FORGET_PASS,
-                                        "#login-logonblock",
-                                        BLOCKLOGIN_GET_FORGET_PASS)
+            . $route->setView("forgetpass")->getLink(BLOCKLOGIN_GET_FORGET_PASS)
             . "</li></ul>";
         return $moreLink;
     }
@@ -218,7 +203,7 @@ class BlockLogin extends BlockModel
     {
         $content = "";
 
-        switch ($this->localView) {
+        switch (CoreMain::getInstance()->getCurrentRoute()->getView()) {
             case self::LOCAL_VIEW_LOGON:
                 $content .= $this->getLogonForm($redirectionLinks);
                 break;

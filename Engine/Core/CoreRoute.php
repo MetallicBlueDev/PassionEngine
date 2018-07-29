@@ -6,6 +6,7 @@ use TREngine\Engine\Lib\LibBlockData;
 use TREngine\Engine\Lib\LibModuleData;
 use TREngine\Engine\Lib\LibBlock;
 use TREngine\Engine\Lib\LibModule;
+use TREngine\Engine\Fail\FailEngine;
 
 /**
  * Gestionnaire de chemin.
@@ -58,6 +59,22 @@ class CoreRoute
     private $blockType = "";
 
     /**
+     * Détermine si le chemin supporte le javascript.
+     * Affichage en mode Ajax.
+     *
+     * @var bool
+     */
+    private $jsMode = false;
+
+    /**
+     * Nom complet de l'identifiant la division du contenu permettant d'afficher la page.
+     * Affichage en mode Ajax.
+     *
+     * @var string
+     */
+    private $jsDivisionId = "";
+
+    /**
      * Action spécifique sur l'événement de clique d'un lien.
      *
      * @var string
@@ -97,6 +114,26 @@ class CoreRoute
     }
 
     /**
+     * Retourne le nom de la page.
+     *
+     * @return string
+     */
+    public function &getPage(): string
+    {
+        return $this->page;
+    }
+
+    /**
+     * Retourne la méthode d'affichage.
+     *
+     * @return string
+     */
+    public function &getView(): string
+    {
+        return $this->view;
+    }
+
+    /**
      * Détermine si l'affichage se fait en écran complet (affichage classique).
      *
      * @return bool true c'est en plein écran.
@@ -124,6 +161,17 @@ class CoreRoute
     public function isBlockLayout(): bool
     {
         return ($this->layout === CoreLayout::BLOCK || $this->layout == CoreLayout::BLOCK_PAGE) ? true : false;
+    }
+
+    /**
+     * Détermine si le chemin supporte le javascript.
+     * Affichage en mode Ajax.
+     *
+     * @return bool
+     */
+    public function jsMode(): bool
+    {
+        return $this->jsMode;
     }
 
     /**
@@ -192,12 +240,7 @@ class CoreRoute
     public function setModule(string $module): CoreRoute
     {
         $this->module = $module;
-
-        if (!$this->isModuleLayout()) {
-            $this->layout = CoreLayout::MODULE;
-        }
-        $this->setPage("");
-        $this->setView("");
+        $this->checkModuleAffectation();
         return $this;
     }
 
@@ -221,10 +264,7 @@ class CoreRoute
     public function setBlockId(int $blockId): CoreRoute
     {
         $this->blockId = $blockId;
-
-        if (!$this->isBlockLayout()) {
-            $this->layout = CoreLayout::BLOCK;
-        }
+        $this->checkBlockAffection();
         return $this;
     }
 
@@ -237,10 +277,7 @@ class CoreRoute
     public function setBlockType(string $blockType): CoreRoute
     {
         $this->blockType = $blockType;
-
-        if (!$this->isBlockLayout()) {
-            $this->layout = CoreLayout::BLOCK;
-        }
+        $this->checkBlockAffection();
         return $this;
     }
 
@@ -280,6 +317,31 @@ class CoreRoute
     }
 
     /**
+     * Active support du javascript.
+     * Affichage en mode Ajax.
+     *
+     * @param bool $enable
+     * @param bool $jsDivisionId
+     * @return CoreRoute
+     */
+    public function setJsMode(bool $enable,
+                              string $jsDivisionId = ""): CoreRoute
+    {
+        if ($enable) {
+            if (empty($jsDivisionId)) {
+                throw new FailEngine("Division identifier is empty");
+            }
+
+            CoreHtml::getInstance()->addJavascriptFile("jquery.js");
+        }
+
+
+        $this->jsMode = $enable;
+        $this->jsDivisionId = $enable ? $jsDivisionId : "";
+        return $this;
+    }
+
+    /**
      * Action spécifique sur l'événement de clique d'un lien.
      *
      * @param string $value
@@ -311,8 +373,15 @@ class CoreRoute
      */
     public function getLink(string $displayContent): string
     {
-        $link = $this->getRawLink();
-        return CoreHtml::getLink($link,
+        $normalLink = $this->getRawLink();
+
+        if ($this->jsMode) {
+            $jsLink = CoreUrlRewriting::getLink($this->getBlockLink(),
+                                                true);
+            $this->setOnClickAction("validLink('" . $this->jsDivisionId . "', '" . $jsLink . "');return false;");
+        }
+
+        return CoreHtml::getLink($normalLink,
                                  $displayContent,
                                  $this->onClickForLink,
                                  $this->addonsForLink);
@@ -323,7 +392,7 @@ class CoreRoute
      *
      * @return string
      */
-    public function getRawLink(): string
+    private function getRawLink(): string
     {
         $link = "";
 
@@ -335,6 +404,30 @@ class CoreRoute
             $link = $this->getModuleLink() . $this->getBlockLink();
         }
         return $link;
+    }
+
+    /**
+     * Vérifie si la mise à page est un module.
+     */
+    private function checkModuleAffectation(): void
+    {
+        if (!$this->isModuleLayout()) {
+            $this->layout = CoreLayout::MODULE;
+        }
+
+        // Nettoyage du chemin.
+        $this->setPage("");
+        $this->setView("");
+    }
+
+    /**
+     * Vérifie si la mise à page est un block.
+     */
+    private function checkBlockAffection(): void
+    {
+        if (!$this->jsMode && !$this->isBlockLayout()) {
+            $this->layout = CoreLayout::BLOCK;
+        }
     }
 
     /**
@@ -428,6 +521,11 @@ class CoreRoute
 
         if ($blockData !== null && $blockData->getIdAsInt() < 0) {
             $blockData = null;
+        }
+
+        if ($blockData !== null) {
+            $this->requestedOrDefaultPage();
+            $this->requestedOrDefaultView();
         }
         return $blockData;
     }

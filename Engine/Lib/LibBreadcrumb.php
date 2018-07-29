@@ -57,11 +57,7 @@ class LibBreadcrumb
                              string $link = ""): void
     {
         if (!empty($trail)) {
-            $constant = "TRAIL_" . strtoupper($trail);
-
-            if (defined($constant)) {
-                $trail = constant($constant);
-            }
+            $trail = self::getTrailDescription($trail);
 
             if (!empty($link)) {
                 $trail = CoreHtml::getLink($link,
@@ -86,5 +82,15 @@ class LibBreadcrumb
         }
         $rslt .= "</ul></nav>";
         return $rslt;
+    }
+
+    private static function &getTrailDescription(string $trail): string
+    {
+        $constant = "TRAIL_" . strtoupper($trail);
+
+        if (defined($constant)) {
+            $trail = constant($constant);
+        }
+        return $trail;
     }
 }

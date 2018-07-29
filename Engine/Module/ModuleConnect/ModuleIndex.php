@@ -8,6 +8,7 @@ use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreHtml;
+use TREngine\Engine\Core\CoreRoute;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Core\CoreLogger;
@@ -385,17 +386,7 @@ class ModuleIndex extends ModuleModel
                 $form->addInputSubmit("submit",
                                       CONNECT);
 
-                $moreLink = "<ul>";
-                if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                    $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
-                                                                                      LINK_TO_NEW_ACCOUNT) . "</span></li>";
-                }
-                $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
-                                                        LINK_TO_FORGET_LOGIN) . "</li>"
-                    . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
-                                                 LINK_TO_FORGET_PASS) . "</li></ul>";
-
-                $form->addHtmlInFieldset($moreLink);
+                $form->addHtmlInFieldset($this->getMoreLink());
 
                 echo $form->render();
                 CoreHtml::getInstance()->addJavascript("validLogon('#form-login-logon', '#form-login-logon-login-input', '#form-login-logon-password-input');");
@@ -473,17 +464,7 @@ class ModuleIndex extends ModuleModel
                     $form->addInputSubmit("submit",
                                           FORGET_LOGIN_SUBMIT);
 
-                    $moreLink = "<ul>";
-                    if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
-                                                                                          LINK_TO_NEW_ACCOUNT) . "</span></li>";
-                    }
-                    $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
-                                                            LINK_TO_LOGON) . "</li>"
-                        . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetpass",
-                                                     LINK_TO_FORGET_PASS) . "</li></ul>";
-
-                    $form->addHtmlInFieldset($moreLink);
+                    $form->addHtmlInFieldset($this->getMoreLink());
 
                     echo $form->render();
                     CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetlogin', '#form-login-forgetlogin-email-input');");
@@ -546,17 +527,7 @@ class ModuleIndex extends ModuleModel
                     $form->addInputSubmit("submit",
                                           FORGET_PASSWORD_SUBMIT);
 
-                    $moreLink = "<ul>";
-                    if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-                        $moreLink .= "<li><span class=\"text_bold\">" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=registration",
-                                                                                          LINK_TO_NEW_ACCOUNT) . "</span></li>";
-                    }
-                    $moreLink .= "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=logon",
-                                                            LINK_TO_LOGON) . "</li>"
-                        . "<li>" . CoreHtml::getLink(CoreLayout::REQUEST_MODULE . "=connect&" . CoreLayout::REQUEST_VIEW . "=forgetlogin",
-                                                     LINK_TO_FORGET_LOGIN) . "</li></ul>";
-
-                    $form->addHtmlInFieldset($moreLink);
+                    $form->addHtmlInFieldset($this->getMoreLink());
 
                     echo $form->render();
                     CoreHtml::getInstance()->addJavascript("validForgetPass('#form-login-forgetpass', '#form-login-forgetpass-login-input');");
@@ -570,5 +541,22 @@ class ModuleIndex extends ModuleModel
     public function registration()
     {
 
+    }
+
+    private function getMoreLink(): string
+    {
+        $currentView = $this->getModuleData()->getView();
+        $route = CoreRoute::getNewRoute()->setModule("connect");
+        $moreLink = "<ul>";
+
+        if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
+            $moreLink .= "<li><span class=\"text_bold\">" . $route->setView("registration")->getLink(LINK_TO_NEW_ACCOUNT) . "</span></li>";
+        }
+
+        $moreLink .= ($currentView !== "forgetlogin" ? "<li>" . $route->setView("forgetlogin")->getLink(LINK_TO_FORGET_LOGIN) . "</li>" : "")
+            . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
+            . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
+
+        return $moreLink;
     }
 }
