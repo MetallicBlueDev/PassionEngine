@@ -51,7 +51,7 @@ class CoreMain
     private function __construct()
     {
         $this->configs = new CoreMainData();
-        $this->currentRoute = new CoreRoute();
+        $this->currentRoute = CoreRoute::getNewRoute();
     }
 
     /**

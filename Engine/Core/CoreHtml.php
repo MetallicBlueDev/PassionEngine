@@ -345,43 +345,20 @@ class CoreHtml
     }
 
     /**
-     * Retourne un lien cliquable sans javascript vers un module.
-     *
-     * @param string $module Nom du module.
-     * @param string $page Nom de la page à afficher.
-     * @param string $view Nom de la méthode d'affichage.
-     * @param string $displayContent Données à afficher (texte simple ou code html).
-     * @return string
-     */
-    public static function &getLinkForModule(string $module,
-                                             string $page = "",
-                                             string $view = "",
-                                             string $displayContent = ""): string
-    {
-        return self::getLink(CoreLayout::REQUEST_MODULE . "=" . $module
-                . (!empty($page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $page : "")
-                . (!empty($view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $view : ""),
-                          $displayContent);
-    }
-
-    /**
      * Retourne un lien cliquable sans javascript.
      *
      * @param string $link Adresse URL de base.
      * @param string $displayContent Données à afficher (texte simple ou code html)
-     * @param bool $layout true ajouter le layout.
      * @param string $onclick Données à exécuter lors du clique
      * @param string $addons Code additionnel
      * @return string
      */
     public static function &getLink(string $link,
                                     string $displayContent = "",
-                                    bool $layout = false,
                                     string $onclick = "",
                                     string $addons = ""): string
     {
-        $htmlLink = "<a href=\"" . CoreUrlRewriting::getLink($link,
-                                                             $layout) . "\"";
+        $htmlLink = "<a href=\"" . CoreUrlRewriting::getLink($link) . "\"";
 
         // TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
         if (preg_match("/^[A-Za-z0-9.\s]+$/ie",
@@ -427,7 +404,6 @@ class CoreHtml
         self::getInstance()->addJavascriptFile("jquery.js");
         return self::getLink($linkWithoutJavascript,
                              $displayContent,
-                             false,
                              "validLink('" . $divId . "', '" . CoreUrlRewriting::getLink($linkForJavascript,
                                                                                          true) . "');return false;",
                                                                                          $addons);

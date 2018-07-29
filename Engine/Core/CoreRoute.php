@@ -58,6 +58,35 @@ class CoreRoute
     private $blockType = "";
 
     /**
+     * Action spécifique sur l'événement de clique d'un lien.
+     *
+     * @var string
+     */
+    private $onClickForLink = "";
+
+    /**
+     * Code HTML supplémentaire d'un lien.
+     *
+     * @var string
+     */
+    private $addonsForLink = "";
+
+    private function __construct()
+    {
+
+    }
+
+    /**
+     * Demande la création d'un nouveau routeur.
+     *
+     * @return CoreRoute
+     */
+    public static function getNewRoute()
+    {
+        return new CoreRoute();
+    }
+
+    /**
      * Retourne le mode de mise en page.
      *
      * @return string
@@ -167,6 +196,8 @@ class CoreRoute
         if (!$this->isModuleLayout()) {
             $this->layout = CoreLayout::MODULE;
         }
+        $this->setPage("");
+        $this->setView("");
         return $this;
     }
 
@@ -224,14 +255,113 @@ class CoreRoute
         return $this->setBlockId($blockData->getIdAsInt());
     }
 
+    /**
+     * Aller vers la page demandé.
+     *
+     * @param string $page
+     * @return CoreRoute
+     */
     public function setPage(string $page): CoreRoute
     {
+        $this->page = $page;
         return $this;
     }
 
+    /**
+     * Aller vers la méthode d'affichage demandé.
+     *
+     * @param string $view
+     * @return CoreRoute
+     */
     public function setView(string $view): CoreRoute
     {
+        $this->view = $view;
         return $this;
+    }
+
+    /**
+     * Action spécifique sur l'événement de clique d'un lien.
+     *
+     * @param string $value
+     * @return CoreRoute
+     */
+    public function setOnClickAction(string $value): CoreRoute
+    {
+        $this->onClickForLink = $value;
+        return $this;
+    }
+
+    /**
+     * Code HTML supplémentaire d'un lien.
+     *
+     * @param string $value
+     * @return CoreRoute
+     */
+    public function setAddonsAction(string $value): CoreRoute
+    {
+        $this->addonsForLink = $value;
+        return $this;
+    }
+
+    /**
+     * Retourne le lien complet HTML pour le chemin demandé.
+     *
+     * @param string $displayContent Données à afficher (texte simple ou code html).
+     * @return string
+     */
+    public function getLink(string $displayContent): string
+    {
+        $link = $this->getRawLink();
+        return CoreHtml::getLink($link,
+                                 $displayContent,
+                                 $this->onClickForLink,
+                                 $this->addonsForLink);
+    }
+
+    /**
+     * Retourne le lien brut pour le chemin demandé.
+     *
+     * @return string
+     */
+    public function getRawLink(): string
+    {
+        $link = "";
+
+        if ($this->isModuleLayout()) {
+            $link = $this->getModuleLink();
+        } else if ($this->isBlockLayout()) {
+            $link = $this->getBlockLink();
+        } else {
+            $link = $this->getModuleLink() . $this->getBlockLink();
+        }
+        return $link;
+    }
+
+    /**
+     * Retourne le lien pour un chemin vers un module.
+     *
+     * @return string
+     */
+    private function getModuleLink(): string
+    {
+        return CoreLayout::REQUEST_MODULE . "=" . $this->module
+            . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
+            . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
+    }
+
+    /**
+     * Retourne le lien pour un chemin vers un module.
+     *
+     * @return string
+     */
+    private function getBlockLink(): string
+    {
+        return (!empty($this->blockId) ?
+            CoreLayout::REQUEST_BLOCKID . "=" . $this->blockId :
+            (!empty($this->blockType) ?
+            CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->blockType : ""))
+            . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
+            . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
     }
 
     /**

@@ -6,6 +6,7 @@ use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreHtml;
+use TREngine\Engine\Core\CoreRoute;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
@@ -150,31 +151,24 @@ class BlockLogin extends BlockModel
 
     private function &getUserAvatar(CoreSessionData $sessionData): string
     {
-        $content = CoreHtml::getLinkForModule("connect",
-                                              "",
-                                              "account",
-                                              ExecImage::getTag($sessionData->getAvatar(),
-                                                                80))
+        $content = CoreRoute::getNewRoute()
+                ->setModule("connect")
+                ->setView("account")
+                ->getLink(ExecImage::getTag($sessionData->getAvatar(),
+                                            80))
             . "<br />";
         return $content;
     }
 
     private function &getUserIcons(): string
     {
-        $content = CoreHtml::getLinkForModule("connect",
-                                              "",
-                                              "logout",
-                                              BLOCKLOGIN_LOGOUT)
+
+        $route = CoreRoute::getNewRoute()->setModule("connect");
+        $content = $route->setView("logout")->getLink(BLOCKLOGIN_LOGOUT)
             . "<br />"
-            . CoreHtml::getLinkForModule("connect",
-                                         "",
-                                         "account",
-                                         BLOCKLOGIN_MY_ACCOUNT)
+            . $route->setView("account")->getLink(BLOCKLOGIN_MY_ACCOUNT)
             . "<br />"
-            . CoreHtml::getLinkForModule("receiptbox",
-                                         "",
-                                         "",
-                                         BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
+            . $route->setModule("receiptbox")->getLink(BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
             . "<br />";
         return $content;
     }

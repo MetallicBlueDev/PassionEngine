@@ -177,8 +177,7 @@ class LibMenu
                     case "A":
                         if (!$link) {
                             $text = CoreHtml::getLink($value,
-                                                      $text,
-                                                      false);
+                                                      $text);
                             $link = true;
                         }
                         break;
