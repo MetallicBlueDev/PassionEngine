@@ -1,9 +1,9 @@
 # Contributing to TR ENGINE
-Any contribution is welcome and valued. 
+Any contribution is welcome and valued.
 
 # Reporting bugs
-To report a bug, ensure you have a GitHub account. 
-Search the issues page to see if the bug has already been reported. 
+To report a bug, ensure you have a GitHub account.
+Search the issues page to see if the bug has already been reported.
 If not, create a new issue and write the steps to reproduce.
 
 # Translation

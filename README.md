@@ -1,9 +1,13 @@
-# TR Engine
+ # TR Engine
 *Sébastien Villemain (trancer)*
 
 **TR Engine** is an Easy PHP CMC.
 
 This project is executed with PHP 7.1.
+
+## Documentation
+See the [wiki](https://github.com/Tr4ncer/TREngine/wiki)
+* [Installation procedure](https://github.com/Tr4ncer/TREngine/wiki/Installation)
 
 ## Contributing
 See [CONTRIBUTING.md](https://github.com/Tr4ncer/TREngine/blob/master/CONTRIBUTING.md)
