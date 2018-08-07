@@ -99,8 +99,8 @@ class CoreHtml
 
         // Composition du nom du cookie de test
         $this->cookieTestName = ExecCrypt::cryptByStandard(
-                $prefix . "_" . $this->cookieTestName,
-                self::getSalt()
+                        $prefix . "_" . $this->cookieTestName,
+                        self::getSalt()
         );
 
         // Vérification du javascript du client
@@ -289,13 +289,13 @@ class CoreHtml
     {
         // TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-            . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
-            . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
-            . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-            . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-            . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
-            . $this->getMetaIncludeJavascript()
-            . $this->getMetaIncludeCss();
+                . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
+                . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
+                . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
+                . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
+                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
+                . $this->getMetaIncludeJavascript()
+                . $this->getMetaIncludeCss();
     }
 
     /**
@@ -385,44 +385,16 @@ class CoreHtml
     }
 
     /**
-     * Retourne un lien cliquable utilisable avec et sans javascript.
-     *
-     * @param string $linkWithoutJavascript
-     * @param string $linkForJavascript
-     * @param string $divId
-     * @param string $displayContent
-     * @param string $addons Code additionnel
-     * @return string
-     */
-    public static function &getLinkWithAjax(string $linkWithoutJavascript,
-                                            string $linkForJavascript,
-                                            string $divId,
-                                            string $displayContent,
-                                            string $addons = ""): string
-    {
-        // TODO A vérifier
-        self::getInstance()->addJavascriptFile("jquery.js");
-        return self::getLink($linkWithoutJavascript,
-                             $displayContent,
-                             "validLink('" . $divId . "', '" . CoreUrlRewriting::getLink($linkForJavascript,
-                                                                                         true) . "');return false;",
-                                                                                         $addons);
-    }
-
-    /**
      * Redirection ou chargement via javascript vers une page.
      *
-     * @param string $url La page demandée a chargé.
+     * @param string $url La page demandée à charger.
      * @param int $tps Temps avant le chargement de la page.
-     * @param string $method Block de destination si ce n'est pas toute la page.
+     * @param string $method Identifiant de la division de destination si ce n'est pas toute la page.
      */
     public function redirect(string $url = "",
                              int $tps = 0,
                              string $method = "window"): void
     {
-        // Configuration du temps
-        $tps = ((!is_numeric($tps)) ? 0 : $tps) * 1000;
-
         // Configuration de l'url
         if (empty($url) || $url === "index.php?") {
             $url = "index.php";
@@ -430,6 +402,9 @@ class CoreHtml
 
         // Redirection
         if ($this->javascriptEnabled() && ($tps > 0 || $method !== "windows")) {
+            // Configuration du temps
+            $tps = $tps * 1000;
+
             if (CoreRequest::getRequestMethod() === CoreRequestType::POST && $method !== "window") {
                 // Commande ajax pour la redirection
                 $this->addJavascriptCode("setTimeout(function(){ $('" . $method . "').load('" . $url . "'); }, $tps);");
@@ -550,7 +525,7 @@ class CoreHtml
                                                        500) : $keywords;
 
         return "<meta name=\"description\" content=\"" . ExecString::textDisplay($this->description) . "\" />\n"
-            . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
+                . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
     }
 
     /**
