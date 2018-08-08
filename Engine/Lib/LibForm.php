@@ -139,7 +139,7 @@ class LibForm
             }
 
             $this->inputData .= "<fieldset class=\"fieldset\">"
-                . $title . $description;
+                    . $title . $description;
         }
     }
 
@@ -206,7 +206,7 @@ class LibForm
     }
 
     /**
-     * Ajoute le viewer en champ masqué.
+     * Ajoute la méthode d'affichage en champ masqué.
      */
     public function addInputHiddenView(string $view): void
     {
@@ -403,9 +403,9 @@ class LibForm
 
         if (!$this->cached) {
             $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                . " <textarea id=\"" . $id . "\" name=\"" . $name . "\""
-                . " class=\"" . $class . "\" " . $options . " >"
-                . $defaultValue . "</textarea></p>";
+                    . " <textarea id=\"" . $id . "\" name=\"" . $name . "\""
+                    . " class=\"" . $class . "\" " . $options . " >"
+                    . $defaultValue . "</textarea></p>";
         }
     }
 
@@ -443,8 +443,8 @@ class LibForm
 
         if (!$this->cached) {
             $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                . " <select id=\"" . $id . "\" name=\"" . $name . "\""
-                . " class=\"" . $class . "\" " . $options . ">";
+                    . " <select id=\"" . $id . "\" name=\"" . $name . "\""
+                    . " class=\"" . $class . "\" " . $options . ">";
         }
     }
 
@@ -478,7 +478,7 @@ class LibForm
 
         if (!$this->cached) {
             $this->inputData .= " <option value=\"" . $value . "\" " . $options . ">"
-                . $description . "</option>";
+                    . $description . "</option>";
         }
     }
 
@@ -570,8 +570,8 @@ class LibForm
                                                      $this->cacheVars);
         } else { // Préparation puis mise en cache
             $data = "<form action=\"" . $url . "\" method=\"post\" id=\"form-" . $name . "\" name=\"" . $name . "\""
-                . " class=\"" . $class . "\"><fieldset class=\"fieldset\">" . $title . $description . $this->inputData
-                . (($this->doFieldset) ? "</fieldset>" : "") . "</form>";
+                    . " class=\"" . $class . "\"><fieldset class=\"fieldset\">" . $title . $description . $this->inputData
+                    . (($this->doFieldset) ? "</fieldset>" : "") . "</form>";
 
             // Enregistrement dans le cache
             $data = $coreCache->serializeData($data);
@@ -717,9 +717,9 @@ class LibForm
 
         if (!$this->cached) {
             $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                . " <input id=\"" . $id . "\" name=\"" . $name . "\" type=\"" . $type . "\""
-                . " class=\"" . $class . "\" value=\"" . $defaultValue . "\" " . $options . " />"
-                . "</p>";
+                    . " <input id=\"" . $id . "\" name=\"" . $name . "\" type=\"" . $type . "\""
+                    . " class=\"" . $class . "\" value=\"" . $defaultValue . "\" " . $options . " />"
+                    . "</p>";
         }
     }
 

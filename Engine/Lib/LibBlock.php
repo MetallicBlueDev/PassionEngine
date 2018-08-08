@@ -345,12 +345,12 @@ class LibBlock
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id",
-                "side",
-                "position",
-                "title",
-                "type",
-                "rank",
-                "all_modules"),
+                    "side",
+                    "position",
+                    "title",
+                    "type",
+                    "rank",
+                    "all_modules"),
                          array("block_id =  '" . $blockId . "'"));
 
         if ($coreSql->affectedRows() > 0) {
@@ -402,15 +402,15 @@ class LibBlock
 
             $coreSql->select(CoreTable::BLOCKS,
                              array(
-                    "block_id",
-                    "side",
-                    "type",
-                    "rank"
-                ),
+                        "block_id",
+                        "side",
+                        "type",
+                        "rank"
+                    ),
                              array(),
                              array(
-                    "side",
-                    "position"
+                        "side",
+                        "position"
             ));
 
             if ($coreSql->affectedRows() > 0) {
@@ -448,28 +448,26 @@ class LibBlock
      */
     private function fireBuildBlockData(LibBlockData &$blockData): void
     {
-        $blockClassName = CoreLoader::getFullQualifiedClassName($blockData->getClassName(),
-                                                                $blockData->getFolderName());
-        $loaded = CoreLoader::classLoader($blockClassName);
+        $blockFullClassName = $blockData->getFullQualifiedClassName();
+        $loaded = CoreLoader::classLoader($blockFullClassName);
 
-        // Vérification du block
-        if ($loaded && CoreLoader::isCallable($blockClassName,
-                                              "display")) {
-            CoreTranslate::getInstance()->translate($blockData->getFolderName());
+        if ($loaded) {
+            if ($blockData->isCallableView()) {
+                CoreTranslate::getInstance()->translate($blockData->getFolderName());
 
-            try {
-                /**
-                 * @var BlockModel
-                 */
-                $blockClass = new $blockClassName();
-                $blockClass->setBlockData($blockData);
+                try {
+                    $blockClass = $blockData->getNewEntityModel();
 
-                // Capture des données d'affichage
-                ob_start();
-                $blockClass->display();
-                $blockData->setTemporyOutputBuffer(ob_get_clean());
-            } catch (Throwable $ex) {
-                CoreSecure::getInstance()->catchException($ex);
+                    // Capture des données d'affichage
+                    ob_start();
+                    $blockClass->display();
+//                    echo $blockClass->{$blockClass->getView()}();
+                    $blockData->setTemporyOutputBuffer(ob_get_clean());
+                } catch (Throwable $ex) {
+                    CoreSecure::getInstance()->catchException($ex);
+                }
+            } else {
+                CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockData->getType() . ")");
             }
         } else {
             CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockData->getType() . ")");

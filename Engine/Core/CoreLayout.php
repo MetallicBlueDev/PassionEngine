@@ -100,7 +100,7 @@ class CoreLayout
     public const REQUEST_BLOCKID = "blockId";
 
     /**
-     * Requête permettant d'obtenir le nom du viewer.
+     * Requête permettant d'obtenir la méthode d'affichage.
      * view=?
      *
      * @var string

@@ -7,9 +7,10 @@ use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreCacheSection;
+use TREngine\Engine\Lib\LibEntityModel;
 use TREngine\Engine\Lib\LibModuleData;
+use TREngine\Engine\Fail\FailModule;
 
 /**
  * Module de base, hérité par tous les autres modules.
@@ -17,18 +18,11 @@ use TREngine\Engine\Lib\LibModuleData;
  *
  * @author Sébastien Villemain
  */
-abstract class ModuleModel
+abstract class ModuleModel extends LibEntityModel
 {
 
     /**
-     * Informations sur le module.
-     *
-     * @var LibModuleData
-     */
-    private $data = null;
-
-    /**
-     * Fonction d'affichage par défaut.
+     * {@inheritDoc}
      */
     public function display(): void
     {
@@ -36,40 +30,40 @@ abstract class ModuleModel
     }
 
     /**
-     * Configuration du module courant.
+     * {@inheritDoc}
      */
     public function setting(): void
     {
-        // TODO mettre un forumlaire basique pour changer quelques configurations
+        throw new FailModule("Invalid setting method");
     }
 
     /**
-     * Installation du module courant.
+     * {@inheritDoc}
      */
     public function install(): void
     {
         $coreSql = CoreSql::getInstance();
         $coreSql->insert(
-            CoreTable::MODULES,
-            array("name", "rank"),
-            array($this->getModuleData()->getName(), 0)
+                CoreTable::MODULES,
+                array("name", "rank"),
+                array($this->getModuleData()->getName(), 0)
         );
         $moduleId = $coreSql->insertId();
         CoreSql::getInstance()->insert(
-            CoreTable::MODULES_CONFIGS,
-            array("module_id", "name", "value"),
-            array($moduleId, "key", "value")
+                CoreTable::MODULES_CONFIGS,
+                array("module_id", "name", "value"),
+                array($moduleId, "key", "value")
         );
     }
 
     /**
-     * Désinstallation du module courant.
+     * {@inheritDoc}
      */
     public function uninstall(): void
     {
         CoreSql::getInstance()->delete(
-            CoreTable::MODULES,
-            array("module_id = '" . $this->getModuleData()->getId() . "'")
+                CoreTable::MODULES,
+                array("module_id = '" . $this->getModuleData()->getId() . "'")
         );
 
         CoreCache::getInstance(CoreCacheSection::MODULES)->removeCache($this->getModuleData()->getName() . ".php");
@@ -83,7 +77,7 @@ abstract class ModuleModel
      */
     public function setModuleData(LibModuleData &$data): void
     {
-        $this->data = $data;
+        $this->setEntityData($data);
     }
 
     /**
@@ -93,20 +87,10 @@ abstract class ModuleModel
      */
     public function &getModuleData(): LibModuleData
     {
-        if ($this->data === null) {
+        if (!$this->hasEntityData()) {
             $empty = array();
-            $this->data = new LibModuleData($empty);
+            $this->setEntityData(new LibModuleData($empty));
         }
-        return $this->data;
-    }
-
-    /**
-     * Retourne l'accès spécifique de ce module.
-     *
-     * @return CoreAccessType
-     */
-    public function &getAccessType(): CoreAccessType
-    {
-        return CoreAccessType::getTypeFromToken($this->getModuleData());
+        return $this->getEntityData();
     }
 }

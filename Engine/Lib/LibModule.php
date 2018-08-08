@@ -227,32 +227,25 @@ class LibModule
      */
     private function fireBuildModuleData(LibModuleData &$moduleData): void
     {
-        $moduleClassName = CoreLoader::getFullQualifiedClassName($moduleData->getClassName(),
-                                                                 $moduleData->getFolderName());
-        $loaded = CoreLoader::classLoader($moduleClassName);
+        $moduleFullClassName = $moduleData->getFullQualifiedClassName();
+        $loaded = CoreLoader::classLoader($moduleFullClassName);
 
-        // Vérification de la sous page
-        $moduleData->setView($this->getValidViewPage($moduleData,
-                                                     array($moduleClassName,
-                    ($moduleData->installed()) ? $moduleData->getView() : "install")));
+        if ($loaded) {
+            if ($moduleData->isCallableView()) {
+                $this->updateCount($moduleData->getId());
 
-        // Affichage du module si possible
-        if ($loaded && !empty($moduleData->getView())) {
-            $this->updateCount($moduleData->getId());
+                try {
+                    $moduleClass = $moduleData->getNewEntityModel();
 
-            try {
-                /**
-                 * @var ModuleModel
-                 */
-                $moduleClass = new $moduleClassName();
-                $moduleClass->setModuleData($moduleData);
-
-                // Capture des données d'affichage
-                ob_start();
-                echo $moduleClass->{$moduleData->getView()}();
-                $moduleData->setTemporyOutputBuffer(ob_get_clean());
-            } catch (Throwable $ex) {
-                CoreSecure::getInstance()->catchException($ex);
+                    // Capture des données d'affichage
+                    ob_start();
+                    echo $moduleClass->{$moduleData->getView()}();
+                    $moduleData->setTemporyOutputBuffer(ob_get_clean());
+                } catch (Throwable $ex) {
+                    CoreSecure::getInstance()->catchException($ex);
+                }
+            } else {
+                CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
             }
         } else {
             CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
@@ -294,8 +287,8 @@ class LibModule
             if ($pageInfo[1] !== $default) {
                 $rslt = $this->getValidViewPage($moduleData,
                                                 array(
-                    $pageInfo[0],
-                    $default
+                            $pageInfo[0],
+                            $default
                 ));
             }
         } else {
@@ -316,10 +309,10 @@ class LibModule
         $coreSql->addQuotedValue("count + 1");
         $coreSql->update(CoreTable::MODULES,
                          array(
-                "count" => "count + 1"
-            ),
+                    "count" => "count + 1"
+                ),
                          array(
-                "module_id = '" . $moduleId . "'"
+                    "module_id = '" . $moduleId . "'"
         ));
     }
 }

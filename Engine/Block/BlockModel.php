@@ -3,8 +3,9 @@
 namespace TREngine\Engine\Block;
 
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Lib\LibBlockData;
+use TREngine\Engine\Lib\LibEntityModel;
+use TREngine\Engine\Fail\FailBlock;
 
 /**
  * Block de base, hérité par tous les autres blocks.
@@ -12,18 +13,11 @@ use TREngine\Engine\Lib\LibBlockData;
  *
  * @author Sébastien Villemain
  */
-abstract class BlockModel
+abstract class BlockModel extends LibEntityModel
 {
 
     /**
-     * Informations sur le block.
-     *
-     * @var LibBlockData
-     */
-    private $data = null;
-
-    /**
-     * Affichage par défaut.
+     * {@inheritDoc}
      */
     public function display(): void
     {
@@ -31,19 +25,27 @@ abstract class BlockModel
     }
 
     /**
-     * Procédure d'installation du block.
+     * {@inheritDoc}
      */
-    public function install(): void
+    public function setting(): void
     {
-
+        throw new FailBlock("Invalid setting method");
     }
 
     /**
-     * Procédure de désinstallation du block.
+     * {@inheritDoc}
+     */
+    public function install(): void
+    {
+        throw new FailBlock("Invalid install method");
+    }
+
+    /**
+     * {@inheritDoc}
      */
     public function uninstall(): void
     {
-
+        throw new FailBlock("Invalid uninstall method");
     }
 
     /**
@@ -53,7 +55,7 @@ abstract class BlockModel
      */
     public function setBlockData(LibBlockData &$data): void
     {
-        $this->data = $data;
+        $this->setEntityData($data);
     }
 
     /**
@@ -63,20 +65,10 @@ abstract class BlockModel
      */
     public function &getBlockData(): LibBlockData
     {
-        if ($this->data === null) {
+        if (!$this->hasEntityData()) {
             $empty = array();
-            $this->data = new LibBlockData($empty);
+            $this->setEntityData(new LibBlockData($empty));
         }
-        return $this->data;
-    }
-
-    /**
-     * Retourne l'accès spécifique de ce module.
-     *
-     * @return CoreAccessType
-     */
-    public function &getAccessType(): CoreAccessType
-    {
-        return CoreAccessType::getTypeFromToken($this->getBlockData());
+        return $this->getEntityData();
     }
 }
