@@ -239,7 +239,7 @@ class LibModule
 
                     // Capture des données d'affichage
                     ob_start();
-                    echo $moduleClass->{$moduleData->getView()}();
+                    echo $moduleClass->display($moduleData->getView());
                     $moduleData->setTemporyOutputBuffer(ob_get_clean());
                 } catch (Throwable $ex) {
                     CoreSecure::getInstance()->catchException($ex);
@@ -250,51 +250,6 @@ class LibModule
         } else {
             CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
         }
-    }
-
-    /**
-     * Retourne un view valide sinon une chaine vide.
-     *
-     * @param LibModuleData $moduleData
-     * @param array $pageInfo
-     * @return string
-     */
-    private function &getValidViewPage(LibModuleData &$moduleData,
-                                       array $pageInfo): string
-    {
-        $invalid = false;
-
-        if (CoreLoader::isCallable($pageInfo[0],
-                                   $pageInfo[1])) {
-            $sessionData = CoreSession::getInstance()->getSessionData();
-
-            if ($pageInfo[1] === "install" && ($moduleData->installed() || !$sessionData->hasAdminRank())) {
-                $invalid = true;
-            } else if ($pageInfo[1] === "uninstall" && (!$moduleData->installed() || !$sessionData->hasAdminRank())) {
-                $invalid = true;
-            } else if ($pageInfo[1] === "setting" && (!$moduleData->installed() || !$sessionData->hasAdminRank())) {
-                $invalid = true;
-            }
-        } else {
-            $invalid = true;
-        }
-
-        $rslt = "";
-
-        if ($invalid) {
-            $default = CoreLayout::DEFAULT_VIEW;
-
-            if ($pageInfo[1] !== $default) {
-                $rslt = $this->getValidViewPage($moduleData,
-                                                array(
-                            $pageInfo[0],
-                            $default
-                ));
-            }
-        } else {
-            $rslt = $pageInfo[1];
-        }
-        return $rslt;
     }
 
     /**

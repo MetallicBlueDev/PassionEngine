@@ -7,7 +7,7 @@ use TREngine\Engine\Module\ModuleModel;
 class ModuleIndex extends ModuleModel
 {
 
-    public function display(): void
+    public function display(string $view): void
     {
         ?>
         <div class="title">
@@ -20,5 +20,10 @@ class ModuleIndex extends ModuleModel
         </div>
 
         <?php
+    }
+
+    public function getViewList(): array
+    {
+        return array();
     }
 }

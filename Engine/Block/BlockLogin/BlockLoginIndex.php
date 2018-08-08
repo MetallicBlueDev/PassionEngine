@@ -50,11 +50,11 @@ class BlockLoginIndex extends BlockModel
      */
     private $displayIcons = false;
 
-    public function display(): void
+    public function display(string $view): void
     {
         $this->configure();
         $currentRoute = CoreMain::getInstance()->getRoute();
-        $contentOnly = $currentRoute->isBlockLayout() && !empty($currentRoute->getView());
+        $contentOnly = $currentRoute->isBlockLayout() && !empty($view);
 
         if ($contentOnly) {
             echo $this->renderContent();
@@ -70,6 +70,11 @@ class BlockLoginIndex extends BlockModel
         $coreCache->removeCache("login-forgetloginblock.php");
         $coreCache->removeCache("login-forgetpassblock.php");
         $coreCache->removeCache("login-registrationblock.php");
+    }
+
+    public function getViewList(): array
+    {
+        return array(self::LOCAL_VIEW_REGISTRATION, self::LOCAL_VIEW_LOGON, self::LOCAL_VIEW_FORGET_LOGIN, self::LOCAL_VIEW_FORGET_PASS);
     }
 
     private function configure(): void

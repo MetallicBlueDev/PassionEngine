@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreAccessType;
+use TREngine\Engine\Exec\ExecUtils;
 
 /**
  * Entité de bibliothèque de base, hérité par toutes les autres entités.
@@ -22,8 +23,10 @@ abstract class LibEntityModel
 
     /**
      * Affichage par défaut de l'entité.
+     *
+     * @param string $view Nom de la méthode d'affichage.
      */
-    abstract public function display(): void;
+    abstract public function display(string $view): void;
 
     /**
      * Procédure de configuration de l'entité.
@@ -41,13 +44,29 @@ abstract class LibEntityModel
     abstract public function uninstall(): void;
 
     /**
-     * Retourne l'accès spécifique de ce module.
+     * Retourne la liste des méthodes d'affichages possbiles.
+     */
+    abstract public function getViewList(): array;
+
+    /**
+     * Retourne l'accès spécifique de cette entité.
      *
      * @return CoreAccessType
      */
     public function &getAccessType(): CoreAccessType
     {
         return CoreAccessType::getTypeFromToken($this->getEntityData());
+    }
+
+    /**
+     * Détermine si la méthode d'affichage est disponible.
+     *
+     * @return CoreAccessType
+     */
+    public function &isInViewList(string $view): bool
+    {
+        $inArray = ExecUtils::inArray($view, $this->getViewList());
+        return $inArray;
     }
 
     /**
@@ -77,6 +96,7 @@ abstract class LibEntityModel
      */
     protected function hasEntityData(): bool
     {
-        return $this->entityData !== null;
+        $hasData = $this->entityData !== null;
+        return $hasData;
     }
 }

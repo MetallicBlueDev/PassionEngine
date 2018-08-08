@@ -19,8 +19,9 @@ abstract class BlockModel extends LibEntityModel
     /**
      * {@inheritDoc}
      */
-    public function display(): void
+    public function display(string $view): void
     {
+        unset($view);
         CoreLogger::addError(ERROR_BLOCK_IMPLEMENT . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
     }
 

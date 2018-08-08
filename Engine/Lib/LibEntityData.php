@@ -25,11 +25,11 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     private $page = CoreLayout::DEFAULT_PAGE;
 
     /**
-     * La sous page.
+     * La méthode d'affichage.
      *
      * @var string
      */
-    private $view = CoreLayout::DEFAULT_VIEW;
+    private $view = "";
 
     /**
      * Les données compilées.
@@ -171,7 +171,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      */
     public function isCallableView(): bool
     {
-        return !empty($this->getView()) && $this->isCallable($this->getView());
+        return $this->isCallable(CoreLayout::DEFAULT_VIEW_DISPLAY);
     }
 
     /**
@@ -186,15 +186,15 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
 
         if (CoreLoader::isCallable($this->getFullQualifiedClassName(),
                                    $methodName)) {
-            if ($methodName === "install" || $methodName === "uninstall" || $methodName === "setting") {
+            if ($methodName === CoreLayout::DEFAULT_VIEW_INSTALL || $methodName === CoreLayout::DEFAULT_VIEW_UNINSTALL || $methodName === CoreLayout::DEFAULT_VIEW_SETTING) {
                 $sessionData = CoreSession::getInstance()->getSessionData();
 
                 if ($sessionData->hasAdminRank()) {
-                    if ($methodName === "install" && !$this->installed()) {
+                    if ($methodName === CoreLayout::DEFAULT_VIEW_INSTALL && !$this->installed()) {
                         $valid = true;
-                    } else if ($methodName === "uninstall" && $this->installed()) {
+                    } else if ($methodName === CoreLayout::DEFAULT_VIEW_UNINSTALL && $this->installed()) {
                         $valid = true;
-                    } else if ($methodName === "setting" && $this->installed()) {
+                    } else if ($methodName === CoreLayout::DEFAULT_VIEW_SETTING && $this->installed()) {
                         $valid = true;
                     }
                 }

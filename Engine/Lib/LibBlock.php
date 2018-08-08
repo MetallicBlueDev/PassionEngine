@@ -460,8 +460,7 @@ class LibBlock
 
                     // Capture des données d'affichage
                     ob_start();
-                    $blockClass->display();
-//                    echo $blockClass->{$blockClass->getView()}();
+                    $blockClass->display($blockData->getView());
                     $blockData->setTemporyOutputBuffer(ob_get_clean());
                 } catch (Throwable $ex) {
                     CoreSecure::getInstance()->catchException($ex);

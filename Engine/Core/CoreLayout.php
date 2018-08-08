@@ -28,12 +28,32 @@ class CoreLayout
     public const DEFAULT_PAGE = "index";
 
     /**
-     * Nom de la méthode d'affichage par défaut.
-     * view=display
+     * Nom de la méthode d'affichage principal.
      *
      * @var string
      */
-    public const DEFAULT_VIEW = "display";
+    public const DEFAULT_VIEW_DISPLAY = "display";
+
+    /**
+     * Nom de la méthode d'installation.
+     *
+     * @var string
+     */
+    public const DEFAULT_VIEW_INSTALL = "install";
+
+    /**
+     * Nom de la méthode de désinstallation.
+     *
+     * @var string
+     */
+    public const DEFAULT_VIEW_UNINSTALL = "uninstall";
+
+    /**
+     * Nom de la méthode de configuration.
+     *
+     * @var string
+     */
+    public const DEFAULT_VIEW_SETTING = "setting";
 
     /**
      * Affichage uniquement du module (si javascript activé).

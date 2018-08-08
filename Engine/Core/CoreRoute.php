@@ -567,7 +567,7 @@ class CoreRoute
     {
         $this->module = CoreMain::getInstance()->getConfigs()->getDefaultModule();
         $this->page = CoreLayout::DEFAULT_PAGE;
-        $this->view = CoreLayout::DEFAULT_VIEW;
+        $this->view = "";
 
         $moduleData = $this->getRequestedModuleData();
         $moduleData->setPage($this->page);
@@ -618,11 +618,6 @@ class CoreRoute
     private function requestedOrDefaultView(): void
     {
         $view = CoreRequest::getWord(CoreLayout::REQUEST_VIEW);
-
-        if (empty($view)) {
-            $view = CoreLayout::DEFAULT_VIEW;
-        }
-
         $this->view = $view;
     }
 

@@ -24,8 +24,9 @@ abstract class ModuleModel extends LibEntityModel
     /**
      * {@inheritDoc}
      */
-    public function display(): void
+    public function display(string $view): void
     {
+        unset($view);
         CoreLogger::addError(ERROR_MODULE_IMPLEMENT . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
     }
 
