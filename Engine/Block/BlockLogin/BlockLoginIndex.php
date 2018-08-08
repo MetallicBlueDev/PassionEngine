@@ -8,8 +8,6 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreRoute;
 use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSessionData;
 use TREngine\Engine\Core\CoreLayout;
@@ -23,7 +21,7 @@ use TREngine\Engine\Lib\LibMakeStyle;
  *
  * @author Sébastien Villemain
  */
-class BlockLogin extends BlockModel
+class BlockLoginIndex extends BlockModel
 {
 
     private const LOCAL_VIEW_REGISTRATION = "registration";
@@ -98,11 +96,11 @@ class BlockLogin extends BlockModel
         $libMakeStyle = new LibMakeStyle();
         $libMakeStyle->assignString("blockTitle",
                                     $this->getBlockData()
-                ->getTitle());
+                        ->getTitle());
         $libMakeStyle->assignString("blockContent",
                                     $this->renderContent());
         $libMakeStyle->display($this->getBlockData()
-                ->getTemplateName());
+                        ->getTemplateName());
     }
 
     private function &renderContent(): string
@@ -145,11 +143,11 @@ class BlockLogin extends BlockModel
     private function &getUserAvatar(CoreSessionData $sessionData): string
     {
         $content = CoreRoute::getNewRoute()
-                ->setModule("connect")
-                ->setView("account")
-                ->getLink(ExecImage::getTag($sessionData->getAvatar(),
-                                            80))
-            . "<br />";
+                        ->setModule("connect")
+                        ->setView("account")
+                        ->getLink(ExecImage::getTag($sessionData->getAvatar(),
+                                                    80))
+                . "<br />";
         return $content;
     }
 
@@ -158,11 +156,11 @@ class BlockLogin extends BlockModel
 
         $route = CoreRoute::getNewRoute()->setModule("connect");
         $content = $route->setView("logout")->getLink(BLOCKLOGIN_LOGOUT)
-            . "<br />"
-            . $route->setView("account")->getLink(BLOCKLOGIN_MY_ACCOUNT)
-            . "<br />"
-            . $route->setModule("receiptbox")->getLink(BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
-            . "<br />";
+                . "<br />"
+                . $route->setView("account")->getLink(BLOCKLOGIN_MY_ACCOUNT)
+                . "<br />"
+                . $route->setModule("receiptbox")->getLink(BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
+                . "<br />";
         return $content;
     }
 
@@ -170,8 +168,8 @@ class BlockLogin extends BlockModel
     {
         $redirectionLinks = $this->getRedirectionLinks();
         $content = "<div id=\"login-logonblock\">"
-            . $this->getLocalViewForm($redirectionLinks)
-            . "</div>";
+                . $this->getLocalViewForm($redirectionLinks)
+                . "</div>";
         return $content;
     }
 
@@ -179,23 +177,23 @@ class BlockLogin extends BlockModel
     {
         $moreLink = "<ul>";
         $route = CoreRoute::getNewRoute()
-            ->setModule("connect")->setJsMode(true,
-                                              "#login-logonblock")
-            ->setBlockData($this->getBlockData());
+                ->setModule("connect")->setJsMode(true,
+                                                  "#login-logonblock")
+                ->setBlockData($this->getBlockData());
 
         if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
             $moreLink .= "<li><span class=\"text_bold\">"
-                . $route->setView("registration")->getLink(BLOCKLOGIN_GET_ACCOUNT)
-                . "</span></li>";
+                    . $route->setView("registration")->getLink(BLOCKLOGIN_GET_ACCOUNT)
+                    . "</span></li>";
         }
 
         $moreLink .= "<li>"
-            . $route->setView("logon")->getLink(BLOCKLOGIN_GET_LOGON)
-            . "</li>" . "<li>"
-            . $route->setView("forgetlogin")->getLink(BLOCKLOGIN_GET_FORGET_LOGIN)
-            . "</li>" . "<li>"
-            . $route->setView("forgetpass")->getLink(BLOCKLOGIN_GET_FORGET_PASS)
-            . "</li></ul>";
+                . $route->setView("logon")->getLink(BLOCKLOGIN_GET_LOGON)
+                . "</li>" . "<li>"
+                . $route->setView("forgetlogin")->getLink(BLOCKLOGIN_GET_FORGET_LOGIN)
+                . "</li>" . "<li>"
+                . $route->setView("forgetpass")->getLink(BLOCKLOGIN_GET_FORGET_PASS)
+                . "</li></ul>";
         return $moreLink;
     }
 
@@ -203,7 +201,7 @@ class BlockLogin extends BlockModel
     {
         $content = "";
 
-        switch (CoreMain::getInstance()->getRoute()->getView()) {
+        switch ($this->getBlockData()->getView()) {
             case self::LOCAL_VIEW_LOGON:
                 $content .= $this->getLogonForm($redirectionLinks);
                 break;

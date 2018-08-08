@@ -438,8 +438,8 @@ class CoreRoute
     private function getModuleLink(): string
     {
         return CoreLayout::REQUEST_MODULE . "=" . $this->module
-            . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
-            . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
+                . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
+                . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
     }
 
     /**
@@ -450,11 +450,11 @@ class CoreRoute
     private function getBlockLink(): string
     {
         return (!empty($this->blockId) ?
-            CoreLayout::REQUEST_BLOCKID . "=" . $this->blockId :
-            (!empty($this->blockType) ?
-            CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->blockType : ""))
-            . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
-            . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
+                CoreLayout::REQUEST_BLOCKID . "=" . $this->blockId :
+                (!empty($this->blockType) ?
+                CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->blockType : ""))
+                . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
+                . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
     }
 
     /**
@@ -526,6 +526,9 @@ class CoreRoute
         if ($blockData !== null) {
             $this->requestedOrDefaultPage();
             $this->requestedOrDefaultView();
+
+            $blockData->setPage($this->page);
+            $blockData->setView($this->view);
         }
         return $blockData;
     }

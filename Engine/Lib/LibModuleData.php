@@ -16,20 +16,6 @@ class LibModuleData extends LibEntityData
 {
 
     /**
-     * La page sélectionnée.
-     *
-     * @var string
-     */
-    private $page = null;
-
-    /**
-     * La sous page.
-     *
-     * @var string
-     */
-    private $view = null;
-
-    /**
      * Nouvelle information de module.
      *
      * @param array $data
@@ -149,46 +135,6 @@ class LibModuleData extends LibEntityData
     public function &getRank(): int
     {
         return $this->getInt("rank");
-    }
-
-    /**
-     * Retourne la page sélectionnée.
-     *
-     * @return string
-     */
-    public function &getPage(): string
-    {
-        return $this->page;
-    }
-
-    /**
-     * Affecte la page sélectionnée.
-     *
-     * @param string $page
-     */
-    public function setPage(string $page): void
-    {
-        $this->page = ucfirst($page);
-    }
-
-    /**
-     * Retourne la sous-page sélectionnée.
-     *
-     * @return string
-     */
-    public function &getView(): string
-    {
-        return $this->view;
-    }
-
-    /**
-     * Affecte la sous-page sélectionnée.
-     *
-     * @param string $view
-     */
-    public function setView(string $view): void
-    {
-        $this->view = $view;
     }
 
     /**

@@ -101,7 +101,7 @@ class LibBlockData extends LibEntityData
      */
     public function getClassName(): string
     {
-        return CoreLoader::BLOCK_FILE . $this->getType();
+        return CoreLoader::BLOCK_FILE . $this->getType() . $this->getPage();
     }
 
     /**
