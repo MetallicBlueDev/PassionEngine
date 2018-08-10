@@ -231,7 +231,7 @@ class LibModule
         $loaded = CoreLoader::classLoader($moduleFullClassName);
 
         if ($loaded) {
-            if ($moduleData->isCallableView()) {
+            if ($moduleData->isCallableViewMethod()) {
                 $this->updateCount($moduleData->getId());
 
                 try {

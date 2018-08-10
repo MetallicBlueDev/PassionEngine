@@ -14,7 +14,7 @@ use TREngine\Engine\Core\CoreSecure;
  *
  * @author Sébastien Villemain
  */
-class BlockImageGenerator extends BlockModel
+class BlockIndex extends BlockModel
 {
 
     public function display()

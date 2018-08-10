@@ -25,7 +25,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     private $page = CoreLayout::DEFAULT_PAGE;
 
     /**
-     * La méthode d'affichage.
+     * Le paramètre d'affichage.
      *
      * @var string
      */
@@ -132,7 +132,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Retourne la méthode d'affichage sélectionnée.
+     * Retourne le paramètre d'affichage sélectionné.
      *
      * @return string
      */
@@ -142,7 +142,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Affecte la méthode d'affichage sélectionnée.
+     * Affecte le paramètre d'affichage sélectionné.
      *
      * @param string $view
      */
@@ -169,7 +169,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      *
      * @return bool
      */
-    public function isCallableView(): bool
+    public function isCallableViewMethod(): bool
     {
         return $this->isCallable(CoreLayout::DEFAULT_VIEW_DISPLAY);
     }

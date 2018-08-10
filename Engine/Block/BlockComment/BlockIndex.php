@@ -10,7 +10,7 @@ use TREngine\Engine\Exec\ExecUtils;
  *
  * @author Sébastien Villemain
  */
-class BlockComment extends BlockModel
+class BlockIndex extends BlockModel
 {
 
     private $displayOnModule = array();

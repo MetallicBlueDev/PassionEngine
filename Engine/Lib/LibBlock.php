@@ -452,16 +452,18 @@ class LibBlock
         $loaded = CoreLoader::classLoader($blockFullClassName);
 
         if ($loaded) {
-            if ($blockData->isCallableView()) {
+            if ($blockData->isCallableViewMethod()) {
                 CoreTranslate::getInstance()->translate($blockData->getFolderName());
 
                 try {
                     $blockClass = $blockData->getNewEntityModel();
 
-                    // Capture des données d'affichage
-                    ob_start();
-                    $blockClass->display($blockData->getView());
-                    $blockData->setTemporyOutputBuffer(ob_get_clean());
+                    if ($blockClass->isInViewList($blockData->getView())) {
+                        // Capture des données d'affichage
+                        ob_start();
+                        $blockClass->display($blockData->getView());
+                        $blockData->setTemporyOutputBuffer(ob_get_clean());
+                    }
                 } catch (Throwable $ex) {
                     CoreSecure::getInstance()->catchException($ex);
                 }

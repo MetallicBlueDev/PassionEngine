@@ -21,7 +21,7 @@ use TREngine\Engine\Lib\LibMakeStyle;
  *
  * @author Sébastien Villemain
  */
-class BlockLoginIndex extends BlockModel
+class BlockIndex extends BlockModel
 {
 
     private const LOCAL_VIEW_REGISTRATION = "registration";

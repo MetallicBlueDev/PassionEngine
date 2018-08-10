@@ -24,7 +24,7 @@ abstract class LibEntityModel
     /**
      * Affichage par défaut de l'entité.
      *
-     * @param string $view Nom de la méthode d'affichage.
+     * @param string $view Paramètre d'affichage.
      */
     abstract public function display(string $view): void;
 
@@ -59,13 +59,13 @@ abstract class LibEntityModel
     }
 
     /**
-     * Détermine si la méthode d'affichage est disponible.
+     * Détermine si le paramètre d'affichage est disponible.
      *
      * @return CoreAccessType
      */
     public function &isInViewList(string $view): bool
     {
-        $inArray = ExecUtils::inArray($view, $this->getViewList());
+        $inArray = empty($view) || ExecUtils::inArray($view, $this->getViewList());
         return $inArray;
     }
 

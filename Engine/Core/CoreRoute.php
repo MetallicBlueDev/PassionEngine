@@ -38,7 +38,7 @@ class CoreRoute
     private $page = "";
 
     /**
-     * Nom de la méthode d'affichage.
+     * Nom du paramètre d'affichage.
      *
      * @var string
      */
@@ -124,7 +124,7 @@ class CoreRoute
     }
 
     /**
-     * Retourne la méthode d'affichage.
+     * Retourne le paramètre d'affichage.
      *
      * @return string
      */
@@ -305,7 +305,7 @@ class CoreRoute
     }
 
     /**
-     * Aller vers la méthode d'affichage demandé.
+     * Aller vers le paramètre d'affichage demandé.
      *
      * @param string $view
      * @return CoreRoute
@@ -443,7 +443,7 @@ class CoreRoute
     }
 
     /**
-     * Retourne le lien pour un chemin vers un module.
+     * Retourne le lien pour un chemin vers un block.
      *
      * @return string
      */
@@ -613,7 +613,7 @@ class CoreRoute
     }
 
     /**
-     * Assignation de la méthode d'affichage.
+     * Assignation du paramètre d'affichage.
      */
     private function requestedOrDefaultView(): void
     {

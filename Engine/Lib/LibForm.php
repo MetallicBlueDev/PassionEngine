@@ -198,6 +198,8 @@ class LibForm
 
     /**
      * Ajoute le nom du module en champ masqué.
+     *
+     * @param string $module
      */
     public function addInputHiddenModule(string $module): void
     {
@@ -206,7 +208,9 @@ class LibForm
     }
 
     /**
-     * Ajoute la méthode d'affichage en champ masqué.
+     * Ajoute du paramètre d'affichage en champ masqué.
+     *
+     * @param string $view
      */
     public function addInputHiddenView(string $view): void
     {
@@ -216,6 +220,8 @@ class LibForm
 
     /**
      * Ajoute le type d'affichage en champ masqué.
+     *
+     * @param string $layout
      */
     public function addInputHiddenLayout(string $layout): void
     {

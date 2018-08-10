@@ -14,7 +14,7 @@ use TREngine\Engine\Lib\LibMenu;
  *
  * @author Sébastien Villemain
  */
-class BlockMenu extends BlockModel
+class BlockIndex extends BlockModel
 {
 
     public function display()
@@ -47,7 +47,7 @@ class BlockMenu extends BlockModel
             "where" => array("block_id = '" . $this->getBlockData()->getId() . "'"),
             "orderby" => array("sublevel", "parent_id", "position"),
             "limit" => array()
-            )
+                )
         );
         return $menus;
     }
