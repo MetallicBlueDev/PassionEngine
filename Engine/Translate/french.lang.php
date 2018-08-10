@@ -1,20 +1,7 @@
 <?php
 
 $lang = array(
-// Chemin par défaut
-    "TRAIL_DISPLAY" => "Accueil",
-// Administration
-    "ADMIN_RIGHT_ALL" => "Tous droits et actions de modérations et d'administration du site, sans limitation.",
-    "ADMIN_RIGHT_MODULE" => "Droit concernant la visualisation et/ou la modération du module",
-    "ADMIN_RIGHT_BLOCK" => "Droit concernant la visualisation et/ou la modération du block",
-    "ADMIN_RIGHT_PAGE" => "Droit concernant la visualisation et/ou la modération de la page",
-// Erreur d'accès, droits insuffisants
-    "ERROR_ACCES_ZONE" => "Désolé, mais il n'y pas possible de continuer.",
-    "ERROR_ACCES_OFF" => "L'accès à cette page a été desactivé.",
-    "ERROR_ACCES_MEMBER" => "Pour consulter cette page, il est nécessaire d'être un membre du site.",
-    "ERROR_ACCES_ADMIN" => "Vous ne possedez pas les droits suffisants pour afficher cette page.",
-    "ERROR_ACCES_FORBIDDEN" => "Vous n'avez pas l'autorisation d'afficher cette page.",
-// Erreur critique généré par CoreSecure
+    // Gestion des exceptions lancées par CoreSecure
     "ERROR_CODE_0" => "Erreur interne inconnue.",
     "ERROR_CODE_1" => "Le type de droit demandé est inconnu.",
     "ERROR_CODE_2" => "Le gestionnaire de cache sélectionné n'est pas encore supporté.",
@@ -42,9 +29,22 @@ $lang = array(
     "ERROR_CODE_24" => "L'implémentation du module n'est pas utilisable.",
     "ERROR_CODE_25" => "L'implémentation du block n'est pas utilisable.",
     "ERROR_CODE_26" => "Le fichier d'un block n'a pas été trouvé.",
-    "ERROR_CODE_27" => "Impossible d'ouvrir une session, vérifiez vos paramètre cookie.",
-// Erreur diverse
+// Erreur diverse (qui ne sont pas des exceptions)
     "ERROR_404" => "Erreur 404, la page demandée est introuvable.",
+    "ERROR_SESSION_COOKIE" => "Impossible d'ouvrir une session, vérifiez vos paramètres cookie.",
+// Chemin par défaut
+    "TRAIL_DISPLAY" => "Accueil",
+// Administration
+    "ADMIN_RIGHT_ALL" => "Tous droits et actions de modérations et d'administration du site, sans limitation.",
+    "ADMIN_RIGHT_MODULE" => "Droit concernant la visualisation et/ou la modération du module",
+    "ADMIN_RIGHT_BLOCK" => "Droit concernant la visualisation et/ou la modération du block",
+    "ADMIN_RIGHT_PAGE" => "Droit concernant la visualisation et/ou la modération de la page",
+// Erreur d'accès, droits insuffisants
+    "ERROR_ACCES_ZONE" => "Désolé, mais il n'y pas possible de continuer.",
+    "ERROR_ACCES_OFF" => "L'accès à cette page a été desactivé.",
+    "ERROR_ACCES_MEMBER" => "Pour consulter cette page, il est nécessaire d'être un membre du site.",
+    "ERROR_ACCES_ADMIN" => "Vous ne possedez pas les droits suffisants pour afficher cette page.",
+    "ERROR_ACCES_FORBIDDEN" => "Vous n'avez pas l'autorisation d'afficher cette page.",
 // Date
     "JANUARY" => "Janvier",
     "FEBRUARY" => "Février",

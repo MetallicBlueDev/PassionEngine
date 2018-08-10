@@ -685,7 +685,7 @@ class CoreSession
                                                                            $this->getSerializedSession());
             $rslt = true;
         } else {
-            CoreLogger::addWarning(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(27)));
+            CoreLogger::addWarning(ERROR_SESSION_COOKIE);
         }
         return $rslt;
     }
