@@ -17,6 +17,10 @@ use TREngine\Engine\Core\CoreSecure;
 class BlockIndex extends BlockModel
 {
 
+    /**
+     * {@inheritDoc}
+     * @throws FailBlock
+     */
     public function display()
     {
         $mode = null;
@@ -36,10 +40,9 @@ class BlockIndex extends BlockModel
                 $this->renderText();
                 break;
             default:
-                CoreSecure::getInstance()->catchException(new FailBlock("invalid image mode",
-                                                                        23,
-                                                                        array($mode)));
-                break;
+                throw new FailBlock("invalid image mode",
+                                    "",
+                                    array($mode));
         }
     }
 
@@ -55,6 +58,8 @@ class BlockIndex extends BlockModel
 
     /**
      * Methode captcha code.
+     *
+     * @throws FailBlock
      */
     private function renderCode()
     {
@@ -63,9 +68,9 @@ class BlockIndex extends BlockModel
                                        CoreRequestType::GET);
 
         if (empty($code)) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid captcha code",
-                                                                    23,
-                                                                    array($code)));
+            throw new FailBlock("invalid captcha code",
+                                "",
+                                array($code));
         }
 
         // Cryptage
@@ -134,6 +139,8 @@ class BlockIndex extends BlockModel
 
     /**
      * Methode text & email.
+     * 
+     * @throws FailBlock
      */
     private function renderText()
     {
@@ -142,9 +149,9 @@ class BlockIndex extends BlockModel
                                        CoreRequestType::GET);
 
         if (empty($text)) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid captcha text",
-                                                                    23,
-                                                                    array($text)));
+            throw new FailBlock("invalid captcha text",
+                                "",
+                                array($text));
         }
 
         // Décryptage

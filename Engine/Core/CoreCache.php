@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Fail\FailCache;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
@@ -93,6 +94,8 @@ class CoreCache extends CacheModel
 
     /**
      * Nouveau gestionnaire de cache.
+     *
+     * @throws FailCache
      */
     protected function __construct()
     {
@@ -102,26 +105,26 @@ class CoreCache extends CacheModel
         $loaded = false;
         $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
 
-// Mode par défaut
+        // Mode par défaut
         if (empty($cacheConfig) || !isset($cacheConfig['type'])) {
             $cacheConfig['type'] = "php";
         }
 
-// Chargement des drivers pour le cache
+        // Chargement des drivers pour le cache
         $cacheClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
         $loaded = CoreLoader::classLoader($cacheClassName);
 
         if (!$loaded) {
-            CoreSecure::getInstance()->catchException(new FailCache("cache driver not found",
-                                                                    2,
-                                                                    array($cacheConfig['type'])));
+            throw new FailCache("cache driver not found",
+                                FailBase:: getErrorCodeName(2),
+                                                            array($cacheConfig['type']));
         }
 
         if (!CoreLoader::isCallable($cacheClassName,
                                     "initialize")) {
-            CoreSecure::getInstance()->catchException(new FailCache("unable to initialize cache",
-                                                                    3,
-                                                                    array($cacheClassName)));
+            throw new FailCache("unable to initialize cache",
+                                FailBase:: getErrorCodeName(3),
+                                                            array($cacheClassName));
         }
 
         try {
@@ -129,7 +132,7 @@ class CoreCache extends CacheModel
             $this->selectedCache->initialize($cacheConfig);
         } catch (Throwable $ex) {
             $this->selectedCache = null;
-            CoreSecure::getInstance()->catchException($ex);
+            throw $ex;
         }
     }
 

@@ -228,7 +228,7 @@ class CoreMain
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
             $libMakeStyle->assignString("closeText",
-                                        FailBase::getErrorCodeDescription(8));
+                                        FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(8)));
             $libMakeStyle->assignString("closeReason",
                                         $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");
@@ -314,25 +314,29 @@ class CoreMain
      * Préparation TR ENGINE.
      * Procédure de préparation du moteur.
      * Une étape avant le démarrage réel.
+     *
+     * @throws FailCache
+     * @throws FailSql
+     * @throws FailEngine
      */
     private function prepare(): void
     {
         if (!$this->loadCache()) {
-            CoreSecure::getInstance()->catchException(new FailCache("unable to load cache config",
-                                                                    5,
-                                                                    array(CoreLoader::getIncludeAbsolutePath("configs_cache"))));
+            throw new FailCache("unable to load cache config",
+                                FailBase::getErrorCodeName(5),
+                                                           array(CoreLoader::getIncludeAbsolutePath("configs_cache")));
         }
 
         if (!$this->loadSql()) {
-            CoreSecure::getInstance()->catchException(new FailSql("unable to load database config",
-                                                                  6,
-                                                                  array(CoreLoader::getIncludeAbsolutePath("configs_database"))));
+            throw new FailSql("unable to load database config",
+                              FailBase::getErrorCodeName(6),
+                                                         array(CoreLoader::getIncludeAbsolutePath("configs_database")));
         }
 
         if (!$this->loadConfig()) {
-            CoreSecure::getInstance()->catchException(new FailEngine("unable to general config",
-                                                                     7,
-                                                                     array(CoreLoader::getIncludeAbsolutePath("configs_config"))));
+            throw new FailEngine("unable to general config",
+                                 FailBase::getErrorCodeName(7),
+                                                            array(CoreLoader::getIncludeAbsolutePath("configs_config")));
         }
 
         // Chargement de la session
@@ -385,6 +389,7 @@ class CoreMain
      * Charge la configuration générale.
      *
      * @return bool
+     * @throws FailEngine
      */
     private function loadConfig(): bool
     {
@@ -395,8 +400,8 @@ class CoreMain
             $canUse = $this->getConfigs()->initialize();
 
             if (defined("TR_ENGINE_STATUT") && TR_ENGINE_STATUT == "close") {
-                CoreSecure::getInstance()->catchException(new FailEngine("web site is closed",
-                                                                         8));
+                throw new FailEngine("web site is closed",
+                                     FailBase::getErrorCodeName(8));
             }
 
             // Si tout semble en ordre, nous continuons le chargement

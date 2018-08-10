@@ -323,6 +323,7 @@ class CoreRoute
      * @param bool $enable
      * @param bool $jsDivisionId
      * @return CoreRoute
+     * @throws FailEngine
      */
     public function setJsMode(bool $enable,
                               string $jsDivisionId = ""): CoreRoute

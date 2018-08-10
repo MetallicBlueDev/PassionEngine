@@ -27,12 +27,12 @@ abstract class CacheModel extends CoreTransaction
      * {@inheritdoc}
      *
      * @param string $message
-     * @param int $failCode
+     * @param string $failCode
      * @param array $failArgs
      * @throws FailCache
      */
     protected function throwException(string $message,
-                                      int $failCode = 0,
+                                      string $failCode = "",
                                       array $failArgs = array()): void
     {
         throw new FailCache($message,
@@ -246,12 +246,12 @@ abstract class CacheModel extends CoreTransaction
 
             // Ecriture de l'entête
             $content = "<?php\n"
-                . "if (!defined(\"TR_ENGINE_INDEX\")){"
-                . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
-                . "}"
-                . "// Generated on " . date('Y-m-d H:i:s') . "\n"
-                . $content
-                . "\n?>";
+                    . "if (!defined(\"TR_ENGINE_INDEX\")){"
+                    . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
+                    . "}"
+                    . "// Generated on " . date('Y-m-d H:i:s') . "\n"
+                    . $content
+                    . "\n?>";
         }
         return $content;
     }

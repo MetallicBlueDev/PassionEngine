@@ -11,6 +11,7 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Lib\LibEntityModel;
 use TREngine\Engine\Lib\LibModuleData;
 use TREngine\Engine\Fail\FailModule;
+use TREngine\Engine\Fail\FailBase;
 
 /**
  * Module de base, hérité par tous les autres modules.
@@ -27,7 +28,7 @@ abstract class ModuleModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(ERROR_MODULE_IMPLEMENT . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
     }
 
     /**
@@ -35,7 +36,7 @@ abstract class ModuleModel extends LibEntityModel
      */
     public function setting(): void
     {
-        throw new FailModule("Invalid setting method");
+        throw new FailModule("Invalid setting method", FailBase::getErrorCodeName(24));
     }
 
     /**

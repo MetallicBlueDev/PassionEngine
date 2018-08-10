@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreSecure;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailTemplate;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
@@ -147,6 +148,7 @@ class LibMakeStyle
      *
      * @param string $fileName Nom du template
      * @return string
+     * @throws FailTemplate
      */
     public function &render(string $fileName = ""): string
     {
@@ -158,9 +160,9 @@ class LibMakeStyle
                 exit("CRITICAL ERROR: DEBUG TEMPLATE NOT FOUND.");
             }
 
-            CoreSecure::getInstance()->catchException(new FailTemplate("invalid template file",
-                                                                       17,
-                                                                       array($this->getTemplateFilePath())));
+            throw new FailTemplate("invalid template file",
+                                   FailBase::getErrorCodeName(17),
+                                                              array($this->getTemplateFilePath()));
         }
 
         // Extrait les variables en local
@@ -177,13 +179,14 @@ class LibMakeStyle
      * Configure le dossier contenant les fichiers templates.
      *
      * @param string $directory
+     * @throws FailTemplate
      */
     public static function configureTemplateDirectory(string $directory): void
     {
         if (!self::isTemplateDirectory($directory)) {
-            CoreSecure::getInstance()->catchException(new FailTemplate("invalid template directory"),
-                                                                       18,
-                                                                       array($directory));
+            throw new FailTemplate("invalid template directory",
+                                   FailBase::getErrorCodeName(18),
+                                                              array($directory));
         }
 
         self::$templateDirectory = $directory;

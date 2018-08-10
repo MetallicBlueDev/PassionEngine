@@ -8,6 +8,7 @@ use TREngine\Engine\Exec\ExecEmail;
 use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Lib\LibMakeStyle;
+use TREngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire de sessions.
@@ -152,8 +153,8 @@ class CoreSession
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
             $userArrayDatas = self::loadUserData(array(
-                    "name = '" . $userName . "'",
-                    "AND pass = '" . $userPass . "'"
+                        "name = '" . $userName . "'",
+                        "AND pass = '" . $userPass . "'"
             ));
 
             if (count($userArrayDatas) > 1) {
@@ -304,7 +305,7 @@ class CoreSession
         if ($this->hasValidSessionData()) {
             // Rafraichir le cache de session
             $userArrayDatas = self::loadUserData(array(
-                    "user_id = '" . $this->sessionData->getId() . "'"
+                        "user_id = '" . $this->sessionData->getId() . "'"
             ));
 
             if (count($userArrayDatas) > 1) {
@@ -394,10 +395,10 @@ class CoreSession
         if ($cleanBanishment) {
             CoreSql::getInstance()->delete(CoreTable::BANNED,
                                            array(
-                    "ip != ''",
-                    "&& (name = 'Hacker' || name = '')",
-                    "&& type = '0'",
-                    "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
+                        "ip != ''",
+                        "&& (name = 'Hacker' || name = '')",
+                        "&& type = '0'",
+                        "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
             ));
         }
     }
@@ -684,7 +685,7 @@ class CoreSession
                                                                            $this->getSerializedSession());
             $rslt = true;
         } else {
-            CoreLogger::addWarning(ERROR_SESSION_COOKIE);
+            CoreLogger::addWarning(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(27)));
         }
         return $rslt;
     }
@@ -809,17 +810,17 @@ class CoreSession
         $coreSql = CoreSql::getInstance();
         $coreSql->select(CoreTable::USERS,
                          array(
-                "user_id",
-                "name",
-                "email",
-                "rank",
-                "registration_date",
-                "avatar",
-                "website",
-                "signature",
-                "template",
-                "langue"
-            ),
+                    "user_id",
+                    "name",
+                    "email",
+                    "rank",
+                    "registration_date",
+                    "avatar",
+                    "website",
+                    "signature",
+                    "template",
+                    "langue"
+                ),
                          $where);
         // TODO vérifier si l'utilisateur n'est pas banni
         if ($coreSql->affectedRows() === 1) {

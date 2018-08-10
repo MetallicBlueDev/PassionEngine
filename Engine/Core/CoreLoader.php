@@ -3,7 +3,9 @@
 namespace TREngine\Engine\Core;
 
 use Throwable;
+use Exception;
 use TREngine\Engine\Fail\FailLoader;
+use TREngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire de chargeur de classe.
@@ -141,26 +143,24 @@ class CoreLoader
 
     /**
      * Inscription du chargeur de classe.
+     *
+     * @throws FailLoader
      */
     public static function affectRegister(): void
     {
-        try {
-            if (!is_null(self::$loadedFiles)) {
-                throw new FailLoader("loader already registered",
-                                     4);
-            }
+        if (!is_null(self::$loadedFiles)) {
+            throw new FailLoader("loader already registered",
+                                 FailBase::getErrorCodeName(4));
+        }
 
-            self::$loadedFiles = array();
+        self::$loadedFiles = array();
 
-            if (!spl_autoload_register(array(
+        if (!spl_autoload_register(array(
                     'TREngine\Engine\Core\CoreLoader',
                     'classLoader'),
-                                       true)) {
-                throw new FailLoader("spl_autoload_register fail",
-                                     4);
-            }
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
+                                   true)) {
+            throw new FailLoader("spl_autoload_register fail",
+                                 FailBase::getErrorCodeName(4));
         }
     }
 
@@ -424,31 +424,28 @@ class CoreLoader
      * @param string $keyName Nom de la classe ou du fichier.
      * @param string $fileType Type de fichier.
      * @return bool true chargé.
+     * @throws FailLoader
      */
     private static function &manageLoad(string &$keyName,
                                         string $fileType): bool
     {
         $loaded = false;
 
-        try {
-            if (empty($keyName)) {
-                throw new FailLoader("empty file name",
-                                     4,
-                                     array($keyName, $fileType));
-            }
+        if (empty($keyName)) {
+            throw new FailLoader("empty file name",
+                                 FailBase::getErrorCodeName(4),
+                                                            array($keyName, $fileType));
+        }
 
-            self::buildKeyNameAndFileType($keyName,
-                                          $fileType);
-            $loaded = self::isLoaded($keyName,
-                                     $fileType);
+        self::buildKeyNameAndFileType($keyName,
+                                      $fileType);
+        $loaded = self::isLoaded($keyName,
+                                 $fileType);
 
-            // Si ce n'est pas déjà chargé
-            if (!$loaded) {
-                $loaded = self::load($keyName,
-                                     $fileType);
-            }
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
+        // Si ce n'est pas déjà chargé
+        if (!$loaded) {
+            $loaded = self::load($keyName,
+                                 $fileType);
         }
         return $loaded;
     }
@@ -475,18 +472,18 @@ class CoreLoader
         } else {
             switch ($fileType) {
                 case self::BLOCK_FILE:
-                    CoreLogger::addError(ERROR_BLOCK_NO_FILE);
+                    CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(26)));
                     break;
                 case self::MODULE_FILE:
-                    CoreLogger::addError(ERROR_MODULE_NO_FILE);
+                    CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(23)));
                     break;
                 case self::TRANSLATE_FILE:
                     // Aucune traduction disponible
                     break;
                 default:
                     throw new FailLoader("unable to load file",
-                                         4,
-                                         array($keyName, $fileType));
+                                         FailBase::getErrorCodeName(4),
+                                                                    array($keyName, $fileType));
             }
         }
         return $loaded;
@@ -624,8 +621,8 @@ class CoreLoader
                 break;
             default:
                 throw new FailLoader("can not determine the file path",
-                                     4,
-                                     array($keyName, $fileType));
+                                     FailBase::getErrorCodeName(4),
+                                                                array($keyName, $fileType));
         }
 
         $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";

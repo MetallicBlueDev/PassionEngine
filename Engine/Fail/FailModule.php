@@ -14,10 +14,10 @@ class FailModule extends FailBase
      * Nouvelle erreur lié à un module.
      *
      * @param string $message
-     * @param int $failCode
+     * @param string $failCode
      * @param array $failArgs
      */
-    public function __construct(string $message, int $failCode = 0, array $failArgs = array())
+    public function __construct(string $message, string $failCode = "", array $failArgs = array())
     {
         parent::__construct($message,
                             $failCode,

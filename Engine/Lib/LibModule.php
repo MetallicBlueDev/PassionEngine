@@ -234,21 +234,17 @@ class LibModule
             if ($moduleData->isCallableViewMethod()) {
                 $this->updateCount($moduleData->getId());
 
-                try {
-                    $moduleClass = $moduleData->getNewEntityModel();
+                $moduleClass = $moduleData->getNewEntityModel();
 
-                    // Capture des données d'affichage
-                    ob_start();
-                    echo $moduleClass->display($moduleData->getView());
-                    $moduleData->setTemporyOutputBuffer(ob_get_clean());
-                } catch (Throwable $ex) {
-                    CoreSecure::getInstance()->catchException($ex);
-                }
+                // Capture des données d'affichage
+                ob_start();
+                echo $moduleClass->display($moduleData->getView());
+                $moduleData->setTemporyOutputBuffer(ob_get_clean());
             } else {
-                CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
+                CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $moduleData->getName() . ")");
             }
         } else {
-            CoreLogger::addError(ERROR_MODULE_CODE . " (" . $moduleData->getName() . ")");
+            CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $moduleData->getName() . ")");
         }
     }
 

@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Fail\FailEngine;
+use TREngine\Engine\Fail\FailBase;
 
 /**
  * Collecteur d'information sur une transaction.
@@ -44,17 +45,17 @@ abstract class CoreTransaction extends CoreDataStorage
 
                 if (!$this->netConnected()) {
                     $this->throwException("connection error",
-                                          20);
+                                          FailBase::getErrorCodeName(20));
                 }
 
                 // Sélection d'une base de données
                 if (!$this->netSelect()) {
                     $this->throwException("can not select a node",
-                                          21);
+                                          FailBase::getErrorCodeName(21));
                 }
             } else {
                 $this->throwException("transaction can not be used",
-                                      22);
+                                      FailBase::getErrorCodeName(22));
             }
         }
     }
@@ -158,12 +159,12 @@ abstract class CoreTransaction extends CoreDataStorage
      * Lance une exception gérant ce type de transaction.
      *
      * @param string $message
-     * @param int $failCode
+     * @param string $failCode
      * @param array $failArgs
      * @throws FailEngine
      */
     protected function throwException(string $message,
-                                      int $failCode = 0,
+                                      string $failCode = "",
                                       array $failArgs = array()): void
     {
         throw new FailEngine($message,

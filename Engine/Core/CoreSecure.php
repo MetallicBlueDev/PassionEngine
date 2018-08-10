@@ -109,6 +109,8 @@ class CoreSecure
 
     /**
      * Vérification de l'instance du gestionnaire de sécurité.
+     *
+     * @throws FailEngine
      */
     public static function checkInstance(): void
     {
@@ -117,8 +119,8 @@ class CoreSecure
 
             // Si nous ne sommes pas passé par l'index
             if (self::$secure->locked()) {
-                self::$secure->catchException(new FailEngine("invalid access",
-                                                             10));
+                throw new FailEngine("invalid access",
+                                     FailBase::getErrorCodeName(10));
             }
         }
     }
@@ -186,7 +188,7 @@ class CoreSecure
     private function &getErrorMessageTitle(Throwable $ex): string
     {
         // Message d'erreur depuis une constante
-        $errorMessageTitle = FailBase::getErrorCodeDescription($ex->getCode());
+        $errorMessageTitle = FailBase::getErrorCodeDescription(FailBase::getErrorCodeName($ex->getCode()));
 
         if (empty($errorMessageTitle)) {
             $errorMessageTitle = "Stop loading";
@@ -338,6 +340,8 @@ class CoreSecure
 
     /**
      * Vérification des données reçues (depuis QUERY_STRING).
+     *
+     * @throws FailEngine
      */
     private function checkServerQueryString(): void
     {
@@ -349,8 +353,8 @@ class CoreSecure
             foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
                 if (strpos($queryString,
                            $badStringValue)) {
-                    $this->catchException(new FailEngine("invalid query string",
-                                                         11));
+                    throw new FailEngine("invalid query string",
+                                         FailBase::getErrorCodeName(11));
                 }
             }
         }
@@ -358,6 +362,8 @@ class CoreSecure
 
     /**
      * Vérification de la provenance des requêtes.
+     *
+     * @throws FailEngine
      */
     private function checkServerRequest(): void
     {
@@ -367,8 +373,8 @@ class CoreSecure
                                                          "",
                                                          CoreRequestType::SERVER) . "/",
                                                          CoreRequest::getHttpReferer())) {
-                $this->catchException(new FailEngine("invalid request/referer",
-                                                     12));
+                throw new FailEngine("invalid request/referer",
+                                     FailBase::getErrorCodeName(12));
             }
         }
     }

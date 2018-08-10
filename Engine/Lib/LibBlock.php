@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Fail\FailBlock;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Core\CoreAccessRank;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
@@ -155,6 +156,7 @@ class LibBlock
      *
      * @param int $side Identifiant de la position (1, 2, ...).
      * @return string Le nom de la position (right, left...).
+     * @throws FailBlock
      */
     public static function &getSideAsLetters(int $side): string
     {
@@ -162,9 +164,9 @@ class LibBlock
                                  CoreLayout::BLOCK_SIDE_LIST);
 
         if ($sideName === false) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side number",
-                                                                    16,
-                                                                    array($side)));
+            throw new FailBlock("invalid block side number",
+                                FailBase::getErrorCodeName(16),
+                                                           array($side));
         }
         return $sideName;
     }
@@ -174,13 +176,14 @@ class LibBlock
      *
      * @param string $sideName Nom de la position (right, left...).
      * @return int Identifiant de la position (1, 2..).
+     * @throws FailBlock
      */
     public static function &getSideAsNumeric(string $sideName): int
     {
         if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block side name",
-                                                                    16,
-                                                                    array($sideName)));
+            throw new FailBlock("invalid block side name",
+                                FailBase::getErrorCodeName(16),
+                                                           array($sideName));
         }
 
         $side = CoreLayout::BLOCK_SIDE_LIST[$sideName];
@@ -203,15 +206,16 @@ class LibBlock
      *
      * @param string $blockTypeName
      * @return LibBlockData Informations sur le block.
+     * @throws FailBlock
      */
     public function &getBlockDataByType(string $blockTypeName): LibBlockData
     {
         $blockId = $this->requestBlockId($blockTypeName);
 
         if ($blockId < 0) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
-                                                                    15,
-                                                                    array($blockTypeName)));
+            throw new FailBlock("invalid block type",
+                                FailBase::getErrorCodeName(15),
+                                                           array($blockTypeName));
         }
         return $this->getBlockData($blockId);
     }
@@ -455,23 +459,19 @@ class LibBlock
             if ($blockData->isCallableViewMethod()) {
                 CoreTranslate::getInstance()->translate($blockData->getFolderName());
 
-                try {
-                    $blockClass = $blockData->getNewEntityModel();
+                $blockClass = $blockData->getNewEntityModel();
 
-                    if ($blockClass->isInViewList($blockData->getView())) {
-                        // Capture des données d'affichage
-                        ob_start();
-                        $blockClass->display($blockData->getView());
-                        $blockData->setTemporyOutputBuffer(ob_get_clean());
-                    }
-                } catch (Throwable $ex) {
-                    CoreSecure::getInstance()->catchException($ex);
+                if ($blockClass->isInViewList($blockData->getView())) {
+                    // Capture des données d'affichage
+                    ob_start();
+                    $blockClass->display($blockData->getView());
+                    $blockData->setTemporyOutputBuffer(ob_get_clean());
                 }
             } else {
-                CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockData->getType() . ")");
+                CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $blockData->getType() . ")");
             }
         } else {
-            CoreLogger::addError(ERROR_BLOCK_CODE . " (" . $blockData->getType() . ")");
+            CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $blockData->getType() . ")");
         }
     }
 }

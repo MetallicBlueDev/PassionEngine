@@ -25,13 +25,13 @@ if (CoreSecure::debuggingMode()) {
     ExecTimeMarker::startMeasurement("all");
 }
 
-// Mesure principal utilisable en permanence
-ExecTimeMarker::startMeasurement("main");
-
-// Préparation du moteur
-CoreMain::checkInstance();
-
 try {
+    // Mesure principal utilisable en permanence
+    ExecTimeMarker::startMeasurement("main");
+
+    // Préparation du moteur
+    CoreMain::checkInstance();
+
     // Recherche de nouveaux composants
     if (CoreMain::getInstance()->newComponentDetected()) {
         // Installation des nouveaux composants

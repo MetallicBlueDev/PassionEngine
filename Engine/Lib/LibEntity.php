@@ -9,6 +9,7 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
+use TREngine\Engine\Fail\FailEngine;
 use Throwable;
 
 /**
@@ -27,21 +28,36 @@ abstract class LibEntity
     private $entityDatas = array();
 
     /**
-     * Retourne les informations du block cible via son type.
+     * Lance une exception gérant ce type d'entité.
      *
-     * @param string $blockTypeName
-     * @return LibBlockData Informations sur le block.
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @throws FailEngine
      */
-    public function &getBlockDataByType(string $blockTypeName): LibBlockData
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
     {
-        $blockId = $this->requestBlockId($blockTypeName);
+        throw new FailEngine($message,
+                             $failCode,
+                             $failArgs);
+    }
 
-        if ($blockId < 0) {
-            CoreSecure::getInstance()->catchException(new FailBlock("invalid block type",
-                                                                    15,
-                                                                    array($blockTypeName)));
+    /**
+     * Retourne les informations de l'entité via son nom.
+     *
+     * @param string $entityName Nom de l'entité.
+     * @return LibBlockData Informations sur l'entité.
+     */
+    protected function &getEntityDataByName(string $entityName): LibEntityData
+    {
+        $entityId = $this->requestEntityId($entityName);
+
+        if ($entityId < 0) {
+            $this->throwException("invalid entity name", 15, array($entityName));
         }
-        return $this->getEntityData($blockId);
+        return $this->getEntityData($entityId);
     }
 
     /**
@@ -89,7 +105,7 @@ abstract class LibEntity
      * @param string $blockTypeName
      * @return int
      */
-    private function &requestBlockId(string $blockTypeName): int
+    private function &requestEntityId(string $blockTypeName): int
     {
         $blockId = -1;
 
@@ -250,22 +266,18 @@ abstract class LibEntity
 
         if ($loaded) {
             if ($entityData->isCallableViewMethod()) {
-                try {
-                    $entityModelInstance = $entityData->getNewEntityModel();
+                $entityModelInstance = $entityData->getNewEntityModel();
 
-                    if ($entityModelInstance->isInViewList($entityData->getView())) {
-                        $this->onBuildBegin($entityData);
+                if ($entityModelInstance->isInViewList($entityData->getView())) {
+                    $this->onBuildBegin($entityData);
 
-                        ob_start();
-                        $entityModelInstance->display($entityData->getView());
-                        $entityData->setTemporyOutputBuffer(ob_get_clean());
+                    ob_start();
+                    $entityModelInstance->display($entityData->getView());
+                    $entityData->setTemporyOutputBuffer(ob_get_clean());
 
-                        $this->onBuildEnded($entityData);
-                    } else {
-                        $this->onViewParameterNotFound($entityData);
-                    }
-                } catch (Throwable $ex) {
-                    CoreSecure::getInstance()->catchException($ex);
+                    $this->onBuildEnded($entityData);
+                } else {
+                    $this->onViewParameterNotFound($entityData);
                 }
             } else {
                 $this->onViewMethodNotFound($entityData);

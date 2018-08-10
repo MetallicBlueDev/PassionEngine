@@ -3,6 +3,7 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Base\BaseModel;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailSql;
 use Throwable;
 
@@ -30,6 +31,8 @@ class CoreSql extends BaseModel
 
     /**
      * Nouveau gestionnaire.
+     *
+     * @throws FailSql
      */
     protected function __construct()
     {
@@ -46,16 +49,16 @@ class CoreSql extends BaseModel
         }
 
         if (!$loaded) {
-            CoreSecure::getInstance()->catchException(new FailSql("database driver not found",
-                                                                  13,
-                                                                  array($databaseConfig['type'])));
+            throw new FailSql("database driver not found",
+                              FailBase::getErrorCodeName(13),
+                                                         array($databaseConfig['type']));
         }
 
         if (!CoreLoader::isCallable($baseClassName,
                                     "initialize")) {
-            CoreSecure::getInstance()->catchException(new FailSql("unable to initialize database",
-                                                                  14,
-                                                                  array($baseClassName)));
+            throw new FailSql("unable to initialize database",
+                              FailBase::getErrorCodeName(14),
+                                                         array($baseClassName));
         }
 
         try {
@@ -63,7 +66,7 @@ class CoreSql extends BaseModel
             $this->selectedBase->initialize($databaseConfig);
         } catch (Throwable $ex) {
             $this->selectedBase = null;
-            CoreSecure::getInstance()->catchException($ex);
+            throw $ex;
         }
     }
 
@@ -243,6 +246,7 @@ class CoreSql extends BaseModel
      * @param array $where
      * @param array $like
      * @param string $limit
+     * @throws FailSql
      */
     public function delete(string $table,
                            array $where = array(),
@@ -253,12 +257,7 @@ class CoreSql extends BaseModel
                                     $where,
                                     $like,
                                     $limit);
-
-        try {
-            $this->query();
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
-        }
+        $this->query();
     }
 
     /**
@@ -288,6 +287,7 @@ class CoreSql extends BaseModel
      * @param string $table Nom de la table
      * @param array $keys
      * @param array $values
+     * @throws FailSql
      */
     public function insert(string $table,
                            array $keys,
@@ -296,12 +296,7 @@ class CoreSql extends BaseModel
         $this->selectedBase->insert($table,
                                     $keys,
                                     $values);
-
-        try {
-            $this->query();
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
-        }
+        $this->query();
     }
 
     /**
@@ -335,8 +330,8 @@ class CoreSql extends BaseModel
         // Création d'une exception si une réponse est négative (false)
         if ($this->getQueries() === false) {
             throw new FailSql("bad query",
-                              19,
-                              array($sql));
+                              FailBase::getErrorCodeName(19),
+                                                         array($sql));
         }
     }
 
@@ -348,6 +343,7 @@ class CoreSql extends BaseModel
      * @param array $where
      * @param array $orderby
      * @param string $limit
+     * @throws FailSql
      */
     public function select(string $table,
                            array $values,
@@ -360,12 +356,7 @@ class CoreSql extends BaseModel
                                     $where,
                                     $orderby,
                                     $limit);
-
-        try {
-            $this->query();
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
-        }
+        $this->query();
     }
 
     /**
@@ -376,6 +367,7 @@ class CoreSql extends BaseModel
      * @param array $where
      * @param array $orderby
      * @param string $limit
+     * @throws FailSql
      */
     public function update(string $table,
                            array $values,
@@ -388,12 +380,7 @@ class CoreSql extends BaseModel
                                     $where,
                                     $orderby,
                                     $limit);
-
-        try {
-            $this->query();
-        } catch (Throwable $ex) {
-            CoreSecure::getInstance()->catchException($ex);
-        }
+        $this->query();
     }
 
     /**

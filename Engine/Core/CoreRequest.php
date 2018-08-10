@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailEngine;
 
 /**
@@ -263,6 +264,7 @@ class CoreRequest
      * @param string $hash
      * @param bool $useDefault
      * @return array
+     * @throws FailEngine
      */
     private static function &getDefaultRequest(string $hash,
                                                bool $useDefault): array
@@ -270,9 +272,9 @@ class CoreRequest
         $input = array();
 
         if (!$useDefault) {
-            CoreSecure::getInstance()->catchException(new FailEngine("invalid request method",
-                                                                     9,
-                                                                     array($hash)));
+            throw new FailEngine("invalid request method",
+                                 FailBase::getErrorCodeName(9),
+                                                            array($hash));
         }
 
         $hash = self::getRequestMethod();

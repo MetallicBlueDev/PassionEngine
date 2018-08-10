@@ -2,6 +2,8 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Fail\FailBase;
+
 /**
  * Gestionnaire des accès et autorisation.
  *
@@ -71,19 +73,13 @@ class CoreAccess
      */
     public static function &getRankAsLitteral(int $rank): string
     {
-        if (!is_numeric($rank)) {
-            CoreSecure::getInstance()->catchException("invalid rank value",
-                                                      1,
-                                                      array($rank));
-        }
-
         $rankLitteral = array_search($rank,
                                      CoreAccessRank::RANK_LIST);
 
         if ($rankLitteral === false) {
-            CoreSecure::getInstance()->catchException("invalid rank number",
-                                                      1,
-                                                      array($rank));
+            throw new FailEngine("invalid rank number",
+                                 FailBase::getErrorCodeName(1),
+                                                            array($rank));
         }
 
         $rankLitteral = defined($rankLitteral) ? constant($rankLitteral) : $rankLitteral;
