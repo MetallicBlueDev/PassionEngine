@@ -19,14 +19,14 @@ class LibMenuElement extends CoreDataStorage
      *
      * @var array
      */
-    private $attributs = array();
+    private $attributes = array();
 
     /**
      * Enfant de l'élément.
      *
      * @var array
      */
-    private $child = array();
+    private $children = array();
 
     /**
      * Balise relative à l'élément.
@@ -41,13 +41,6 @@ class LibMenuElement extends CoreDataStorage
      * @var array
      */
     private $tree = array();
-
-    /**
-     * Détermine si l'élément est actif.
-     *
-     * @var bool
-     */
-    private $active = false;
 
     /**
      * Construction de l'élément du menu
@@ -114,6 +107,16 @@ class LibMenuElement extends CoreDataStorage
     }
 
     /**
+     * Retourne le texte mise en forme du menu.
+     *
+     * @return array
+     */
+    public function &getTextWithRendering(): string
+    {
+        return $this->getString("text_with_rendering");
+    }
+
+    /**
      * Retourne le rang d'accès du menu.
      *
      * @return int
@@ -149,39 +152,39 @@ class LibMenuElement extends CoreDataStorage
      * @param string $name nom de l'attribut
      * @param string $value valeur de l'attribut
      */
-    public function addAttributs(string $name,
+    public function addAttribute(string $name,
                                  string $value): void
     {
-        if (!isset($this->attributs[$name])) {
-            $this->attributs[$name] = $value;
+        if (!isset($this->attributes[$name])) {
+            $this->attributes[$name] = $value;
         } else {
             // Conversion en tableau si besoin
-            if (!is_array($this->attributs[$name])) {
-                $firstValue = $this->attributs[$name];
-                $this->attributs[$name] = array();
-                $this->attributs[$name][] = $firstValue;
+            if (!is_array($this->attributes[$name])) {
+                $firstValue = $this->attributes[$name];
+                $this->attributes[$name] = array();
+                $this->attributes[$name][] = $firstValue;
             }
 
             // Vérification des valeurs déjà enregistrées
             if (!ExecUtils::inArray($value,
-                                    $this->attributs[$name],
+                                    $this->attributes[$name],
                                     true)) {
                 if ($value === "parent") {
-                    array_unshift($this->attributs[$name],
+                    array_unshift($this->attributes[$name],
                                   $value);
                 } else if ($value === "active") {
-                    if ($this->attributs[$name][0] === "parent") {
+                    if ($this->attributes[$name][0] === "parent") {
                         // Remplace parent par active
-                        $this->attributs[$name][0] = $value;
+                        $this->attributes[$name][0] = $value;
                         // Ajoute a nouveau parent en 1er
-                        array_unshift($this->attributs[$name],
+                        array_unshift($this->attributes[$name],
                                       "parent");
                     } else {
-                        array_unshift($this->attributs[$name],
+                        array_unshift($this->attributes[$name],
                                       $value);
                     }
                 } else {
-                    $this->attributs[$name][] = $value;
+                    $this->attributes[$name][] = $value;
                 }
             }
         }
@@ -192,13 +195,13 @@ class LibMenuElement extends CoreDataStorage
      *
      * @param string $name nom de l'attribut
      */
-    public function removeAttributs(string $name = ""): void
+    public function removeAttribute(string $name = ""): void
     {
         if (!empty($name)) {
-            unset($this->attributs[$name]);
+            unset($this->attributes[$name]);
         } else {
-            foreach (array_keys($this->attributs) as $key) {
-                unset($this->attributs[$key]);
+            foreach (array_keys($this->attributes) as $key) {
+                unset($this->attributes[$key]);
             }
         }
     }
@@ -206,23 +209,23 @@ class LibMenuElement extends CoreDataStorage
     /**
      * Mise en forme des attributs.
      *
-     * @param array $attributs
+     * @param array $attributes
      * @return string
      */
-    public function &getAttributs(array $attributs = array()): string
+    public function &renderAttributes(array $attributes = array()): string
     {
         $rslt = "";
-        $attributs = empty($attributs) ? $this->attributs : $attributs;
+        $attributes = empty($attributes) ? $this->attributes : $attributes;
 
-        foreach ($attributs as $attributsName => $value) {
-            $isInt = is_int($attributsName);
+        foreach ($attributes as $attributeName => $value) {
+            $isInt = is_int($attributeName);
 
             if (!$isInt) {
-                $rslt .= " " . $attributsName . "=\"";
+                $rslt .= " " . $attributeName . "=\"";
             }
 
             if (is_array($value)) {
-                $rslt .= $this->getAttributs($value);
+                $rslt .= $this->renderAttributes($value);
             } else {
                 if (!empty($rslt) && $isInt) {
                     $rslt .= " ";
@@ -236,16 +239,6 @@ class LibMenuElement extends CoreDataStorage
             }
         }
         return $rslt;
-    }
-
-    /**
-     * Détermine si l'élément est actif.
-     *
-     * @param bool $active
-     */
-    public function setActive(bool $active): void
-    {
-        $this->active = $active;
     }
 
     /**
@@ -266,21 +259,21 @@ class LibMenuElement extends CoreDataStorage
     public function addChild(LibMenuElement &$child): void
     {
         // Ajout du tag UL si c'est un nouveau parent
-        if (empty($this->child)) {
+        if (empty($this->children)) {
             $this->addTags("ul");
         }
 
         // Ajoute la classe parent
-        $this->addAttributs("class",
+        $this->addAttribute("class",
                             "parent");
 
         // Ajoute la classe élément
         if ($this->getParentId() > 0) {
-            $this->addAttributs("class",
+            $this->addAttribute("class",
                                 "item" . $this->getMenuId());
         }
 
-        $this->child[$child->getMenuId()] = &$child;
+        $this->children[$child->getMenuId()] = &$child;
 
         $tree = $child->getTree();
         $tree[] = $this->getMenuId();
@@ -295,11 +288,11 @@ class LibMenuElement extends CoreDataStorage
     public function removeChild(?LibMenuElement &$child = null): void
     {
         if ($child === null) {
-            foreach (array_keys($this->child) as $key) {
-                unset($this->child[$key]);
+            foreach (array_keys($this->children) as $key) {
+                unset($this->children[$key]);
             }
         } else {
-            unset($this->child[$child->getMenuId()]);
+            unset($this->children[$child->getMenuId()]);
         }
     }
 
@@ -309,7 +302,7 @@ class LibMenuElement extends CoreDataStorage
      * @param string $callback
      * @return string
      */
-    public function &toString(string $callback = ""): string
+    public function &render(string $callback = ""): string
     {
         $text = $this->getText();
 
@@ -320,30 +313,26 @@ class LibMenuElement extends CoreDataStorage
                                          $this->getConfigs());
         }
 
-        // Ajout de la classe active
-        if ($this->active) {
-            $this->addAttributs("class",
-                                "active");
-            LibBreadcrumb::getInstance()->addTrail($text);
-        }
+        $this->setDataValue("text_with_rendering",
+                            $text);
 
         // Préparation des données
         $out = "";
         $end = "";
-        $attributs = $this->getAttributs();
+        $attribute = $this->renderAttributes();
         $text = "<span>" . $text . "</span>";
 
         // Extraction des balises de débuts et de fin et ajout du texte
         foreach ($this->tags as $tag) {
-            $out .= "<" . $tag . $attributs . ">" . $text;
+            $out .= "<" . $tag . $attribute . ">" . $text;
             $text = "";
             $end = $end . "</" . $tag . ">";
         }
 
         // Constuction des branches
-        if (!empty($this->child)) {
-            foreach ($this->child as $child) {
-                $out .= $child->toString($callback);
+        if (!empty($this->children)) {
+            foreach ($this->children as $child) {
+                $out .= $child->render($callback);
             }
         }
 
@@ -358,7 +347,7 @@ class LibMenuElement extends CoreDataStorage
     public function __destruct()
     {
         $this->item = array();
-        $this->removeAttributs();
+        $this->removeAllAttributes();
         $this->removeChild();
     }
 }

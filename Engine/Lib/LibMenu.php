@@ -4,6 +4,7 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreAccessType;
+use TREngine\Engine\Core\CoreAccessZone;
 use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreRequest;
@@ -23,61 +24,50 @@ class LibMenu
     /**
      * Identifiant du menu.
      *
-     * @var string
+     * @var int
      */
-    private $identifier = "";
+    private $identifier = -1;
 
     /**
-     * Menu complet et son arborescence.
-     *
-     * @var array
-     */
-    private $items = array();
-
-    /**
-     * Identifiant de l'élément actuellement actif.
+     * Identifiant du menu.
      *
      * @var int
      */
-    private $activeItemId = 0;
+    private $identifier = -1;
 
     /**
-     * Attributs de l'élément principal.
+     * L'ensemble des éléments du menu.
      *
-     * @var string
+     * @var LibMenuData[]
      */
-    private $attribtus = "";
+    private $menuDatas = array();
+
+    /**
+     * Identifiant de l'élément de menu actif.
+     *
+     * @var int
+     */
+    private $activeMenuId = 0;
 
     /**
      * Construction du menu.
      *
-     * @param string $identifier Identifiant du menu par exemple "block22"
+     * @param int $accessZone Nom de la zone.
+     * @param int $identifier Identifiant du contenu.
      * @param array $sql
      */
-    public function __construct(string $identifier,
+    public function __construct(int $identifier,
                                 array $sql = array())
     {
         $this->identifier = $identifier;
-        $this->activeItemId = CoreRequest::getInteger("item",
+        $this->activeMenuId = CoreRequest::getInteger("item",
                                                       0);
 
-        if ($this->isCached()) {
+        if ($this->cached()) {
             $this->loadFromCache();
         } else if (count($sql) >= 3) {
             $this->loadFromDb($sql);
         }
-    }
-
-    /**
-     * Ajoute un attribut à l'élément UL principal.
-     *
-     * @param string $name
-     * @param string $value
-     */
-    public function addAttributs(string $name,
-                                 string $value): void
-    {
-        $this->attribtus .= " " . $name . "=\"" . $value . "\"";
     }
 
     /**
@@ -89,35 +79,48 @@ class LibMenu
     public function &render(string $callback = "LibMenu::getLine"): string
     {
         $activeTree = array();
-        $activeItem = $this->getActiveItem();
+        $activeItem = $this->getActiveMenuData();
 
         if ($activeItem !== null) {
             $activeTree = $activeItem->getTree();
         }
 
-        foreach ($this->items as $key => $item) {
-            $item->setActive(ExecUtils::inArray($key,
-                                                $activeTree,
-                                                true));
+        foreach ($this->menuDatas as $key => $item) {
+            $active = ExecUtils::inArray($key,
+                                         $activeTree,
+                                         true);
+            if ($active) {
+                $this->addAttribute("class",
+                                    "active");
+            }
         }
 
         // Début de rendu
-        $out = "<ul id=\"" . $this->identifier . "\"" . $this->attribtus . ">";
+        $out = "<ul id=\"" . $this->identifier . "\"" . $this->attributes . ">";
 
         // Rendu des branches principaux
-        foreach ($this->items as $key => $item) {
+        foreach ($this->menuDatas as $key => $item) {
             if ($item->getParentId() == 0) {
+                // TODO // TODO
                 $infos = array(
-                    "zone" => "MENU",
+                    "zone" => CoreAccessZone::BLOCK,
                     "rank" => $item->getRank(),
                     "identifier" => $this->identifier);
 
-                if (CoreAccess::autorize(CoreAccessType::getTypeFromDatas($infos))) {
-                    $out .= $this->items[$key]->toString($callback);
+                $menuAccessType = CoreAccessType::getTypeFromArray($this->menuDatas[$key]);
+
+                if (CoreAccess::autorize($menuAccessType)) {
+                    $out .= $this->menuDatas[$key]->render($callback);
                 }
+                // TODO // TODO
             }
         }
         $out .= "</ul>";
+
+        if ($activeItem !== null) {
+            $textWithRendering = $this->getActiveMenuData()->getTextWithRendering();
+            LibBreadcrumb::getInstance()->addTrail($textWithRendering);
+        }
         return $out;
     }
 
@@ -192,18 +195,18 @@ class LibMenu
     }
 
     /**
-     * Retourne l'élément actif.
+     * Retourne l'élément de menu actif.
      *
-     * @return LibMenuElement
+     * @return LibMenuData
      */
-    private function getActiveItem(): ?LibMenuElement
+    private function getActiveMenuData(): ?LibMenuData
     {
-        $item = null;
+        $menuData = null;
 
-        if (isset($this->items[$this->activeItemId]) && is_object($this->items[$this->activeItemId])) {
-            $item = $this->items[$this->activeItemId];
+        if (isset($this->menuDatas[$this->activeMenuId])) {
+            $menuData = $this->menuDatas[$this->activeMenuId];
         }
-        return $item;
+        return $menuData;
     }
 
     /**
@@ -211,7 +214,7 @@ class LibMenu
      */
     private function loadFromCache(): void
     {
-        $this->items = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->identifier . ".php");
+        $this->menuDatas = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->identifier . ".php");
     }
 
     /**
@@ -219,7 +222,7 @@ class LibMenu
      *
      * @return bool
      */
-    private function isCached(): bool
+    private function cached(): bool
     {
         return (CoreCache::getInstance(CoreCacheSection::MENUS)->cached($this->identifier . ".php"));
     }
@@ -234,47 +237,40 @@ class LibMenu
         $coreSql = CoreSql::getInstance();
 
         $coreSql->select(
-            $sql['table'],
-            $sql['select'],
-            $sql['where'],
-            $sql['orderby'],
-            $sql['limit']
+                $sql['table'],
+                $sql['select'],
+                $sql['where'],
+                $sql['orderby'],
+                $sql['limit']
         );
 
         if ($coreSql->affectedRows() > 0) {
             // Création d'une mémoire tampon pour les menus
             $coreSql->addArrayBuffer($this->identifier,
                                      "menu_id");
-            $menus = $coreSql->getBuffer($this->identifier);
+            $menuArrayDatas = $coreSql->getBuffer($this->identifier);
 
             // Création de tous les menus
-            foreach ($menus as $key => $item) {
-                $this->items[$key] = new LibMenuElement($item,
-                                                        true);
+            foreach ($menuArrayDatas as $menuId => $data) {
+                $this->menuDatas[$menuId] = new LibMenuData($data,
+                                                            true);
             }
 
             // Création du chemin des menus
-            foreach ($this->items as $item) {
+            foreach ($this->menuDatas as $menuData) {
                 // Détermine le type de branche
-                if ($item->getParentId() > 0) {
+                if ($menuData->getParentId() >= 0) {
                     // Enfant d'une branche
-                    $item->addAttributs("class",
-                                        "item" . $item->getMenuId());
-                    $this->items[$item->getParentId()]->addChild($item);
-                } else if ($item->getParentId() == 0) {
-                    // Branche principal
-                    $item->addAttributs("class",
-                                        "parent");
+                    $menuData->addClassItemAttribute($menuData);
+                    $this->menuDatas[$menuData->getParentId()]->addChild($menuData);
+                } else {
+                    // Branche principale
+                    $menuData->addClassParentAttribute();
                 }
-
-                // Termine le chemin du menu avec son propre identifiant
-                $tree = $item->getTree();
-                $tree[] = $item->getMenuId();
-                $item->setTree($tree);
             }
 
             CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->identifier . ".php",
-                                                                                         $this->items);
+                                                                                         $this->menuDatas);
         }
     }
 }
