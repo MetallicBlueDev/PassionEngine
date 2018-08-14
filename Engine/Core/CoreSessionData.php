@@ -279,13 +279,13 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
 
             $coreSql->select(
                     CoreTable::USERS_RIGHTS,
-                    array("zone", "page", "block_id", "module_id"),
+                    array("zone", "page", "block_id", "module_id", "menu_id"),
                     array("user_id = '" . $this->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
                 foreach ($coreSql->fetchArray() as $rights) {
-                    $identifier = isset($rights['block_id']) && !empty($rights['block_id']) ? $rights['block_id'] : $rights['module_id'];
+                    $identifier = $rights['block_id'] ?? $rights['module_id'] ?? $rights['menu_id'];
                     $userAccessType = CoreAccessType::getTypeFromDatas($rights['zone'],
                                                                        $this->getRank(),
                                                                        $identifier,

@@ -4,7 +4,6 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreAccessType;
-use TREngine\Engine\Core\CoreAccessZone;
 use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreRequest;
@@ -22,18 +21,11 @@ class LibMenu
 {
 
     /**
-     * Identifiant du menu.
+     * Nom permettant d'identifier le contenu du menu.
      *
-     * @var int
+     * @var string
      */
-    private $identifier = -1;
-
-    /**
-     * Identifiant du menu.
-     *
-     * @var int
-     */
-    private $identifier = -1;
+    private $menuFriendlyName = "";
 
     /**
      * L'ensemble des éléments du menu.
@@ -47,21 +39,20 @@ class LibMenu
      *
      * @var int
      */
-    private $activeMenuId = 0;
+    private $activeMenuId = -1;
 
     /**
      * Construction du menu.
      *
-     * @param int $accessZone Nom de la zone.
-     * @param int $identifier Identifiant du contenu.
+     * @param string $menuFriendlyName Nom permettant d'identifier le contenu du menu.
      * @param array $sql
      */
-    public function __construct(int $identifier,
+    public function __construct(string $menuFriendlyName,
                                 array $sql = array())
     {
-        $this->identifier = $identifier;
-        $this->activeMenuId = CoreRequest::getInteger("item",
-                                                      0);
+        $this->menuFriendlyName = $menuFriendlyName;
+        $this->activeMenuId = CoreRequest::getInteger("activeMenuId",
+                                                      -1);
 
         if ($this->cached()) {
             $this->loadFromCache();
@@ -84,32 +75,12 @@ class LibMenu
             $activeMenuData->addClassActiveAttribute();
         }
 
-        // Début de rendu
-        $out = "<ul id=\"" . $this->identifier . "\">";
-
-        // Rendu des branches principaux
-        foreach ($this->menuDatas as $menuId => $menuData) {
-            if ($menuData->getParentId() >= 0) {
-                continue;
-            }
-
-            // TODO // TODO
-            $infos = array(
-                "zone" => CoreAccessZone::BLOCK,
-                "rank" => $menuData->getRank(),
-                "identifier" => $this->identifier);
-
-            $menuAccessType = CoreAccessType::getTypeFromArray($this->menuDatas[$menuId]);
-
-            if (CoreAccess::autorize($menuAccessType)) {
-                $out .= $this->menuDatas[$menuId]->render($callback);
-            }
-            // TODO // TODO
-        }
-        $out .= "</ul>";
+        $out = "<ul id=\"" . $this->menuFriendlyName . "\">"
+                . $this->renderMenuDatas($callback)
+                . "</ul>";
 
         if ($activeMenuData !== null) {
-            $textWithRendering = $this->getActiveMenuData()->getTextWithRendering();
+            $textWithRendering = $activeMenuData->getTextWithRendering();
             LibBreadcrumb::getInstance()->addTrail($textWithRendering);
         }
         return $out;
@@ -128,54 +99,19 @@ class LibMenu
         $text = ExecString::textDisplay($text);
 
         if (!empty($configs)) {
-            $bold = false;
-            $italic = false;
-            $underline = false;
-            $big = false;
-            $small = false;
-            $link = false;
+            $appliedKeys = array();
 
             // Application des options et styles
             foreach ($configs as $key => $value) {
-                switch ($key) {
-                    case "BOLD":
-                        if (!$bold) {
-                            $text = "<span class=\"text_bold\">" . $text . "</span>";
-                            $bold = true;
-                        }
-                        break;
-                    case "ITALIC":
-                        if (!$italic) {
-                            $text = "<span class=\"text_italic\">" . $text . "</span>";
-                            $italic = true;
-                        }
-                        break;
-                    case "UNDERLINE":
-                        if (!$underline) {
-                            $text = "<span class=\"text_underline\">" . $text . "</span>";
-                            $underline = true;
-                        }
-                        break;
-                    case "BIG":
-                        if (!$big) {
-                            $text = "<span class=\"text_big\">" . $text . "</span>";
-                            $big = true;
-                        }
-                        break;
-                    case "SMALL":
-                        if (!$small) {
-                            $text = "<span class=\"text_small\">" . $text . "</span>";
-                            $small = true;
-                        }
-                        break;
-                    case "A":
-                        if (!$link) {
-                            $text = CoreHtml::getLink($value,
-                                                      $text);
-                            $link = true;
-                        }
-                        break;
+                if (ExecUtils::inArrayStrictCaseInSensitive($key,
+                                                            $appliedKeys)) {
+                    continue;
                 }
+
+                $text = self::getLineText($text,
+                                          $key,
+                                          $value);
+                $appliedKeys[] = $key;
             }
 
             $output = $text;
@@ -183,6 +119,42 @@ class LibMenu
             $output = $text;
         }
         return $output;
+    }
+
+    /**
+     * Retourne le texte mise en forme.
+     *
+     * @param string $text Texte du lien.
+     * @param array $key "BOLD","ITALIC","UNDERLINE"...
+     * @param array $value "?" . CoreLayout::REQUEST_MODULE . "=home"
+     * @return string
+     */
+    private static function &getLineText(string &$text,
+                                         string $key,
+                                         string $value): string
+    {
+        switch ($key) {
+            case "BOLD":
+                $text = "<span class=\"text_bold\">" . $text . "</span>";
+                break;
+            case "ITALIC":
+                $text = "<span class=\"text_italic\">" . $text . "</span>";
+                break;
+            case "UNDERLINE":
+                $text = "<span class=\"text_underline\">" . $text . "</span>";
+                break;
+            case "BIG":
+                $text = "<span class=\"text_big\">" . $text . "</span>";
+                break;
+            case "SMALL":
+                $text = "<span class=\"text_small\">" . $text . "</span>";
+                break;
+            case "A":
+                $text = CoreHtml::getLink($value,
+                                          $text);
+                break;
+        }
+        return $text;
     }
 
     /**
@@ -194,7 +166,7 @@ class LibMenu
     {
         $menuData = null;
 
-        if (isset($this->menuDatas[$this->activeMenuId])) {
+        if ($this->activeMenuId >= 0 && isset($this->menuDatas[$this->activeMenuId])) {
             $menuData = $this->menuDatas[$this->activeMenuId];
         }
         return $menuData;
@@ -205,7 +177,7 @@ class LibMenu
      */
     private function loadFromCache(): void
     {
-        $this->menuDatas = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->identifier . ".php");
+        $this->menuDatas = CoreCache::getInstance(CoreCacheSection::MENUS)->readCacheAsArrayUnserialized($this->menuFriendlyName . ".php");
     }
 
     /**
@@ -215,7 +187,7 @@ class LibMenu
      */
     private function cached(): bool
     {
-        return (CoreCache::getInstance(CoreCacheSection::MENUS)->cached($this->identifier . ".php"));
+        return (CoreCache::getInstance(CoreCacheSection::MENUS)->cached($this->menuFriendlyName . ".php"));
     }
 
     /**
@@ -237,13 +209,13 @@ class LibMenu
 
         if ($coreSql->affectedRows() > 0) {
             // Création d'une mémoire tampon pour les menus
-            $coreSql->addArrayBuffer($this->identifier,
+            $coreSql->addArrayBuffer($this->menuFriendlyName,
                                      "menu_id");
-            $menuArrayDatas = $coreSql->getBuffer($this->identifier);
+            $menuArrayDatas = $coreSql->getBuffer($this->menuFriendlyName);
 
-            // TODO Chargement de la config du menu
+            // TODO Chargement de la config du menu --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO
             $menuArrayDatas['menu_config'] = array();
-
+// --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO
             // Création de tous les menus
             foreach ($menuArrayDatas as $menuId => $data) {
                 $this->menuDatas[$menuId] = new LibMenuData($data,
@@ -263,8 +235,32 @@ class LibMenu
                 }
             }
 
-            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->identifier . ".php",
+            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->menuFriendlyName . ".php",
                                                                                          $this->menuDatas);
         }
+    }
+
+    /**
+     * Retourne le rendu des éléments de menu.
+     *
+     * @param string $callback
+     * @return string
+     */
+    private function &renderMenuDatas(string $callback): string
+    {
+        $out = "";
+
+        foreach ($this->menuDatas as $menuData) {
+            if ($menuData->getParentId() >= 0) {
+                continue;
+            }
+
+            $menuAccessType = CoreAccessType::getTypeFromToken($menuData);
+
+            if (CoreAccess::autorize($menuAccessType)) {
+                $out .= $menuData->render($callback);
+            }
+        }
+        return $out;
     }
 }

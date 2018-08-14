@@ -28,8 +28,9 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
 
     /**
      * Attributs de l'élément de menu.
+     * Tableau à deux dimensions.
      *
-     * @var array(class => array(value1, value2)) Tableau à deux dimensions
+     * @var array(attributeName => array(0 => value1))
      */
     private $attributes = array();
 
@@ -116,7 +117,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getZone(): string
     {
-        $zone = CoreAccessZone::BLOCK;
+        $zone = CoreAccessZone::MENU;
         return $zone;
     }
 
@@ -228,9 +229,8 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     public function &hasAttributeValue(string $name,
                                        string $value): bool
     {
-        return ExecUtils::inArray($value,
-                                  $this->attributs[$name],
-                                  true);
+        return ExecUtils::inArrayStrictCaseInSensitive($value,
+                                                       $this->attributs[$name]);
     }
 
     /**
@@ -248,7 +248,9 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     {
         $this->addClassAttribute(self::ITEM_ACTIVE);
 
-        // TODO RECURSIVE
+        foreach ($this->children as $child) {
+            $child->addClassActiveAttribute();
+        }
     }
 
     /**
@@ -333,26 +335,27 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
+     * Détermine l'élement possède ce noeud enfant.
+     *
+     * @param LibMenuData $child
+     * @return bool
+     */
+    public function &hasChild(LibMenuData &$child): bool
+    {
+        $rslt = isset($this->children[$child->getId()]);
+        return $rslt;
+    }
+
+    /**
      * Ajoute un enfant à l'élément courant.
      *
      * @param LibMenuData $child
      */
     public function addChild(LibMenuData &$child): void
     {
-        // Ajout du tag UL si c'est le 1er enfant
-        if (empty($this->children)) {
-            $this->addTags("ul");
+        if (!$this->hasChild($child)) {
+            $this->insertChild($child);
         }
-
-        // Ajoute la classe parent
-        $this->addClassParentAttribute();
-
-        // Ajoute la classe élément
-        if ($this->getParentId() >= 0) {
-            $this->addClassItemAttribute($this);
-        }
-
-        $this->children[$child->getId()] = &$child;
     }
 
     /**
@@ -458,6 +461,29 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     public function unsetAttribute(string $name): void
     {
         unset($this->attributes[$name]);
+    }
+
+    /**
+     * Insertion de l'enfant à l'élément courant.
+     *
+     * @param LibMenuData $child
+     */
+    private function insertChild(LibMenuData &$child): void
+    {
+        // Ajout du tag UL si c'est le 1er enfant
+        if (empty($this->children)) {
+            $this->addTags("ul");
+        }
+
+        // Ajoute la classe parent
+        $this->addClassParentAttribute();
+
+        // Ajoute la classe élément
+        if ($this->getParentId() >= 0) {
+            $this->addClassItemAttribute($this);
+        }
+
+        $this->children[$child->getId()] = &$child;
     }
 
     /**
