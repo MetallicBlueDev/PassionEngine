@@ -74,9 +74,9 @@ class LibModuleData extends LibEntityData
      *
      * @return int
      */
-    public function &getId(): string
+    public function &getId(): int
     {
-        return $this->getIdAsInt();
+        return $this->getInt("module_id", -1);
     }
 
     /**
@@ -135,17 +135,6 @@ class LibModuleData extends LibEntityData
     public function &getRank(): int
     {
         return $this->getInt("rank");
-    }
-
-    /**
-     * Retourne l'identifiant du module.
-     *
-     * @return int
-     */
-    public function &getIdAsInt(): int
-    {
-        return $this->getInt("module_id",
-                             -1);
     }
 
     /**
