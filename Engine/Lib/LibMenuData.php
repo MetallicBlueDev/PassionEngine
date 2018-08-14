@@ -242,6 +242,16 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
+     * Ajoute de l'attribut 'class' avec la valeur 'active' à l'élément de menu.
+     */
+    public function addClassActiveAttribute(): void
+    {
+        $this->addClassAttribute(self::ITEM_ACTIVE);
+
+        // TODO RECURSIVE
+    }
+
+    /**
      * Ajoute de l'attribut 'class' avec la valeur 'item'+identifiant à l'élément de menu.
      *
      * @param LibMenuData $menuData

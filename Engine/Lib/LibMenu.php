@@ -78,46 +78,37 @@ class LibMenu
      */
     public function &render(string $callback = "LibMenu::getLine"): string
     {
-        $activeTree = array();
-        $activeItem = $this->getActiveMenuData();
+        $activeMenuData = $this->getActiveMenuData();
 
-        if ($activeItem !== null) {
-            $activeTree = $activeItem->getTree();
-        }
-
-        foreach ($this->menuDatas as $key => $item) {
-            $active = ExecUtils::inArray($key,
-                                         $activeTree,
-                                         true);
-            if ($active) {
-                $this->addAttribute("class",
-                                    "active");
-            }
+        if ($activeMenuData !== null) {
+            $activeMenuData->addClassActiveAttribute();
         }
 
         // Début de rendu
-        $out = "<ul id=\"" . $this->identifier . "\"" . $this->attributes . ">";
+        $out = "<ul id=\"" . $this->identifier . "\">";
 
         // Rendu des branches principaux
-        foreach ($this->menuDatas as $key => $item) {
-            if ($item->getParentId() == 0) {
-                // TODO // TODO
-                $infos = array(
-                    "zone" => CoreAccessZone::BLOCK,
-                    "rank" => $item->getRank(),
-                    "identifier" => $this->identifier);
-
-                $menuAccessType = CoreAccessType::getTypeFromArray($this->menuDatas[$key]);
-
-                if (CoreAccess::autorize($menuAccessType)) {
-                    $out .= $this->menuDatas[$key]->render($callback);
-                }
-                // TODO // TODO
+        foreach ($this->menuDatas as $menuId => $menuData) {
+            if ($menuData->getParentId() >= 0) {
+                continue;
             }
+
+            // TODO // TODO
+            $infos = array(
+                "zone" => CoreAccessZone::BLOCK,
+                "rank" => $menuData->getRank(),
+                "identifier" => $this->identifier);
+
+            $menuAccessType = CoreAccessType::getTypeFromArray($this->menuDatas[$menuId]);
+
+            if (CoreAccess::autorize($menuAccessType)) {
+                $out .= $this->menuDatas[$menuId]->render($callback);
+            }
+            // TODO // TODO
         }
         $out .= "</ul>";
 
-        if ($activeItem !== null) {
+        if ($activeMenuData !== null) {
             $textWithRendering = $this->getActiveMenuData()->getTextWithRendering();
             LibBreadcrumb::getInstance()->addTrail($textWithRendering);
         }
@@ -249,6 +240,9 @@ class LibMenu
             $coreSql->addArrayBuffer($this->identifier,
                                      "menu_id");
             $menuArrayDatas = $coreSql->getBuffer($this->identifier);
+
+            // TODO Chargement de la config du menu
+            $menuArrayDatas['menu_config'] = array();
 
             // Création de tous les menus
             foreach ($menuArrayDatas as $menuId => $data) {
