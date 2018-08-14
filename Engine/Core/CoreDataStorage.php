@@ -28,6 +28,14 @@ abstract class CoreDataStorage
     }
 
     /**
+     * Nettoyage à la destruction.
+     */
+    public function __destruct()
+    {
+        unset($this->data);
+    }
+
+    /**
      * Initialise les données.
      *
      * @param array $data

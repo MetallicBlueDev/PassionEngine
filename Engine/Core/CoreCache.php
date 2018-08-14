@@ -143,7 +143,7 @@ class CoreCache extends CacheModel
      */
     public function initialize(array &$cache): void
     {
-// NE RIEN FAIRE
+        // NE RIEN FAIRE
         unset($cache);
     }
 
@@ -152,6 +152,7 @@ class CoreCache extends CacheModel
      */
     public function __destruct()
     {
+        parent::__destruct();
         $this->selectedCache = null;
     }
 
