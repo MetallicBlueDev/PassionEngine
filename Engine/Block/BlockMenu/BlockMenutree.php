@@ -18,7 +18,7 @@ class BlockMenutree extends BlockMenu
     {
         $this->configure();
         $menus = $this->getMenu();
-        $menus->addAttributs("class",
+        $menus->addAttribute("class",
                              "treeview");
 
         $libMakeStyle = new LibMakeStyle();
