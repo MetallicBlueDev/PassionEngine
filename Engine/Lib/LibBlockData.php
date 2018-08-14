@@ -61,7 +61,8 @@ class LibBlockData extends LibEntityData
      */
     public function &getId(): int
     {
-        return $this->getInt("block_id", -1);
+        return $this->getInt("block_id",
+                             -1);
     }
 
     /**
@@ -145,9 +146,8 @@ class LibBlockData extends LibEntityData
         $configs = $this->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if (ExecUtils::inArray("rewriteBuffer",
-                               $configs,
-                               false)) {
+        if (ExecUtils::inArrayStrictCaseInSensitive("rewriteBuffer",
+                                                    $configs)) {
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
 

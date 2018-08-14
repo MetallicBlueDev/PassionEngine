@@ -444,10 +444,9 @@ abstract class BaseModel extends CoreTransaction
                                  bool $isValue = false): string
     {
         // Ne pas quoter les champs avec la notation avec les point
-        if (($isValue && !ExecUtils::inArray($s,
-                                             $this->quoted,
-                                             true)) || (!$isValue && strpos($s,
-                                                                            ".") === false && !isset($this->quoted[$s]))) {
+        if (($isValue && !ExecUtils::inArrayStrictCaseSensitive($s,
+                                                   $this->quoted)) || (!$isValue && strpos($s,
+                                                                                           ".") === false && !isset($this->quoted[$s]))) {
             if ($isValue) {
                 $q = $this->quoteValue;
             } else {

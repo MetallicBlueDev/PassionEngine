@@ -31,7 +31,9 @@ class ExecImage
      * @param int $heightDefault
      * @return string
      */
-    public static function &getTag(string $url, int $widthDefault = 350, int $heightDefault = -1): string
+    public static function &getTag(string $url,
+                                   int $widthDefault = 350,
+                                   int $heightDefault = -1): string
     {
         $img = "";
 
@@ -79,9 +81,9 @@ class ExecImage
         if (is_file($url)) {
             $infos = getimagesize($url);
 
-            if ($infos !== false && isset($infos[2]) && ExecUtils::inArray($infos[2],
-                                                                           self::TYPE_LIST,
-                                                                           true)) {
+            if ($infos !== false && isset($infos[2]) && ExecUtils::inArrayStrictCaseSensitive($infos[2],
+                                                                                              self::TYPE_LIST
+                    )) {
                 $type[] = isset($infos[0]) ? $infos[0] : 0;
                 $type[] = isset($infos[1]) ? $infos[1] : 0;
                 $type[] = $infos[2];

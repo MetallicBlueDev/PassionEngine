@@ -31,4 +31,11 @@ class CoreAccessZone
      */
     public const SESSION = "SESSION";
 
+    /**
+     * Zone pour un élément de menu.
+     *
+     * @var string
+     */
+    public const MENU = "MENU";
+
 }

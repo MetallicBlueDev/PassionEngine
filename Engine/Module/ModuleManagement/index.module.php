@@ -37,10 +37,10 @@ class Module_Management_Index extends ModuleModel
         $managementScreen = "module_management_index";
         $pageSelected = "";
         if (!empty($managePage)) { // Affichage d'une page de configuration spécial
-            $settingPage = ExecUtils::inMultiArray($managePage,
-                                                   $pageList);
-            $moduleSettingPage = ExecUtils::inMultiArray($managePage,
-                                                         $moduleList);
+            $settingPage = ExecUtils::inArrayStrictCaseInSensitive($managePage,
+                                                                   $pageList);
+            $moduleSettingPage = ExecUtils::inArrayStrictCaseInSensitive($managePage,
+                                                                         $moduleList);
 
             // Si c'est une page valide
             if ($settingPage || $moduleSettingPage) {
@@ -145,7 +145,9 @@ class Module_Management_Index extends ModuleModel
      * @param string $description
      * @param string $link
      */
-    private static function addButtonInToolbar($name, $description, $link)
+    private static function addButtonInToolbar($name,
+                                               $description,
+                                               $link)
     {
         self::$toolbar[] = array(
             "name" => $name,
@@ -154,7 +156,8 @@ class Module_Management_Index extends ModuleModel
         );
     }
 
-    public static function addEditButtonInToolbar($link, $description = "")
+    public static function addEditButtonInToolbar($link,
+                                                  $description = "")
     {
         if (empty($description))
             $description = EDIT;
@@ -163,7 +166,8 @@ class Module_Management_Index extends ModuleModel
                                  $link);
     }
 
-    public static function addDeleteButtonInToolbar($link, $description = "")
+    public static function addDeleteButtonInToolbar($link,
+                                                    $description = "")
     {
         if (empty($description))
             $description = DELETE;
@@ -172,7 +176,8 @@ class Module_Management_Index extends ModuleModel
                                  $link);
     }
 
-    public static function addCopyButtonInToolbar($link, $description = "")
+    public static function addCopyButtonInToolbar($link,
+                                                  $description = "")
     {
         if (empty($description))
             $description = COPY;
@@ -181,7 +186,8 @@ class Module_Management_Index extends ModuleModel
                                  $link);
     }
 
-    public static function addAddButtonInToolbar($link, $description = "")
+    public static function addAddButtonInToolbar($link,
+                                                 $description = "")
     {
         if (empty($description))
             $description = ADD;

@@ -56,11 +56,11 @@ class Module_Management_Setting extends ModuleModel
                                  $value)
     {
         CoreSql::getInstance()->update(
-            CoreTable::CONFIG_TABLE,
-            array(
-                "value" => $value),
-            array(
-                "name = '" . $key . "'")
+                CoreTable::CONFIG_TABLE,
+                array(
+                    "value" => $value),
+                array(
+                    "name = '" . $key . "'")
         );
     }
 
@@ -256,8 +256,8 @@ class Module_Management_Setting extends ModuleModel
                                                   CoreRequestType::POST);
         if ($coreMain->getConfigs()->getDefaultLanguage() != $defaultLanguage) {
             $langues = CoreTranslate::getLangList();
-            if (!empty($defaultLanguage) && ExecUtils::inArray($defaultLanguage,
-                                                               $langues)) {
+            if (!empty($defaultLanguage) && ExecUtils::inArrayStrictCaseInSensitive($defaultLanguage,
+                                                                                    $langues)) {
                 $this->updateTable("defaultLanguage",
                                    $defaultLanguage);
                 $deleteCache = true;
@@ -271,8 +271,8 @@ class Module_Management_Setting extends ModuleModel
                                                   CoreRequestType::POST);
         if ($coreMain->getConfigs()->getDefaultTemplate() != $defaultTemplate) {
             $templates = LibMakeStylegetTemplateListes();
-            if (!empty($defaultTemplate) && ExecUtils::inArray($defaultTemplate,
-                                                               $templates)) {
+            if (!empty($defaultTemplate) && ExecUtils::inArrayStrictCaseInSensitive($defaultTemplate,
+                                                                                    $templates)) {
                 $this->updateTable("defaultTemplate",
                                    $defaultTemplate);
                 $deleteCache = true;

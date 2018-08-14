@@ -65,7 +65,8 @@ abstract class LibEntityModel
      */
     public function &isInViewList(string $view): bool
     {
-        $inArray = empty($view) || ExecUtils::inArray($view, $this->getViewList());
+        $inArray = empty($view) || ExecUtils::inArrayStrictCaseInSensitive($view,
+                                                                           $this->getViewList());
         return $inArray;
     }
 

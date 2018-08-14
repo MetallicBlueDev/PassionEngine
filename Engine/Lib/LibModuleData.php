@@ -76,7 +76,8 @@ class LibModuleData extends LibEntityData
      */
     public function &getId(): int
     {
-        return $this->getInt("module_id", -1);
+        return $this->getInt("module_id",
+                             -1);
     }
 
     /**
@@ -119,9 +120,8 @@ class LibModuleData extends LibEntityData
         $configs = $this->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if ($configs !== null && ExecUtils::inArray("rewriteBuffer",
-                                                    $configs,
-                                                    false)) {
+        if ($configs !== null && ExecUtils::inArrayStrictCaseInSensitive("rewriteBuffer",
+                                                                         $configs)) {
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
         return $buffer;

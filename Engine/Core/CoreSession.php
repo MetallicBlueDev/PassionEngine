@@ -8,7 +8,6 @@ use TREngine\Engine\Exec\ExecEmail;
 use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire de sessions.

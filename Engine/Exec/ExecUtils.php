@@ -3,7 +3,7 @@
 namespace TREngine\Engine\Exec;
 
 /**
- * Fonction optimisée et utilitaire.
+ * Utilitaire.
  *
  * @author Sébastien Villemain
  */
@@ -19,59 +19,52 @@ class ExecUtils
     private static $memorizedTimestamp = 0;
 
     /**
-     * Indique si une valeur appartient à un tableau.
-     * in_array() optimized function.
+     * Indique si la valeur appartient à au tableau.
+     * La comparaison est fiable, cependant ;
+     * - Les types doivent être identiques
+     * - La comparaison est sensible à la case
      *
-     * @param string $needle
-     * @param array $haystack
-     * @param bool $strict
+     * @param mixed $needle La valeur recherchée.
+     * @param array $haystack Tableau du même type dans lequel il faut rechercher.
      * @return bool
      */
-    public static function &inArray(string $needle,
-                                    array $haystack,
-                                    bool $strict = false): bool
+    public static function &inArrayStrictCaseSensitive($needle,
+                                                       array $haystack): bool
     {
-        $rslt = false;
-
-        foreach ($haystack as $value) {
-            if ((!$strict && $needle == $value) || ($strict && $needle === $value)) {
-                $rslt = true;
-                break;
-            }
-        }
+        $rslt = in_array($needle,
+                         $haystack,
+                         true);
         return $rslt;
     }
 
     /**
-     * Indique si une valeur appartient à un tableau (tableau multiple).
-     * Tableau à dimension multiple.
-     * in_array() multi array function.
+     * Indique si la valeur appartient à au tableau.
+     * La comparaison est fiable, cependant ;
+     * - Les types doivent être identiques (string)
      *
-     * @param string $needle
-     * @param array $haystack
-     * @param bool $strict
+     * @param string $needle La valeur recherchée.
+     * @param array $haystack Tableau de string dans lequel il faut rechercher.
+     * @param array $caseSensitive Sensible à la case ou non.
      * @return bool
      */
-    public static function &inMultiArray(string $needle,
-                                         array $haystack,
-                                         bool $strict = false): bool
+    public static function &inArrayStrictCaseInSensitive(string $needle,
+                                                         array $haystack,
+                                                         bool $caseSensitive = false): bool
     {
-        $rslt = false;
+        if (!$caseSensitive) {
 
-        foreach ($haystack as $value) {
-            if (is_array($value)) {
-                if (self::inMultiArray($needle,
-                                       $value)) {
-                    $rslt = true;
-                    break;
-                }
-            } else {
-                if ((!$strict && $needle == $value) || ($strict && $needle === $value)) {
-                    $rslt = true;
-                    break;
-                }
+            function toLowerString(string $value): string
+            {
+                return strtolower($value);
             }
+            $needle = strtolower($needle);
+            $haystack = array_map('toLowerString',
+                                  $haystack);
         }
+
+        $rslt = in_array($needle,
+                         $haystack,
+                         true);
         return $rslt;
     }
 

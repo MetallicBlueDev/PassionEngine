@@ -31,9 +31,8 @@ class BlockIndex extends BlockModel
         $this->configure();
 
         // Si le module courant fait partie de la liste des affichages
-        if (ExecUtils::inArray(CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName(),
-                               $this->displayOnModule,
-                               true)) {
+        if (ExecUtils::inArrayStrictCaseInSensitive(CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName(),
+                                                    $this->displayOnModule)) {
             // Si la position est interieur au module (moduletop ou modulebottom)
             if ($this->getBlockData()->getSide() == 5 || $this->getBlockData()->getSide() == 6) {
                 echo $this->render();
