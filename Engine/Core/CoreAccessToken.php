@@ -20,9 +20,9 @@ interface CoreAccessToken
     /**
      * Retourne l'identifiant de la zone d'échange.
      *
-     * @return string
+     * @return int
      */
-    public function &getId(): string;
+    public function &getId(): int;
 
     /**
      * Retourne le nom spécifique de la zone d'échange.

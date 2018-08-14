@@ -43,11 +43,12 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
     /**
      * Identifiant du client.
      *
-     * @return string
+     * @return int
      */
-    public function &getId(): string
+    public function &getId(): int
     {
-        return $this->getIdAsInt();
+        return $this->getInt("user_id",
+                             -1);
     }
 
     /**
@@ -79,7 +80,7 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getZone(): string
     {
-        $zone = "SESSION";
+        $zone = CoreAccessZone::SESSION;
         return $zone;
     }
 
@@ -91,16 +92,6 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
     public function &getData(): array
     {
         return $this->getStorage();
-    }
-
-    /**
-     * Identifiant du client.
-     *
-     * @return string
-     */
-    public function &getIdAsInt(): string
-    {
-        return $this->getInt("user_id");
     }
 
     /**
@@ -287,18 +278,20 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
             $coreSql = CoreSql::getInstance();
 
             $coreSql->select(
-                CoreTable::USERS_RIGHTS,
-                array(
-                    "zone",
-                    "page",
-                    "identifier"),
-                array(
-                    "user_id = '" . $this->getId() . "'")
+                    CoreTable::USERS_RIGHTS,
+                    array("zone", "page", "block_id", "module_id"),
+                    array("user_id = '" . $this->getId() . "'")
             );
 
             if ($coreSql->affectedRows() > 0) {
                 foreach ($coreSql->fetchArray() as $rights) {
-                    $accessTypes[] = CoreAccessType::getTypeFromDatas($rights);
+                    $identifier = isset($rights['block_id']) && !empty($rights['block_id']) ? $rights['block_id'] : $rights['module_id'];
+                    $userAccessType = CoreAccessType::getTypeFromDatas($rights['zone'],
+                                                                       $this->getRank(),
+                                                                       $identifier,
+                                                                       "user access type");
+                    $userAccessType->setPage($rights['page']);
+                    $accessTypes[] = $userAccessType;
                 }
             }
         }

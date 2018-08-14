@@ -80,6 +80,13 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     abstract public function &getFinalOutput(): string;
 
     /**
+     * Détermine si l'entité peut être utilisée.
+     *
+     * @return bool true L'entité peut être utilisée.
+     */
+    abstract public function &canUse(): bool;
+
+    /**
      * Retourne les données temporaires de sortie compilées.
      *
      * @return string

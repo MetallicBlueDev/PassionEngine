@@ -47,15 +47,15 @@ abstract class LibEntity
     /**
      * Retourne les informations de l'entité via son nom.
      *
-     * @param string $entityName Nom de l'entité.
+     * @param string $entityFolderName Nom de l'entité.
      * @return LibBlockData Informations sur l'entité.
      */
-    protected function &getEntityDataByName(string $entityName): LibEntityData
+    protected function &getEntityDataByFolderName(string $entityFolderName): LibEntityData
     {
-        $entityId = $this->requestEntityId($entityName);
+        $entityId = $this->requestEntityId($entityFolderName);
 
         if ($entityId < 0) {
-            $this->throwException("invalid entity name", 15, array($entityName));
+            $this->throwException("invalid entity folder name", FailBase::getErrorCodeName(15), array($entityFolderName));
         }
         return $this->getEntityData($entityId);
     }
@@ -70,8 +70,8 @@ abstract class LibEntity
     {
         $entityData = null;
 
-        if ($this->isInCache($entityId)) {
-            $entityData = $this->getFromCache($entityId);
+        if ($this->cached($entityId)) {
+            $entityData = $this->getCache($entityId);
         } else {
             $dbRequest = false;
             $blockArrayDatas = $this->requestBlockData($entityId,
@@ -80,48 +80,46 @@ abstract class LibEntity
             // Injection des informations du block
             $entityData = new LibBlockData($blockArrayDatas,
                                            $dbRequest);
-            $this->addInCache($entityData);
+            $this->addCache($entityData);
         }
         return $entityData;
     }
 
     /**
-     * Compilation d'un block.
+     * Compilation de l'entité.
      *
-     * @param LibBlockData $blockData
-     * @param bool $checkModule
+     * @param LibEntityData $entityData
      */
-    public function buildBlockData(LibBlockData $blockData,
-                                   bool $checkModule): void
+    public function buildEntityData(LibEntityData $entityData): void
     {
-        if ($blockData->isValid() && $blockData->canActive($checkModule)) {
-            $this->fireBuildEntityData($blockData);
+        if ($entityData->isValid() && $entityData->canUse()) {
+            $this->fireBuildEntityData($entityData);
         }
     }
 
     /**
-     * Retourne l'identifiant du block.
+     * Retourne l'identifiant de l'entité.
      *
-     * @param string $blockTypeName
+     * @param string $entityFolderName
      * @return int
      */
-    private function &requestEntityId(string $blockTypeName): int
+    private function &requestEntityId(string $entityFolderName): int
     {
-        $blockId = -1;
+        $entityId = -1;
 
         if (!empty($this->entityDatas)) {
-            foreach ($this->entityDatas as $blockData) {
-                if ($blockData->getType() === $blockTypeName) {
-                    $blockId = $blockData->getIdAsInt();
+            foreach ($this->entityDatas as $entityData) {
+                if ($entityData->getFolderName() === $entityFolderName) {
+                    $entityId = $entityData->getId();
                     break;
                 }
             }
         }
 
-        if ($blockId < 0) {
-            $blockId = $this->loadBlockId($blockTypeName);
+        if ($entityId < 0) {
+            $entityId = $this->loadBlockId($entityFolderName);
         }
-        return $blockId;
+        return $entityId;
     }
 
     /**
@@ -226,7 +224,7 @@ abstract class LibEntity
      *
      * @param LibEntityData $entityData
      */
-    private function addInCache(LibEntityData &$entityData): void
+    private function addCache(LibEntityData &$entityData): void
     {
         $this->entityDatas[$entityData->getId()] = $entityData;
     }
@@ -237,7 +235,7 @@ abstract class LibEntity
      * @param int $entityId
      * @return LibEntityData
      */
-    public function &getFromCache(int $entityId): LibEntityData
+    public function &getCache(int $entityId): LibEntityData
     {
         return $this->entityDatas[$entityId];
     }
@@ -248,7 +246,7 @@ abstract class LibEntity
      * @param int $entityId
      * @return bool
      */
-    public function &isInCache(int $entityId): bool
+    public function &cached(int $entityId): bool
     {
         $rslt = isset($this->entityDatas[$entityId]);
         return $rslt;

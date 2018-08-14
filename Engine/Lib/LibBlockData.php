@@ -57,11 +57,11 @@ class LibBlockData extends LibEntityData
     /**
      * Retourne l'identifiant du block.
      *
-     * @return string
+     * @return int
      */
-    public function &getId(): string
+    public function &getId(): int
     {
-        return $this->getIdAsInt();
+        return $this->getInt("block_id", -1);
     }
 
     /**
@@ -155,14 +155,22 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne l'identifiant du block.
+     * Détermine si l'entité peut être utilisée.
      *
-     * @return int
+     * @return bool true L'entité peut être utilisée.
      */
-    public function &getIdAsInt(): int
+    public function &canUse(): bool
     {
-        return $this->getInt("block_id",
-                             -1);
+        $rslt = false;
+
+        if (CoreAccess::autorize(CoreAccessType::getTypeFromToken($this))) {
+            if (CoreMain::getInstance()->getRoute()->isBlockLayout()) {
+                $rslt = true;
+            } else {
+                $rslt = $this->canActiveForModule();
+            }
+        }
+        return $rslt;
     }
 
     /**
@@ -251,26 +259,6 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Vérifie si le block doit être activé.
-     *
-     * @param bool $checkModule
-     * @return bool true le block doit être actif.
-     */
-    public function &canActive(bool $checkModule = true): bool
-    {
-        $rslt = false;
-
-        if (CoreAccess::autorize(CoreAccessType::getTypeFromToken($this))) {
-            if ($checkModule) {
-                $rslt = $this->canActiveForModule();
-            } else {
-                $rslt = true;
-            }
-        }
-        return $rslt;
-    }
-
-    /**
      * Vérifie si le block doit être activé sur le module actuel.
      *
      * @return bool
@@ -283,7 +271,7 @@ class LibBlockData extends LibEntityData
             if ($this->canDisplayOnAllModules()) {
                 $rslt = true;
             } else {
-                $selectedModuleId = CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getIdAsInt();
+                $selectedModuleId = CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getId();
 
                 foreach ($this->getAllowedModules() as $allowedModule) {
                     if ($selectedModuleId === $allowedModule['module_id']) {

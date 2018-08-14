@@ -24,4 +24,11 @@ class CoreAccessZone
      */
     public const BLOCK = "BLOCK";
 
+    /**
+     * Zone pour un client/une session.
+     *
+     * @var string
+     */
+    public const SESSION = "SESSION";
+
 }

@@ -272,7 +272,7 @@ class LibBlock
         if (!empty($this->blockDatas)) {
             foreach ($this->blockDatas as $blockData) {
                 if ($blockData->getType() === $blockTypeName) {
-                    $blockId = $blockData->getIdAsInt();
+                    $blockId = $blockData->getId();
                     break;
                 }
             }

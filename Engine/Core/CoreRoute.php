@@ -289,7 +289,7 @@ class CoreRoute
      */
     public function setBlockData(LibBlockData $blockData): CoreRoute
     {
-        return $this->setBlockId($blockData->getIdAsInt());
+        return $this->setBlockId($blockData->getId());
     }
 
     /**
@@ -498,7 +498,7 @@ class CoreRoute
             $blockData = null;
         }
 
-        $this->blockId = ($blockData !== null) ? $blockData->getIdAsInt() : -1;
+        $this->blockId = ($blockData !== null) ? $blockData->getId() : -1;
 
         if (!empty($this->blockType)) {
             $this->blockType = ($blockData !== null) ? $blockData->getType() : "";
@@ -520,7 +520,7 @@ class CoreRoute
             $blockData = $this->getRequestedBlockDataByType();
         }
 
-        if ($blockData !== null && $blockData->getIdAsInt() < 0) {
+        if ($blockData !== null && $blockData->getId() < 0) {
             $blockData = null;
         }
 
@@ -546,7 +546,7 @@ class CoreRoute
         if (!empty($this->module)) {
             $moduleData = $this->getRequestedModuleData();
 
-            if ($moduleData->getIdAsInt() >= 0) {
+            if ($moduleData->getId() >= 0) {
                 $this->requestedOrDefaultPage();
                 $this->requestedOrDefaultView();
 

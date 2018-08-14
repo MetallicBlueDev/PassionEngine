@@ -21,11 +21,18 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     private const FULL_ACCESS = "all";
 
     /**
-     * Cache d'accès typé.
+     * Identifiant de l'accès passe partout.
      *
-     * @var CoreAccessType[]
+     * @var int
      */
-    private static $cache = array();
+    private const FULL_ACCESS_ID = -555;
+
+    /**
+     * Cache pour l'accès passe partout.
+     *
+     * @var CoreAccessType
+     */
+    private static $fullAccessType = null;
 
     /**
      * Nouveau type d'accès à vérifier.
@@ -39,31 +46,17 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Retourne l'accès depuis la table d'information.
-     *
-     * @param array $rights
-     * @return CoreAccessType
-     */
-    public static function &getTypeFromDatas(array &$rights): CoreAccessType
-    {
-        $newAccess = new CoreAccessType($rights);
-        return $newAccess;
-    }
-
-    /**
      * Retourne l'accès spécifique suivant la zone.
      *
-     * @param CoreAccessToken $data
+     * @param CoreAccessToken $token
      * @return CoreAccessType
      */
-    public static function &getTypeFromToken(CoreAccessToken $data): CoreAccessType
+    public static function &getTypeFromToken(CoreAccessToken $token): CoreAccessType
     {
-        $infos = array(
-            "zone" => $data->getZone(),
-            "rank" => $data->getRank(),
-            "identifier" => $data->getId(),
-            "name" => $data->getName());
-        return self::getTypeFromDatas($infos);
+        return self::getTypeFromDatas($token->getZone(),
+                                      $token->getRank(),
+                                      $token->getId(),
+                                      $token->getName());
     }
 
     /**
@@ -73,14 +66,35 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public static function &getTypeFromAdmin(): CoreAccessType
     {
-        if (!isset(self::$cache[self::FULL_ACCESS])) {
-            $infos = array(
-                "zone" => self::FULL_ACCESS,
-                "rank" => self::FULL_ACCESS,
-                "identifier" => self::FULL_ACCESS);
-            self::$cache[self::FULL_ACCESS] = self::getTypeFromDatas($infos);
+        if (self::$fullAccessType === null) {
+            self::$fullAccessType = self::getTypeFromDatas(self::FULL_ACCESS,
+                                                           CoreAccessRank::ADMIN,
+                                                           self::FULL_ACCESS_ID,
+                                                           "admin");
         }
-        return self::$cache[self::FULL_ACCESS];
+        return self::$fullAccessType;
+    }
+
+    /**
+     * Retourne l'accès spécifique suivant les données précisées.
+     *
+     * @param string $zone
+     * @param int $rank
+     * @param int $identifier
+     * @param string $name
+     * @return CoreAccessType
+     */
+    public static function &getTypeFromDatas(string $zone,
+                                             int $rank,
+                                             int $identifier,
+                                             string $name): CoreAccessType
+    {
+        $infos = array(
+            "zone" => $zone,
+            "rank" => $rank,
+            "identifier" => $identifier,
+            "name" => $name);
+        return self::getTypeFromArray($infos);
     }
 
     /**
@@ -121,7 +135,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      *
      * @param string $newPage
      */
-    public function &setPage(string $newPage)
+    public function setPage(string $newPage)
     {
         $this->setDataValue("page",
                             $newPage);
@@ -129,14 +143,14 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Identifiant du type d'accès (par exemple 01 ou une page précise).
+     * Identifiant du type d'accès.
      * Valeur nulle possible, notamment en base de données.
      *
-     * @return string
+     * @return int
      */
-    public function &getId(): string
+    public function &getId(): int
     {
-        return $this->getString("identifier");
+        return $this->getInt("identifier");
     }
 
     /**
@@ -213,13 +227,25 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
         $rslt = false;
 
         if ($otherAccessType->getZone() === $this->getZone() || $otherAccessType->getZone() === self::FULL_ACCESS) {
-            if ($otherAccessType->getId() === $this->getId() || $otherAccessType->getId() === self::FULL_ACCESS) {
+            if ($otherAccessType->getId() === $this->getId() || $otherAccessType->getId() === self::FULL_ACCESS_ID) {
                 if (empty($this->getPage()) || ($this->getPage() === $otherAccessType->getPage() || $otherAccessType->getPage() === self::FULL_ACCESS)) {
                     $rslt = true;
                 }
             }
         }
         return $rslt;
+    }
+
+    /**
+     * Retourne l'accès depuis la table d'information.
+     *
+     * @param array $rights
+     * @return CoreAccessType
+     */
+    private static function &getTypeFromArray(array &$rights): CoreAccessType
+    {
+        $newAccess = new CoreAccessType($rights);
+        return $newAccess;
     }
 
     /**
@@ -251,27 +277,19 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     private function &canOpenModule(): bool
     {
         $valid = false;
+        $moduleData = null;
 
-        if ($this->hasPageAccess()) {
-            if (CoreLoader::isCallable("LibModule") && LibModule::getInstance()->isModule($this->getPage(),
-                                                                                          $this->getId())) {
-                $valid = true;
-            }
-        } else {
-            // Recherche d'informations sur le module
-            $moduleData = null;
+        // Recherche d'informations sur le module
+        if (CoreLoader::isCallable("LibModule")) {
+            $moduleData = LibModule::getInstance()->getModuleData($this->getName());
+        }
 
-            if (CoreLoader::isCallable("LibModule")) {
-                $moduleData = LibModule::getInstance()->getModuleData($this->getName());
-            }
-
-            if ($moduleData !== null && $moduleData->getIdAsInt() >= 0) {
-                $this->setDataValue("page",
-                                    $moduleData->getName());
-                $this->setDataValue("identifier",
-                                    $moduleData->getId());
-                $valid = true;
-            }
+        if ($moduleData !== null && $moduleData->getId() >= 0 && $moduleData->isCallableViewMethod()) {
+            $this->setDataValue("page",
+                                $moduleData->getName());
+            $this->setDataValue("identifier",
+                                $moduleData->getId());
+            $valid = true;
         }
         return $valid;
     }
@@ -291,7 +309,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
             $blockInfo = LibBlock::getInstance()->getBlockData($this->getId());
         }
 
-        if ($blockInfo !== null && is_numeric($blockInfo->getId())) {
+        if ($blockInfo !== null && $blockInfo->getId() >= 0 && $blockInfo->isCallableViewMethod()) {
             $this->setDataValue("page",
                                 $blockInfo->getType());
             $this->setDataValue("identifier",

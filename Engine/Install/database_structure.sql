@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 28, 2018 at 10:28 AM
+-- Generation Time: Aug 12, 2018 at 07:14 PM
 -- Server version: 5.7.17
 -- PHP Version: 7.1.3
 
@@ -198,7 +198,9 @@ CREATE TABLE `tr_users_rights` (
   `user_id` int(10) UNSIGNED NOT NULL,
   `zone` varchar(10) DEFAULT NULL,
   `page` varchar(10) DEFAULT NULL,
-  `identifier` varchar(10) DEFAULT NULL
+  `identifier` varchar(10) DEFAULT NULL,
+  `block_id` int(10) UNSIGNED DEFAULT NULL,
+  `module_id` int(10) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -295,7 +297,9 @@ ALTER TABLE `tr_users`
 --
 ALTER TABLE `tr_users_rights`
   ADD PRIMARY KEY (`user_right_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `users_rights_block_id` (`block_id`),
+  ADD KEY `users_rights_module_id` (`module_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -407,6 +411,8 @@ ALTER TABLE `tr_modules_configs`
 -- Constraints for table `tr_users_rights`
 --
 ALTER TABLE `tr_users_rights`
+  ADD CONSTRAINT `users_rights_block_id` FOREIGN KEY (`block_id`) REFERENCES `tr_blocks` (`block_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `users_rights_module_id` FOREIGN KEY (`module_id`) REFERENCES `tr_modules` (`module_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `users_rights_user_id` FOREIGN KEY (`user_id`) REFERENCES `tr_users` (`user_id`) ON DELETE CASCADE;
 COMMIT;
 
