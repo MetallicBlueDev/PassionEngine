@@ -3,7 +3,6 @@
 namespace TREngine\Engine\Core;
 
 use Throwable;
-use ErrorException;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailEngine;
@@ -271,7 +270,7 @@ class CoreSecure
                                               "<span class=\"text_bold\">\\1</span>.php",
                                               $value);
                         $errorLine .= " <span class=\"text_bold\">" . $key . "</span> " . $value;
-                    } else if ($key === "args" && is_array($value) && !empty($value)) {
+                    } else if ($key === "args" && !empty($value) && is_array($value)) {
                         $errorLine .= " with [<span class=\"text_small\">" . implode(", ",
                                                                                      $value)
                                 . "</span>]";
