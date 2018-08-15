@@ -5,6 +5,7 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreDataStorage;
 use TREngine\Engine\Core\CoreAccessToken;
 use TREngine\Engine\Core\CoreAccessZone;
+use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Exec\ExecUtils;
 
 /**
