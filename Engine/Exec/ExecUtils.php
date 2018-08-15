@@ -44,23 +44,19 @@ class ExecUtils
      *
      * @param string $needle La valeur recherchée.
      * @param array $haystack Tableau de string dans lequel il faut rechercher.
-     * @param array $caseSensitive Sensible à la case ou non.
      * @return bool
      */
     public static function &inArrayStrictCaseInSensitive(string $needle,
-                                                         array $haystack,
-                                                         bool $caseSensitive = false): bool
+                                                         array $haystack): bool
     {
-        if (!$caseSensitive) {
 
-            function toLowerString(string $value): string
-            {
-                return strtolower($value);
-            }
-            $needle = strtolower($needle);
-            $haystack = array_map('toLowerString',
-                                  $haystack);
+        function toLowerString(string $value): string
+        {
+            return strtolower($value);
         }
+        $needle = strtolower($needle);
+        $haystack = array_map('toLowerString',
+                              $haystack);
 
         $rslt = in_array($needle,
                          $haystack,
