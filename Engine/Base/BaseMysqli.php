@@ -295,6 +295,29 @@ class BaseMysqli extends BaseModel
     /**
      * {@inheritDoc}
      *
+     * @return string
+     */
+    protected function &getTablesListQuery(): string
+    {
+        $sql = "SHOW TABLES LIKE '" . $this->getDatabasePrefix() . "%'";
+        return $sql;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $fullTableName
+     * @return string
+     */
+    protected function &getColumnsListQuery(string $fullTableName): string
+    {
+        $sql = "SHOW FULL COLUMNS FROM '" . $fullTableName . "'";
+        return $sql;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param string $str
      * @return string
      */

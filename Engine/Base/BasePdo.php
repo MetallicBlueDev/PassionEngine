@@ -304,6 +304,31 @@ class BasePdo extends BaseModel
     /**
      * {@inheritDoc}
      *
+     * @return string
+     */
+    protected function &getTablesListQuery(): string
+    {
+        // TODO 
+        $sql = "SHOW TABLES LIKE '" . $this->getDatabasePrefix() . "%'";
+        return $sql;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $fullTableName
+     * @return string
+     */
+    protected function &getColumnsListQuery(string $fullTableName): string
+    {
+        // TODO
+        $sql = "SHOW FULL COLUMNS FROM '" . $fullTableName . "'";
+        return $sql;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @param string $str
      * @return string
      */

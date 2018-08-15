@@ -430,9 +430,62 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &getCollation(): string
     {
-        $this->query("SHOW FULL COLUMNS FROM " . $this->getTableName(CoreTable::CONFIG));
+        $this->showColumns($this->getTableName(CoreTable::CONFIG));
         $info = $this->fetchArray();
-        return !empty($info['Collation']) ? $info['Collation'] : "?";
+        return isset($info['Collation']) ? $info['Collation'] : "?";
+    }
+
+    /**
+     * Exécution la commande permettant d'obtenir la liste de tables.
+     */
+    public function &showTables(): void
+    {
+        $sql = $this->getTablesListQuery();
+
+        if (empty($sql) || strpos($sql,
+                                  $this->getDatabasePrefix()) === false) {
+            $this->throwException("invalid tables list sql command.");
+        }
+
+        $this->query($sql);
+    }
+
+    /**
+     * Exécution la commande permettant d'obtenir la liste de colonnes.
+     */
+    public function &showColumns(string $fullTableName): void
+    {
+        $sql = $this->getColumnsListQuery($fullTableName);
+
+        if (empty($sql) || strpos($sql,
+                                  $fullTableName) === false) {
+            $this->throwException("invalid columns list sql command.");
+        }
+
+        $this->query($sql);
+    }
+
+    /**
+     * Retourne la commande à executer pour obtenir la liste des tables.
+     *
+     * @return string
+     */
+    protected function &getTablesListQuery(): string
+    {
+        $sql = "";
+        return $sql;
+    }
+
+    /**
+     * Retourne la commande à executer pour obtenir la liste des colonnes.
+     *
+     * @param string $fullTableName
+     * @return string
+     */
+    protected function &getColumnsListQuery(string $fullTableName): string
+    {
+        $sql = "";
+        return $sql;
     }
 
     /**
