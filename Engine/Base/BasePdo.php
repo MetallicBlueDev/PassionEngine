@@ -14,17 +14,19 @@ use TREngine\Engine\Base\PdoSpecific\PdoPlatformSpecific;
  * PDO: PHP Data Objects.
  * Data-access abstraction layer.
  *
- * Gestionnaire de transaction utilisant l'extension PHP Data Objects.
+ * Gestionnaire de transaction utilisant l'extension native PHP.
  *
- * Supporte de nombreuse type base de données :
- * Firebird,
- * Informix,
- * Microsoft SQL Server (MSSQL),
- * MySQL,
- * Oracle Call Interface (OCI),
- * Open Database Connectivity (ODBC),
- * PostgreSQL (pgSQL),
- * SQLite.
+ * Support de nombreux types base de données :
+ * FIREBIRD : Firebird,
+ * INFORMIX : IBM Informix Dynamic Server,
+ * SQLSRV : Microsoft SQL Server / SQL Azure,
+ * MYSQL : MySQL 3.x/4.x/5.x,
+ * OCI : Oracle Call Interface,
+ * ODBC : Open Database Connectivity v3 (IBM DB2, unixODBC and win32 ODBC),
+ * PGSQL : PostgreSQL,
+ * SQLITE : SQLite 2 / 3,
+ * DBLIB : FreeTDS / Microsoft SQL Server / Sybase,
+ * CUBRID : Cubrid.
  *
  * @author Sébastien Villemain
  */
