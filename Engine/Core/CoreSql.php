@@ -329,7 +329,7 @@ class CoreSql extends BaseModel
         }
 
         // Création d'une exception si une réponse est négative (false)
-        if ($this->getQueries() === false) {
+        if ($this->getLastQueryResult() === false) {
             throw new FailSql("bad query",
                               FailBase::getErrorCodeName(19),
                                                          array($sql));
@@ -389,9 +389,9 @@ class CoreSql extends BaseModel
      *
      * @return mixed
      */
-    public function &getQueries()
+    public function &getLastQueryResult()
     {
-        return $this->selectedBase->getQueries();
+        return $this->selectedBase->getLastQueryResult();
     }
 
     /**
@@ -412,7 +412,7 @@ class CoreSql extends BaseModel
      */
     public function &freeResult($query = null): bool
     {
-        $query = (!empty($query)) ? $query : $this->getQueries();
+        $query = (!empty($query)) ? $query : $this->getLastQueryResult();
         return $this->selectedBase->freeResult($query);
     }
 

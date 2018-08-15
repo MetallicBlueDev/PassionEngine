@@ -20,7 +20,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @var mixed
      */
-    protected $queries = "";
+    protected $lastQueryResult = "";
 
     /**
      * Dernière requête SQL.
@@ -118,12 +118,8 @@ abstract class BaseModel extends CoreTransaction
                            array $like = array(),
                            string $limit = ""): void
     {
-        // Nom complet de la table
-        $table = $this->getTableName($table);
-        // Mise en place du WHERE
         $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
                                                                $where);
-        // Mise en place du LIKE
         $likeValue = empty($like) ? "" : " LIKE " . implode(" ",
                                                             $like);
         // Fonction ET entre WHERE et LIKE
@@ -131,7 +127,11 @@ abstract class BaseModel extends CoreTransaction
             $whereValue .= "AND";
         }
         $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        $this->sql = "DELETE FROM " . $table . $whereValue . $likeValue . $limit;
+        $this->sql = "DELETE FROM "
+                . $this->getTableName($table)
+                . $whereValue
+                . $likeValue
+                . $limit;
     }
 
     /**
@@ -169,15 +169,18 @@ abstract class BaseModel extends CoreTransaction
                            array $keys,
                            array $values): void
     {
-        // Nom complet de la table
-        $table = $this->getTableName($table);
-        $this->sql = "INSERT INTO " . $table . " (" . implode(", ",
-                                                              $this->converKey($keys)) . ") VALUES (" . implode(", ",
-                                                                                                                $this->converValue($values)) . ")";
+        $this->sql = "INSERT INTO "
+                . $this->getTableName($table)
+                . " (" . implode(", ",
+                                 $this->converKey($keys))
+                . ") VALUES (" . implode(", ",
+                                         $this->converValue($values))
+                . ")";
     }
 
     /**
      * Retourne l'id de la dernière ligne inserée.
+     * Le typage natif n'est pas supporté ici.
      *
      * @return string
      */
@@ -212,21 +215,19 @@ abstract class BaseModel extends CoreTransaction
                            array $orderby = array(),
                            string $limit = ""): void
     {
-        // Nom complet de la table
-        $table = $this->getTableName($table);
-        // Mise en place des valeurs sélectionnées
-        $valuesValue = implode(", ",
-                               $values);
-        // Mise en place du where
         $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
                                                                $where);
-        // Mise en place de la limite
         $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        // Mise en place de l'ordre
         $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
                                                                       $orderby);
-        // Mise en forme de la requête finale
-        $this->sql = "SELECT " . $valuesValue . " FROM " . $table . $whereValue . $orderbyValue . $limit;
+        $this->sql = "SELECT "
+                . implode(", ",
+                          $values)
+                . " FROM "
+                . $this->getTableName($table)
+                . $whereValue
+                . $orderbyValue
+                . $limit;
     }
 
     /**
@@ -244,8 +245,6 @@ abstract class BaseModel extends CoreTransaction
                            array $orderby = array(),
                            string $limit = ""): void
     {
-        // Nom complet de la table
-        $table = $this->getTableName($table);
         // Affectation des clès à leurs valeurs
         $valuesString = array();
         foreach ($values as $key => $value) {
@@ -253,14 +252,17 @@ abstract class BaseModel extends CoreTransaction
         }
         $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
                                                                $where);
-        // Mise en place de la limite
         $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        // Mise en place de l'ordre
         $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
                                                                       $orderby);
-        // Mise en forme de la requête finale
-        $this->sql = "UPDATE " . $table . " SET " . implode(", ",
-                                                            $valuesString) . $whereValue . $orderbyValue . $limit;
+        $this->sql = "UPDATE "
+                . $this->getTableName($table)
+                . " SET "
+                . implode(", ",
+                          $valuesString)
+                . $whereValue
+                . $orderbyValue
+                . $limit;
     }
 
     /**
@@ -268,9 +270,9 @@ abstract class BaseModel extends CoreTransaction
      *
      * @return mixed
      */
-    public function &getQueries()
+    public function &getLastQueryResult()
     {
-        return $this->queries;
+        return $this->lastQueryResult;
     }
 
     /**
@@ -445,8 +447,8 @@ abstract class BaseModel extends CoreTransaction
     {
         // Ne pas quoter les champs avec la notation avec les point
         if (($isValue && !ExecUtils::inArrayStrictCaseSensitive($s,
-                                                   $this->quoted)) || (!$isValue && strpos($s,
-                                                                                           ".") === false && !isset($this->quoted[$s]))) {
+                                                                $this->quoted)) || (!$isValue && strpos($s,
+                                                                                                        ".") === false && !isset($this->quoted[$s]))) {
             if ($isValue) {
                 $q = $this->quoteValue;
             } else {

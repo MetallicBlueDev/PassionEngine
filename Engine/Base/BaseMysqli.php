@@ -91,9 +91,9 @@ class BaseMysqli extends BaseModel
      */
     public function query(string $sql = ""): void
     {
-        $this->queries = $this->getMysqli()->query($sql);
+        $this->lastQueryResult = $this->getMysqli()->query($sql);
 
-        if ($this->queries === false) {
+        if ($this->lastQueryResult === false) {
             CoreLogger::addException("MySqli query: " . $this->getMysqli()->error);
         }
     }
@@ -324,7 +324,7 @@ class BaseMysqli extends BaseModel
         $object = null;
 
         if ($query === null) {
-            $query = $this->queries;
+            $query = $this->lastQueryResult;
         }
 
         if ($query instanceof mysqli_result) {

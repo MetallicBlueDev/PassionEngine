@@ -112,9 +112,9 @@ class BasePdo extends BaseModel
      */
     public function query(string $sql = ""): void
     {
-        $this->queries = $this->getPdo()->query($sql);
+        $this->lastQueryResult = $this->getPdo()->query($sql);
 
-        if ($this->queries === false) {
+        if ($this->lastQueryResult === false) {
             CoreLogger::addException("PDO query: " . $this->getPdoErrorMessage());
         }
     }
@@ -319,13 +319,13 @@ class BasePdo extends BaseModel
             '"',
             "\x1a"),
                            array(
-                '\\\\',
-                '\\0',
-                '\\n',
-                '\\r',
-                "\\'",
-                '\\"',
-                '\\Z'),
+                    '\\\\',
+                    '\\0',
+                    '\\n',
+                    '\\r',
+                    "\\'",
+                    '\\"',
+                    '\\Z'),
                            $str);
     }
 
@@ -350,7 +350,7 @@ class BasePdo extends BaseModel
         $object = null;
 
         if ($query === null) {
-            $query = $this->queries;
+            $query = $this->lastQueryResult;
         }
 
         if ($query instanceof PDOStatement) {
