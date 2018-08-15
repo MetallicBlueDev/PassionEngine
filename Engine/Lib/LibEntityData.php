@@ -15,6 +15,9 @@ use TREngine\Engine\Core\CoreAccessToken;
 abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
 {
 
+    /**
+     * @var string Le nom complet de la classe.
+     */
     private $fullQualifiedClassName = null;
 
     /**
@@ -113,8 +116,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      */
     public function isValid(): bool
     {
-        $qualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(),
-                                                                    $this->getFolderName());
+        $qualifiedClassName = $this->getFullQualifiedClassName();
         return is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($qualifiedClassName) . ".php");
     }
 
@@ -166,7 +168,8 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     public function &getFullQualifiedClassName(): string
     {
         if ($this->fullQualifiedClassName === null) {
-            $this->fullQualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(), $this->getFolderName());
+            $this->fullQualifiedClassName = CoreLoader::getFullQualifiedClassName($this->getClassName(),
+                                                                                  $this->getFolderName());
         }
         return $this->fullQualifiedClassName;
     }
