@@ -23,39 +23,39 @@ abstract class BaseModel extends CoreTransaction
     protected $lastQueryResult = "";
 
     /**
-     * Dernière requête SQL.
-     *
-     * @var string
-     */
-    protected $sql = "";
-
-    /**
-     * Mémoire tampon: tableau array contenant des objets standards.
-     *
-     * @var array
-     */
-    protected $buffer = array();
-
-    /**
-     * Quote pour les objects, champs...
+     * Quote pour les colonnes.
      *
      * @var string
      */
     protected $quoteKey = "`";
 
     /**
-     * Quote pour les valeurs uniquement.
+     * Quote pour les valeurs.
      *
      * @var string
      */
     protected $quoteValue = "'";
 
     /**
+     * Dernière requête SQL.
+     *
+     * @var string
+     */
+    private $sql = "";
+
+    /**
+     * Mémoire tampon: tableau contenant des objets standards.
+     *
+     * @var array
+     */
+    private $buffer = array();
+
+    /**
      * Tableau contenant les clés et valeurs déjà protégées.
      *
      * @var array
      */
-    protected $quoted = array();
+    private $quoted = array();
 
     /**
      * {@inheritdoc}
@@ -234,7 +234,7 @@ abstract class BaseModel extends CoreTransaction
      * Mise à jour d'une table.
      *
      * @param string $table Nom de la table
-     * @param array $values Sous la forme array("keyName" => "newValue")
+     * @param array $values Sous la forme array("ColumnName" => "Value")
      * @param array $where
      * @param array $orderby
      * @param string $limit
