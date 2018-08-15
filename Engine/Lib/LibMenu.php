@@ -139,19 +139,12 @@ class LibMenu
     {
         switch ($key) {
             case LibMenuStyle::BOLD:
-                $text = "<span class=\"text_bold\">" . $text . "</span>";
-                break;
             case LibMenuStyle::ITALIC:
-                $text = "<span class=\"text_italic\">" . $text . "</span>";
-                break;
             case LibMenuStyle::UNDERLINE:
-                $text = "<span class=\"text_underline\">" . $text . "</span>";
-                break;
             case LibMenuStyle::BIG:
-                $text = "<span class=\"text_big\">" . $text . "</span>";
-                break;
             case LibMenuStyle::SMALL:
-                $text = "<span class=\"text_small\">" . $text . "</span>";
+                $styleName = "text_" . strtolower($key);
+                $text = "<span class=\"" . $styleName . "\">" . $text . "</span>";
                 break;
             case LibMenuStyle::HYPER_LINK:
                 $text = CoreHtml::getLink($value,
