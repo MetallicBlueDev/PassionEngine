@@ -6,6 +6,9 @@ use PDO;
 use PDOException;
 use PDOStatement;
 use TREngine\Engine\Core\CoreLogger;
+use TREngine\Engine\Core\CoreLoader;
+use TREngine\Engine\Exec\ExecUtils;
+use TREngine\Engine\Base\PdoSpecific\PdoPlatformSpecific;
 
 /**
  * PDO: PHP Data Objects.
@@ -29,6 +32,16 @@ class BasePdo extends BaseModel
 {
 
     /**
+     * @var string Nom du pilote PDO.
+     */
+    private $driverName = null;
+
+    /**
+     * @var PdoPlatformSpecific Instance contenant du code spécifique à une configuration.
+     */
+    private $platformSpecific = null;
+
+    /**
      * {@inheritDoc}
      *
      * @return bool
@@ -36,22 +49,11 @@ class BasePdo extends BaseModel
     protected function canUse(): bool
     {
         $rslt = false;
+        $driverName = $this->getDriverName();
 
-        $driverName = $this->getTransactionHost();
-        $pos = strpos($driverName,
-                      ":");
-
-        if ($pos !== false) {
-            $driverName = substr($driverName,
-                                 0,
-                                 $pos);
-        }
-
-        foreach (PDO::getAvailableDrivers() as $availableDriverName) {
-            if ($availableDriverName === $driverName) {
-                $rslt = true;
-                break;
-            }
+        if (!empty($driverName)) {
+            $rslt = ExecUtils::inArrayStrictCaseInSensitive($driverName,
+                                                            PDO::getAvailableDrivers());
         }
 
         if (!$rslt) {
@@ -308,9 +310,7 @@ class BasePdo extends BaseModel
      */
     protected function &getTablesListQuery(): string
     {
-        // TODO 
-        $sql = "SHOW TABLES LIKE '" . $this->getDatabasePrefix() . "%'";
-        return $sql;
+        return $this->getPlatformSpecific()->getTablesListQuery($this->getDatabasePrefix());
     }
 
     /**
@@ -321,9 +321,7 @@ class BasePdo extends BaseModel
      */
     protected function &getColumnsListQuery(string $fullTableName): string
     {
-        // TODO
-        $sql = "SHOW FULL COLUMNS FROM '" . $fullTableName . "'";
-        return $sql;
+        return $this->getPlatformSpecific()->getColumnsListQuery($fullTableName);
     }
 
     /**
@@ -352,6 +350,68 @@ class BasePdo extends BaseModel
                     '\\"',
                     '\\Z'),
                            $str);
+    }
+
+    /**
+     * Retourne le nom du pilote PDO.
+     *
+     * @return string
+     */
+    private function &getDriverName(): string
+    {
+        if ($this->driverName === null) {
+            $this->checkDriverName();
+        }
+        return $this->driverName;
+    }
+
+    /**
+     * Retourne l'instance contenant le code spécifique à la configuration.
+     *
+     * @return PdoPlatformSpecific
+     */
+    private function &getPlatformSpecific(): PdoPlatformSpecific
+    {
+        if ($this->platformSpecific === null) {
+            $this->checkPlatformSpecific();
+        }
+        return $this->platformSpecific;
+    }
+
+    /**
+     * Recherche le nom du pilote PDO.
+     */
+    private function checkDriverName(): void
+    {
+        $dataSourceName = $this->getTransactionHost();
+        $pos = strpos($dataSourceName,
+                      ":");
+
+        if ($pos !== false) {
+            $this->driverName = substr($dataSourceName,
+                                       0,
+                                       $pos);
+        }
+
+        if ($this->driverName === null) {
+            CoreLogger::addException("Invalid PDO driver syntax");
+            $this->driverName = "";
+        }
+    }
+
+    /**
+     * Recherche l'nstance contenant le code spécifique à la configuration.
+     */
+    private function checkPlatformSpecific(): void
+    {
+        $baseClassName = "TREngine\Engine\Base\PdoSpecific\\" . ucfirst($this->getDriverName()) . "Specific";
+
+        if (CoreLoader::classLoader($baseClassName)) {
+            $this->platformSpecific = new $baseClassName();
+        } else {
+            CoreLogger::addException("PDO platform specific implementation not found: " . $this->getDriverName());
+            $this->platformSpecific = new PdoPlatformSpecific();
+        }
     }
 
     /**

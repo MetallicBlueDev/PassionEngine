@@ -484,6 +484,7 @@ abstract class BaseModel extends CoreTransaction
      */
     protected function &getColumnsListQuery(string $fullTableName): string
     {
+        unset($fullTableName);
         $sql = "";
         return $sql;
     }
