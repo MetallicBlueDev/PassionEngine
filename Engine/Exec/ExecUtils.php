@@ -49,15 +49,9 @@ class ExecUtils
     public static function &inArrayStrictCaseInSensitive(string $needle,
                                                          array $haystack): bool
     {
-
-        function toLowerString(string $value): string
-        {
-            return strtolower($value);
-        }
         $needle = strtolower($needle);
-        $haystack = array_map('toLowerString',
+        $haystack = array_map('strtolower',
                               $haystack);
-
         $rslt = in_array($needle,
                          $haystack,
                          true);
