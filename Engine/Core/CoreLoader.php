@@ -2,8 +2,6 @@
 
 namespace TREngine\Engine\Core;
 
-use Throwable;
-use Exception;
 use TREngine\Engine\Fail\FailLoader;
 use TREngine\Engine\Fail\FailBase;
 
