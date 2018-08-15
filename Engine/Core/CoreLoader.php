@@ -263,11 +263,11 @@ class CoreLoader
         self::buildKeyNameAndFileType($callback,
                                       $fileType);
 
-        // Récupère un seul paramètre supplémentaire
         $args = func_get_args();
-        $args = array_splice($args,
-                             1,
-                             1);
+        $count = count($args);
+        $args = ($count > 1) ? array_splice($args,
+                                            1,
+                                            $count - 1) : array();
 
         // Appel de la méthode
         $rslt = call_user_func_array($callback,
