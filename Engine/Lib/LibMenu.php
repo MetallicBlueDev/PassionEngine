@@ -67,8 +67,12 @@ class LibMenu
      * @param string $callback
      * @return string
      */
-    public function &render(string $callback = "LibMenu::getLine"): string
+    public function &render(string $callback = ""): string
     {
+        if (empty($callback)) {
+            $callback = LibMenuStyle::DEFAULT_LINE_RENDERING_METHOD;
+        }
+
         $activeMenuData = $this->getActiveMenuData();
 
         if ($activeMenuData !== null) {
@@ -134,22 +138,22 @@ class LibMenu
                                          string $value): string
     {
         switch ($key) {
-            case "BOLD":
+            case LibMenuStyle::BOLD:
                 $text = "<span class=\"text_bold\">" . $text . "</span>";
                 break;
-            case "ITALIC":
+            case LibMenuStyle::ITALIC:
                 $text = "<span class=\"text_italic\">" . $text . "</span>";
                 break;
-            case "UNDERLINE":
+            case LibMenuStyle::UNDERLINE:
                 $text = "<span class=\"text_underline\">" . $text . "</span>";
                 break;
-            case "BIG":
+            case LibMenuStyle::BIG:
                 $text = "<span class=\"text_big\">" . $text . "</span>";
                 break;
-            case "SMALL":
+            case LibMenuStyle::SMALL:
                 $text = "<span class=\"text_small\">" . $text . "</span>";
                 break;
-            case "A":
+            case LibMenuStyle::HYPER_LINK:
                 $text = CoreHtml::getLink($value,
                                           $text);
                 break;
