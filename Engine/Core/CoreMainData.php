@@ -36,7 +36,7 @@ class CoreMainData extends CoreDataStorage
         $canUse = false;
 
         // Tentative d'utilisation de la configuration
-        $rawConfig = $this->getArray("configs_config");
+        $rawConfig = $this->getArray("Includes_config");
 
         if (!empty($rawConfig)) {
             $this->loadSpecificConfig($rawConfig);
@@ -44,7 +44,7 @@ class CoreMainData extends CoreDataStorage
         }
 
         // Nettoyage des clés temporaires
-        $this->unsetValue("configs_config");
+        $this->unsetValue("Includes_config");
         return $canUse;
     }
 
@@ -86,7 +86,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getConfigCache(): array
     {
-        return $this->getArray("configs_cache");
+        return $this->getArray("Includes_cache");
     }
 
     /**
@@ -96,7 +96,7 @@ class CoreMainData extends CoreDataStorage
      */
     public function &getConfigDatabase(): array
     {
-        return $this->getArray("configs_database");
+        return $this->getArray("Includes_database");
     }
 
     /**
@@ -188,8 +188,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultAdministratorEmail",
                                                 function() {
-                return TR_ENGINE_EMAIL;
-            });
+                    return TR_ENGINE_EMAIL;
+                });
     }
 
     /**
@@ -201,10 +201,10 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultSiteName",
                                                 function() {
-                return CoreRequest::getString("SERVER_NAME",
-                                              "",
-                                              CoreRequestType::SERVER);
-            });
+                    return CoreRequest::getString("SERVER_NAME",
+                                                  "",
+                                                  CoreRequestType::SERVER);
+                });
     }
 
     /**
@@ -216,8 +216,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultSiteSlogan",
                                                 function() {
-                return "TR ENGINE";
-            });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -229,8 +229,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultSiteStatut",
                                                 function() {
-                return "open";
-            });
+                    return "open";
+                });
     }
 
     /**
@@ -242,8 +242,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultSiteCloseReason",
                                                 function() {
-                return "Site is closed.";
-            });
+                    return "Site is closed.";
+                });
     }
 
     /**
@@ -255,8 +255,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultDescription",
                                                 function() {
-                return "TR ENGINE";
-            });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -268,8 +268,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultKeywords",
                                                 function() {
-                return "TR ENGINE";
-            });
+                    return "TR ENGINE";
+                });
     }
 
     /**
@@ -281,8 +281,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultLanguage",
                                                 function() {
-                return "english";
-            });
+                    return "english";
+                });
     }
 
     /**
@@ -294,8 +294,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultTemplate",
                                                 function() {
-                return LibMakeStyle::DEFAULT_TEMPLATE_DIRECTORY;
-            });
+                    return LibMakeStyle::DEFAULT_TEMPLATE_DIRECTORY;
+                });
     }
 
     /**
@@ -307,8 +307,8 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault("defaultModule",
                                                 function() {
-                return "home";
-            });
+                    return "home";
+                });
     }
 
     /**

@@ -212,9 +212,9 @@ class CoreInfo
         // Verification du résultat
         $baseDir = "";
 
-        if (!empty($pathFromWorkingFolder) && is_file($baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+        if (!empty($pathFromWorkingFolder) && is_file($baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
             $baseDir = $baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder;
-        } else if (is_file($baseName . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+        } else if (is_file($baseName . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
             $baseDir = $baseName;
         } else {
             $baseDir = $baseName;
@@ -247,7 +247,7 @@ class CoreInfo
             }
 
             // Vérification en se repérant sur l'emplacement du fichier de configuration
-            while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "configs" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+            while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
                 // Nous remontons d'un cran
                 $path = dirname($path);
 

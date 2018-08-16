@@ -237,7 +237,7 @@ class CoreLoader
      * Chargeur de fichier "à inclure".
      * Permet de charger des fichiers qui ne sont pas des classes.
      *
-     * @param string $includeKeyName Clé spécifique pour inclure le fichier (exemple configs_cache correspondant au chemin configs/cache.inc.php).
+     * @param string $includeKeyName Clé spécifique pour inclure le fichier (exemple Includes_cache correspondant au chemin Includes/cache.inc.php).
      * @return bool true chargé.
      */
     public static function &includeLoader(string $includeKeyName): bool
@@ -305,7 +305,7 @@ class CoreLoader
      * Retourne le chemin absolu pour un fichier "à inclure".
      * Permet de trouver des fichiers qui ne sont pas des classes.
      *
-     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php).
+     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple Includes_cache correspondant au chemin Includes/cache.inc.php).
      * @return string
      */
     public static function &getIncludeAbsolutePath(string $includeKeyName): string
@@ -394,7 +394,7 @@ class CoreLoader
     /**
      * Retourne le chemin vers le fichier contenant le fichier à inclure.
      *
-     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php).
+     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple Includes_cache correspondant au chemin Includes/cache.inc.php).
      * @return string
      */
     public static function &getFilePathFromInclude(string $includeKeyName): string

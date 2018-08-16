@@ -324,19 +324,19 @@ class CoreMain
         if (!$this->loadCache()) {
             throw new FailCache("unable to load cache config",
                                 FailBase::getErrorCodeName(5),
-                                                           array(CoreLoader::getIncludeAbsolutePath("configs_cache")));
+                                                           array(CoreLoader::getIncludeAbsolutePath("Includes_cache")));
         }
 
         if (!$this->loadSql()) {
             throw new FailSql("unable to load database config",
                               FailBase::getErrorCodeName(6),
-                                                         array(CoreLoader::getIncludeAbsolutePath("configs_database")));
+                                                         array(CoreLoader::getIncludeAbsolutePath("Includes_database")));
         }
 
         if (!$this->loadConfig()) {
             throw new FailEngine("unable to general config",
                                  FailBase::getErrorCodeName(7),
-                                                            array(CoreLoader::getIncludeAbsolutePath("configs_config")));
+                                                            array(CoreLoader::getIncludeAbsolutePath("Includes_config")));
         }
 
         // Chargement de la session
@@ -354,7 +354,7 @@ class CoreMain
 
         if (!$canUse) {
             // Chemin vers le fichier de configuration du cache
-            if (CoreLoader::includeLoader("configs_cache")) {
+            if (CoreLoader::includeLoader("Includes_cache")) {
                 // Démarrage de l'instance CoreCache
                 CoreCache::checkInstance();
 
@@ -375,7 +375,7 @@ class CoreMain
 
         if (!$canUse) {
             // Chemin vers le fichier de configuration de la base de données
-            if (CoreLoader::includeLoader("configs_database")) {
+            if (CoreLoader::includeLoader("Includes_database")) {
                 // Démarrage de l'instance CoreSql
                 CoreSql::checkInstance();
 
@@ -394,7 +394,7 @@ class CoreMain
     private function loadConfig(): bool
     {
         // Chemin vers le fichier de configuration du moteur
-        $canUse = CoreLoader::includeLoader("configs_config");
+        $canUse = CoreLoader::includeLoader("Includes_config");
 
         if ($canUse) {
             $canUse = $this->getConfigs()->initialize();
