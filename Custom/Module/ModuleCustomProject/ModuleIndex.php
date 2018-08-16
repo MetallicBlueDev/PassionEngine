@@ -24,18 +24,18 @@ class ModuleIndex extends ModuleModel
 
     public function displayProjectsList()
     {
-        CoreSql::getInstance()->select(self::PROJECT_TABLE,
-                                       array(
-            "projectid",
-            "name",
-            "date",
-            "language",
-            "progress"),
-                                       array(),
-                                       array(
-            "progress ASC",
-            "date DESC")
-        );
+        $selectedBase = CoreSql::getInstance()->getSelectedBase();
+        $selectedBase->select(self::PROJECT_TABLE,
+                              array(
+                    "projectid",
+                    "name",
+                    "date",
+                    "language",
+                    "progress"),
+                              array(),
+                              array(
+                    "progress ASC",
+                    "date DESC"))->query();
 
         CoreHtml::getInstance()->addCssTemplateFile("module_project.css");
         $libMakeStyle = new LibMakeStyle("module_project_list");
@@ -44,9 +44,9 @@ class ModuleIndex extends ModuleModel
         $libMakeStyle->assignString("description",
                                     PROJECTS_LIST_DESCRIPTION);
 
-        if (CoreSql::getInstance()->affectedRows() > 0) {
-            CoreSql::getInstance()->addArrayBuffer("projectList");
-            $projects = CoreSql::getInstance()->getBuffer("projectList");
+        if ($selectedBase->affectedRows() > 0) {
+            $selectedBase->addArrayBuffer("projectList");
+            $projects = $selectedBase->getBuffer("projectList");
             $libMakeStyle->assignString("projects",
                                         $projects);
             $libMakeStyle->assignString("nbProjects",
@@ -77,13 +77,14 @@ class ModuleIndex extends ModuleModel
                 "img",
                 "progress",
                 "website");
-            CoreSql::getInstance()->select(self::PROJECT_TABLE,
-                                           $values,
-                                           array(
-                "projectid = '" . $projectId . "'"));
+            $selectedBase = CoreSql::getInstance()->getSelectedBase();
+            $selectedBase->select(self::PROJECT_TABLE,
+                                  $values,
+                                  array(
+                        "projectid = '" . $projectId . "'"))->query();
 
-            if (CoreSql::getInstance()->affectedRows() == 1) {
-                $projectInfo = CoreSql::getInstance()->fetchArray();
+            if ($selectedBase->affectedRows() == 1) {
+                $projectInfo = $selectedBase->fetchArray();
 
                 // Préparation de l'entête
                 ExecJQuery::checkSlimbox();

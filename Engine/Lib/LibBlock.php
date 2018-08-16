@@ -293,10 +293,10 @@ class LibBlock
     private function &loadBlockId(string $blockTypeName): int
     {
         $blockId = -1;
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id"),
-                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"));
+                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockId = $coreSql->fetchArray()[0]['block_id'];
@@ -346,7 +346,7 @@ class LibBlock
     {
         $blockArrayDatas = array();
 
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id",
                     "side",
@@ -355,7 +355,7 @@ class LibBlock
                     "type",
                     "rank",
                     "all_modules"),
-                         array("block_id =  '" . $blockId . "'"));
+                         array("block_id =  '" . $blockId . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockArrayDatas = $coreSql->fetchArray()[0];
@@ -364,7 +364,7 @@ class LibBlock
 
             $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
                              array("module_id"),
-                             array("block_id =  '" . $blockId . "'"));
+                             array("block_id =  '" . $blockId . "'"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
@@ -372,7 +372,7 @@ class LibBlock
 
             $coreSql->select(CoreTable::BLOCKS_CONFIGS,
                              array("name", "value"),
-                             array("block_id =  '" . $blockId . "'"));
+                             array("block_id =  '" . $blockId . "'"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['block_config'] = $coreSql->fetchArray();
@@ -402,20 +402,15 @@ class LibBlock
         $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
 
         if (!$coreCache->cached(self::BLOCKS_INDEXER_FILENAME)) {
-            $coreSql = CoreSql::getInstance();
-
+            $coreSql = CoreSql::getInstance()->getSelectedBase();
             $coreSql->select(CoreTable::BLOCKS,
-                             array(
-                        "block_id",
+                             array("block_id",
                         "side",
                         "type",
-                        "rank"
-                    ),
+                        "rank"),
                              array(),
-                             array(
-                        "side",
-                        "position"
-            ));
+                             array("side",
+                        "position"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blocksIndexer = $coreSql->fetchArray();

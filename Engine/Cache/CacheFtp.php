@@ -51,7 +51,7 @@ class CacheFtp extends CacheModel
 
             if ($this->connId === false) {
                 CoreLogger::addException("Could not connect to host " . $this->getTransactionHost() . " on port " . $this->getServerPort());
-                $this->connId = null;
+                unset($this->connId);
             } else {
                 // Force le timeout, si possible
                 $this->setTimeOut();
@@ -179,22 +179,22 @@ class CacheFtp extends CacheModel
 
         // On supprime les mauvaises clés
         $dirListKeys = array_merge(
-            array_keys($dirList,
-                       ".."),
-                       array_keys($dirList,
-                                  "."),
-                                  array_keys($dirList,
-                                             "index.html"),
-                                             array_keys($dirList,
-                                                        "index.htm"),
-                                                        array_keys($dirList,
-                                                                   "index.php"),
-                                                                   array_keys($dirList,
-                                                                              ".htaccess"),
-                                                                              array_keys($dirList,
-                                                                                         ".svn"),
-                                                                                         array_keys($dirList,
-                                                                                                    "checker.txt")
+                array_keys($dirList,
+                           ".."),
+                           array_keys($dirList,
+                                      "."),
+                                      array_keys($dirList,
+                                                 "index.html"),
+                                                 array_keys($dirList,
+                                                            "index.htm"),
+                                                            array_keys($dirList,
+                                                                       "index.php"),
+                                                                       array_keys($dirList,
+                                                                                  ".htaccess"),
+                                                                                  array_keys($dirList,
+                                                                                             ".svn"),
+                                                                                             array_keys($dirList,
+                                                                                                        "checker.txt")
         );
 
         if (is_array($dirListKeys)) {
@@ -224,7 +224,7 @@ class CacheFtp extends CacheModel
 
             if ($mTime === -1) { // Une erreur est survenue
                 CoreLogger::addException("Bad response for ftp_mdtm command. Path : " . $path
-                    . " Turn off the native command.");
+                        . " Turn off the native command.");
             }
         }
         return $mTime;

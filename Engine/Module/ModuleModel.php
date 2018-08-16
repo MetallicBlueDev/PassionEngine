@@ -36,7 +36,8 @@ abstract class ModuleModel extends LibEntityModel
      */
     public function setting(): void
     {
-        throw new FailModule("Invalid setting method", FailBase::getErrorCodeName(24));
+        throw new FailModule("Invalid setting method",
+                             FailBase::getErrorCodeName(24));
     }
 
     /**
@@ -44,18 +45,16 @@ abstract class ModuleModel extends LibEntityModel
      */
     public function install(): void
     {
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->insert(
                 CoreTable::MODULES,
                 array("name", "rank"),
-                array($this->getModuleData()->getName(), 0)
-        );
+                array($this->getModuleData()->getName(), 0))->query();
         $moduleId = $coreSql->insertId();
-        CoreSql::getInstance()->insert(
+        $coreSql->insert(
                 CoreTable::MODULES_CONFIGS,
                 array("module_id", "name", "value"),
-                array($moduleId, "key", "value")
-        );
+                array($moduleId, "key", "value"))->query();
     }
 
     /**
@@ -63,10 +62,8 @@ abstract class ModuleModel extends LibEntityModel
      */
     public function uninstall(): void
     {
-        CoreSql::getInstance()->delete(
-                CoreTable::MODULES,
-                array("module_id = '" . $this->getModuleData()->getId() . "'")
-        );
+        CoreSql::getInstance()->getSelectedBase()->delete(CoreTable::MODULES,
+                                                          array("module_id = '" . $this->getModuleData()->getId() . "'"))->query();
 
         CoreCache::getInstance(CoreCacheSection::MODULES)->removeCache($this->getModuleData()->getName() . ".php");
         CoreTranslate::removeCache("modules" . DIRECTORY_SEPARATOR . $this->getModuleData()->getName());

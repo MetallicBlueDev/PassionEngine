@@ -189,10 +189,10 @@ class LibModule
     private function &loadModuleDatas(string $moduleName): array
     {
         $moduleArrayDatas = array();
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::MODULES,
                          array("module_id", "name", "rank"),
-                         array("name =  '" . $moduleName . "'"));
+                         array("name =  '" . $moduleName . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $moduleArrayDatas = $coreSql->fetchArray()[0];
@@ -200,8 +200,7 @@ class LibModule
 
             $coreSql->select(CoreTable::MODULES_CONFIGS,
                              array("name", "value"),
-                             array("module_id =  '" . $moduleArrayDatas['module_id'] . "'"
-            ));
+                             array("module_id =  '" . $moduleArrayDatas['module_id'] . "'"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $moduleArrayDatas['module_config'] = $coreSql->fetchArray();
@@ -255,15 +254,10 @@ class LibModule
      */
     private function updateCount(int $moduleId): void
     {
-        $coreSql = CoreSql::getInstance();
-
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->addQuotedValue("count + 1");
         $coreSql->update(CoreTable::MODULES,
-                         array(
-                    "count" => "count + 1"
-                ),
-                         array(
-                    "module_id = '" . $moduleId . "'"
-        ));
+                         array("count" => "count + 1"),
+                         array("module_id = '" . $moduleId . "'"))->query();
     }
 }

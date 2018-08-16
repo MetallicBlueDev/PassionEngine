@@ -53,6 +53,13 @@ class CoreTable
     public const MENUS = "menus";
 
     /**
+     * Table de configuration des menus.
+     *
+     * @var string
+     */
+    public const MENUS_CONFIGS = "menus_configs";
+
+    /**
      * Table des modules.
      *
      * @var string

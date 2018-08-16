@@ -348,11 +348,10 @@ class CoreSession
      */
     public function displayBanishment(): void
     {
-        $coreSql = CoreSql::getInstance();
-
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BANNED,
                          array("reason"),
-                         array("ip = '" . $this->userIpBanned . "'"));
+                         array("ip = '" . $this->userIpBanned . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $coreMain = CoreMain::getInstance();
@@ -392,13 +391,12 @@ class CoreSession
 
         // Nettoyage des adresses IP périmées de la base de données.
         if ($cleanBanishment) {
-            CoreSql::getInstance()->delete(CoreTable::BANNED,
-                                           array(
-                        "ip != ''",
+            CoreSql::getInstance()->getSelectedBase()->delete(CoreTable::BANNED,
+                                                              array("ip != ''",
                         "&& (name = 'Hacker' || name = '')",
                         "&& type = '0'",
                         "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
-            ));
+            ))->query();
         }
     }
 
@@ -411,12 +409,12 @@ class CoreSession
             $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
 
             if (!empty($userIp) && $this->userIpBanned != $userIp) {
-                $coreSql = CoreSql::getInstance();
+                $coreSql = CoreSql::getInstance()->getSelectedBase();
 
                 // Mise à jour de l'ancienne IP
                 $coreSql->update(CoreTable::BANNED,
                                  array("ip" => $userIp),
-                                 array("ip = '" . $this->userIpBanned . "'"));
+                                 array("ip = '" . $this->userIpBanned . "'"))->query();
 
                 if ($coreSql->affectedRows() >= 1) {
                     $this->updateUserIpBanned($userIp);
@@ -453,7 +451,7 @@ class CoreSession
      */
     private function searchBanishment(): void
     {
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $userIp = CoreMain::getInstance()->getAgentInfos()->getAddressIp();
 
         // TODO ajouter dans le cache
@@ -461,7 +459,7 @@ class CoreSession
         $coreSql->select(CoreTable::BANNED,
                          array("ip", "name", "email"),
                          array(),
-                         array("banned_id"));
+                         array("banned_id"))->query();
 
         foreach ($coreSql->fetchArray() as $value) {
             $this->checkUserBanned($userIp,
@@ -751,13 +749,13 @@ class CoreSession
      */
     private function updateLastConnect(int $userId): bool
     {
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->addQuotedValue("NOW()");
 
         // Envoi la requête Sql de mise à jour
         $coreSql->update(CoreTable::USERS,
                          array("last_connect" => "NOW()"),
-                         array("user_id = '" . $userId . "'"));
+                         array("user_id = '" . $userId . "'"))->query();
         return ($coreSql->affectedRows() === 1) ? true : false;
     }
 
@@ -806,10 +804,9 @@ class CoreSession
     private static function &loadUserData(array $where): array
     {
         $userArrayDatas = array();
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::USERS,
-                         array(
-                    "user_id",
+                         array("user_id",
                     "name",
                     "email",
                     "rank",
@@ -818,9 +815,8 @@ class CoreSession
                     "website",
                     "signature",
                     "template",
-                    "langue"
-                ),
-                         $where);
+                    "langue"),
+                         $where)->query();
         // TODO vérifier si l'utilisateur n'est pas banni
         if ($coreSql->affectedRows() === 1) {
             $userArrayDatas = $coreSql->fetchArray()[0];

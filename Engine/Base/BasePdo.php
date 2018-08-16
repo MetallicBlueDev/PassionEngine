@@ -42,7 +42,7 @@ class BasePdo extends BaseModel
 
     /**
      * Instance contenant du code spécifique à une configuration.
-     * 
+     *
      * @var PdoPlatformSpecific
      */
     private $platformSpecific = null;
@@ -86,7 +86,7 @@ class BasePdo extends BaseModel
                                           false);
         } catch (PDOException $ex) {
             CoreLogger::addException("PDO exception: " . $ex->getMessage());
-            $this->connId = null;
+            unset($this->connId);
         }
     }
 
@@ -110,20 +110,9 @@ class BasePdo extends BaseModel
      */
     public function netDeconnect(): void
     {
-        $this->connId = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $sql
-     */
-    public function query(string $sql = ""): void
-    {
-        $this->lastQueryResult = $this->getPdo()->query($sql);
-
-        if ($this->lastQueryResult === false) {
-            CoreLogger::addException("PDO query: " . $this->getPdoErrorMessage());
+        if ($this->netConnected()) {
+            unset($this->connId);
+            unset($this->platformSpecific);
         }
     }
 
@@ -173,6 +162,7 @@ class BasePdo extends BaseModel
      */
     public function &freeResult($query = null): bool
     {
+        $query = (!empty($query)) ? $query : $this->getLastQueryResult();
         if ($query !== null) {
             unset($query);
         }
@@ -232,81 +222,14 @@ class BasePdo extends BaseModel
 
     /**
      * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
      */
-    public function update(string $table,
-                           array $values,
-                           array $where,
-                           array $orderby = array(),
-                           string $limit = ""): void
+    protected function executeQuery(): void
     {
-        parent::update($table,
-                       $values,
-                       $where,
-                       $orderby,
-                       $limit);
-    }
+        $this->lastQueryResult = $this->getPdo()->query($this->getSql());
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function select(string $table,
-                           array $values,
-                           array $where = array(),
-                           array $orderby = array(),
-                           string $limit = ""): void
-    {
-        parent::select($table,
-                       $values,
-                       $where,
-                       $orderby,
-                       $limit);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $keys
-     * @param array $values
-     */
-    public function insert(string $table,
-                           array $keys,
-                           array $values): void
-    {
-        parent::insert($table,
-                       $keys,
-                       $values);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $where
-     * @param array $like
-     * @param string $limit
-     */
-    public function delete(string $table,
-                           array $where = array(),
-                           array $like = array(),
-                           string $limit = ""): void
-    {
-        parent::delete($table,
-                       $where,
-                       $like,
-                       $limit);
+        if ($this->lastQueryResult === false) {
+            CoreLogger::addException("PDO query: " . $this->getPdoErrorMessage());
+        }
     }
 
     /**

@@ -30,7 +30,7 @@ abstract class CoreDataStorage
     /**
      * Nettoyage à la destruction.
      */
-    public function __destruct()
+    protected function __destruct()
     {
         unset($this->data);
     }
@@ -228,6 +228,23 @@ abstract class CoreDataStorage
     {
         if ($this->exist($keyName)) {
             unset($this->data[$keyName]);
+        }
+    }
+
+    /**
+     * Nettoyage des variables commencant par le préfixe demandé.
+     *
+     * @param string $prefixeKeyName
+     */
+    protected function unsetDataValues(string $prefixeKeyName): void
+    {
+        $length = strlen($prefixeKeyName);
+        foreach (array_keys($this->data) as $keyName) {
+            if (substr($keyName,
+                       0,
+                       $length) === $prefixeKeyName) {
+                unset($this->data[$keyName]);
+            }
         }
     }
 

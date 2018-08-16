@@ -94,7 +94,7 @@ class CacheSocket extends CacheModel
 
             if ($this->connId === false) {
                 CoreLogger::addException("Could not connect to host " . $this->getTransactionHost() . " on port " . $this->getServerPort() . ". ErrorCode = " . $socketErrorNumber . " ErrorMessage = " . $socketErrorMessage);
-                $this->connId = null;
+                unset($this->connId);
             } else {
                 // Force le timeout, si possible
                 $this->setTimeOut();
@@ -412,7 +412,7 @@ class CacheSocket extends CacheModel
 
             // Verification du code recu
             if (ExecUtils::inArrayStrictCaseSensitive($this->lastResponseCode,
-                                         $expected)) {
+                                                      $expected)) {
                 $rslt = true;
             }
         } else {

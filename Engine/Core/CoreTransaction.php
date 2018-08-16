@@ -63,7 +63,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Destruction de la communication.
      */
-    public function __destruct()
+    protected function __destruct()
     {
         $this->netDeconnect();
         parent::__destruct();

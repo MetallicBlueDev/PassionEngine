@@ -26,7 +26,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
 
     /**
      * Un élément de menu actif.
-     * 
+     *
      * @var string
      */
     public const ITEM_ACTIVE = "active";
@@ -75,7 +75,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     /**
      * Nettoyage à la destruction.
      */
-    public function __destruct()
+    protected function __destruct()
     {
         $this->removeAllAttributes();
         $this->removeAllChildren();

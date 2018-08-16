@@ -8,6 +8,7 @@ use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreSql;
+use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
@@ -198,18 +199,22 @@ class LibMenu
      */
     private function loadFromDb(): void
     {
-        $coreSql = CoreSql::getInstance();
-
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::MENUS,
                          array("menu_id", "block_id", "parent_id", "sublevel", "position", "rank"),
-                         array("block_id = '" . $this->getBlockData()->getId() . "'"),
-                         array("sublevel", "parent_id", "position"));
+                         array("block_id = '" . $this->blockId . "'"),
+                         array("sublevel", "parent_id", "position"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             // Création d'une mémoire tampon pour les menus
             $coreSql->addArrayBuffer($this->menuFriendlyName,
                                      "menu_id");
             $menuArrayDatas = $coreSql->getBuffer($this->menuFriendlyName);
+
+            $coreSql->select(CoreTable::MENUS_CONFIGS,
+                             array("menu_id", "name", "value"),
+                             array("block_id = '" . $this->blockId . "'"),
+                             array("menu_id"))->query();
 
             // TODO Chargement de la config du menu --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO
             $menuArrayDatas['menu_config'] = array();

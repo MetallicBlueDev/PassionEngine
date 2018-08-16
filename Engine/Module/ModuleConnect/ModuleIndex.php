@@ -97,15 +97,15 @@ class ModuleIndex extends ModuleModel
         }
 
         if (!empty($values)) {
-            $coreSql = CoreSql::getInstance();
+            $coreSql = CoreSql::getInstance()->getSelectedBase();
             $coreSession = CoreSession::getInstance();
 
             $coreSql->update(
-                CoreTable::USERS,
-                $values,
-                array(
-                    "user_id = '" . $coreSession->getSessionData()->getId() . "'")
-            );
+                    CoreTable::USERS,
+                    $values,
+                    array(
+                        "user_id = '" . $coreSession->getSessionData()->getId() . "'")
+            )->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $coreSession->refreshSessionData();
@@ -212,16 +212,16 @@ class ModuleIndex extends ModuleModel
 
                 if ($sessionData->getName() != $name) {
                     $name = ExecString::secureText($name);
+                    $selectedBase = CoreSql::getInstance()->getSelectedBase();
+                    $selectedBase->select(
+                            CoreTable::USERS,
+                            array(
+                                "user_id"),
+                            array(
+                                "name = '" . $name . "'")
+                    )->query();
 
-                    CoreSql::getInstance()->select(
-                        CoreTable::USERS,
-                        array(
-                            "user_id"),
-                        array(
-                            "name = '" . $name . "'")
-                    );
-
-                    if (CoreSql::getInstance()->affectedRows() > 0) {
+                    if ($selectedBase->affectedRows() > 0) {
                         $validName = false;
                         CoreLogger::addWarning(ACCOUNT_PRIVATE_LOGIN_IS_ALLOWED);
                     }
@@ -244,14 +244,15 @@ class ModuleIndex extends ModuleModel
                         $values['email'] = $email;
                         $values['langue'] = $langue;
                         $values['template'] = $template;
-                        CoreSql::getInstance()->update(
-                            CoreTable::USERS,
-                            $values,
-                            array(
-                                "user_id = '" . $sessionData->getId() . "'")
-                        );
+                        $selectedBase0 = CoreSql::getInstance()->getSelectedBase();
+                        $selectedBase0->update(
+                                CoreTable::USERS,
+                                $values,
+                                array(
+                                    "user_id = '" . $sessionData->getId() . "'")
+                        )->query();
 
-                        if (CoreSql::getInstance()->affectedRows() > 0) {
+                        if ($selectedBase0->affectedRows() > 0) {
                             CoreSession::getInstance()->refreshSessionData();
                             CoreLogger::addInfo(DATA_SAVED);
                         }
@@ -429,16 +430,17 @@ class ModuleIndex extends ModuleModel
 
             if (!empty($email)) {
                 if (ExecEmail::isValidEmail($email)) {
-                    CoreSql::getInstance()->select(
-                        CoreTable::USERS,
-                        array(
-                            "name"),
-                        array(
-                            "email = '" . $email . "'")
-                    );
+                    $selectedBase1 = CoreSql::getInstance()->getSelectedBase();
+                    $selectedBase1->select(
+                            CoreTable::USERS,
+                            array(
+                                "name"),
+                            array(
+                                "email = '" . $email . "'")
+                    )->query();
 
-                    if (CoreSql::getInstance()->affectedRows() == 1) {
-                        list($login) = CoreSql::getInstance()->fetchArray();
+                    if ($selectedBase1->affectedRows() == 1) {
+                        list($login) = $selectedBase1->fetchArray();
                         $ok = ExecEmail::sendEmail(); // TODO envoyer un mail
                     }
                     if (!$ok) {
@@ -489,16 +491,17 @@ class ModuleIndex extends ModuleModel
 
             if (!empty($login)) {
                 if (CoreSession::validLogin($login)) {
-                    CoreSql::getInstance()->select(
-                        CoreTable::USERS,
-                        array(
-                            "name, email"),
-                        array(
-                            "name = '" . $login . "'")
-                    );
+                    $selectedBase2 = CoreSql::getInstance()->getSelectedBase();
+                    $selectedBase2->select(
+                            CoreTable::USERS,
+                            array(
+                                "name, email"),
+                            array(
+                                "name = '" . $login . "'")
+                    )->query();
 
-                    if (CoreSql::getInstance()->affectedRows() == 1) {
-                        list($name, $email) = CoreSql::getInstance()->fetchArray();
+                    if ($selectedBase2->affectedRows() == 1) {
+                        list($name, $email) = $selectedBase2->fetchArray();
                         if ($name == $login) {
                             // TODO Ajouter un générateur d'id
                             $ok = ExecEmail::sendEmail(); // TODO envoyer un mail
@@ -554,8 +557,8 @@ class ModuleIndex extends ModuleModel
         }
 
         $moreLink .= ($currentView !== "forgetlogin" ? "<li>" . $route->setView("forgetlogin")->getLink(LINK_TO_FORGET_LOGIN) . "</li>" : "")
-            . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
-            . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
+                . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
+                . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
 
         return $moreLink;
     }

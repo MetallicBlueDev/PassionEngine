@@ -275,13 +275,12 @@ class CoreSessionData extends CoreDataStorage implements CoreAccessToken
         $accessTypes = array();
 
         if ($this->hasRank()) {
-            $coreSql = CoreSql::getInstance();
-
+            $coreSql = CoreSql::getInstance()->getSelectedBase();
             $coreSql->select(
                     CoreTable::USERS_RIGHTS,
                     array("zone", "page", "block_id", "module_id", "menu_id"),
                     array("user_id = '" . $this->getId() . "'")
-            );
+            )->query();
 
             if ($coreSql->affectedRows() > 0) {
                 foreach ($coreSql->fetchArray() as $rights) {

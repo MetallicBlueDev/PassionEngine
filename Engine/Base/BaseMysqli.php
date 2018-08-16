@@ -53,7 +53,7 @@ class BaseMysqli extends BaseModel
                                         true);
         } catch (mysqli_sql_exception $ex) {
             CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
-            $this->connId = null;
+            unset($this->connId);
         }
     }
 
@@ -80,22 +80,7 @@ class BaseMysqli extends BaseModel
         if ($this->netConnected()) {
             $this->getMysqli()->close();
         }
-
-        $this->connId = null;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $sql
-     */
-    public function query(string $sql = ""): void
-    {
-        $this->lastQueryResult = $this->getMysqli()->query($sql);
-
-        if ($this->lastQueryResult === false) {
-            CoreLogger::addException("MySqli query: " . $this->getMysqli()->error);
-        }
+        unset($this->connId);
     }
 
     /**
@@ -151,6 +136,7 @@ class BaseMysqli extends BaseModel
     public function &freeResult($query = null): bool
     {
         $success = false;
+        $query = (!empty($query)) ? $query : $this->getLastQueryResult();
         $rslt = $query !== null ? $this->getMysqliResult($query) : null;
 
         if ($rslt !== null) {
@@ -215,81 +201,14 @@ class BaseMysqli extends BaseModel
 
     /**
      * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
      */
-    public function update(string $table,
-                           array $values,
-                           array $where,
-                           array $orderby = array(),
-                           string $limit = ""): void
+    protected function executeQuery(): void
     {
-        parent::update($table,
-                       $values,
-                       $where,
-                       $orderby,
-                       $limit);
-    }
+        $this->lastQueryResult = $this->getMysqli()->query($this->getSql());
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function select(string $table,
-                           array $values,
-                           array $where = array(),
-                           array $orderby = array(),
-                           string $limit = ""): void
-    {
-        parent::select($table,
-                       $values,
-                       $where,
-                       $orderby,
-                       $limit);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $keys
-     * @param array $values
-     */
-    public function insert(string $table,
-                           array $keys,
-                           array $values): void
-    {
-        parent::insert($table,
-                       $keys,
-                       $values);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $table
-     * @param array $where
-     * @param array $like
-     * @param string $limit
-     */
-    public function delete(string $table,
-                           array $where = array(),
-                           array $like = array(),
-                           string $limit = ""): void
-    {
-        parent::delete($table,
-                       $where,
-                       $like,
-                       $limit);
+        if ($this->lastQueryResult === false) {
+            CoreLogger::addException("MySqli query: " . $this->getMysqli()->error);
+        }
     }
 
     /**

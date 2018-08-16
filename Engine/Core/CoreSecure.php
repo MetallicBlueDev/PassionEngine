@@ -295,7 +295,7 @@ class CoreSecure
     {
         if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
             if (CoreSql::hasConnection()) {
-                $sqlErrors = CoreSql::getInstance()->getLastError();
+                $sqlErrors = CoreSql::getInstance()->getSelectedBase()->getLastError();
 
                 if (empty($sqlErrors)) {
                     $sqlErrors = "(empty)";

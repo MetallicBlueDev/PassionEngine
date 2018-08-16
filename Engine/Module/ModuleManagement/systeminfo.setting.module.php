@@ -51,8 +51,8 @@ class Module_Management_Systeminfo extends ModuleModel
             "PHP built on" => php_uname(),
             "PHP version" => phpversion(),
             "WebServer to PHP interface" => php_sapi_name(),
-            "Database version" => CoreSql::getInstance()->getVersion(),
-            "Database collation" => CoreSql::getInstance()->getCollation()
+            "Database version" => CoreSql::getInstance()->getSelectedBase()->getVersion(),
+            "Database collation" => CoreSql::getInstance()->getSelectedBase()->getCollation()
         );
 
         foreach ($infos as $key => $value) {

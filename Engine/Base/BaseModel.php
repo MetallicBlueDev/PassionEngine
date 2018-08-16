@@ -58,34 +58,6 @@ abstract class BaseModel extends CoreTransaction
     private $quoted = array();
 
     /**
-     * {@inheritdoc}
-     *
-     * @param string $message
-     * @param string $failCode
-     * @param array $failArgs
-     * @throws FailSql
-     */
-    protected function throwException(string $message,
-                                      string $failCode = "",
-                                      array $failArgs = array()): void
-    {
-        throw new FailSql($message,
-                          $failCode,
-                          $failArgs);
-    }
-
-    /**
-     * Retourne le nombre de lignes affectées à la dernière requête.
-     *
-     * @return int
-     */
-    public function &affectedRows(): int
-    {
-        $rslt = -1;
-        return $rslt;
-    }
-
-    /**
      * Retourne le nom de la base de données.
      *
      * @return string
@@ -106,32 +78,35 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Supprime des informations.
+     * Active ou désactive le nettoyage automatique de la mémoire.
      *
-     * @param string $table Nom de la table
-     * @param array $where
-     * @param array $like
-     * @param string $limit
+     * @param bool $enabled
      */
-    public function delete(string $table,
-                           array $where = array(),
-                           array $like = array(),
-                           string $limit = ""): void
+    public function setAutoFreeResult(bool $enabled)
     {
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
-                                                               $where);
-        $likeValue = empty($like) ? "" : " LIKE " . implode(" ",
-                                                            $like);
-        // Fonction ET entre WHERE et LIKE
-        if (!empty($whereValue) && !empty($likeValue)) {
-            $whereValue .= "AND";
-        }
-        $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        $this->sql = "DELETE FROM "
-                . $this->getTableName($table)
-                . $whereValue
-                . $likeValue
-                . $limit;
+        $this->setDataValue("autofreeresult",
+                            $enabled);
+    }
+
+    /**
+     * Etat du nettoyage automatique de la mémoire.
+     *
+     * @return bool
+     */
+    public function autoFreeResult(): bool
+    {
+        return $this->getBool("autofreeresult");
+    }
+
+    /**
+     * Retourne le nombre de lignes affectées à la dernière requête.
+     *
+     * @return int
+     */
+    public function &affectedRows(): int
+    {
+        $rslt = -1;
+        return $rslt;
     }
 
     /**
@@ -159,27 +134,225 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Insère une ou des valeurs dans une table.
+     * Sélection d'informations d'une table.
+     *
+     * @param string $table
+     * @param array $values
+     * @param array $where
+     * @param array $orderBy
+     * @param string $limit
+     * @return BaseModel
+     */
+    public function &select(string $table,
+                            array $values,
+                            array $where = array(),
+                            array $orderBy = array(),
+                            string $limit = ""): BaseModel
+    {
+        $this->setSqlCommand("SELECT");
+        $this->setSqlAfterCommand(implode(", ",
+                                          $values));
+        $this->setSqlFrom("FROM " . $this->getTableName($table));
+
+        if (!empty($where)) {
+            $this->where($where);
+        }
+        if (!empty($orderBy)) {
+            $this->orderBy($orderBy);
+        }
+        if (!empty($limit)) {
+            $this->setSqlLimit("LIMIT " . $limit);
+        }
+        $this->setQueryBuilded(false);
+        return $this;
+    }
+
+    /**
+     * Insère une ou plusieurs valeurs dans une table.
      *
      * @param string $table Nom de la table
      * @param array $keys
      * @param array $values
+     * @return BaseModel
      */
-    public function insert(string $table,
-                           array $keys,
-                           array $values): void
+    public function &insert(string $table,
+                            array $keys,
+                            array $values): BaseModel
     {
-        $this->sql = "INSERT INTO "
-                . $this->getTableName($table)
-                . " (" . implode(", ",
-                                 $this->converKey($keys))
+        $this->setSqlCommand("INSERT INTO");
+        $this->setSqlFrom($this->getTableName($table));
+        $this->setSqlAfterFrom("(" . implode(", ",
+                                             $this->converKey($keys))
                 . ") VALUES (" . implode(", ",
                                          $this->converValue($values))
-                . ")";
+                . ")");
+        $this->setQueryBuilded(false);
+        return $this;
     }
 
     /**
-     * Retourne l'id de la dernière ligne inserée.
+     * Mise à jour des informations d'une table.
+     *
+     * @param string $table Nom de la table
+     * @param array $values Sous la forme array("ColumnName" => "Value")
+     * @param array $where
+     * @param array $orderBy
+     * @param string $limit
+     * @return BaseModel
+     */
+    public function &update(string $table,
+                            array $values,
+                            array $where,
+                            array $orderBy = array(),
+                            string $limit = ""): BaseModel
+    {
+        $this->setSqlCommand("UPDATE");
+        $this->setSqlFrom($this->getTableName($table));
+
+        // Affectation des clès à leurs valeurs
+        $valuesString = array();
+        foreach ($values as $key => $value) {
+            $valuesString[] = $this->converKey($key) . " = " . $this->converValue($value);
+        }
+        $this->setSqlAfterFrom("SET "
+                . implode(", ",
+                          $valuesString));
+        if (!empty($where)) {
+            $this->where($where);
+        }
+        if (!empty($orderBy)) {
+            $this->orderBy($orderBy);
+        }
+        if (!empty($limit)) {
+            $this->setSqlLimit("LIMIT " . $limit);
+        }
+        $this->setQueryBuilded(false);
+        return $this;
+    }
+
+    /**
+     * Supprime des informations contenues dans une table.
+     *
+     * @param string $table Nom de la table
+     * @param array $where
+     * @param string $limit
+     * @return BaseModel
+     */
+    public function &delete(string $table,
+                            array $where = array(),
+                            string $limit = ""): BaseModel
+    {
+        $this->setSqlCommand("DELETE");
+        $this->setSqlFrom("FROM " . $this->getTableName($table));
+        if (!empty($where)) {
+            $this->where($where);
+        }
+        if (!empty($limit)) {
+            $this->setSqlLimit("LIMIT " . $limit);
+        }
+        $this->setQueryBuilded(false);
+        return $this;
+    }
+
+    /**
+     * Ajout dans la condition WHERE.
+     *
+     * @param array $where
+     * @return BaseModel
+     */
+    public function &where(array $where): BaseModel
+    {
+        $this->setSqlWhere(implode(" ",
+                                   $where));
+        return $this;
+    }
+
+    /**
+     * Ajout dans la condition ORDER BY.
+     *
+     * @param array $orderBy
+     * @return BaseModel
+     */
+    public function &orderBy(array $orderBy): BaseModel
+    {
+        $this->setSqlOrderBy(implode(", ",
+                                     $orderBy));
+        return $this;
+    }
+
+    /**
+     * Active la condition DISTINCT.
+     *
+     * @return BaseModel
+     */
+    public function &distinct(): BaseModel
+    {
+        $this->setSqlDistinct(true);
+        return $this;
+    }
+
+    /**
+     * Jointure forte entre tables.
+     *
+     * @param string $table
+     * @param string $condition
+     * @return BaseModel
+     */
+    public function &innerJoin(string $table,
+                               string $condition): BaseModel
+    {
+        return $this->join($table,
+                           $condition,
+                           "INNER");
+    }
+
+    /**
+     * Jointure de table partie gauche.
+     *
+     * @param string $table
+     * @param string $condition
+     * @return BaseModel
+     */
+    public function &leftJoin(string $table,
+                              string $condition): BaseModel
+    {
+        return $this->join($table,
+                           $condition,
+                           "LEFT");
+    }
+
+    /**
+     * Jointure de table partie droite.
+     *
+     * @param string $table
+     * @param string $condition
+     * @return BaseModel
+     */
+    public function &rightJoin(string $table,
+                               string $condition): BaseModel
+    {
+        return $this->join($table,
+                           $condition,
+                           "RIGHT");
+    }
+
+    /**
+     * Jointure de table en produit cartésien.
+     *
+     * @param string $table
+     * @param string $condition
+     * @return BaseModel
+     */
+    public function &crossJoin(string $table,
+                               string $condition): BaseModel
+    {
+        return $this->join($table,
+                           $condition,
+                           "CROSS");
+    }
+
+    /**
+     * Retourne l'identifiant de la dernière ligne inserée.
      * Le typage natif n'est pas supporté ici.
      *
      * @return string
@@ -191,78 +364,16 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Envoi une requête Sql.
+     * Envoi une requête SQL.
      *
      * @param string $sql
+     * @throws FailSql
      */
     public function query(string $sql = ""): void
     {
-        unset($sql);
-    }
-
-    /**
-     * Sélection d'information.
-     *
-     * @param string $table
-     * @param array $values
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function select(string $table,
-                           array $values,
-                           array $where = array(),
-                           array $orderby = array(),
-                           string $limit = ""): void
-    {
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
-                                                               $where);
-        $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
-                                                                      $orderby);
-        $this->sql = "SELECT "
-                . implode(", ",
-                          $values)
-                . " FROM "
-                . $this->getTableName($table)
-                . $whereValue
-                . $orderbyValue
-                . $limit;
-    }
-
-    /**
-     * Mise à jour d'une table.
-     *
-     * @param string $table Nom de la table
-     * @param array $values Sous la forme array("ColumnName" => "Value")
-     * @param array $where
-     * @param array $orderby
-     * @param string $limit
-     */
-    public function update(string $table,
-                           array $values,
-                           array $where,
-                           array $orderby = array(),
-                           string $limit = ""): void
-    {
-        // Affectation des clès à leurs valeurs
-        $valuesString = array();
-        foreach ($values as $key => $value) {
-            $valuesString[] = $this->converKey($key) . " = " . $this->converValue($value);
-        }
-        $whereValue = empty($where) ? "" : " WHERE " . implode(" ",
-                                                               $where);
-        $limit = empty($limit) ? "" : " LIMIT " . $limit;
-        $orderbyValue = empty($orderby) ? "" : " ORDER BY " . implode(", ",
-                                                                      $orderby);
-        $this->sql = "UPDATE "
-                . $this->getTableName($table)
-                . " SET "
-                . implode(", ",
-                          $valuesString)
-                . $whereValue
-                . $orderbyValue
-                . $limit;
+        $this->beginExecuteQuery($sql);
+        $this->executeQuery();
+        $this->endExecuteQuery();
     }
 
     /**
@@ -293,9 +404,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &freeResult($query = null): bool
     {
-        if ($query !== null) {
-            unset($query);
-        }
+        unset($query);
         $rslt = false;
         return $rslt;
     }
@@ -319,6 +428,10 @@ abstract class BaseModel extends CoreTransaction
             }
             reset($this->buffer[$name]);
         }
+
+        if ($this->autoFreeResult()) {
+            $this->freeResult();
+        }
     }
 
     /**
@@ -339,6 +452,10 @@ abstract class BaseModel extends CoreTransaction
                 }
             }
             reset($this->buffer[$name]);
+        }
+
+        if ($this->autoFreeResult()) {
+            $this->freeResult();
         }
     }
 
@@ -376,7 +493,7 @@ abstract class BaseModel extends CoreTransaction
     public function &getLastError(): array
     {
         $rslt = array(
-            "<span class=\"text_bold\">Last Sql query</span> : " . $this->getSql()
+            "<span class=\"text_bold\">Last Sql query</span> : " . $this->sql
         );
         return $rslt;
     }
@@ -463,6 +580,49 @@ abstract class BaseModel extends CoreTransaction
         }
 
         $this->query($sql);
+    }
+
+    /**
+     * Exécution d'une requête SQL.
+     *
+     * @param string $sql
+     */
+    protected function executeQuery(): void
+    {
+
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @throws FailSql
+     */
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
+    {
+        throw new FailSql($message,
+                          $failCode,
+                          $failArgs);
+    }
+
+    /**
+     * Jointure de table.
+     *
+     * @param string $table
+     * @param string $condition
+     * @param string $type
+     * @return BaseModel
+     */
+    protected function &join(string $table,
+                             string $condition,
+                             string $type): BaseModel
+    {
+        $this->setSqlAfterFrom($type . " JOIN ON " . $table . $condition);
+        return $this;
     }
 
     /**
@@ -581,5 +741,314 @@ abstract class BaseModel extends CoreTransaction
     protected function getTableName(string $table): string
     {
         return $this->getDatabasePrefix() . "_" . $table;
+    }
+
+    /**
+     * Début d'exécution de la requête.
+     *
+     * @param string $sql
+     */
+    private function beginExecuteQuery(string $sql): void
+    {
+        if (!empty($sql)) {
+            $this->sql = $sql;
+        } else {
+            $this->buildQuery();
+        }
+    }
+
+    /**
+     * Traitement après l'exécution d'une requête.
+     */
+    private function endExecuteQuery(): void
+    {
+        $this->resetQuoted();
+        $this->resetSql();
+
+        // Ajout la requête au log
+        if (CoreSecure::debuggingMode()) {
+            CoreLogger::addSqlRequest($this->sql);
+        }
+
+        // Création d'une exception si une réponse est négative (false)
+        if ($this->getLastQueryResult() === false) {
+            $this->throwException("bad query",
+                                  FailBase::getErrorCodeName(19),
+                                                             array($this->sql));
+        }
+    }
+
+    /**
+     * Compile si nécessaire la requête SQL.
+     */
+    private function buildQuery(): void
+    {
+        if (!$this->queryBuilded()) {
+            $this->fireBuildQuery();
+            $this->setQueryBuilded(true);
+        }
+    }
+
+    /**
+     * Compile la requête SQL.
+     */
+    private function fireBuildQuery(): void
+    {
+        $this->checkQueryCondition();
+
+        $this->sql = $this->getSqlCommand()
+                . " " . $this->getSqlAfterCommand()
+                . " " . $this->getSqlFrom()
+                . " " . $this->getSqlAfterFrom()
+                . " " . $this->getSqlWhere()
+                . " " . $this->getSqlOrderBy()
+                . " " . $this->getSqlLimit();
+    }
+
+    /**
+     * Vérification supplémentaire pour la construction de la requête SQL.
+     */
+    private function checkQueryCondition(): void
+    {
+        $this->checkDistinctCondition();
+        $this->checkWhereCondition();
+        $this->checkOrderByCondition();
+    }
+
+    /**
+     * Vérification de la condition DISTINCT.
+     */
+    private function checkDistinctCondition(): void
+    {
+        if ($this->hasSqlDistinct()) {
+            $this->setSqlCommand($this->getSqlCommand() . " DISTINCT");
+        }
+    }
+
+    /**
+     * Vérification de la conditon WHERE.
+     */
+    private function checkWhereCondition(): void
+    {
+        $sqlWhere = $this->getSqlWhere();
+
+        if (!empty($sqlWhere)) {
+            if (strpos($sqlWhere,
+                       "WHERE") === false) {
+                $this->setSqlWhere("WHERE " . $sqlWhere);
+            }
+        }
+    }
+
+    /**
+     * Vérification de la conditon ORDER BY.
+     */
+    private function checkOrderByCondition(): void
+    {
+        $sqlOrderBy = $this->getSqlOrderBy();
+
+        if (!empty($sqlOrderBy)) {
+            if (strpos($sqlOrderBy,
+                       "ORDER BY") === false) {
+                $this->setSqlWhere("ORDER BY " . $sqlOrderBy);
+            }
+        }
+    }
+
+    /**
+     * Change la commande SQL (SELECT, UPDATE, DELETE, ...).
+     *
+     * @param string $command
+     */
+    private function setSqlCommand(string $command): void
+    {
+        $this->setDataValue("sqlcommand",
+                            $command);
+    }
+
+    /**
+     * Retourne la commande SQL (SELECT, UPDATE, DELETE, ...).
+     *
+     * @return string
+     */
+    private function &getSqlCommand(): string
+    {
+        return $this->getString("sqlcommand");
+    }
+
+    /**
+     * Change la portion après la commande SQL (valeur, etc.).
+     *
+     * @param string $command
+     */
+    private function setSqlAfterCommand(string $command): void
+    {
+        $this->setDataValue("sqlaftercommand",
+                            $command);
+    }
+
+    /**
+     * Retourne la portion après la commande SQL (valeur, etc.).
+     *
+     * @return string
+     */
+    private function &getSqlAfterCommand(): string
+    {
+        return $this->getString("sqlaftercommand");
+    }
+
+    /**
+     * Change la condition FROM (la ou les tables).
+     *
+     * @param string $from
+     */
+    private function setSqlFrom(string $from): void
+    {
+        $this->setDataValue("sqlfrom",
+                            $from);
+    }
+
+    /**
+     * Retourne la condition FROM (la ou les tables).
+     *
+     * @return string
+     */
+    private function &getSqlFrom(): string
+    {
+        return $this->getString("sqlfrom");
+    }
+
+    /**
+     * Change la portion après la condition FROM (valeur, etc.).
+     *
+     * @param string $command
+     */
+    private function setSqlAfterFrom(string $command): void
+    {
+        $this->setDataValue("sqlafterfrom",
+                            $command);
+    }
+
+    /**
+     * Retourne la portion après la condition FROM (valeur, etc.).
+     *
+     * @return string
+     */
+    private function &getSqlAfterFrom(): string
+    {
+        return $this->getString("sqlafterfrom");
+    }
+
+    /**
+     * Change la condition WHERE.
+     *
+     * @param string $where
+     */
+    private function setSqlWhere(string $where): void
+    {
+        $this->setDataValue("sqlwhere",
+                            $where);
+    }
+
+    /**
+     * Retourne la condition WHERE.
+     *
+     * @return string
+     */
+    private function &getSqlWhere(): string
+    {
+        return $this->getString("sqlwhere");
+    }
+
+    /**
+     * Change la condition LIMIT.
+     *
+     * @param string $limit
+     */
+    private function setSqlLimit(string $limit): void
+    {
+        $this->setDataValue("sqllimit",
+                            $limit);
+    }
+
+    /**
+     * Retourne la condition LIMIT.
+     *
+     * @return string
+     */
+    private function &getSqlLimit(): string
+    {
+        return $this->getString("sqllimit");
+    }
+
+    /**
+     * Change la condition ORDER BY.
+     *
+     * @param string $orderBy
+     */
+    private function setSqlOrderBy(string $orderBy): void
+    {
+        $this->setDataValue("sqlorderby",
+                            $orderBy);
+    }
+
+    /**
+     * Retourne la condition ORDER BY.
+     *
+     * @return string
+     */
+    private function &getSqlOrderBy(): string
+    {
+        return $this->getString("sqlorderby");
+    }
+
+    /**
+     * Active ou désactive la condition DISTINCT.
+     *
+     * @param bool $enabled
+     */
+    private function setSqlDistinct(bool $enabled): void
+    {
+        $this->setDataValue("sqldistinct",
+                            $enabled);
+    }
+
+    /**
+     * Etat de la condition DISTINCT.
+     *
+     * @return bool
+     */
+    private function &hasSqlDistinct(): bool
+    {
+        return $this->getBool("sqldistinct");
+    }
+
+    /**
+     * Active ou désactive la compilation de la requête.
+     *
+     * @param bool $builded
+     */
+    private function setQueryBuilded(bool $builded): void
+    {
+        $this->setDataValue("querybuilded",
+                            $builded);
+    }
+
+    /**
+     * Etat de la compilation de la requête.
+     *
+     * @return bool
+     */
+    private function &queryBuilded(): bool
+    {
+        return $this->getBool("querybuilded");
+    }
+
+    /**
+     * Nettoyage des portions SQL.
+     */
+    private function resetSql(): void
+    {
+        $this->unsetDataValues("sql");
     }
 }

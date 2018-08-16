@@ -426,11 +426,11 @@ class CoreMain
             $configs = $coreCache->readCacheAsArray("configs.php");
         } else {
             $content = "";
-            $coreSql = CoreSql::getInstance();
+            $coreSql = CoreSql::getInstance()->getSelectedBase();
 
             // Requête vers la base de données de configs
             $coreSql->select(CoreTable::CONFIG,
-                             array("name", "value"));
+                             array("name", "value"))->query();
             $configs = ExecUtils::getArrayConfigs($coreSql->fetchArray());
 
             foreach ($configs as $key => $value) {

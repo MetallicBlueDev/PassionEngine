@@ -157,7 +157,7 @@ class ExecFileBuilder
     {
         if (empty($type) || !ExecUtils::inArrayStrictCaseInSensitive($type,
                                                                      CoreSql::getBaseList())) {
-            $type = CoreSql::getInstance()->getTransactionType();
+            $type = CoreSql::getInstance()->getSelectedBase()->getTransactionType();
         }
 
         if (empty($host)) {

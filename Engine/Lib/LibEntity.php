@@ -55,7 +55,9 @@ abstract class LibEntity
         $entityId = $this->requestEntityId($entityFolderName);
 
         if ($entityId < 0) {
-            $this->throwException("invalid entity folder name", FailBase::getErrorCodeName(15), array($entityFolderName));
+            $this->throwException("invalid entity folder name",
+                                  FailBase::getErrorCodeName(15),
+                                                             array($entityFolderName));
         }
         return $this->getEntityData($entityId);
     }
@@ -131,10 +133,10 @@ abstract class LibEntity
     private function &loadBlockId(string $blockTypeName): int
     {
         $blockId = -1;
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id"),
-                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"));
+                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockId = $coreSql->fetchArray()[0]['block_id'];
@@ -184,7 +186,7 @@ abstract class LibEntity
     {
         $blockArrayDatas = array();
 
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id",
                     "side",
@@ -193,7 +195,7 @@ abstract class LibEntity
                     "type",
                     "rank",
                     "all_modules"),
-                         array("block_id =  '" . $blockId . "'"));
+                         array("block_id =  '" . $blockId . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockArrayDatas = $coreSql->fetchArray()[0];
@@ -202,7 +204,7 @@ abstract class LibEntity
 
             $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
                              array("module_id"),
-                             array("block_id =  '" . $blockId . "'"));
+                             array("block_id =  '" . $blockId . "'"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
@@ -210,7 +212,7 @@ abstract class LibEntity
 
             $coreSql->select(CoreTable::BLOCKS_CONFIGS,
                              array("name", "value"),
-                             array("block_id =  '" . $blockId . "'"));
+                             array("block_id =  '" . $blockId . "'"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['block_config'] = $coreSql->fetchArray();
