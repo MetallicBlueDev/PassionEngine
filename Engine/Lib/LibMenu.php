@@ -21,6 +21,13 @@ class LibMenu
 {
 
     /**
+     * Identifiant du block sur lequel le menu est lié.
+     *
+     * @var int
+     */
+    private $blockId = -1;
+
+    /**
      * Nom permettant d'identifier le contenu du menu.
      *
      * @var string
@@ -44,20 +51,19 @@ class LibMenu
     /**
      * Construction du menu.
      *
-     * @param string $menuFriendlyName Nom permettant d'identifier le contenu du menu.
-     * @param array $sql
+     * @param int $blockId Identifiant du block.
      */
-    public function __construct(string $menuFriendlyName,
-                                array $sql = array())
+    public function __construct(int $blockId)
     {
-        $this->menuFriendlyName = $menuFriendlyName;
+        $this->blockId = $blockId;
+        $this->menuFriendlyName = "block" . $blockId;
         $this->activeMenuId = CoreRequest::getInteger("activeMenuId",
                                                       -1);
 
         if ($this->cached()) {
             $this->loadFromCache();
-        } else if (count($sql) >= 3) {
-            $this->loadFromDb($sql);
+        } else {
+            $this->loadFromDb();
         }
     }
 
@@ -189,20 +195,15 @@ class LibMenu
 
     /**
      * Chargement du menu depuis la base.
-     *
-     * @param array $sql parametre de Sélection
      */
-    private function loadFromDb(array $sql): void
+    private function loadFromDb(): void
     {
         $coreSql = CoreSql::getInstance();
 
-        $coreSql->select(
-                $sql['table'],
-                $sql['select'],
-                $sql['where'],
-                $sql['orderby'],
-                $sql['limit']
-        );
+        $coreSql->select(CoreTable::MENUS,
+                         array("menu_id", "block_id", "parent_id", "sublevel", "position", "rank"),
+                         array("block_id = '" . $this->getBlockData()->getId() . "'"),
+                         array("sublevel", "parent_id", "position"));
 
         if ($coreSql->affectedRows() > 0) {
             // Création d'une mémoire tampon pour les menus

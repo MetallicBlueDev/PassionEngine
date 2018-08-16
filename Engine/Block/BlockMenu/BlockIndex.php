@@ -41,14 +41,7 @@ class BlockIndex extends BlockModel
 
     protected function getMenu()
     {
-        $menus = new LibMenu("block" . $this->getBlockData()->getId(),
-                             array("table" => CoreTable::MENUS,
-            "select" => array("menu_id", "block_id", "parent_id", "sublevel", "position", "rank"),
-            "where" => array("block_id = '" . $this->getBlockData()->getId() . "'"),
-            "orderby" => array("sublevel", "parent_id", "position"),
-            "limit" => array()
-                )
-        );
+        $menus = new LibMenu($this->getBlockData()->getId());
         return $menus;
     }
 }
