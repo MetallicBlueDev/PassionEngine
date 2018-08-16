@@ -406,10 +406,10 @@ class BasePdo extends BaseModel
      */
     private function checkPlatformSpecific(): void
     {
-        $baseClassName = "TREngine\Engine\Base\PdoSpecific\\" . ucfirst($this->getDriverName()) . "Specific";
+        $fullClassName = "TREngine\Engine\Base\PdoSpecific\\" . ucfirst($this->getDriverName()) . "Specific";
 
-        if (CoreLoader::classLoader($baseClassName)) {
-            $this->platformSpecific = new $baseClassName();
+        if (CoreLoader::classLoader($fullClassName)) {
+            $this->platformSpecific = new $fullClassName();
         } else {
             CoreLogger::addException("PDO platform specific implementation not found: " . $this->getDriverName());
             $this->platformSpecific = new PdoPlatformSpecific();

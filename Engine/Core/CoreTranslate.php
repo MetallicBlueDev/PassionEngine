@@ -268,13 +268,13 @@ class CoreTranslate
     /**
      * Traduction de la page via le fichier.
      *
-     * @param string $pathLang chemin du fichier de traduction.
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      */
-    public function translate(string $pathLang): void
+    public function translate(string $rootDirectoryPath): void
     {
-        if (!empty($pathLang) && !$this->translated($pathLang)) {
-            $this->fireTranslation($pathLang);
-            $this->setTranslated($pathLang);
+        if (!empty($rootDirectoryPath) && !$this->translated($rootDirectoryPath)) {
+            $this->fireTranslation($rootDirectoryPath);
+            $this->setTranslated($rootDirectoryPath);
         }
     }
 
@@ -292,12 +292,12 @@ class CoreTranslate
     /**
      * Suppression du cache de traduction.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      */
-    public static function removeCache(string $pathLang = ""): void
+    public static function removeCache(string $rootDirectoryPath = ""): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
-        $langCacheFileName = self::getLangCachePrefixFileName($pathLang);
+        $langCacheFileName = self::getLangCachePrefixFileName($rootDirectoryPath);
         $langues = self::getLangList();
 
         foreach ($langues as $langue) {
@@ -308,36 +308,36 @@ class CoreTranslate
     /**
      * Détermine si la traduction a déjà été appliquée.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return bool
      */
-    private function translated(string $pathLang): bool
+    private function translated(string $rootDirectoryPath): bool
     {
-        return isset($this->translated[$pathLang]);
+        return isset($this->translated[$rootDirectoryPath]);
     }
 
     /**
      * Signale que la traduction a déjà été appliquée.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      */
-    private function setTranslated(string $pathLang): void
+    private function setTranslated(string $rootDirectoryPath): void
     {
-        $this->translated[$pathLang] = true;
+        $this->translated[$rootDirectoryPath] = true;
     }
 
     /**
      * Procédure de traduction.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      */
-    private function fireTranslation(string $pathLang): void
+    private function fireTranslation(string $rootDirectoryPath): void
     {
-        if (!$this->translateWithCache($pathLang)) {
-            $content = $this->getTranslation($pathLang);
+        if (!$this->translateWithCache($rootDirectoryPath)) {
+            $content = $this->getTranslation($rootDirectoryPath);
 
             if (!empty($content)) {
-                $this->createTranslationCache($pathLang,
+                $this->createTranslationCache($rootDirectoryPath,
                                               $content);
                 $this->translateWithBuffer($content);
             }
@@ -347,19 +347,19 @@ class CoreTranslate
     /**
      * Traduction via le cache.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return bool
      */
-    private function translateWithCache(string $pathLang): bool
+    private function translateWithCache(string $rootDirectoryPath): bool
     {
         $translated = false;
 
         if (CoreLoader::isCallable("CoreCache")) {
             $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
-            $langCacheFileName = $this->getLangCacheFileName($pathLang);
+            $langCacheFileName = $this->getLangCacheFileName($rootDirectoryPath);
 
             if ($coreCache->cached($langCacheFileName)) {
-                $langOriginalPath = CoreLoader::getTranslateAbsolutePath($pathLang);
+                $langOriginalPath = CoreLoader::getTranslateAbsolutePath($rootDirectoryPath);
 
                 if ($coreCache->getCacheMTime($langCacheFileName) >= filemtime($langOriginalPath)) {
                     $coreCache->readCache($langCacheFileName);
@@ -373,28 +373,28 @@ class CoreTranslate
     /**
      * Retourne le nom du fichier cache pour la traduction.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return string
      */
-    private function getLangCacheFileName(string $pathLang): string
+    private function getLangCacheFileName(string $rootDirectoryPath): string
     {
-        return self::getLangCachePrefixFileName($pathLang) . $this->getCurrentLanguage() . ".php";
+        return self::getLangCachePrefixFileName($rootDirectoryPath) . $this->getCurrentLanguage() . ".php";
     }
 
     /**
      * Retourne les données de traduction.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return string
      */
-    private function getTranslation(string $pathLang): string
+    private function getTranslation(string $rootDirectoryPath): string
     {
         $content = "";
 
         // Initialisation de la variable de cache
         $this->cache = array();
 
-        if (CoreLoader::translateLoader($pathLang) && !empty($this->cache)) {
+        if (CoreLoader::translateLoader($rootDirectoryPath) && !empty($this->cache)) {
             $content = $this->serializeTranslation();
 
             // Vide la variable de cache après utilisation
@@ -423,14 +423,14 @@ class CoreTranslate
     /**
      * Création du cache de traduction.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @param string $content
      */
-    private function createTranslationCache(string $pathLang,
+    private function createTranslationCache(string $rootDirectoryPath,
                                             string $content): void
     {
         if (CoreLoader::isCallable("CoreCache")) {
-            $langCacheFileName = $this->getLangCacheFileName($pathLang);
+            $langCacheFileName = $this->getLangCacheFileName($rootDirectoryPath);
             CoreCache::getInstance(CoreCacheSection::TRANSLATE)->writeCache($langCacheFileName,
                                                                             $content);
         }
@@ -443,27 +443,24 @@ class CoreTranslate
      */
     private function translateWithBuffer(string $content): void
     {
-        ob_start();
-        print eval(" $content ");
-        ob_get_contents();
-        ob_end_clean();
+        eval(" $content ");
     }
 
     /**
      * Retourne le nom du fichier cache de langue.
      *
-     * @param string $pathLang
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return string
      */
-    private static function getLangCachePrefixFileName(string $pathLang = ""): string
+    private static function getLangCachePrefixFileName(string $rootDirectoryPath = ""): string
     {
-        if (!empty($pathLang) && substr($pathLang,
-                                        -1) !== DIRECTORY_SEPARATOR) {
-            $pathLang .= DIRECTORY_SEPARATOR;
+        if (!empty($rootDirectoryPath) && substr($rootDirectoryPath,
+                                                 -1) !== DIRECTORY_SEPARATOR) {
+            $rootDirectoryPath .= DIRECTORY_SEPARATOR;
         }
         return str_replace(DIRECTORY_SEPARATOR,
                            "_",
-                           $pathLang) . CoreLoader::TRANSLATE_EXTENSION . "_";
+                           $rootDirectoryPath) . CoreLoader::TRANSLATE_EXTENSION . "_";
     }
 
     /**

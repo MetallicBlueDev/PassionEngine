@@ -165,47 +165,49 @@ class CoreLoader
     /**
      * Chargeur de classe.
      *
-     * @param string $class Nom de la classe.
+     * @param string $fullClassName Nom complet de la classe.
      * @return bool true chargé.
      */
-    public static function &classLoader(string $class): bool
+    public static function &classLoader(string $fullClassName): bool
     {
         // Type indéterminé
-        return self::manageLoad($class,
+        return self::manageLoad($fullClassName,
                                 "");
     }
 
     /**
      * Chargeur de fichier de traduction.
+     * Permet de charger des fichiers qui sont spécifiques à la traduction.
      *
-     * @param string $plugin Module de traduction.
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return bool true chargé.
      */
-    public static function &translateLoader(string $plugin): bool
+    public static function &translateLoader(string $rootDirectoryPath): bool
     {
-        return self::manageLoad($plugin,
+        return self::manageLoad($rootDirectoryPath,
                                 self::TRANSLATE_FILE);
     }
 
     /**
-     * Chargeur de fichier include.
+     * Chargeur de fichier "à inclure".
+     * Permet de charger des fichiers qui ne sont pas des classes.
      *
-     * @param string $include Nom de l'include.
+     * @param string $includeKeyName Clé spécifique pour inclure le fichier (exemple configs_cache correspondant au chemin configs/cache.inc.php).
      * @return bool true chargé.
      */
-    public static function &includeLoader(string $include): bool
+    public static function &includeLoader(string $includeKeyName): bool
     {
-        return self::manageLoad($include,
+        return self::manageLoad($includeKeyName,
                                 self::INCLUDE_FILE);
     }
 
     /**
      * Vérifie la disponibilité de la classe et de ca methode éventuellement.
      *
-     * @param string $className Nom de la classe
-     * @param string $methodName Nom de la méthode
-     * @param bool $static Appel d'instance ou statique
-     * @return bool true l'appel peut être effectué
+     * @param string $className Nom de la classe.
+     * @param string $methodName Nom de la méthode.
+     * @param bool $static Appel d'instance ou statique.
+     * @return bool true l'appel peut être effectué.
      */
     public static function &isCallable(string $className,
                                        string $methodName = "",
@@ -253,6 +255,7 @@ class CoreLoader
      * Appel une methode d'un objet ou une méthode statique d'une classe.
      *
      * @param string $callback
+     * @param mixed $example func_get_args()
      * @return mixed
      */
     public static function &callback(string $callback)
@@ -278,34 +281,36 @@ class CoreLoader
     }
 
     /**
-     * Retourne le chemin absolu.
+     * Retourne le chemin absolu pour un fichier "à inclure".
+     * Permet de trouver des fichiers qui ne sont pas des classes.
      *
-     * @param string $keyName Fichier demandé.
-     * @return string chemin absolu ou nulle.
+     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php)..
+     * @return string
      */
-    public static function &getIncludeAbsolutePath(string $keyName): string
+    public static function &getIncludeAbsolutePath(string $includeKeyName): string
     {
-        return self::getAbsolutePath($keyName,
+        return self::getAbsolutePath($includeKeyName,
                                      self::INCLUDE_FILE);
     }
 
     /**
-     * Retourne le chemin absolu.
+     * Retourne le chemin absolu d'un fichier de traduction.
+     * Permet de trouver des fichiers qui sont spécifiques à la traduction.
      *
-     * @param string $keyName Fichier demandé.
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return string chemin absolu ou nulle.
      */
-    public static function &getTranslateAbsolutePath(string $keyName): string
+    public static function &getTranslateAbsolutePath(string $rootDirectoryPath): string
     {
-        return self::getAbsolutePath($keyName,
+        return self::getAbsolutePath($rootDirectoryPath,
                                      self::TRANSLATE_FILE);
     }
 
     /**
      * Retourne le nom complet de la classe.
      *
-     * @param string $className
-     * @param string $prefixName
+     * @param string $className Nom court ou nom complet de la classe.
+     * @param string $prefixName Préfixe de la classe si c'est un nom court qui nécessite plus de précision.
      * @return string
      */
     public static function &getFullQualifiedClassName(string $className,
@@ -326,15 +331,15 @@ class CoreLoader
     /**
      * Retourne le chemin vers le fichier contenant la classe.
      *
-     * @param string $keyName
+     * @param string $fullClassName Nom complet de la classe.
      * @return string
      */
-    public static function &getFilePathFromNamespace(string $keyName): string
+    public static function &getFilePathFromNamespace(string $fullClassName): string
     {
         // Supprime le premier namespace
         $path = str_replace("TREngine\\",
                             "",
-                            $keyName);
+                            $fullClassName);
 
         // Conversion du namespace en dossier
         $path = str_replace("\\",
@@ -344,19 +349,19 @@ class CoreLoader
     }
 
     /**
-     * Retourne le chemin vers le fichier contenant la tranduction.
+     * Retourne le chemin vers le fichier contenant la traduction.
      *
-     * @param string $keyName
-     * @param string $currentLanguage
+     * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
+     * @param string $language Langue contenue dans le fichier.
      * @return string
      */
-    public static function &getFilePathFromTranslate(string $keyName,
-                                                     string $currentLanguage = ""): string
+    public static function &getFilePathFromTranslate(string $rootDirectoryPath,
+                                                     string $language = ""): string
     {
-        $path = $keyName . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
+        $path = $rootDirectoryPath . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
 
-        if (!empty($currentLanguage)) {
-            $path .= $currentLanguage;
+        if (!empty($language)) {
+            $path .= $language;
         } else if (self::isCallable("CoreTranslate")) {
             $path .= CoreTranslate::getInstance()->getCurrentLanguage();
         }
@@ -490,28 +495,28 @@ class CoreLoader
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param string $keyName
+     * @param string $fullClassName
      * @param string $fileType
      * @param string $prefixName
      */
-    private static function buildKeyNameAndFileType(string &$keyName,
+    private static function buildKeyNameAndFileType(string &$fullClassName,
                                                     string &$fileType,
                                                     string $prefixName = ""): void
     {
         if (empty($fileType)) {
-            self::buildGenericKeyNameAndFileType($keyName,
+            self::buildGenericKeyNameAndFileType($fullClassName,
                                                  $fileType,
                                                  $prefixName);
         }
 
         if ($fileType === self::TRANSLATE_FILE) {
             $fakeFileType = "";
-            self::buildGenericKeyNameAndFileType($keyName,
+            self::buildGenericKeyNameAndFileType($fullClassName,
                                                  $fakeFileType,
                                                  $prefixName);
 
             if ($fakeFileType !== null && $fakeFileType !== $fileType) {
-                $keyName = self::getFilePathFromNamespace($keyName);
+                $fullClassName = self::getFilePathFromNamespace($fullClassName);
             }
         }
     }
@@ -531,7 +536,7 @@ class CoreLoader
                    "\Block\Block") !== false) {
             $fileType = self::BLOCK_FILE;
         } else if (strpos($keyName,
-                          "Module\Module") !== false) {
+                          "\Module\Module") !== false) {
             $fileType = self::MODULE_FILE;
         } else if (strpos($keyName,
                           "\\") === false) {
@@ -587,12 +592,12 @@ class CoreLoader
     /**
      * Détermine le chemin vers le fichier.
      *
-     * @param string $keyName
+     * @param string $fullClassName
      * @param string $fileType
      * @return string
      * @throws FailLoader
      */
-    private static function &getFilePath(string $keyName,
+    private static function &getFilePath(string $fullClassName,
                                          string $fileType): string
     {
         $path = "";
@@ -607,20 +612,20 @@ class CoreLoader
             case self::CLASS_FILE:
             case self::BLOCK_FILE:
             case self::MODULE_FILE:
-                $path = self::getFilePathFromNamespace($keyName);
+                $path = self::getFilePathFromNamespace($fullClassName);
                 break;
             case self::TRANSLATE_FILE:
-                $path = self::getFilePathFromTranslate($keyName);
+                $path = self::getFilePathFromTranslate($fullClassName);
                 break;
             case self::INCLUDE_FILE:
                 $path = str_replace("_",
                                     DIRECTORY_SEPARATOR,
-                                    $keyName) . "." . $fileType;
+                                    $fullClassName) . "." . $fileType;
                 break;
             default:
                 throw new FailLoader("can not determine the file path",
                                      FailBase::getErrorCodeName(4),
-                                                                array($keyName, $fileType));
+                                                                array($fullClassName, $fileType));
         }
 
         $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";

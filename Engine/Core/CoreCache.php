@@ -101,7 +101,7 @@ class CoreCache extends CacheModel
     {
         parent::__construct();
 
-        $cacheClassName = "";
+        $fullClassName = "";
         $loaded = false;
         $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
 
@@ -111,8 +111,8 @@ class CoreCache extends CacheModel
         }
 
         // Chargement des drivers pour le cache
-        $cacheClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
-        $loaded = CoreLoader::classLoader($cacheClassName);
+        $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
+        $loaded = CoreLoader::classLoader($fullClassName);
 
         if (!$loaded) {
             throw new FailCache("cache driver not found",
@@ -120,15 +120,15 @@ class CoreCache extends CacheModel
                                                             array($cacheConfig['type']));
         }
 
-        if (!CoreLoader::isCallable($cacheClassName,
+        if (!CoreLoader::isCallable($fullClassName,
                                     "initialize")) {
             throw new FailCache("unable to initialize cache",
                                 FailBase:: getErrorCodeName(3),
-                                                            array($cacheClassName));
+                                                            array($fullClassName));
         }
 
         try {
-            $this->selectedCache = new $cacheClassName();
+            $this->selectedCache = new $fullClassName();
             $this->selectedCache->initialize($cacheConfig);
         } catch (Throwable $ex) {
             $this->selectedCache = null;

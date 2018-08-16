@@ -7,7 +7,7 @@ namespace TREngine\Engine\Base;
  *
  * @author Sébastien Villemain
  */
-class BaseMongo
+class BaseMongo extends BaseModel
 {
     //http://php.net/manual/fr/class.mongodb.php
 }

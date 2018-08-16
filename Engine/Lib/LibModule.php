@@ -227,8 +227,8 @@ class LibModule
      */
     private function fireBuildModuleData(LibModuleData &$moduleData): void
     {
-        $moduleFullClassName = $moduleData->getFullQualifiedClassName();
-        $loaded = CoreLoader::classLoader($moduleFullClassName);
+        $fullClassName = $moduleData->getFullQualifiedClassName();
+        $loaded = CoreLoader::classLoader($fullClassName);
 
         if ($loaded) {
             if ($moduleData->isCallableViewMethod()) {

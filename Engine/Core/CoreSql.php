@@ -38,14 +38,14 @@ class CoreSql extends BaseModel
     {
         parent::__construct();
 
-        $baseClassName = "";
+        $fullClassName = "";
         $loaded = false;
         $databaseConfig = CoreMain::getInstance()->getConfigs()->getConfigDatabase();
 
         if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
             // Chargement des drivers pour la base
-            $baseClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::BASE_FILE . ucfirst($databaseConfig['type']));
-            $loaded = CoreLoader::classLoader($baseClassName);
+            $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::BASE_FILE . ucfirst($databaseConfig['type']));
+            $loaded = CoreLoader::classLoader($fullClassName);
         }
 
         if (!$loaded) {
@@ -54,15 +54,15 @@ class CoreSql extends BaseModel
                                                          array($databaseConfig['type']));
         }
 
-        if (!CoreLoader::isCallable($baseClassName,
+        if (!CoreLoader::isCallable($fullClassName,
                                     "initialize")) {
             throw new FailSql("unable to initialize database",
                               FailBase::getErrorCodeName(14),
-                                                         array($baseClassName));
+                                                         array($fullClassName));
         }
 
         try {
-            $this->selectedBase = new $baseClassName();
+            $this->selectedBase = new $fullClassName();
             $this->selectedBase->initialize($databaseConfig);
         } catch (Throwable $ex) {
             $this->selectedBase = null;

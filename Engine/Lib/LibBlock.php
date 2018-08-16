@@ -452,8 +452,8 @@ class LibBlock
      */
     private function fireBuildBlockData(LibBlockData &$blockData): void
     {
-        $blockFullClassName = $blockData->getFullQualifiedClassName();
-        $loaded = CoreLoader::classLoader($blockFullClassName);
+        $fullClassName = $blockData->getFullQualifiedClassName();
+        $loaded = CoreLoader::classLoader($fullClassName);
 
         if ($loaded) {
             if ($blockData->isCallableViewMethod()) {
