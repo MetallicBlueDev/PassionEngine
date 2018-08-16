@@ -3,6 +3,9 @@
 namespace TREngine\Engine\Base;
 
 use TREngine\Engine\Core\CoreTable;
+use TREngine\Engine\Core\CoreLogger;
+use TREngine\Engine\Core\CoreSecure;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Core\CoreTransaction;
 use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Fail\FailSql;
@@ -850,7 +853,7 @@ abstract class BaseModel extends CoreTransaction
         if (!empty($sqlOrderBy)) {
             if (strpos($sqlOrderBy,
                        "ORDER BY") === false) {
-                $this->setSqlWhere("ORDER BY " . $sqlOrderBy);
+                $this->setSqlOrderBy("ORDER BY " . $sqlOrderBy);
             }
         }
     }

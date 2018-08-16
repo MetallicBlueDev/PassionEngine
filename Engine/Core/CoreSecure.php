@@ -271,8 +271,8 @@ class CoreSecure
                                               $value);
                         $errorLine .= " <span class=\"text_bold\">" . $key . "</span> " . $value;
                     } else if ($key === "args" && !empty($value) && is_array($value)) {
-                        $errorLine .= " with [<span class=\"text_small\">" . implode(", ",
-                                                                                     $value)
+                        $errorLine .= " with [<span class=\"text_small\">" . print_r($value,
+                                                                                     true)
                                 . "</span>]";
                     } else if ($key === "line" || $key == "class") {
                         $errorLine .= " in <span class=\"text_bold\">" . $key . "</span> " . $value;
