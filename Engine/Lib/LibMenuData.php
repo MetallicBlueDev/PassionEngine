@@ -18,12 +18,16 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
 {
 
     /**
-     * @var string Un élement de menu parent.
+     * Un élement de menu parent.
+     *
+     * @var string
      */
     public const ITEM_PARENT = "parent";
 
     /**
-     * @var string Un élément de menu actif.
+     * Un élément de menu actif.
+     * 
+     * @var string
      */
     public const ITEM_ACTIVE = "active";
 

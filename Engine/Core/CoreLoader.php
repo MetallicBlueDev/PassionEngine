@@ -140,6 +140,51 @@ class CoreLoader
     private static $loadedFiles = null;
 
     /**
+     * Clé représentant le fichier (chemin de dossier, nom de classe, clé pour inclure un fichier, etc.).
+     *
+     * @var string
+     */
+    private $keyName = "";
+
+    /**
+     * Type de fichier.
+     *
+     * @var string
+     */
+    private $fileType = "";
+
+    /**
+     * Préfixe de la classe si c'est un nom court qui nécessite plus de précision.
+     *
+     * @var string
+     */
+    private $prefixName = "";
+
+    /**
+     * Chemin absolu vers le fichier.
+     *
+     * @var string
+     */
+    private $path = "";
+
+    /**
+     * Représente la clé unique utilisé pour référencer le fichier dans le cache.
+     *
+     * @var string
+     */
+    private $uniqueFileKey = "";
+
+    /**
+     * Nouvelle information sur le fichier à charger.
+     *
+     * @param string $keyName Clé représentant le fichier.
+     */
+    private function __construct(string &$keyName)
+    {
+        $this->keyName = $keyName;
+    }
+
+    /**
      * Inscription du chargeur de classe.
      *
      * @throws FailLoader
@@ -170,9 +215,8 @@ class CoreLoader
      */
     public static function &classLoader(string $fullClassName): bool
     {
-        // Type indéterminé
-        return self::manageLoad($fullClassName,
-                                "");
+        $info = new CoreLoader($fullClassName);
+        return self::manageLoad($info);
     }
 
     /**
@@ -184,8 +228,9 @@ class CoreLoader
      */
     public static function &translateLoader(string $rootDirectoryPath): bool
     {
-        return self::manageLoad($rootDirectoryPath,
-                                self::TRANSLATE_FILE);
+        $info = new CoreLoader($rootDirectoryPath);
+        $info->fileType = self::TRANSLATE_FILE;
+        return self::manageLoad($info);
     }
 
     /**
@@ -197,8 +242,9 @@ class CoreLoader
      */
     public static function &includeLoader(string $includeKeyName): bool
     {
-        return self::manageLoad($includeKeyName,
-                                self::INCLUDE_FILE);
+        $info = new CoreLoader($includeKeyName);
+        $info->fileType = self::INCLUDE_FILE;
+        return self::manageLoad($info);
     }
 
     /**
@@ -213,40 +259,19 @@ class CoreLoader
                                        string $methodName = "",
                                        bool $static = false): bool
     {
-        $rslt = false;
-        $fileType = "";
+        $info = new CoreLoader($className);
+        self::buildKeyNameAndFileType($info);
+        $rslt = self::loaded($info);
 
-        if (!empty($methodName)) {
-            self::buildKeyNameAndFileType($className,
-                                          $fileType);
-
-            // Vérifie si la classe est en mémoire
-            if (self::isLoaded($className,
-                               $fileType)) {
-                // Pour les pages plus complexes comme le module management
-                $pos = strpos($className,
-                              ".");
-
-                if ($pos !== false) { // exemple : Module_Management_Security.setting
-                    $className = substr($className,
-                                        0,
-                                        $pos);
-                }
-
-                // Défini le comportement de l'appel
-                if ($static) {
-                    $rslt = is_callable("{$className}::{$methodName}");
-                } else {
-                    $rslt = is_callable(array(
-                        $className,
-                        $methodName));
-                }
+        if ($rslt && !empty($methodName)) {
+            // Défini le comportement de l'appel
+            if ($static) {
+                $rslt = is_callable("{$info->keyName}::{$methodName}");
+            } else {
+                $rslt = is_callable(array(
+                    $info->keyName,
+                    $methodName));
             }
-        } else {
-            self::buildKeyNameAndFileType($className,
-                                          $fileType);
-            $rslt = self::isLoaded($className,
-                                   $fileType);
         }
         return $rslt;
     }
@@ -260,10 +285,6 @@ class CoreLoader
      */
     public static function &callback(string $callback)
     {
-        $fileType = "";
-        self::buildKeyNameAndFileType($callback,
-                                      $fileType);
-
         $args = func_get_args();
         $count = count($args);
         $args = ($count > 1) ? array_splice($args,
@@ -275,7 +296,7 @@ class CoreLoader
                                      $args);
 
         if ($rslt === false) {
-            CoreLogger::addException("Failed to execute callback '" . $callback . "'. FileType (extension): " . $fileType);
+            CoreLogger::addException("Failed to execute callback '" . $callback . "'.");
         }
         return $rslt;
     }
@@ -284,13 +305,14 @@ class CoreLoader
      * Retourne le chemin absolu pour un fichier "à inclure".
      * Permet de trouver des fichiers qui ne sont pas des classes.
      *
-     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php)..
+     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php).
      * @return string
      */
     public static function &getIncludeAbsolutePath(string $includeKeyName): string
     {
-        return self::getAbsolutePath($includeKeyName,
-                                     self::INCLUDE_FILE);
+        $info = new CoreLoader($includeKeyName);
+        $info->fileType = self::INCLUDE_FILE;
+        return self::getAbsolutePath($info);
     }
 
     /**
@@ -302,8 +324,9 @@ class CoreLoader
      */
     public static function &getTranslateAbsolutePath(string $rootDirectoryPath): string
     {
-        return self::getAbsolutePath($rootDirectoryPath,
-                                     self::TRANSLATE_FILE);
+        $info = new CoreLoader($rootDirectoryPath);
+        $info->fileType = self::TRANSLATE_FILE;
+        return self::getAbsolutePath($info);
     }
 
     /**
@@ -316,16 +339,14 @@ class CoreLoader
     public static function &getFullQualifiedClassName(string $className,
                                                       string $prefixName = ""): string
     {
-        $fileType = "";
+        $info = new CoreLoader($className);
 
         if (!empty($prefixName)) {
-            $prefixName .= "\\";
+            $info->prefixName = $prefixName . "\\";
         }
 
-        self::buildKeyNameAndFileType($className,
-                                      $fileType,
-                                      $prefixName);
-        return $className;
+        self::buildKeyNameAndFileType($info);
+        return $info->keyName;
     }
 
     /**
@@ -371,109 +392,109 @@ class CoreLoader
     }
 
     /**
-     * Retourne le chemin absolu.
+     * Retourne le chemin vers le fichier contenant le fichier à inclure.
      *
-     * @param string $keyName Fichier demandé.
-     * @param string $fileType
-     * @return string chemin absolu ou nulle.
+     * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple configs_cache correspondant au chemin configs/cache.inc.php).
+     * @return string
      */
-    private static function &getAbsolutePath(string $keyName,
-                                             string $fileType): string
+    public static function &getFilePathFromInclude(string $includeKeyName): string
     {
-        self::buildKeyNameAndFileType($keyName,
-                                      $fileType);
-        return self::getFilePath($keyName,
-                                 $fileType);
+        $path = str_replace("_",
+                            DIRECTORY_SEPARATOR,
+                            $includeKeyName) . "." . self::INCLUDE_FILE;
+        return $path;
     }
 
     /**
-     * Retourne la clé correspondant au fichier.
+     * Retourne le chemin absolu.
      *
-     * @param string $keyName
-     * @param string $fileType
+     * @param CoreLoader $info Information sur le fichier.
      * @return string
      */
-    private static function &getLoadedFileKey(string $keyName,
-                                              string $fileType): string
+    private static function &getAbsolutePath(CoreLoader &$info): string
     {
-        $loadKeyName = $keyName;
+        self::buildKeyNameAndFileType($info);
+        self::buildFilePath($info);
+        return $info->path;
+    }
 
-        switch ($fileType) {
-            case self::TRANSLATE_FILE:
-                $loadKeyName .= "." . self::TRANSLATE_EXTENSION;
-                break;
+    /**
+     * Construction de la clé correspondant au fichier.
+     *
+     * @param CoreLoader $info Information sur le fichier.
+     */
+    private static function buildUniqueFileKey(CoreLoader &$info): void
+    {
+        if (empty($info->uniqueFileKey)) {
+            $uniqueKey = $info->keyName;
+
+            switch ($info->fileType) {
+                case self::TRANSLATE_FILE:
+                    $uniqueKey .= "." . self::TRANSLATE_EXTENSION;
+                    break;
+                case self::INCLUDE_FILE:
+                    $uniqueKey .= "." . self::INCLUDE_FILE;
+                    break;
+            }
+
+            $info->uniqueFileKey = $uniqueKey;
         }
-
-        return $loadKeyName;
     }
 
     /**
      * Vérifie si le fichier demandé a été chargé.
      *
-     * @param string $keyName Fichier demandé.
-     * @param string $fileType Type de fichier.
+     * @param CoreLoader $info Information sur le fichier.
      * @return bool true si c'est déjà chargé.
      */
-    private static function isLoaded(string $keyName,
-                                     string $fileType): bool
+    private static function loaded(CoreLoader &$info): bool
     {
-        return isset(self::$loadedFiles[self::getLoadedFileKey($keyName,
-                                                               $fileType)]);
+        self::buildUniqueFileKey($info);
+        return isset(self::$loadedFiles[$info->uniqueFileKey]);
     }
 
     /**
-     * Chargeur de fichier (uniquement si besoin).
+     * Chargeur de fichier.
      *
-     * @param string $keyName Nom de la classe ou du fichier.
-     * @param string $fileType Type de fichier.
+     * @param CoreLoader $info Information sur le fichier.
      * @return bool true chargé.
      * @throws FailLoader
      */
-    private static function &manageLoad(string &$keyName,
-                                        string $fileType): bool
+    private static function &manageLoad(CoreLoader &$info): bool
     {
         $loaded = false;
 
-        if (empty($keyName)) {
+        if (empty($info->keyName)) {
             throw new FailLoader("empty file name",
                                  FailBase::getErrorCodeName(4),
-                                                            array($keyName, $fileType));
+                                                            array($info->keyName, $info->fileType));
         }
 
-        self::buildKeyNameAndFileType($keyName,
-                                      $fileType);
-        $loaded = self::isLoaded($keyName,
-                                 $fileType);
+        self::buildKeyNameAndFileType($info);
+        $loaded = self::loaded($info);
 
-        // Si ce n'est pas déjà chargé
         if (!$loaded) {
-            $loaded = self::load($keyName,
-                                 $fileType);
+            $loaded = self::load($info);
         }
         return $loaded;
     }
 
     /**
-     * Chargeur de classe.
+     * Chargeur de fichier.
      *
-     * @param string $keyName
-     * @param string $fileType
+     * @param CoreLoader $info Information sur le fichier.
      * @return bool
      * @throws FailLoader
      */
-    private static function &load(string $keyName,
-                                  string $fileType): bool
+    private static function &load(CoreLoader &$info): bool
     {
         $loaded = false;
-        $path = self::getFilePath($keyName,
-                                  $fileType);
+        self::buildFilePath($info);
 
-        if (is_file($path)) {
-            $loaded = self::loadFilePath($keyName,
-                                         $fileType,
-                                         $path);
+        if (is_file($info->path)) {
+            $loaded = self::loadFilePath($info);
         } else {
-            switch ($fileType) {
+            switch ($info->fileType) {
                 case self::BLOCK_FILE:
                     CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(26)));
                     break;
@@ -486,7 +507,7 @@ class CoreLoader
                 default:
                     throw new FailLoader("unable to load file",
                                          FailBase::getErrorCodeName(4),
-                                                                    array($keyName, $fileType));
+                                                                    array($info->keyName, $info->fileType));
             }
         }
         return $loaded;
@@ -495,95 +516,72 @@ class CoreLoader
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param string $fullClassName
-     * @param string $fileType
-     * @param string $prefixName
+     * @param CoreLoader $info Information sur le fichier.
      */
-    private static function buildKeyNameAndFileType(string &$fullClassName,
-                                                    string &$fileType,
-                                                    string $prefixName = ""): void
+    private static function buildKeyNameAndFileType(CoreLoader &$info): void
     {
-        if (empty($fileType)) {
-            self::buildGenericKeyNameAndFileType($fullClassName,
-                                                 $fileType,
-                                                 $prefixName);
+        if (empty($info->fileType)) {
+            self::buildGenericKeyNameAndFileType($info);
         }
 
-        if ($fileType === self::TRANSLATE_FILE) {
-            $fakeFileType = "";
-            self::buildGenericKeyNameAndFileType($fullClassName,
-                                                 $fakeFileType,
-                                                 $prefixName);
-
-            if ($fakeFileType !== null && $fakeFileType !== $fileType) {
-                $fullClassName = self::getFilePathFromNamespace($fullClassName);
-            }
+        if ($info->fileType === self::TRANSLATE_FILE) {
+            self::buildGenericKeyNameAndFileTypeFromNamespace($info);
         }
     }
 
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param string $keyName
-     * @param string $fileType
-     * @param string $prefixName
+     * @param CoreLoader $info Information sur le fichier.
      */
-    private static function buildGenericKeyNameAndFileType(string &$keyName,
-                                                           string &$fileType,
-                                                           string $prefixName): void
+    private static function buildGenericKeyNameAndFileType(CoreLoader &$info): void
     {
-        if (strpos($keyName,
+        if (strpos($info->keyName,
                    "\Block\Block") !== false) {
-            $fileType = self::BLOCK_FILE;
-        } else if (strpos($keyName,
-                          "\Module\Module") !== false) {
-            $fileType = self::MODULE_FILE;
-        } else if (strpos($keyName,
+            $info->fileType = self::BLOCK_FILE;
+        } else if (strpos($info->keyName,
+                          "Module\Module") !== false) {
+            $info->fileType = self::MODULE_FILE;
+        } else if (strpos($info->keyName,
                           "\\") === false) {
-            self::buildGenericKeyNameAndFileTypeFromNamespace($keyName,
-                                                              $fileType,
-                                                              $prefixName);
+            self::buildGenericKeyNameAndFileTypeFromNamespace($info);
         }
 
-        if (empty($fileType)) {
+        if (empty($info->fileType)) {
             // Type par défaut
-            $fileType = self::CLASS_FILE;
+            $info->fileType = self::CLASS_FILE;
         }
     }
 
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param string $keyName
-     * @param string $fileType
-     * @param string $prefixName
+     * @param CoreLoader $info Information sur le fichier.
      */
-    private static function buildGenericKeyNameAndFileTypeFromNamespace(string &$keyName,
-                                                                        string &$fileType,
-                                                                        string $prefixName): void
+    private static function buildGenericKeyNameAndFileTypeFromNamespace(CoreLoader &$info): void
     {
 
         foreach (self::NAMESPACE_TYPES as $namespaceType) {
-            if (strrpos($keyName,
+            if (strrpos($info->keyName,
                         $namespaceType,
-                        -strlen($keyName)) !== false) {
-                $fileType = $namespaceType;
+                        -strlen($info->keyName)) !== false) {
+                $info->fileType = $namespaceType;
 
-                $keyName = str_replace("{KEYNAME}",
-                                       $keyName,
-                                       self::NAMESPACE_PATTERN);
-                $keyName = str_replace("{PREFIX}",
-                                       $prefixName,
-                                       $keyName);
-                $keyName = str_replace("{TYPE}",
-                                       $namespaceType,
-                                       $keyName);
+                $fullClassName = str_replace("{KEYNAME}",
+                                             $info->keyName,
+                                             self::NAMESPACE_PATTERN);
+                $fullClassName = str_replace("{PREFIX}",
+                                             $info->prefixName,
+                                             $fullClassName);
+                $fullClassName = str_replace("{TYPE}",
+                                             $namespaceType,
+                                             $fullClassName);
 
-                $namespaceOrigin = (strrpos($keyName,
+                $namespaceOrigin = (strrpos($fullClassName,
                                             $namespaceType . self::CUSTOM_SUBTYPE) !== false) ? self::CUSTOM_SUBTYPE : self::ENGINE_SUBTYPE;
-                $keyName = str_replace("{ORIGIN}",
-                                       $namespaceOrigin,
-                                       $keyName);
+                $info->keyName = str_replace("{ORIGIN}",
+                                             $namespaceOrigin,
+                                             $fullClassName);
                 break;
             }
         }
@@ -592,61 +590,53 @@ class CoreLoader
     /**
      * Détermine le chemin vers le fichier.
      *
-     * @param string $fullClassName
-     * @param string $fileType
-     * @return string
+     * @param CoreLoader $info Information sur le fichier.
      * @throws FailLoader
      */
-    private static function &getFilePath(string $fullClassName,
-                                         string $fileType): string
+    private static function buildFilePath(CoreLoader &$info): void
     {
-        $path = "";
+        if (empty($info->path)) {
+            $path = "";
 
-        switch ($fileType) {
-            case self::BASE_FILE:
-            case self::CACHE_FILE:
-            case self::CORE_FILE:
-            case self::EXEC_FILE:
-            case self::FAIL_FILE:
-            case self::LIBRARY_FILE :
-            case self::CLASS_FILE:
-            case self::BLOCK_FILE:
-            case self::MODULE_FILE:
-                $path = self::getFilePathFromNamespace($fullClassName);
-                break;
-            case self::TRANSLATE_FILE:
-                $path = self::getFilePathFromTranslate($fullClassName);
-                break;
-            case self::INCLUDE_FILE:
-                $path = str_replace("_",
-                                    DIRECTORY_SEPARATOR,
-                                    $fullClassName) . "." . $fileType;
-                break;
-            default:
-                throw new FailLoader("can not determine the file path",
-                                     FailBase::getErrorCodeName(4),
-                                                                array($fullClassName, $fileType));
+            switch ($info->fileType) {
+                case self::BASE_FILE:
+                case self::CACHE_FILE:
+                case self::CORE_FILE:
+                case self::EXEC_FILE:
+                case self::FAIL_FILE:
+                case self::LIBRARY_FILE :
+                case self::CLASS_FILE:
+                case self::BLOCK_FILE:
+                case self::MODULE_FILE:
+                    $path = self::getFilePathFromNamespace($info->keyName);
+                    break;
+                case self::TRANSLATE_FILE:
+                    $path = self::getFilePathFromTranslate($info->keyName);
+                    break;
+                case self::INCLUDE_FILE:
+                    $path = self::getFilePathFromInclude($info->keyName);
+                    break;
+                default:
+                    throw new FailLoader("can not determine the file path",
+                                         FailBase::getErrorCodeName(4),
+                                                                    array($info->keyName, $info->fileType));
+            }
+
+            $info->path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";
         }
-
-        $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";
-        return $path;
     }
 
     /**
      * Charge le fichier suivant son type, son nom et son chemin.
      *
-     * @param string $keyName
-     * @param string $fileType
-     * @param string $path
+     * @param CoreLoader $info Information sur le fichier.
      * @return bool
      */
-    private static function &loadFilePath(string $keyName,
-                                          string $fileType,
-                                          string $path): bool
+    private static function &loadFilePath(CoreLoader &$info): bool
     {
         $loaded = false;
 
-        switch ($fileType) {
+        switch ($info->fileType) {
             case self::TRANSLATE_FILE:
                 ${self::TRANSLATE_EXTENSION} = array();
                 break;
@@ -655,19 +645,19 @@ class CoreLoader
                 break;
         }
 
-        require $path;
-        self::$loadedFiles[self::getLoadedFileKey($keyName,
-                                                  $fileType)] = $path;
+        require $info->path;
+        self::buildUniqueFileKey($info);
+        self::$loadedFiles[$info->uniqueFileKey] = $info->path;
         $loaded = true;
 
-        switch ($fileType) {
+        switch ($info->fileType) {
             case self::TRANSLATE_FILE:
                 if (!empty(${self::TRANSLATE_EXTENSION}) && is_array(${self::TRANSLATE_EXTENSION})) {
                     CoreTranslate::getInstance()->affectCache(${self::TRANSLATE_EXTENSION});
                 }
                 break;
             case self::INCLUDE_FILE:
-                CoreMain::getInstance()->getConfigs()->addInclude($keyName,
+                CoreMain::getInstance()->getConfigs()->addInclude($info->keyName,
                                                                   ${self::INCLUDE_FILE});
                 break;
         }

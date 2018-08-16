@@ -16,7 +16,9 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
 {
 
     /**
-     * @var string Le nom complet de la classe.
+     * Le nom complet de la classe.
+     * 
+     * @var string
      */
     private $fullQualifiedClassName = null;
 

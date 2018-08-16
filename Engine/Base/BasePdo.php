@@ -34,12 +34,16 @@ class BasePdo extends BaseModel
 {
 
     /**
-     * @var string Nom du pilote PDO.
+     * Nom du pilote PDO.
+     *
+     * @var string
      */
     private $driverName = null;
 
     /**
-     * @var PdoPlatformSpecific Instance contenant du code spécifique à une configuration.
+     * Instance contenant du code spécifique à une configuration.
+     * 
+     * @var PdoPlatformSpecific
      */
     private $platformSpecific = null;
 
