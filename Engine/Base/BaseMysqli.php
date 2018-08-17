@@ -136,7 +136,7 @@ class BaseMysqli extends BaseModel
     public function &freeResult($query = null): bool
     {
         $success = false;
-        $query = (!empty($query)) ? $query : $this->getLastQueryResult();
+        $query = (!empty($query)) ? $query : $this->lastQueryResult;
         $rslt = $query !== null ? $this->getMysqliResult($query) : null;
 
         if ($rslt !== null) {

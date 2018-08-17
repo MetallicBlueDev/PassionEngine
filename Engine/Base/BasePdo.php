@@ -162,7 +162,7 @@ class BasePdo extends BaseModel
      */
     public function &freeResult($query = null): bool
     {
-        $query = (!empty($query)) ? $query : $this->getLastQueryResult();
+        $query = (!empty($query)) ? $query : $this->lastQueryResult;
         if ($query !== null) {
             unset($query);
         }

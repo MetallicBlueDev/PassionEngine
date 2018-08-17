@@ -19,7 +19,7 @@ abstract class BaseModel extends CoreTransaction
 {
 
     /**
-     * Dernier resultat de la dernière requête SQL.
+     * Dernier résultat de la dernière requête executée.
      *
      * @var mixed
      */
@@ -390,16 +390,6 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Retourne le dernier résultat de la dernière requête executée.
-     *
-     * @return mixed
-     */
-    public function &getLastQueryResult()
-    {
-        return $this->lastQueryResult;
-    }
-
-    /**
      * Retourne la dernière requête sql.
      *
      * @return string
@@ -420,6 +410,20 @@ abstract class BaseModel extends CoreTransaction
         unset($query);
         $rslt = false;
         return $rslt;
+    }
+
+    /**
+     * Libère la mémoire tampon.
+     *
+     * @param string $name
+     */
+    public function freeBuffer(string $name = ""): void
+    {
+        if (empty($name)) {
+            unset($this->buffer);
+        } else {
+            unset($this->buffer[$name]);
+        }
     }
 
     /**
@@ -820,7 +824,7 @@ abstract class BaseModel extends CoreTransaction
         }
 
         // Création d'une exception si une réponse est négative (false)
-        if ($this->getLastQueryResult() === false) {
+        if ($this->lastQueryResult === false) {
             $this->throwException("bad query",
                                   FailBase::getErrorCodeName(19),
                                                              array($this->sql));

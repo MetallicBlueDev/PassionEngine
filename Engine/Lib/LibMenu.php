@@ -224,6 +224,7 @@ class LibMenu
             $coreSql->addArrayBuffer($this->menuFriendlyName . "config",
                                      "menu_id");
             $menuConfigArrayDatas = $coreSql->getBuffer($this->menuFriendlyName . "config");
+            $coreSql->freeBuffer();
 
             // Création de tous les menus
             foreach ($menuArrayDatas as $menuId => $data) {

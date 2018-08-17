@@ -47,6 +47,7 @@ class ModuleIndex extends ModuleModel
         if ($selectedBase->affectedRows() > 0) {
             $selectedBase->addArrayBuffer("projectList");
             $projects = $selectedBase->getBuffer("projectList");
+            $selectedBase->freeBuffer();
             $libMakeStyle->assignString("projects",
                                         $projects);
             $libMakeStyle->assignString("nbProjects",
