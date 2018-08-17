@@ -298,14 +298,14 @@ abstract class BaseModel extends CoreTransaction
     /**
      * Jointure forte entre tables.
      *
-     * @param string $joinTable
-     * @param string $secondTable
-     * @param string $joinTableField
-     * @param string $condition
-     * @param string $secondTableField
+     * @param string $joinTable Table à joindre.
+     * @param string $secondTable Seconde table.
+     * @param string $joinTableField Champ permettant de faire la jointure.
+     * @param string $condition Condition de jointure (=).
+     * @param string $secondTableField Champ de la seconde table permettant de faire la jointure (si différent uniquement).
      * @return BaseModel
      */
-    public function &innerjoin(string $joinTable,
+    public function &innerJoin(string $joinTable,
                                string $secondTable,
                                string $joinTableField,
                                string $condition,
@@ -322,45 +322,72 @@ abstract class BaseModel extends CoreTransaction
     /**
      * Jointure de table partie gauche.
      *
-     * @param string $table
-     * @param string $condition
+     * @param string $joinTable Table à joindre.
+     * @param string $secondTable Seconde table.
+     * @param string $joinTableField Champ permettant de faire la jointure.
+     * @param string $condition Condition de jointure (=).
+     * @param string $secondTableField Champ de la seconde table permettant de faire la jointure (si différent uniquement).
      * @return BaseModel
      */
-    public function &leftJoin(string $table,
-                              string $condition): BaseModel
+    public function &leftJoin(string $joinTable,
+                              string $secondTable,
+                              string $joinTableField,
+                              string $condition,
+                              string $secondTableField = ""): BaseModel
     {
-        return $this->join($table,
+        return $this->join($joinTable,
+                           $secondTable,
+                           $joinTableField,
                            $condition,
+                           $secondTableField,
                            "LEFT");
     }
 
     /**
      * Jointure de table partie droite.
      *
-     * @param string $table
-     * @param string $condition
+     * @param string $joinTable Table à joindre.
+     * @param string $secondTable Seconde table.
+     * @param string $joinTableField Champ permettant de faire la jointure.
+     * @param string $condition Condition de jointure (=).
+     * @param string $secondTableField Champ de la seconde table permettant de faire la jointure (si différent uniquement).
      * @return BaseModel
      */
-    public function &rightJoin(string $table,
-                               string $condition): BaseModel
+    public function &rightJoin(string $joinTable,
+                               string $secondTable,
+                               string $joinTableField,
+                               string $condition,
+                               string $secondTableField = ""): BaseModel
     {
-        return $this->join($table,
+        return $this->join($joinTable,
+                           $secondTable,
+                           $joinTableField,
                            $condition,
+                           $secondTableField,
                            "RIGHT");
     }
 
     /**
      * Jointure de table en produit cartésien.
      *
-     * @param string $table
-     * @param string $condition
+     * @param string $joinTable Table à joindre.
+     * @param string $secondTable Seconde table.
+     * @param string $joinTableField Champ permettant de faire la jointure.
+     * @param string $condition Condition de jointure (=).
+     * @param string $secondTableField Champ de la seconde table permettant de faire la jointure (si différent uniquement).
      * @return BaseModel
      */
-    public function &crossJoin(string $table,
-                               string $condition): BaseModel
+    public function &crossJoin(string $joinTable,
+                               string $secondTable,
+                               string $joinTableField,
+                               string $condition,
+                               string $secondTableField = ""): BaseModel
     {
-        return $this->join($table,
+        return $this->join($joinTable,
+                           $secondTable,
+                           $joinTableField,
                            $condition,
+                           $secondTableField,
                            "CROSS");
     }
 
