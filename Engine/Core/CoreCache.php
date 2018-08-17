@@ -97,7 +97,7 @@ class CoreCache extends CacheModel
      *
      * @throws FailCache
      */
-    protected function __construct()
+    public function __construct()
     {
         parent::__construct();
 
@@ -150,7 +150,7 @@ class CoreCache extends CacheModel
     /**
      * Destruction du gestionnaire de cache.
      */
-    protected function __destruct()
+    public function __destruct()
     {
         parent::__destruct();
         unset($this->selectedCache);

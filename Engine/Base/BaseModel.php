@@ -154,7 +154,7 @@ abstract class BaseModel extends CoreTransaction
     {
         $this->setSqlCommand("SELECT");
         $this->setSqlAfterCommand(implode(", ",
-                                          $values));
+                                          $this->converFieldWithTableName($values)));
         $this->setSqlFrom("FROM " . $this->getTableName($table));
 
         if (!empty($where)) {
@@ -266,7 +266,7 @@ abstract class BaseModel extends CoreTransaction
     public function &where(array $where): BaseModel
     {
         $this->setSqlWhere(implode(" ",
-                                   $where));
+                                   $this->converFieldWithTableName($where)));
         return $this;
     }
 
@@ -279,7 +279,8 @@ abstract class BaseModel extends CoreTransaction
     public function &orderBy(array $orderBy): BaseModel
     {
         $this->setSqlOrderBy(implode(", ",
-                                     $orderBy));
+                                     $this->converFieldWithTableName($orderBy)
+        ));
         return $this;
     }
 
@@ -297,15 +298,24 @@ abstract class BaseModel extends CoreTransaction
     /**
      * Jointure forte entre tables.
      *
-     * @param string $table
+     * @param string $joinTable
+     * @param string $secondTable
+     * @param string $joinTableField
      * @param string $condition
+     * @param string $secondTableField
      * @return BaseModel
      */
-    public function &innerJoin(string $table,
-                               string $condition): BaseModel
+    public function &innerjoin(string $joinTable,
+                               string $secondTable,
+                               string $joinTableField,
+                               string $condition,
+                               string $secondTableField = ""): BaseModel
     {
-        return $this->join($table,
+        return $this->join($joinTable,
+                           $secondTable,
+                           $joinTableField,
                            $condition,
+                           $secondTableField,
                            "INNER");
     }
 
@@ -416,15 +426,15 @@ abstract class BaseModel extends CoreTransaction
      * Ajoute le dernier résultat dans la mémoire tampon typé en tableau.
      *
      * @param string $name
-     * @param string $key clé à utiliser
+     * @param string $columnName clé à utiliser
      */
     public function addArrayBuffer(string $name,
-                                   string $key = ""): void
+                                   string $columnName = ""): void
     {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchArray() as $row) {
-                if (!empty($key)) {
-                    $this->buffer[$name][$row[$key]] = $row;
+                if (!empty($columnName)) {
+                    $this->buffer[$name][$row[$columnName]] = $row;
                 } else {
                     $this->buffer[$name][] = $row;
                 }
@@ -615,16 +625,30 @@ abstract class BaseModel extends CoreTransaction
     /**
      * Jointure de table.
      *
-     * @param string $table
+     * @param string $joinTable
+     * @param string $secondTable
+     * @param string $joinTableField
      * @param string $condition
+     * @param string $secondTableField
      * @param string $type
      * @return BaseModel
      */
-    protected function &join(string $table,
+    protected function &join(string $joinTable,
+                             string $secondTable,
+                             string $joinTableField,
                              string $condition,
+                             string $secondTableField,
                              string $type): BaseModel
     {
-        $this->setSqlAfterFrom($type . " JOIN ON " . $table . $condition);
+        if (empty($secondTableField)) {
+            $secondTableField = $joinTableField;
+        }
+        $joinTableName = $this->getTableName($joinTable);
+        $secondTableName = $this->getTableName($secondTable);
+        $this->setSqlAfterFrom($type . " JOIN " . $joinTableName
+                . " ON " . $secondTableName . "." . $joinTableField
+                . " " . $condition . " "
+                . $joinTableName . "." . $secondTableField);
         return $this;
     }
 
@@ -744,6 +768,28 @@ abstract class BaseModel extends CoreTransaction
     protected function getTableName(string $table): string
     {
         return $this->getDatabasePrefix() . "_" . $table;
+    }
+
+    /**
+     * Vérifie et complète le nom des tables.
+     *
+     * @param array $values
+     * @return array
+     */
+    private function &converFieldWithTableName(array &$values)
+    {
+        foreach ($values as &$value) {
+            $pos = strpos($value,
+                          ".");
+            if ($pos !== false) {
+                $value = $this->getTableName(substr($value,
+                                                    0,
+                                                    $pos))
+                        . substr($value,
+                                 $pos);
+            }
+        }
+        return $values;
     }
 
     /**

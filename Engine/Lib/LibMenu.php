@@ -212,35 +212,56 @@ class LibMenu
             $menuArrayDatas = $coreSql->getBuffer($this->menuFriendlyName);
 
             $coreSql->select(CoreTable::MENUS_CONFIGS,
-                             array("menu_id", "name", "value"),
-                             array("block_id = '" . $this->blockId . "'"),
-                             array("menu_id"))->query();
+                             array(CoreTable::MENUS_CONFIGS . ".menu_id", "name", "value"),
+                             array("block_id = '" . 0 . "'"),
+                             array(CoreTable::MENUS_CONFIGS . ".menu_id"))
+                    ->innerJoin(CoreTable::MENUS,
+                                CoreTable::MENUS_CONFIGS,
+                                "menu_id",
+                                "=")
+                    ->query();
 
-            // TODO Chargement de la config du menu --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO
-            $menuArrayDatas['menu_config'] = array();
-// --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO --TODO
+            $coreSql->addArrayBuffer($this->menuFriendlyName . "config",
+                                     "menu_id");
+            $menuConfigArrayDatas = $coreSql->getBuffer($this->menuFriendlyName . "config");
+
             // Création de tous les menus
             foreach ($menuArrayDatas as $menuId => $data) {
+                $data['menu_config'] = ExecUtils::getArrayConfigs($menuConfigArrayDatas[$menuId]);
                 $this->menuDatas[$menuId] = new LibMenuData($data,
                                                             true);
             }
 
-            // Création du chemin des menus
-            foreach ($this->menuDatas as $menuData) {
-                // Détermine le type de branche
-                if ($menuData->getParentId() >= 0) {
-                    // Enfant d'une branche
-                    $menuData->addClassItemAttribute($menuData);
-                    $this->menuDatas[$menuData->getParentId()]->addChild($menuData);
-                } else {
-                    // Branche principale
-                    $menuData->addClassParentAttribute();
-                }
-            }
-
-            CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->menuFriendlyName . ".php",
-                                                                                         $this->menuDatas);
+            $this->buildMenu();
+            $this->writeMenuCache();
         }
+    }
+
+    /**
+     * Création du chemin des menus.
+     */
+    private function buildMenu(): void
+    {
+        foreach ($this->menuDatas as $menuData) {
+            // Détermine le type de branche
+            if ($menuData->getParentId() >= 0) {
+                // Enfant d'une branche
+                $menuData->addClassItemAttribute($menuData);
+                $this->menuDatas[$menuData->getParentId()]->addChild($menuData);
+            } else {
+                // Branche principale
+                $menuData->addClassParentAttribute();
+            }
+        }
+    }
+
+    /**
+     * Enregistre les menus dans le cache.
+     */
+    private function writeMenuCache(): void
+    {
+        CoreCache::getInstance(CoreCacheSection::MENUS)->writeCacheAsStringSerialize($this->menuFriendlyName . ".php",
+                                                                                     $this->menuDatas);
     }
 
     /**

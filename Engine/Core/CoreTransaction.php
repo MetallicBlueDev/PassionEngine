@@ -23,7 +23,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Nouveau modèle de transaction.
      */
-    protected function __construct()
+    public function __construct()
     {
         parent::__construct();
     }
@@ -63,7 +63,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Destruction de la communication.
      */
-    protected function __destruct()
+    public function __destruct()
     {
         $this->netDeconnect();
         parent::__destruct();

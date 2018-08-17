@@ -30,7 +30,7 @@ abstract class CoreDataStorage
     /**
      * Nettoyage à la destruction.
      */
-    protected function __destruct()
+    public function __destruct()
     {
         unset($this->data);
     }

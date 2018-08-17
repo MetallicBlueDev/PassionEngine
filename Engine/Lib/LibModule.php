@@ -8,13 +8,11 @@ use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreTranslate;
-use Throwable;
 
 /**
  * Gestionnaire de module.

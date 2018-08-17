@@ -11,7 +11,7 @@ use TREngine\Engine\Fail\FailSql;
  *
  * @author Sébastien Villemain
  */
-class CoreSql extends BaseModel
+class CoreSql
 {
 
     /**
@@ -33,10 +33,8 @@ class CoreSql extends BaseModel
      *
      * @throws FailSql
      */
-    protected function __construct()
+    private function __construct()
     {
-        parent::__construct();
-
         $databaseConfig = CoreMain::getInstance()->getConfigs()->getConfigDatabase();
         $fullClassName = $this->getBaseFullClassName($databaseConfig);
         $this->selectedBase = $this->makeSelectedBase($fullClassName,
@@ -46,9 +44,8 @@ class CoreSql extends BaseModel
     /**
      * Destruction du gestionnaire.
      */
-    protected function __destruct()
+    public function __destruct()
     {
-        parent::__destruct();
         unset($this->selectedBase);
     }
 

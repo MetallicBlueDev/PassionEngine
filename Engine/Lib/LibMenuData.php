@@ -58,24 +58,18 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      *
      * @param array $data
      */
-    public function __construct(array &$data,
-                                bool $initializeConfig = false)
+    public function __construct(array &$data)
     {
         parent::__construct();
 
-        if ($initializeConfig) {
-            $data['menu_config'] = isset($data['menu_config']) ? ExecUtils::getArrayConfigs($data['menu_config']) : array();
-        }
-
         $this->newStorage($data);
-
         $this->addTags("li");
     }
 
     /**
      * Nettoyage à la destruction.
      */
-    protected function __destruct()
+    public function __destruct()
     {
         $this->removeAllAttributes();
         $this->removeAllChildren();

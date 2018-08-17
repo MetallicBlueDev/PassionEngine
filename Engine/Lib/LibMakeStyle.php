@@ -2,7 +2,6 @@
 
 namespace TREngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailTemplate;
 use TREngine\Engine\Core\CoreCache;
