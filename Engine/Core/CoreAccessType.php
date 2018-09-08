@@ -306,7 +306,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
 
         // Recherche d'information sur le block
         if (CoreLoader::isCallable("LibBlock")) {
-            $blockInfo = LibBlock::getInstance()->getBlockData($this->getId());
+            $blockInfo = LibBlock::getInstance()->getEntityData($this->getId());
         }
 
         if ($blockInfo !== null && $blockInfo->getId() >= 0 && $blockInfo->isCallableViewMethod()) {

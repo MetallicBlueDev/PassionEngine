@@ -31,8 +31,7 @@ class LibBlockData extends LibEntityData
      *
      * @param array $data
      */
-    public function __construct(array &$data,
-                                bool $initializeConfig = false)
+    public function __construct(array &$data)
     {
         parent::__construct();
 
@@ -41,9 +40,6 @@ class LibBlockData extends LibEntityData
             $data = array();
         }
 
-        if ($initializeConfig) {
-            $data['block_config'] = isset($data['block_config']) ? ExecUtils::getArrayConfigs($data['block_config']) : array();
-        }
 
         $this->newStorage($data);
 
@@ -131,8 +127,7 @@ class LibBlockData extends LibEntityData
      */
     public function buildFinalOutput(): void
     {
-        LibBlock::getInstance()->buildBlockData($this,
-                                                false);
+        LibBlock::getInstance()->buildEntityData($this);
     }
 
     /**

@@ -9,19 +9,18 @@ use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreTranslate;
-use Throwable;
+use TREngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire de blocks.
  *
  * @author Sébastien Villemain
  */
-class LibBlock
+class LibBlock extends LibEntity
 {
 
     /**
@@ -39,18 +38,11 @@ class LibBlock
     private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . "s";
 
     /**
-     * Gestionnnaire de blocks.
+     * Gestionnaire de blocks.
      *
      * @var LibBlock
      */
     private static $libBlock = null;
-
-    /**
-     * Blocks chargés.
-     *
-     * @var LibBlockData[]
-     */
-    private $blockDatas = array();
 
     private function __construct()
     {
@@ -71,6 +63,112 @@ class LibBlock
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @return void
+     * @throws FailBlock
+     */
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
+    {
+        throw new FailBlock($message,
+                            $failCode,
+                            $failArgs);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param string $entityFolderName
+     * @return int
+     */
+    protected function &loadEntityId(string $entityFolderName): int
+    {
+        $blockId = -1;
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
+        $coreSql->select(CoreTable::BLOCKS,
+                         array("block_id"),
+                         array("called_by_type = 1", "AND type =  '" . $entityFolderName . "'"))->query();
+
+        if ($coreSql->affectedRows() > 0) {
+            $blockId = $coreSql->fetchArray()[0]['block_id'];
+        }
+        return $blockId;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    protected function getCacheSectionName(): string
+    {
+        return CoreCacheSection::BLOCKS;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param int $entityId
+     * @return array
+     */
+    protected function &loadEntityDatas(int $entityId): array
+    {
+        $blockArrayDatas = array();
+
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
+        $coreSql->select(CoreTable::BLOCKS,
+                         array("block_id",
+                    "side",
+                    "position",
+                    "title",
+                    "type",
+                    "rank",
+                    "all_modules"),
+                         array("block_id =  '" . $entityId . "'"))->query();
+
+        if ($coreSql->affectedRows() > 0) {
+            $blockArrayDatas = $coreSql->fetchArray()[0];
+            $blockArrayDatas['module_ids'] = array();
+            $blockArrayDatas['block_config'] = array();
+
+            $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
+                             array("module_id"),
+                             array("block_id =  '" . $entityId . "'"))->query();
+
+            if ($coreSql->affectedRows() > 0) {
+                $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
+            }
+
+            $coreSql->select(CoreTable::BLOCKS_CONFIGS,
+                             array("name", "value"),
+                             array("block_id =  '" . $entityId . "'"))->query();
+
+            if ($coreSql->affectedRows() > 0) {
+                $blockArrayDatas['block_config'] = $coreSql->fetchArray();
+                $blockArrayDatas['block_config'] = ExecUtils::getArrayConfigs($blockArrayDatas['block_config']);
+            }
+        }
+        return $blockArrayDatas;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param array $entityArrayDatas
+     * @return LibEntityData
+     */
+    protected function &createEntityData(array $entityArrayDatas): LibEntityData
+    {
+        $blockData = new LibBlockData($entityArrayDatas);
+        return $blockData;
+    }
+
+    /**
      * Compilation de tous les blocks.
      */
     public function buildAllBlocks(): void
@@ -80,8 +178,7 @@ class LibBlock
 
         foreach ($blocksIndexer as $blockRawInfo) {
             if ($blockRawInfo['side'] > CoreLayout::BLOCK_SIDE_NONE && $blockRawInfo['rank'] >= CoreAccessRank::NONE) {
-                $this->buildBlockById($blockRawInfo['block_id'],
-                                      true);
+                $this->buildEntityDataById($blockRawInfo['block_id']);
             }
         }
     }
@@ -202,196 +299,6 @@ class LibBlock
     }
 
     /**
-     * Retourne les informations du block cible via son type.
-     *
-     * @param string $blockTypeName
-     * @return LibBlockData Informations sur le block.
-     * @throws FailBlock
-     */
-    public function &getBlockDataByType(string $blockTypeName): LibBlockData
-    {
-        $blockId = $this->requestBlockId($blockTypeName);
-
-        if ($blockId < 0) {
-            throw new FailBlock("invalid block type",
-                                FailBase::getErrorCodeName(15),
-                                                           array($blockTypeName));
-        }
-        return $this->getBlockData($blockId);
-    }
-
-    /**
-     * Retourne les informations du block cible.
-     *
-     * @param int $blockId l'identifiant du block.
-     * @return LibBlockData Informations sur le block.
-     */
-    public function &getBlockData(int $blockId): LibBlockData
-    {
-        $blockData = null;
-
-        if (isset($this->blockDatas[$blockId])) {
-            $blockData = $this->blockDatas[$blockId];
-        } else {
-            $dbRequest = false;
-            $blockArrayDatas = $this->requestBlockData($blockId,
-                                                       $dbRequest);
-
-            // Injection des informations du block
-            $blockData = new LibBlockData($blockArrayDatas,
-                                          $dbRequest);
-            $this->addBlockData($blockData);
-        }
-        return $blockData;
-    }
-
-    /**
-     * Compilation d'un block.
-     *
-     * @param LibBlockData $blockData
-     * @param bool $checkModule
-     */
-    public function buildBlockData(LibBlockData $blockData,
-                                   bool $checkModule): void
-    {
-        if ($blockData->isValid() && $blockData->canActive($checkModule)) {
-            $this->fireBuildBlockData($blockData);
-        }
-    }
-
-    /**
-     * Retourne l'identifiant du block.
-     *
-     * @param string $blockTypeName
-     * @return int
-     */
-    private function &requestBlockId(string $blockTypeName): int
-    {
-        $blockId = -1;
-
-        if (!empty($this->blockDatas)) {
-            foreach ($this->blockDatas as $blockData) {
-                if ($blockData->getType() === $blockTypeName) {
-                    $blockId = $blockData->getId();
-                    break;
-                }
-            }
-        }
-
-        if ($blockId < 0) {
-            $blockId = $this->loadBlockId($blockTypeName);
-        }
-        return $blockId;
-    }
-
-    /**
-     * Charge l'identifiant du block.
-     *
-     * @param string $blockTypeName
-     * @return int
-     */
-    private function &loadBlockId(string $blockTypeName): int
-    {
-        $blockId = -1;
-        $coreSql = CoreSql::getInstance()->getSelectedBase();
-        $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id"),
-                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"))->query();
-
-        if ($coreSql->affectedRows() > 0) {
-            $blockId = $coreSql->fetchArray()[0]['block_id'];
-        }
-        return $blockId;
-    }
-
-    /**
-     * Création des informations sur le block.
-     *
-     * @param int $blockId
-     * @param int $dbRequest
-     * @return array
-     */
-    private function &requestBlockData(int $blockId,
-                                       bool &$dbRequest): array
-    {
-        $blockArrayDatas = array();
-
-        // Recherche dans le cache
-        $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
-
-        if (!$coreCache->cached($blockId . ".php")) {
-            $blockArrayDatas = $this->loadBlockDatas($blockId);
-            $dbRequest = !empty($blockArrayDatas);
-
-            if ($dbRequest) {
-                // Mise en cache
-                $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
-                $content = $coreCache->serializeData($blockArrayDatas);
-                $coreCache->writeCache($blockId . ".php",
-                                       $content);
-            }
-        } else {
-            $blockArrayDatas = $coreCache->readCacheAsArray($blockId . ".php");
-        }
-        return $blockArrayDatas;
-    }
-
-    /**
-     * Création des informations sur le block.
-     *
-     * @param int $blockId
-     * @return array
-     */
-    private function &loadBlockDatas(int $blockId): array
-    {
-        $blockArrayDatas = array();
-
-        $coreSql = CoreSql::getInstance()->getSelectedBase();
-        $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id",
-                    "side",
-                    "position",
-                    "title",
-                    "type",
-                    "rank",
-                    "all_modules"),
-                         array("block_id =  '" . $blockId . "'"))->query();
-
-        if ($coreSql->affectedRows() > 0) {
-            $blockArrayDatas = $coreSql->fetchArray()[0];
-            $blockArrayDatas['module_ids'] = array();
-            $blockArrayDatas['block_config'] = array();
-
-            $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
-                             array("module_id"),
-                             array("block_id =  '" . $blockId . "'"))->query();
-
-            if ($coreSql->affectedRows() > 0) {
-                $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
-            }
-
-            $coreSql->select(CoreTable::BLOCKS_CONFIGS,
-                             array("name", "value"),
-                             array("block_id =  '" . $blockId . "'"))->query();
-
-            if ($coreSql->affectedRows() > 0) {
-                $blockArrayDatas['block_config'] = $coreSql->fetchArray();
-            }
-        }
-        return $blockArrayDatas;
-    }
-
-    /**
-     * Alimente le cache des blocks.
-     *
-     * @param LibBlockData $blockData
-     */
-    private function addBlockData(LibBlockData $blockData): void
-    {
-        $this->blockDatas[$blockData->getId()] = $blockData;
-    }
-
-    /**
      * Retourne un tableau définissant les blocks disponibles.
      *
      * @return array
@@ -427,46 +334,52 @@ class LibBlock
     }
 
     /**
-     * Compilation d'un block via son identifiant.
+     * {@inheritDoc}
      *
-     * @param int $blockId
-     * @param bool $checkModule
+     * @param LibEntityData $entityData
      */
-    private function buildBlockById(int $blockId,
-                                    bool $checkModule): void
+    protected function onBuildBegin(LibEntityData &$entityData): void
     {
-        $blockData = $this->getBlockData($blockId);
-        $this->buildBlockData($blockData,
-                              $checkModule);
+        CoreTranslate::getInstance()->translate($entityData->getFolderName());
     }
 
     /**
-     * Lance la compilation du block.
+     * {@inheritDoc}
      *
-     * @param LibBlockData $blockData
+     * @param LibEntityData $entityData
      */
-    private function fireBuildBlockData(LibBlockData &$blockData): void
+    protected function onBuildEnded(LibEntityData &$entityData): void
     {
-        $fullClassName = $blockData->getFullQualifiedClassName();
-        $loaded = CoreLoader::classLoader($fullClassName);
+        unset($entityData);
+    }
 
-        if ($loaded) {
-            if ($blockData->isCallableViewMethod()) {
-                CoreTranslate::getInstance()->translate($blockData->getFolderName());
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onEntityNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+    }
 
-                $blockClass = $blockData->getNewEntityModel();
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onViewMethodNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+    }
 
-                if ($blockClass->isInViewList($blockData->getView())) {
-                    // Capture des données d'affichage
-                    ob_start();
-                    $blockClass->display($blockData->getView());
-                    $blockData->setTemporyOutputBuffer(ob_get_clean());
-                }
-            } else {
-                CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $blockData->getType() . ")");
-            }
-        } else {
-            CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $blockData->getType() . ")");
-        }
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onViewParameterNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
     }
 }

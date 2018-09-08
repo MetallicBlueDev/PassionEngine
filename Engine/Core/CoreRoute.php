@@ -218,7 +218,7 @@ class CoreRoute
      */
     public function &getRequestedBlockDataById(): LibBlockData
     {
-        return LibBlock::getInstance()->getBlockData($this->blockId);
+        return LibBlock::getInstance()->getEntityData($this->blockId);
     }
 
     /**
@@ -228,7 +228,7 @@ class CoreRoute
      */
     public function &getRequestedBlockDataByType(): LibBlockData
     {
-        return LibBlock::getInstance()->getBlockDataByType($this->blockType);
+        return LibBlock::getInstance()->getEntityDataByFolderName($this->blockType);
     }
 
     /**

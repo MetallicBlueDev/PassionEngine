@@ -23,41 +23,6 @@ abstract class LibEntity
     private $entityDatas = array();
 
     /**
-     * Lance une exception gérant ce type d'entité.
-     *
-     * @param string $message
-     * @param string $failCode
-     * @param array $failArgs
-     * @throws FailEngine
-     */
-    protected function throwException(string $message,
-                                      string $failCode = "",
-                                      array $failArgs = array()): void
-    {
-        throw new FailEngine($message,
-                             $failCode,
-                             $failArgs);
-    }
-
-    /**
-     * Retourne les informations de l'entité via son nom.
-     *
-     * @param string $entityFolderName Nom de l'entité.
-     * @return LibEntityData Informations sur l'entité.
-     */
-    protected function &getEntityDataByFolderName(string $entityFolderName): LibEntityData
-    {
-        $entityId = $this->requestEntityId($entityFolderName);
-
-        if ($entityId < 0) {
-            $this->throwException("invalid entity folder name",
-                                  FailBase::getErrorCodeName(15),
-                                                             array($entityFolderName));
-        }
-        return $this->getEntityData($entityId);
-    }
-
-    /**
      * Retourne les informations de l'entité.
      *
      * @param int $entityId l'identifiant de l'entité.
@@ -78,6 +43,35 @@ abstract class LibEntity
     }
 
     /**
+     * Retourne les informations de l'entité via son nom.
+     *
+     * @param string $entityFolderName Nom de l'entité.
+     * @return LibEntityData Informations sur l'entité.
+     */
+    public function &getEntityDataByFolderName(string $entityFolderName): LibEntityData
+    {
+        $entityId = $this->requestEntityId($entityFolderName);
+
+        if ($entityId < 0) {
+            $this->throwException("invalid entity folder name",
+                                  FailBase::getErrorCodeName(15),
+                                                             array($entityFolderName));
+        }
+        return $this->getEntityData($entityId);
+    }
+
+    /**
+     * Compilation d'une entité via son identifiant.
+     *
+     * @param int $entityId
+     */
+    public function buildEntityDataById(int $entityId): void
+    {
+        $entityData = $this->getEntityData($entityId);
+        $this->buildEntityData($entityData);
+    }
+
+    /**
      * Compilation de l'entité.
      *
      * @param LibEntityData $entityData
@@ -87,6 +81,23 @@ abstract class LibEntity
         if ($entityData->isValid() && $entityData->canUse()) {
             $this->fireBuildEntityData($entityData);
         }
+    }
+
+    /**
+     * Lance une exception gérant ce type d'entité.
+     *
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @throws FailEngine
+     */
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
+    {
+        throw new FailEngine($message,
+                             $failCode,
+                             $failArgs);
     }
 
     /**
