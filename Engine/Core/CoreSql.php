@@ -15,7 +15,7 @@ class CoreSql
 {
 
     /**
-     * Gestionnnaire SQL.
+     * Gestionnaire SQL.
      *
      * @var CoreSql
      */

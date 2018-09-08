@@ -75,13 +75,8 @@ abstract class LibEntity
         if ($this->cached($entityId)) {
             $entityData = $this->getCache($entityId);
         } else {
-            $dbRequest = false;
-            $blockArrayDatas = $this->requestBlockData($entityId,
-                                                       $dbRequest);
-
-            // Injection des informations du block
-            $entityData = new LibBlockData($blockArrayDatas,
-                                           $dbRequest);
+            $entityArrayDatas = $this->requestEntityData($entityId);
+            $entityData = $this->createEntityData($entityArrayDatas);
             $this->addCache($entityData);
         }
         return $entityData;
@@ -100,12 +95,67 @@ abstract class LibEntity
     }
 
     /**
+     * Charge l'identifiant de l'entité.
+     *
+     * @param string $entityFolderName
+     * @return int
+     */
+    abstract protected function &loadEntityId(string $entityFolderName): int;
+
+    /**
+     * Retourne le nom de la section du cache à utiliser.
+     */
+    abstract protected function getCacheSectionName(): string;
+
+    /**
+     * Chargement des informations sur l'entité.
+     *
+     * @param int $entityId Identifiant de l'entité à charger.
+     * @return array Informations sur l'entité.
+     */
+    abstract protected function &loadEntityDatas(int $entityId): array;
+
+    /**
+     * Chargement des informations du module.
+     *
+     * @param array $entityArrayDatas Informations sur l'entité.
+     * @return LibEntityData
+     */
+    abstract protected function &createEntityData(array $entityArrayDatas): LibEntityData;
+
+    abstract protected function onEntityNotFound(LibEntityData &$entityData): void;
+
+    abstract protected function onViewMethodNotFound(LibEntityData &$entityData): void;
+
+    abstract protected function onViewParameterNotFound(LibEntityData &$entityData): void;
+
+    abstract protected function onBuildBegin(LibEntityData &$entityData): void;
+
+    abstract protected function onBuildEnded(LibEntityData &$entityData): void;
+
+    /**
      * Retourne l'identifiant de l'entité.
      *
      * @param string $entityFolderName
      * @return int
      */
     private function &requestEntityId(string $entityFolderName): int
+    {
+        $entityId = $this->requestEntityIdByCache($entityFolderName);
+
+        if ($entityId < 0) {
+            $entityId = $this->loadEntityId($entityFolderName);
+        }
+        return $entityId;
+    }
+
+    /**
+     * Retourne l'identifiant de l'entité via le cache.
+     *
+     * @param string $entityFolderName
+     * @return int Retourne -1 si l'entité n'a pas été trouvée.
+     */
+    private function &requestEntityIdByCache(string $entityFolderName): int
     {
         $entityId = -1;
 
@@ -117,108 +167,36 @@ abstract class LibEntity
                 }
             }
         }
-
-        if ($entityId < 0) {
-            $entityId = $this->loadBlockId($entityFolderName);
-        }
         return $entityId;
     }
 
     /**
-     * Charge l'identifiant du block.
+     * Demande le chargement des informations sur l'entité.
      *
-     * @param string $blockTypeName
-     * @return int
-     */
-    private function &loadBlockId(string $blockTypeName): int
-    {
-        $blockId = -1;
-        $coreSql = CoreSql::getInstance()->getSelectedBase();
-        $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id"),
-                         array("called_by_type = 1", "AND type =  '" . $blockTypeName . "'"))->query();
-
-        if ($coreSql->affectedRows() > 0) {
-            $blockId = $coreSql->fetchArray()[0]['block_id'];
-        }
-        return $blockId;
-    }
-
-    /**
-     * Création des informations sur le block.
-     *
-     * @param int $blockId
-     * @param int $dbRequest
+     * @param int $entityId
      * @return array
      */
-    private function &requestBlockData(int $blockId,
-                                       bool &$dbRequest): array
+    private function &requestEntityData(int $entityId): array
     {
-        $blockArrayDatas = array();
+        $entityArrayDatas = array();
 
         // Recherche dans le cache
-        $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
+        $coreCache = CoreCache::getInstance($this->getCacheSectionName());
+        $cacheFileName = $entityId . ".php";
 
-        if (!$coreCache->cached($blockId . ".php")) {
-            $blockArrayDatas = $this->loadBlockDatas($blockId);
-            $dbRequest = !empty($blockArrayDatas);
+        if (!$coreCache->cached($cacheFileName)) {
+            $entityArrayDatas = $this->loadEntityDatas($entityId);
 
-            if ($dbRequest) {
+            if (!empty($entityArrayDatas)) {
                 // Mise en cache
-                $coreCache = CoreCache::getInstance(CoreCacheSection::BLOCKS);
-                $content = $coreCache->serializeData($blockArrayDatas);
-                $coreCache->writeCache($blockId . ".php",
+                $content = $coreCache->serializeData($entityArrayDatas);
+                $coreCache->writeCache($cacheFileName,
                                        $content);
             }
         } else {
-            $blockArrayDatas = $coreCache->readCacheAsArray($blockId . ".php");
+            $entityArrayDatas = $coreCache->readCacheAsArray($cacheFileName);
         }
-        return $blockArrayDatas;
-    }
-
-    /**
-     * Création des informations sur le block.
-     *
-     * @param int $blockId
-     * @return array
-     */
-    private function &loadBlockDatas(int $blockId): array
-    {
-        $blockArrayDatas = array();
-
-        $coreSql = CoreSql::getInstance()->getSelectedBase();
-        $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id",
-                    "side",
-                    "position",
-                    "title",
-                    "type",
-                    "rank",
-                    "all_modules"),
-                         array("block_id =  '" . $blockId . "'"))->query();
-
-        if ($coreSql->affectedRows() > 0) {
-            $blockArrayDatas = $coreSql->fetchArray()[0];
-            $blockArrayDatas['module_ids'] = array();
-            $blockArrayDatas['block_config'] = array();
-
-            $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
-                             array("module_id"),
-                             array("block_id =  '" . $blockId . "'"))->query();
-
-            if ($coreSql->affectedRows() > 0) {
-                $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
-            }
-
-            $coreSql->select(CoreTable::BLOCKS_CONFIGS,
-                             array("name", "value"),
-                             array("block_id =  '" . $blockId . "'"))->query();
-
-            if ($coreSql->affectedRows() > 0) {
-                $blockArrayDatas['block_config'] = $coreSql->fetchArray();
-            }
-        }
-        return $blockArrayDatas;
+        return $entityArrayDatas;
     }
 
     /**
@@ -286,14 +264,4 @@ abstract class LibEntity
             $this->onEntityNotFound($entityData);
         }
     }
-
-    abstract protected function onEntityNotFound(LibEntityData &$entityData): void;
-
-    abstract protected function onViewMethodNotFound(LibEntityData &$entityData): void;
-
-    abstract protected function onViewParameterNotFound(LibEntityData &$entityData): void;
-
-    abstract protected function onBuildBegin(LibEntityData &$entityData): void;
-
-    abstract protected function onBuildEnded(LibEntityData &$entityData): void;
 }

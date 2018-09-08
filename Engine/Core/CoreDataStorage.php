@@ -232,7 +232,7 @@ abstract class CoreDataStorage
     }
 
     /**
-     * Nettoyage des variables commencant par le préfixe demandé.
+     * Nettoyage des variables commençant par le préfixe demandé.
      *
      * @param string $prefixeKeyName
      */

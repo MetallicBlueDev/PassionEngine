@@ -16,7 +16,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Objet de connexion.
      *
-     * @var mixed (resource / mysqli / etc.)
+     * @var mixed
      */
     protected $connId = null;
 
@@ -70,12 +70,9 @@ abstract class CoreTransaction extends CoreDataStorage
     }
 
     /**
-     * Etablie une connexion au serveur.
+     * Lance une connexion au serveur.
      */
-    public function netConnect(): void
-    {
-
-    }
+    abstract public function netConnect(): void;
 
     /**
      * Retourne l'état de la connexion.
@@ -90,21 +87,14 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Déconnexion du serveur.
      */
-    public function netDeconnect(): void
-    {
-
-    }
+    abstract public function netDeconnect(): void;
 
     /**
      * Sélectionne un noeud dans la transaction.
      *
      * @return bool true succès
      */
-    public function &netSelect(): bool
-    {
-        $rslt = false;
-        return $rslt;
-    }
+    abstract public function &netSelect(): bool;
 
     /**
      * Retourne le nom de l'hôte.
@@ -151,10 +141,7 @@ abstract class CoreTransaction extends CoreDataStorage
      *
      * @return bool
      */
-    protected function canUse(): bool
-    {
-        return false;
-    }
+    abstract protected function canUse(): bool;
 
     /**
      * Lance une exception gérant ce type de transaction.

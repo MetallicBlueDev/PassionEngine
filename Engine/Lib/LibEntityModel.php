@@ -44,7 +44,7 @@ abstract class LibEntityModel
     abstract public function uninstall(): void;
 
     /**
-     * Retourne la liste des méthodes d'affichages possbiles.
+     * Retourne la liste des méthodes d'affichages possibles.
      */
     abstract public function getViewList(): array;
 
