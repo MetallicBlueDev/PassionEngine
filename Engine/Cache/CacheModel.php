@@ -114,14 +114,9 @@ abstract class CacheModel extends CoreTransaction
      * @param mixed $content contenu du fichier cache
      * @param bool $overwrite écrasement du fichier
      */
-    public function writeCache(string $path,
-                               $content,
-                               bool $overwrite = true): void
-    {
-        unset($path);
-        unset($content);
-        unset($overwrite);
-    }
+    abstract public function writeCache(string $path,
+                                        $content,
+                                        bool $overwrite = true): void;
 
     /**
      * Mise à jour de la date de dernière modification.
@@ -129,12 +124,8 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path chemin vers le fichier cache
      * @param int $updateTime
      */
-    public function touchCache(string $path,
-                               int $updateTime = 0): void
-    {
-        unset($path);
-        unset($updateTime);
-    }
+    abstract public function touchCache(string $path,
+                                        int $updateTime = 0): void;
 
     /**
      * Supprime tous fichiers trop vieux.
@@ -142,12 +133,8 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path chemin vers le fichier ou le dossier
      * @param int $timeLimit limite de temps
      */
-    public function removeCache(string $path,
-                                int $timeLimit = 0): void
-    {
-        unset($path);
-        unset($timeLimit);
-    }
+    abstract public function removeCache(string $path,
+                                         int $timeLimit = 0): void;
 
     /**
      * Retourne la liste des fichiers et dossiers présents.
@@ -155,12 +142,7 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path
      * @return array
      */
-    public function &getNameList(string $path): array
-    {
-        unset($path);
-        $names = array();
-        return $names;
-    }
+    abstract public function &getNameList(string $path): array;
 
     /**
      * Retourne la date de dernière modification du fichier.
@@ -168,12 +150,7 @@ abstract class CacheModel extends CoreTransaction
      * @param string $path
      * @return int
      */
-    public function &getCacheMTime(string $path): int
-    {
-        unset($path);
-        $time = 0;
-        return $time;
-    }
+    abstract public function &getCacheMTime(string $path): int;
 
     /**
      * Détermine si le chemin est celui d'un dossier.
