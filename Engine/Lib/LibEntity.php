@@ -236,7 +236,7 @@ abstract class LibEntity
      * @param int $entityId
      * @return LibEntityData
      */
-    public function &getCache(int $entityId): LibEntityData
+    private function &getCache(int $entityId): LibEntityData
     {
         return $this->entityDatas[$entityId];
     }
@@ -247,7 +247,7 @@ abstract class LibEntity
      * @param int $entityId
      * @return bool
      */
-    public function &cached(int $entityId): bool
+    private function &cached(int $entityId): bool
     {
         $rslt = isset($this->entityDatas[$entityId]);
         return $rslt;
