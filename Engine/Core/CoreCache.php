@@ -44,7 +44,7 @@ class CoreCache extends CacheModel
     private const CHECKER_FILENAME = "checker.txt";
 
     /**
-     * Gestionnnaire de cache.
+     * Gestionnaire de cache.
      *
      * @var CoreCache
      */
@@ -99,61 +99,18 @@ class CoreCache extends CacheModel
      */
     public function __construct()
     {
-        parent::__construct();
-
-        $fullClassName = "";
-        $loaded = false;
         $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
-
-        // Mode par défaut
-        if (empty($cacheConfig) || !isset($cacheConfig['type'])) {
-            $cacheConfig['type'] = "php";
-        }
-
-        // Chargement des drivers pour le cache
-        $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
-        $loaded = CoreLoader::classLoader($fullClassName);
-
-        if (!$loaded) {
-            throw new FailCache("cache driver not found",
-                                FailBase:: getErrorCodeName(2),
-                                                            array($cacheConfig['type']));
-        }
-
-        if (!CoreLoader::isCallable($fullClassName,
-                                    "initialize")) {
-            throw new FailCache("unable to initialize cache",
-                                FailBase:: getErrorCodeName(3),
-                                                            array($fullClassName));
-        }
-
-        try {
-            $this->selectedCache = new $fullClassName();
-            $this->selectedCache->initialize($cacheConfig);
-        } catch (Throwable $ex) {
-            $this->selectedCache = null;
-            throw $ex;
-        }
+        $fullClassName = $this->getBaseFullClassName($cacheConfig);
+        $this->selectedBase = $this->makeSelectedBase($fullClassName,
+                                                      $cacheConfig);
     }
 
     /**
-     * Ne réalise aucune action dans ce contexte.
-     *
-     * @param array $cache
-     */
-    public function initialize(array &$cache): void
-    {
-        // NE RIEN FAIRE
-        unset($cache);
-    }
-
-    /**
-     * Destruction du gestionnaire de cache.
+     * Destruction du gestionnaire.
      */
     public function __destruct()
     {
-        parent::__destruct();
-        unset($this->selectedCache);
+        unset($this->selectedBase);
     }
 
     /**
@@ -183,6 +140,16 @@ class CoreCache extends CacheModel
     }
 
     /**
+     * Retourne l'instance du pilote de fichiers en cache.
+     *
+     * @return CacheModel
+     */
+    public function &getSelectedCache(): CacheModel
+    {
+        return $this->selectedCache;
+    }
+
+    /**
      * Retourne la liste des types de cache supporté.
      *
      * @return array
@@ -191,112 +158,6 @@ class CoreCache extends CacheModel
     {
         return self::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::CACHE_FILE,
                                                 CoreLoader::CACHE_FILE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function netConnect(): void
-    {
-        $this->selectedCache->netConnect();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return bool
-     */
-    public function netConnected(): bool
-    {
-        return $this->selectedCache !== null && $this->selectedCache->netConnected();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function netDeconnect(): void
-    {
-        $this->selectedCache->netDeconnect();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return bool
-     */
-    public function &netSelect(): bool
-    {
-        return $this->selectedCache->netSelect();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getTransactionHost(): string
-    {
-        return $this->selectedCache->getTransactionHost();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getTransactionUser(): string
-    {
-        return $this->selectedCache->getTransactionUser();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getTransactionPass(): string
-    {
-        return $this->selectedCache->getTransactionPass();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getTransactionType(): string
-    {
-        return $this->selectedCache->getTransactionType();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return int
-     */
-    public function &getServerPort(): int
-    {
-        return $this->selectedCache->getServerPort();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return string
-     */
-    public function &getServerRoot(): string
-    {
-        return $this->selectedCache->getServerRoot();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param string $newRoot
-     */
-    public function setServerRoot(string &$newRoot): void
-    {
-        $this->selectedCache->setServerRoot($newRoot);
     }
 
     /**
@@ -860,5 +721,56 @@ class CoreCache extends CacheModel
                                                  true);
         }
         return ${$variableName};
+    }
+
+    /**
+     * Retourne le nom complet de la classe représentant le pilote de fichiers en cache.
+     *
+     * @param array $cacheConfig
+     * @return string
+     * @throws FailCache
+     */
+    private function getBaseFullClassName(array $cacheConfig): string
+    {
+        $fullClassName = "";
+        $loaded = false;
+
+        if (!empty($cacheConfig) && isset($cacheConfig['type'])) {
+            $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
+            $loaded = CoreLoader::classLoader($fullClassName);
+        }
+
+        if (!$loaded) {
+            throw new FailCache("cache driver not found",
+                                FailBase:: getErrorCodeName(2),
+                                                            array($cacheConfig['type']));
+        }
+
+        if (!CoreLoader::isCallable($fullClassName,
+                                    "initialize")) {
+            throw new FailCache("unable to initialize cache",
+                                FailBase:: getErrorCodeName(3),
+                                                            array($fullClassName));
+        }
+        return $fullClassName;
+    }
+
+    /**
+     * Création de l'instance du pilote de fichiers en cache.
+     *
+     * @param string $fullClassName
+     * @param array $cacheConfig
+     * @return CacheModel
+     * @throws FailCache
+     */
+    private function makeSelectedBase(string $fullClassName,
+                                      array $cacheConfig): CacheModel
+    {
+        /**
+         * @var CacheModel
+         */
+        $selectedBase = new $fullClassName();
+        $selectedBase->initialize($cacheConfig);
+        return $selectedBase;
     }
 }

@@ -365,7 +365,7 @@ class Module_Management_Setting extends ModuleModel
                                 SETTING_SYSTEM_FTP_SETTING_TYPE);
 
         $modeFtp = CoreCache::getCacheList();
-        $currentMode = CoreCache::getInstance()->getTransactionType();
+        $currentMode = CoreCache::getInstance()->getSelectedCache()->getTransactionType();
         foreach ($modeFtp as $mode) {
             $actived = ($currentMode === $mode);
             $form->addSelectItemTag($mode,
@@ -390,7 +390,7 @@ class Module_Management_Setting extends ModuleModel
                             $ftp['root']);
         $form->addSpace();
 
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $form->addFieldset(SETTING_SYSTEM_DATABASE_SETTING_TITLE,
                            SETTING_SYSTEM_DATABASE_SETTING_DESCRIPTION);
         $form->addInputText("dbHost",
@@ -549,7 +549,7 @@ class Module_Management_Setting extends ModuleModel
                                           $ftpType);
         }
 
-        $coreSql = CoreSql::getInstance();
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
         $updateDatabaseFile = false;
 
         $dbHost = CoreRequest::getString("dbHost",

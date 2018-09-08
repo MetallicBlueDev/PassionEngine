@@ -91,7 +91,7 @@ class ExecFileBuilder
                                           string $pass,
                                           string $root): void
     {
-        $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS);
+        $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS)->getSelectedCache();
 
         if (empty($type) || !ExecUtils::inArrayStrictCaseInSensitive($type,
                                                                      CoreCache::getCacheList())) {

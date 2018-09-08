@@ -110,11 +110,10 @@ class CoreSql
      */
     private function getBaseFullClassName(array $databaseConfig): string
     {
-        $loaded = false;
         $fullClassName = "";
+        $loaded = false;
 
         if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
-            // Chargement des drivers pour la base
             $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::BASE_FILE . ucfirst($databaseConfig['type']));
             $loaded = CoreLoader::classLoader($fullClassName);
         }

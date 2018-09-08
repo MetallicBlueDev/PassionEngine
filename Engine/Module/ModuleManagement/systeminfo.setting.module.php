@@ -30,7 +30,7 @@ class Module_Management_Systeminfo extends ModuleModel
 
         $modeActivedContent = "";
         $modeActived = CoreCache::getCacheList();
-        $currentMode = CoreCache::getInstance()->getTransactionType();
+        $currentMode = CoreCache::getInstance()->getSelectedCache()->getTransactionType();
         foreach ($modeActived as $mode) {
             $actived = ($currentMode === $mode);
             $modeActivedContent .= " " . $mode . "="
