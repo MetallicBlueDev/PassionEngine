@@ -2,15 +2,10 @@
 
 namespace TREngine\Engine\Lib;
 
-use TREngine\Engine\Fail\FailBlock;
-use TREngine\Engine\Core\CoreCacheSection;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreSecure;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Fail\FailEngine;
-use Throwable;
+use TREngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire d'entités.
@@ -48,7 +43,7 @@ abstract class LibEntity
      * Retourne les informations de l'entité via son nom.
      *
      * @param string $entityFolderName Nom de l'entité.
-     * @return LibBlockData Informations sur l'entité.
+     * @return LibEntityData Informations sur l'entité.
      */
     protected function &getEntityDataByFolderName(string $entityFolderName): LibEntityData
     {
@@ -116,22 +111,37 @@ abstract class LibEntity
     abstract protected function &loadEntityDatas(int $entityId): array;
 
     /**
-     * Chargement des informations du module.
+     * Création de l'instance de l'entité.
      *
      * @param array $entityArrayDatas Informations sur l'entité.
      * @return LibEntityData
      */
     abstract protected function &createEntityData(array $entityArrayDatas): LibEntityData;
 
-    abstract protected function onEntityNotFound(LibEntityData &$entityData): void;
-
-    abstract protected function onViewMethodNotFound(LibEntityData &$entityData): void;
-
-    abstract protected function onViewParameterNotFound(LibEntityData &$entityData): void;
-
+    /**
+     * Signale le début de compilation de l'entité.
+     */
     abstract protected function onBuildBegin(LibEntityData &$entityData): void;
 
+    /**
+     * Signale la fin de la compilation de l'entité.
+     */
     abstract protected function onBuildEnded(LibEntityData &$entityData): void;
+
+    /**
+     * Signale que la classe de l'entité n'a pas été trouvée.
+     */
+    abstract protected function onEntityNotFound(LibEntityData &$entityData): void;
+
+    /**
+     * Signale que la méthode d'affichage dans la classe de l'entité n'a pas été trouvée.
+     */
+    abstract protected function onViewMethodNotFound(LibEntityData &$entityData): void;
+
+    /**
+     * Signale que le paramètre d'affichage n'a pas été trouvée.
+     */
+    abstract protected function onViewParameterNotFound(LibEntityData &$entityData): void;
 
     /**
      * Retourne l'identifiant de l'entité.
