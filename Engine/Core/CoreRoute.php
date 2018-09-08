@@ -208,7 +208,7 @@ class CoreRoute
      */
     public function &getRequestedModuleData(): LibModuleData
     {
-        return LibModule::getInstance()->getModuleData($this->module);
+        return LibModule::getInstance()->getEntityDataByFolderName($this->module);
     }
 
     /**

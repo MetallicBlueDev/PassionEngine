@@ -6,6 +6,8 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreDataStorage;
 use TREngine\Engine\Core\CoreAccessToken;
+use TREngine\Engine\Core\CoreAccess;
+use TREngine\Engine\Core\CoreAccessType;
 
 /**
  * Information de base sur une entité de bibliothèque.
@@ -17,7 +19,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
 
     /**
      * Le nom complet de la classe.
-     * 
+     *
      * @var string
      */
     private $fullQualifiedClassName = null;
@@ -90,6 +92,17 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      * @return bool true L'entité peut être utilisée.
      */
     abstract public function &canUse(): bool;
+
+    /**
+     * Détermine si la session actuelle peut accéder à l'entité.
+     *
+     * @return bool
+     */
+    public function &accessAllowed(): bool
+    {
+        $autorize = CoreAccess::autorize(CoreAccessType::getTypeFromToken($this));
+        return $autorize;
+    }
 
     /**
      * Retourne les données temporaires de sortie compilées.

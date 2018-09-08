@@ -19,20 +19,14 @@ class LibModuleData extends LibEntityData
      * Nouvelle information de module.
      *
      * @param array $data
-     * @param bool $initializeConfig
      */
-    public function __construct(array &$data,
-                                bool $initializeConfig = false)
+    public function __construct(array &$data)
     {
         parent::__construct();
 
         // Vérification des informations
         if (count($data) < 3) {
             $data = array();
-        }
-
-        if ($initializeConfig) {
-            $data['module_config'] = isset($data['module_config']) ? ExecUtils::getArrayConfigs($data['module_config']) : array();
         }
 
         $this->newStorage($data);
@@ -106,7 +100,7 @@ class LibModuleData extends LibEntityData
      */
     public function buildFinalOutput(): void
     {
-        LibModule::getInstance()->buildModuleData($this);
+        LibModule::getInstance()->buildEntityData($this);
     }
 
     /**
@@ -135,6 +129,17 @@ class LibModuleData extends LibEntityData
     public function &getRank(): int
     {
         return $this->getInt("rank");
+    }
+
+    /**
+     * Détermine si l'entité peut être utilisée.
+     *
+     * @return bool true L'entité peut être utilisée.
+     */
+    public function &canUse(): bool
+    {
+        $rslt = $this->accessAllowed();
+        return $rslt;
     }
 
     /**

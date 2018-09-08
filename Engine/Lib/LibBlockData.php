@@ -5,8 +5,6 @@ namespace TREngine\Engine\Lib;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreAccessZone;
 use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreAccess;
-use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
 use TREngine\Engine\Core\CoreUrlRewriting;
@@ -158,7 +156,7 @@ class LibBlockData extends LibEntityData
     {
         $rslt = false;
 
-        if (CoreAccess::autorize(CoreAccessType::getTypeFromToken($this))) {
+        if ($this->accessAllowed()) {
             if (CoreMain::getInstance()->getRoute()->isBlockLayout()) {
                 $rslt = true;
             } else {

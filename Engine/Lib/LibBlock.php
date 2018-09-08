@@ -50,15 +50,23 @@ class LibBlock extends LibEntity
     }
 
     /**
-     * Instance du gestionnaire de block.
+     * Vérification de l'instance du gestionnaire des blocks.
+     */
+    public static function checkInstance(): void
+    {
+        if (self::$libBlock === null) {
+            self::$libBlock = new LibBlock();
+        }
+    }
+
+    /**
+     * Instance du gestionnaire de blocks.
      *
      * @return LibBlock
      */
     public static function &getInstance(): LibBlock
     {
-        if (self::$libBlock === null) {
-            self::$libBlock = new LibBlock();
-        }
+        self::checkInstance();
         return self::$libBlock;
     }
 

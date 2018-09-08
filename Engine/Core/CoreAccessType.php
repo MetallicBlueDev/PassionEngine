@@ -281,7 +281,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
 
         // Recherche d'informations sur le module
         if (CoreLoader::isCallable("LibModule")) {
-            $moduleData = LibModule::getInstance()->getModuleData($this->getName());
+            $moduleData = LibModule::getInstance()->getEntityDataByFolderName($this->getName());
         }
 
         if ($moduleData !== null && $moduleData->getId() >= 0 && $moduleData->isCallableViewMethod()) {

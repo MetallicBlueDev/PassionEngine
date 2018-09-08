@@ -2,24 +2,23 @@
 
 namespace TREngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreAccess;
 use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreAccessType;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSession;
 use TREngine\Engine\Core\CoreSql;
 use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreTranslate;
+use TREngine\Engine\Fail\FailModule;
+use TREngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire de module.
  *
  * @author Sébastien Villemain
  */
-class LibModule
+class LibModule extends LibEntity
 {
 
     /**
@@ -37,13 +36,6 @@ class LibModule
     private static $libModule = null;
 
     /**
-     * Tableau d'information sur les modules.
-     *
-     * @var LibModuleData[]
-     */
-    private $moduleDatas = array();
-
-    /**
      * Création du gestionnaire.
      */
     private function __construct()
@@ -57,13 +49,12 @@ class LibModule
     public static function checkInstance(): void
     {
         if (self::$libModule === null) {
-            // Création d'un instance autonome
             self::$libModule = new LibModule();
         }
     }
 
     /**
-     * Création et récuperation de l'instance du module.
+     * Instance du gestionnaire de modules.
      *
      * @return LibModule
      */
@@ -93,104 +84,66 @@ class LibModule
     }
 
     /**
-     * Retourne les informations du module cible.
+     * {@inheritDoc}
      *
-     * @param string $moduleName Le nom du module, par défaut le module courant.
-     * @return LibModuleData Informations sur le module.
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @return void
+     * @throws FailModule
      */
-    public function &getModuleData(string $moduleName): LibModuleData
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
     {
-        $moduleData = null;
-        $moduleName = ucfirst($moduleName);
-
-        if (isset($this->moduleDatas[$moduleName])) {
-            $moduleData = $this->moduleDatas[$moduleName];
-        } else {
-            $dbRequest = false;
-            $moduleArrayDatas = $this->requestModuleData($moduleName,
-                                                         $dbRequest);
-
-            // Injection des informations du module
-            $moduleData = new LibModuleData($moduleArrayDatas,
-                                            $dbRequest);
-            $this->addModuleData($moduleData);
-        }
-        return $moduleData;
+        throw new FailModule($message,
+                             $failCode,
+                             $failArgs);
     }
 
     /**
-     * Compilation du module demandé.
+     * {@inheritDoc}
      *
-     * @param LibModuleData $moduleData
+     * @param string $entityFolderName
+     * @return int
      */
-    public function buildModuleData(LibModuleData &$moduleData): void
+    protected function &loadEntityId(string $entityFolderName): int
     {
-        // Vérification du niveau d'acces
-        if (($moduleData->installed() && CoreAccess::autorize(CoreAccessType::getTypeFromToken($moduleData))) || (!$moduleData->installed() && CoreSession::getInstance()->getSessionData()->hasAdminRank())) {
-            if ($moduleData->isValid()) {
-                CoreTranslate::getInstance()->translate($moduleData->getFolderName());
+        $moduleId = -1;
+        $coreSql = CoreSql::getInstance()->getSelectedBase();
+        $coreSql->select(CoreTable::MODULES,
+                         array("module_id"),
+                         array("name =  '" . ucfirst($entityFolderName) . "'"))->query();
 
-                $libBreadcrumb = LibBreadcrumb::getInstance();
-                $libBreadcrumb->addTrail($moduleData->getName(),
-                                         "?" . CoreLayout::REQUEST_MODULE . "=" . $moduleData->getName());
-
-                // TODO A MODIFIER
-                // Juste une petite exception pour le module management qui est different
-                if ($moduleData->getName() !== "management") {
-                    $libBreadcrumb->addTrail($moduleData->getView(),
-                                             "?" . CoreLayout::REQUEST_MODULE . "=" . $moduleData->getName() . "&" . CoreLayout::REQUEST_VIEW . "=" . $moduleData->getView());
-                }
-
-                $this->fireBuildModuleData($moduleData);
-            }
-        } else {
-            CoreLogger::addError(ERROR_ACCES_ZONE . " " . CoreAccess::getAccessErrorMessage($moduleData));
+        if ($coreSql->affectedRows() > 0) {
+            $moduleId = $coreSql->fetchArray()[0]['module_id'];
         }
+        return $moduleId;
     }
 
     /**
-     * Demande le chargement des informations du module.
+     * {@inheritDoc}
      *
-     * @param string $moduleName Le nom du module.
-     * @return array Informations sur le module.
+     * @return string
      */
-    private function &requestModuleData(string $moduleName,
-                                        bool & $dbRequest): array
+    protected function getCacheSectionName(): string
     {
-        $moduleArrayDatas = array();
-
-        // Recherche dans le cache
-        $coreCache = CoreCache::getInstance(CoreCacheSection::MODULES);
-
-        if (!$coreCache->cached($moduleName . ".php")) {
-            $moduleArrayDatas = $this->loadModuleDatas($moduleName);
-            $dbRequest = !empty($moduleArrayDatas);
-
-            if ($dbRequest) {
-                // Mise en cache
-                $content = $coreCache->serializeData($moduleArrayDatas);
-                $coreCache->writeCache($moduleName . ".php",
-                                       $content);
-            }
-        } else {
-            $moduleArrayDatas = $coreCache->readCacheAsArray($moduleName . ".php");
-        }
-        return $moduleArrayDatas;
+        return CoreCacheSection::MODULES;
     }
 
     /**
-     * Chargement des informations du module.
+     * {@inheritDoc}
      *
-     * @param string $moduleName Le nom du module.
-     * @return array Informations sur le module.
+     * @param int $entityId
+     * @return array
      */
-    private function &loadModuleDatas(string $moduleName): array
+    protected function &loadEntityDatas(int $entityId): array
     {
         $moduleArrayDatas = array();
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::MODULES,
                          array("module_id", "name", "rank"),
-                         array("name =  '" . $moduleName . "'"))->query();
+                         array("module_id =  '" . $entityId . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $moduleArrayDatas = $coreSql->fetchArray()[0];
@@ -202,47 +155,86 @@ class LibModule
 
             if ($coreSql->affectedRows() > 0) {
                 $moduleArrayDatas['module_config'] = $coreSql->fetchArray();
+                $moduleArrayDatas['module_config'] = ExecUtils::getArrayConfigs($moduleArrayDatas['module_config']);
             }
         }
         return $moduleArrayDatas;
     }
 
     /**
-     * Alimente le cache des modules.
+     * {@inheritDoc}
      *
-     * @param LibModuleData $moduleData
+     * @param array $entityArrayDatas
+     * @return LibEntityData
      */
-    private function addModuleData(LibModuleData $moduleData): void
+    protected function &createEntityData(array $entityArrayDatas): LibEntityData
     {
-        $this->moduleDatas[$moduleData->getName()] = $moduleData;
+        $blockData = new LibModuleData($entityArrayDatas);
+        return $blockData;
     }
 
     /**
-     * Compilation du module.
+     * {@inheritDoc}
      *
-     * @param LibModuleData $moduleData
+     * @param LibEntityData $entityData
      */
-    private function fireBuildModuleData(LibModuleData &$moduleData): void
+    protected function onBuildBegin(LibEntityData &$entityData): void
     {
-        $fullClassName = $moduleData->getFullQualifiedClassName();
-        $loaded = CoreLoader::classLoader($fullClassName);
+        CoreTranslate::getInstance()->translate($entityData->getFolderName());
 
-        if ($loaded) {
-            if ($moduleData->isCallableViewMethod()) {
-                $this->updateCount($moduleData->getId());
+        $this->updateCount($entityData->getId());
 
-                $moduleClass = $moduleData->getNewEntityModel();
 
-                // Capture des données d'affichage
-                ob_start();
-                echo $moduleClass->display($moduleData->getView());
-                $moduleData->setTemporyOutputBuffer(ob_get_clean());
-            } else {
-                CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $moduleData->getName() . ")");
-            }
-        } else {
-            CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $moduleData->getName() . ")");
+        $libBreadcrumb = LibBreadcrumb::getInstance();
+        $libBreadcrumb->addTrail($entityData->getName(),
+                                 "?" . CoreLayout::REQUEST_MODULE . "=" . $entityData->getName());
+
+        // TODO A MODIFIER
+        // Juste une petite exception pour le module management qui est different
+        if ($entityData->getName() !== "management") {
+            $libBreadcrumb->addTrail($entityData->getView(),
+                                     "?" . CoreLayout::REQUEST_MODULE . "=" . $entityData->getName() . "&" . CoreLayout::REQUEST_VIEW . "=" . $entityData->getView());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onBuildEnded(LibEntityData &$entityData): void
+    {
+        unset($entityData);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onEntityNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onViewMethodNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @param LibEntityData $entityData
+     */
+    protected function onViewParameterNotFound(LibEntityData &$entityData): void
+    {
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
     }
 
     /**
