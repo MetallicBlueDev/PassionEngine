@@ -19,7 +19,7 @@ abstract class BaseModel extends CoreTransaction
 {
 
     /**
-     * Dernier résultat de la dernière requête executée.
+     * Dernier résultat de la dernière requête exécutée.
      *
      * @var mixed
      */
@@ -106,22 +106,14 @@ abstract class BaseModel extends CoreTransaction
      *
      * @return int
      */
-    public function &affectedRows(): int
-    {
-        $rslt = -1;
-        return $rslt;
-    }
+    abstract public function &affectedRows(): int;
 
     /**
      * Retourne un tableau contenant toutes les lignes demandées.
      *
      * @return array
      */
-    public function &fetchArray(): array
-    {
-        $rslt = array();
-        return $rslt;
-    }
+    abstract public function &fetchArray(): array;
 
     /**
      * Retourne un tableau contenant tous les objets demandés.
@@ -129,12 +121,7 @@ abstract class BaseModel extends CoreTransaction
      * @param string $className Nom de la classe
      * @return array
      */
-    public function &fetchObject(string $className = null): array
-    {
-        unset($className);
-        $rslt = array();
-        return $rslt;
-    }
+    abstract public function &fetchObject(string $className = null): array;
 
     /**
      * Sélection d'informations d'une table.
@@ -392,16 +379,12 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Retourne l'identifiant de la dernière ligne inserée.
+     * Retourne l'identifiant de la dernière ligne insérée.
      * Le typage natif n'est pas supporté ici.
      *
      * @return string
      */
-    public function &insertId(): string
-    {
-        $rslt = "0";
-        return $rslt;
-    }
+    abstract public function &insertId(): string;
 
     /**
      * Envoi une requête SQL.
@@ -427,17 +410,12 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Libère la mémoire du resultat.
+     * Libère la mémoire du résultat.
      *
      * @param mixed $query
      * @return bool
      */
-    public function &freeResult($query = null): bool
-    {
-        unset($query);
-        $rslt = false;
-        return $rslt;
-    }
+    abstract public function &freeResult($query = null): bool;
 
     /**
      * Libère la mémoire tampon.
@@ -579,10 +557,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @return string
      */
-    public function &getVersion(): string
-    {
-        return "?";
-    }
+    abstract public function &getVersion(): string;
 
     /**
      * Retourne le type d'encodage de la base de données.
@@ -631,10 +606,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @param string $sql
      */
-    protected function executeQuery(): void
-    {
-
-    }
+    abstract protected function executeQuery(): void;
 
     /**
      * {@inheritdoc}
@@ -684,28 +656,19 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Retourne la commande à executer pour obtenir la liste des tables.
+     * Retourne la commande à exécuter pour obtenir la liste des tables.
      *
      * @return string
      */
-    protected function &getTablesListQuery(): string
-    {
-        $sql = "";
-        return $sql;
-    }
+    abstract protected function &getTablesListQuery(): string;
 
     /**
-     * Retourne la commande à executer pour obtenir la liste des colonnes.
+     * Retourne la commande à exécuter pour obtenir la liste des colonnes.
      *
      * @param string $fullTableName
      * @return string
      */
-    protected function &getColumnsListQuery(string $fullTableName): string
-    {
-        unset($fullTableName);
-        $sql = "";
-        return $sql;
-    }
+    abstract protected function &getColumnsListQuery(string $fullTableName): string;
 
     /**
      * Quote les identifiants et les valeurs.
@@ -759,7 +722,7 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Conversion des clès.
+     * Conversion des clés.
      *
      * @param mixed $key
      * @return mixed
@@ -921,7 +884,7 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Vérification de la conditon ORDER BY.
+     * Vérification de la condition ORDER BY.
      */
     private function checkOrderByCondition(): void
     {
