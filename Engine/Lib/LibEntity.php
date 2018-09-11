@@ -211,8 +211,8 @@ abstract class LibEntity
             if (!empty($entityArrayDatas)) {
                 // Mise en cache
                 $content = $coreCache->serializeData($entityArrayDatas);
-                $coreCache->writeCache($cacheFileName,
-                                       $content);
+                $coreCache->writeCacheAsString($cacheFileName,
+                                               $content);
             }
         } else {
             $entityArrayDatas = $coreCache->readCacheAsArray($cacheFileName);

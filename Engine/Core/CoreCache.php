@@ -7,14 +7,13 @@ use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
-use Throwable;
 
 /**
  * Gestionnaire de fichier cache.
  *
  * @author Sébastien Villemain
  */
-class CoreCache extends CacheModel
+class CoreCache
 {
 
     /**
@@ -161,23 +160,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param string $path
-     * @param mixed $content
-     * @param bool $overwrite
-     */
-    public function writeCache(string $path,
-                               $content,
-                               bool $overwrite = true): void
-    {
-        $this->writeCacheAsString($path,
-                                  $content,
-                                  $overwrite);
-    }
-
-    /**
-     * Demande une écriture dans le cache d'une chaine de caractères.
+     * Demande une écriture dans le cache d'une chaîne de caractères.
      * Prépare les données pour la soumission dans le cache et retourne les données telles qu’elles seront écrites.
      *
      * @param string $path
@@ -226,7 +209,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Demande une écriture dans le cache d'une chaine contenant des variables à remplacer.
+     * Demande une écriture dans le cache d'une chaîne contenant des variables à remplacer.
      * Prépare les données pour la soumission dans le cache en tenant compte des variables et retourne les données telles qu’elles seront écrites.
      *
      * @param string $path
@@ -283,7 +266,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Lecture et exécution du cache ciblé.
+     * Lecture et exécution du cache.
      *
      * @param string $path Chemin du cache.
      * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
@@ -299,7 +282,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Lecture du cache ciblé puis retourne une chaine de caractères.
+     * Lecture du cache puis retourne une chaîne de caractères.
      *
      * @param string $path Chemin du cache.
      * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
@@ -321,7 +304,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Lecture du cache ciblé puis retourne un tableau.
+     * Lecture du cache puis retourne un tableau.
      *
      * @param string $path Chemin du cache.
      * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
@@ -343,7 +326,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Lecture du cache ciblé puis retourne un tableau contenant des objets.
+     * Lecture du cache puis retourne un tableau contenant des objets.
      *
      * @param string $path
      * @return array
@@ -404,21 +387,10 @@ class CoreCache extends CacheModel
             $dirList = $this->readCacheAsArray($fileName);
         } else {
             $dirList = $this->selectedCache->getNameList($path);
-            $this->writeCache($fileName,
-                              $dirList);
+            $this->writeCacheAsString($fileName,
+                                      $dirList);
         }
         return $dirList;
-    }
-
-    /**
-     * Retourne la date de dernière modification du fichier.
-     *
-     * @param string $path
-     * @return int
-     */
-    public function &getCacheMTime(string $path): int
-    {
-        return $this->selectedCache->getCacheMTime($this->getCurrentSectionPath($path));
     }
 
     /**
@@ -472,7 +444,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Serialise la variable en chaine de caractères pour une mise en cache.
+     * Sérialise la variable en chaîne de caractères pour une mise en cache.
      *
      * @param mixed $data ($data = "data") or array $data ($data = array("name" => "data"))
      * @param string $lastKey clé supplémentaire
@@ -534,7 +506,7 @@ class CoreCache extends CacheModel
         if ($exist) {
             // Vérification de la validité du checker
             if ($timeLimit > 0) {
-                if ($timeLimit < $this->getCacheMTime(self::CHECKER_FILENAME)) {
+                if ($timeLimit < $this->selectedCache->getCacheMTime(self::CHECKER_FILENAME)) {
                     $valid = true;
                 }
             } else {
@@ -545,8 +517,8 @@ class CoreCache extends CacheModel
         if (!$valid) {
             // Mise à jour ou creation du fichier checker
             if (!$exist) {
-                $this->writeCache(self::CHECKER_FILENAME,
-                                  "1");
+                $this->writeCacheAsString(self::CHECKER_FILENAME,
+                                          "1");
             } else {
                 $this->touchCache(self::CHECKER_FILENAME);
             }
@@ -660,7 +632,7 @@ class CoreCache extends CacheModel
     }
 
     /**
-     * Serialize la variable en chaine de caractères pour une mise en cache
+     * Sérialise la variable en chaîne de caractères pour une mise en cache
      *
      * @param string $key
      * @param mixed $value

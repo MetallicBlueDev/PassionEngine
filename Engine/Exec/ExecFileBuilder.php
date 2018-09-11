@@ -70,8 +70,8 @@ class ExecFileBuilder
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("config.inc.php",
-                                                                      $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString("config.inc.php",
+                                                                              $content);
     }
 
     /**
@@ -91,11 +91,11 @@ class ExecFileBuilder
                                           string $pass,
                                           string $root): void
     {
-        $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS)->getSelectedCache();
+        $coreCache = CoreCache::getInstance(CoreCacheSection::CONFIGS);
 
         if (empty($type) || !ExecUtils::inArrayStrictCaseInSensitive($type,
                                                                      CoreCache::getCacheList())) {
-            $type = $coreCache->getTransactionType();
+            $type = $coreCache->getSelectedCache()->getTransactionType();
         }
 
         if (empty($host)) {
@@ -134,8 +134,8 @@ class ExecFileBuilder
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        $coreCache->writeCache("cache.inc.php",
-                               $content);
+        $coreCache->writeCacheAsString("cache.inc.php",
+                                       $content);
     }
 
     /**
@@ -197,7 +197,7 @@ class ExecFileBuilder
                 . "// -------------------------------------------------------------------------//\n"
                 . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCache("database.inc.php",
-                                                                      $content);
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString("database.inc.php",
+                                                                              $content);
     }
 }

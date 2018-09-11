@@ -310,8 +310,8 @@ class CoreSession
             if (count($userArrayDatas) > 1) {
                 $this->makeSessionData($userArrayDatas,
                                        true);
-                CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php",
-                                                                               $this->getSerializedSession());
+                CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCacheAsString($this->sessionId . ".php",
+                                                                                       $this->getSerializedSession());
             }
         }
     }
@@ -382,9 +382,9 @@ class CoreSession
         // Vérification du fichier cache
         if (!$coreCache->cached(self::BANISHMENT_FILENAME)) {
             $cleanBanishment = true;
-            $coreCache->writeCache(self::BANISHMENT_FILENAME,
-                                   "1");
-        } else if ((ExecUtils::getMemorizedTimestamp() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getCacheMTime(self::BANISHMENT_FILENAME)) {
+            $coreCache->writeCacheAsString(self::BANISHMENT_FILENAME,
+                                           "1");
+        } else if ((ExecUtils::getMemorizedTimestamp() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getSelectedCache()->getCacheMTime(self::BANISHMENT_FILENAME)) {
             $cleanBanishment = true;
             $coreCache->touchCache(self::BANISHMENT_FILENAME);
         }
@@ -554,7 +554,7 @@ class CoreSession
 
             if ($sessionArrayDatas['user_id'] === $userId && $sessionArrayDatas['sessionId'] === $sessionId) {
                 // Mise a jour du dernier accès toute les 5 min
-                if (($coreCache->getCacheMTime($sessionId . ".php") + 5 * 60) < ExecUtils::getMemorizedTimestamp()) {
+                if (($coreCache->getSelectedCache()->getCacheMTime($sessionId . ".php") + 5 * 60) < ExecUtils::getMemorizedTimestamp()) {
                     // En base
                     $isValidSession = $this->updateLastConnect($userId);
 
@@ -678,8 +678,8 @@ class CoreSession
 
         if ($cookieUser && $cookieSession) {
             // Ecriture du cache
-            CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCache($this->sessionId . ".php",
-                                                                           $this->getSerializedSession());
+            CoreCache::getInstance(CoreCacheSection::SESSIONS)->writeCacheAsString($this->sessionId . ".php",
+                                                                                   $this->getSerializedSession());
             $rslt = true;
         } else {
             CoreLogger::addWarning(ERROR_SESSION_COOKIE);

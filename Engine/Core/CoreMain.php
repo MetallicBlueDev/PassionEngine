@@ -438,8 +438,8 @@ class CoreMain
             }
 
             // Mise en cache
-            $coreCache->writeCache("configs.php",
-                                   $content);
+            $coreCache->writeCacheAsString("configs.php",
+                                           $content);
         }
 
         // Ajout a la configuration courante

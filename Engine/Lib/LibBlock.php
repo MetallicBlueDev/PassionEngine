@@ -382,8 +382,8 @@ class LibBlock extends LibEntity
 
                 // Mise en cache
                 $content = $coreCache->serializeData($blocksIndexer);
-                $coreCache->writeCache("blocks_indexer.php",
-                                       $content);
+                $coreCache->writeCacheAsString("blocks_indexer.php",
+                                               $content);
             }
         } else {
             $blocksIndexer = $coreCache->readCacheAsArray(self::BLOCKS_INDEXER_FILENAME);
