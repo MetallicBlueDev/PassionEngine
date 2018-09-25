@@ -37,7 +37,7 @@ abstract class CoreDriverSelector
     protected function createDriver(): void
     {
         $rawConfigs = $this->getConfiguration();
-        $fullClassName = $this->getBaseFullClassName($rawConfigs);
+        $fullClassName = $this->getFullClassName($rawConfigs);
         $this->selectedDriver = $this->makeSelectedBase($fullClassName,
                                                         $rawConfigs);
         $this->onInitialized();
@@ -82,7 +82,7 @@ abstract class CoreDriverSelector
      * @return string
      * @throws FailBase
      */
-    private function &getBaseFullClassName(array &$rawConfigs): string
+    private function &getFullClassName(array &$rawConfigs): string
     {
         $fullClassName = "";
         $loaded = false;
