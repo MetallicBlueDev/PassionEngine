@@ -4,7 +4,7 @@ namespace TREngine\Engine\Lib;
 
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Fail\FailEngine;
+use TREngine\Engine\Core\CoreTraitException;
 use TREngine\Engine\Fail\FailBase;
 
 /**
@@ -14,6 +14,8 @@ use TREngine\Engine\Fail\FailBase;
  */
 abstract class LibEntity
 {
+
+    use CoreTraitException;
 
     /**
      * Entités chargées.
@@ -81,23 +83,6 @@ abstract class LibEntity
         if ($entityData->isValid() && $entityData->canUse()) {
             $this->fireBuildEntityData($entityData);
         }
-    }
-
-    /**
-     * Lance une exception gérant ce type d'entité.
-     *
-     * @param string $message
-     * @param string $failCode
-     * @param array $failArgs
-     * @throws FailEngine
-     */
-    protected function throwException(string $message,
-                                      string $failCode = "",
-                                      array $failArgs = array()): void
-    {
-        throw new FailEngine($message,
-                             $failCode,
-                             $failArgs);
     }
 
     /**

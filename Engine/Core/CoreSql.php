@@ -3,7 +3,6 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Base\BaseModel;
-use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Fail\FailSql;
 
 /**
@@ -11,7 +10,7 @@ use TREngine\Engine\Fail\FailSql;
  *
  * @author Sébastien Villemain
  */
-class CoreSql
+class CoreSql extends CoreDriverSelector
 {
 
     /**
@@ -22,23 +21,13 @@ class CoreSql
     private static $coreSql = null;
 
     /**
-     * Modèle de base sélectionné.
-     *
-     * @var BaseModel
-     */
-    private $selectedBase = null;
-
-    /**
      * Nouveau gestionnaire.
      *
      * @throws FailSql
      */
     private function __construct()
     {
-        $databaseConfig = CoreMain::getInstance()->getConfigs()->getConfigDatabase();
-        $fullClassName = $this->getBaseFullClassName($databaseConfig);
-        $this->selectedBase = $this->makeSelectedBase($fullClassName,
-                                                      $databaseConfig);
+        $this->createDriver();
     }
 
     /**
@@ -46,7 +35,7 @@ class CoreSql
      */
     public function __destruct()
     {
-        unset($this->selectedBase);
+        parent::__destruct();
     }
 
     /**
@@ -77,7 +66,7 @@ class CoreSql
      */
     public static function hasConnection(): bool
     {
-        return self::$coreSql !== null && self::$coreSql->selectedBase !== null;
+        return self::$coreSql !== null && self::$coreSql->getSelectedDriver() !== null;
     }
 
     /**
@@ -98,58 +87,51 @@ class CoreSql
      */
     public function &getSelectedBase(): BaseModel
     {
-        return $this->selectedBase;
+        return $this->getSelectedDriver();
     }
 
     /**
-     * Retourne le nom complet de la classe représentant le pilote de base de données.
+     * {@inheritDoc}
      *
-     * @param array $databaseConfig
+     * @return array
+     */
+    protected function getConfiguration(): array
+    {
+        return CoreMain::getInstance()->getConfigs()->getConfigDatabase();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * @return string
-     * @throws FailSql
      */
-    private function getBaseFullClassName(array $databaseConfig): string
+    protected function getFilePrefix(): string
     {
-        $fullClassName = "";
-        $loaded = false;
-
-        if (!empty($databaseConfig) && isset($databaseConfig['type'])) {
-            $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::BASE_FILE . ucfirst($databaseConfig['type']));
-            $loaded = CoreLoader::classLoader($fullClassName);
-        }
-
-        if (!$loaded) {
-            throw new FailSql("database driver not found",
-                              FailBase::getErrorCodeName(13),
-                                                         array($databaseConfig['type']));
-        }
-
-        if (!CoreLoader::isCallable($fullClassName,
-                                    "initialize")) {
-            throw new FailSql("unable to initialize database",
-                              FailBase::getErrorCodeName(14),
-                                                         array($fullClassName));
-        }
-        return $fullClassName;
+        return CoreLoader::BASE_FILE;
     }
 
     /**
-     * Création de l'instance du pilote de la base de données.
+     * {@inheritDoc}
+     */
+    protected function onInitialized(): void
+    {
+        $this->getSelectedBase()->setAutoFreeResult(true);
+    }
+
+    /**
+     * {@inheritdoc}
      *
-     * @param string $fullClassName
-     * @param array $databaseConfig
-     * @return BaseModel
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
      * @throws FailSql
      */
-    private function makeSelectedBase(string $fullClassName,
-                                      array $databaseConfig): BaseModel
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
     {
-        /**
-         * @var BaseModel
-         */
-        $selectedBase = new $fullClassName();
-        $selectedBase->initialize($databaseConfig);
-        $selectedBase->setAutoFreeResult(true);
-        return $selectedBase;
+        throw new FailSql($message,
+                          $failCode,
+                          $failArgs);
     }
 }

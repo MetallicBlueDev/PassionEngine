@@ -2,7 +2,6 @@
 
 namespace TREngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailEngine;
 use TREngine\Engine\Fail\FailBase;
 
 /**
@@ -12,6 +11,8 @@ use TREngine\Engine\Fail\FailBase;
  */
 abstract class CoreTransaction extends CoreDataStorage
 {
+
+    use CoreTraitException;
 
     /**
      * Objet de connexion.
@@ -32,7 +33,7 @@ abstract class CoreTransaction extends CoreDataStorage
      * Paramètre la connexion, test la connexion puis engage une connexion.
      *
      * @param array $transaction
-     * @throws FailEngine
+     * @throws FailBase
      */
     public function initialize(array &$transaction): void
     {
@@ -142,21 +143,4 @@ abstract class CoreTransaction extends CoreDataStorage
      * @return bool
      */
     abstract protected function canUse(): bool;
-
-    /**
-     * Lance une exception gérant ce type de transaction.
-     *
-     * @param string $message
-     * @param string $failCode
-     * @param array $failArgs
-     * @throws FailEngine
-     */
-    protected function throwException(string $message,
-                                      string $failCode = "",
-                                      array $failArgs = array()): void
-    {
-        throw new FailEngine($message,
-                             $failCode,
-                             $failArgs);
-    }
 }

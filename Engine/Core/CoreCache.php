@@ -3,7 +3,6 @@
 namespace TREngine\Engine\Core;
 
 use TREngine\Engine\Fail\FailCache;
-use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Cache\CacheModel;
 use TREngine\Engine\Exec\ExecString;
 use TREngine\Engine\Exec\ExecUtils;
@@ -13,7 +12,7 @@ use TREngine\Engine\Exec\ExecUtils;
  *
  * @author Sébastien Villemain
  */
-class CoreCache
+class CoreCache extends CoreDriverSelector
 {
 
     /**
@@ -48,13 +47,6 @@ class CoreCache
      * @var CoreCache
      */
     private static $coreCache = null;
-
-    /**
-     * Gestionnaire de fichier.
-     *
-     * @var CacheModel
-     */
-    private $selectedCache = null;
 
     /**
      * Chemin de la section actuelle.
@@ -98,10 +90,7 @@ class CoreCache
      */
     public function __construct()
     {
-        $cacheConfig = CoreMain::getInstance()->getConfigs()->getConfigCache();
-        $fullClassName = $this->getBaseFullClassName($cacheConfig);
-        $this->selectedBase = $this->makeSelectedBase($fullClassName,
-                                                      $cacheConfig);
+        $this->createDriver();
     }
 
     /**
@@ -109,7 +98,7 @@ class CoreCache
      */
     public function __destruct()
     {
-        unset($this->selectedBase);
+        parent::__destruct();
     }
 
     /**
@@ -145,7 +134,7 @@ class CoreCache
      */
     public function &getSelectedCache(): CacheModel
     {
-        return $this->selectedCache;
+        return $this->getSelectedDriver();
     }
 
     /**
@@ -386,7 +375,7 @@ class CoreCache
         if ($this->cached($fileName)) {
             $dirList = $this->readCacheAsArray($fileName);
         } else {
-            $dirList = $this->selectedCache->getNameList($path);
+            $dirList = $this->getSelectedCache()->getNameList($path);
             $this->writeCacheAsString($fileName,
                                       $dirList);
         }
@@ -506,7 +495,7 @@ class CoreCache
         if ($exist) {
             // Vérification de la validité du checker
             if ($timeLimit > 0) {
-                if ($timeLimit < $this->selectedCache->getCacheMTime(self::CHECKER_FILENAME)) {
+                if ($timeLimit < $this->getSelectedCache()->getCacheMTime(self::CHECKER_FILENAME)) {
                     $valid = true;
                 }
             } else {
@@ -537,36 +526,73 @@ class CoreCache
         if (!empty($this->removeCache)) {
             // Suppression de cache demandée
             foreach ($this->removeCache as $path => $timeLimit) {
-                $this->selectedCache->removeCache($path,
-                                                  $timeLimit);
+                $this->getSelectedCache()->removeCache($path,
+                                                       $timeLimit);
             }
         }
 
         if (!empty($this->writeCache)) {
             // Ecriture de cache demandée
             foreach ($this->writeCache as $path => $content) {
-                $this->selectedCache->writeCache($path,
-                                                 $content,
-                                                 false);
+                $this->getSelectedCache()->writeCache($path,
+                                                      $content,
+                                                      false);
             }
         }
 
         if (!empty($this->overwriteCache)) {
             // Ecriture à la suite de cache demandée
             foreach ($this->overwriteCache as $path => $content) {
-                $this->selectedCache->writeCache($path,
-                                                 $content,
-                                                 true);
+                $this->getSelectedCache()->writeCache($path,
+                                                      $content,
+                                                      true);
             }
         }
 
         if (!empty($this->touchCache)) {
             // Mise à jour de cache demandée
             foreach ($this->touchCache as $path => $updateTime) {
-                $this->selectedCache->touchCache($path,
-                                                 $updateTime);
+                $this->getSelectedCache()->touchCache($path,
+                                                      $updateTime);
             }
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return array
+     */
+    protected function getConfiguration(): array
+    {
+        return CoreMain::getInstance()->getConfigs()->getConfigCache();
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    protected function getFilePrefix(): string
+    {
+        return CoreLoader::CACHE_FILE;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param string $message
+     * @param string $failCode
+     * @param array $failArgs
+     * @throws FailCache
+     */
+    protected function throwException(string $message,
+                                      string $failCode = "",
+                                      array $failArgs = array()): void
+    {
+        throw new FailCache($message,
+                            $failCode,
+                            $failArgs);
     }
 
     /**
@@ -693,56 +719,5 @@ class CoreCache
                                                  true);
         }
         return ${$variableName};
-    }
-
-    /**
-     * Retourne le nom complet de la classe représentant le pilote de fichiers en cache.
-     *
-     * @param array $cacheConfig
-     * @return string
-     * @throws FailCache
-     */
-    private function getBaseFullClassName(array $cacheConfig): string
-    {
-        $fullClassName = "";
-        $loaded = false;
-
-        if (!empty($cacheConfig) && isset($cacheConfig['type'])) {
-            $fullClassName = CoreLoader::getFullQualifiedClassName(CoreLoader::CACHE_FILE . ucfirst($cacheConfig['type']));
-            $loaded = CoreLoader::classLoader($fullClassName);
-        }
-
-        if (!$loaded) {
-            throw new FailCache("cache driver not found",
-                                FailBase:: getErrorCodeName(2),
-                                                            array($cacheConfig['type']));
-        }
-
-        if (!CoreLoader::isCallable($fullClassName,
-                                    "initialize")) {
-            throw new FailCache("unable to initialize cache",
-                                FailBase:: getErrorCodeName(3),
-                                                            array($fullClassName));
-        }
-        return $fullClassName;
-    }
-
-    /**
-     * Création de l'instance du pilote de fichiers en cache.
-     *
-     * @param string $fullClassName
-     * @param array $cacheConfig
-     * @return CacheModel
-     * @throws FailCache
-     */
-    private function makeSelectedBase(string $fullClassName,
-                                      array $cacheConfig): CacheModel
-    {
-        /**
-         * @var CacheModel
-         */
-        $selectedBase = new $fullClassName();
-        $selectedBase->initialize($cacheConfig);
-        return $selectedBase;
     }
 }
