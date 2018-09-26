@@ -271,13 +271,13 @@ class BasePdo extends BaseModel
             '"',
             "\x1a"),
                            array(
-                    '\\\\',
-                    '\\0',
-                    '\\n',
-                    '\\r',
-                    "\\'",
-                    '\\"',
-                    '\\Z'),
+                '\\\\',
+                '\\0',
+                '\\n',
+                '\\r',
+                "\\'",
+                '\\"',
+                '\\Z'),
                            $str);
     }
 
@@ -329,7 +329,7 @@ class BasePdo extends BaseModel
     }
 
     /**
-     * Recherche l'nstance contenant le code spécifique à la configuration.
+     * Recherche l'instance contenant le code spécifique à la configuration.
      */
     private function checkPlatformSpecific(): void
     {

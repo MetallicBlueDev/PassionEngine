@@ -11,7 +11,7 @@ class PdoPlatformSpecific
 {
 
     /**
-     * Retourne la commande à executer pour obtenir la liste des tables.
+     * Retourne la commande à exécuter pour obtenir la liste des tables.
      *
      * @return string
      */
@@ -21,7 +21,7 @@ class PdoPlatformSpecific
     }
 
     /**
-     * Retourne la commande à executer pour obtenir la liste des colonnes.
+     * Retourne la commande à exécuter pour obtenir la liste des colonnes.
      *
      * @param string $fullTableName
      * @return string
