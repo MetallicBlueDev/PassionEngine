@@ -12,12 +12,27 @@ class CacheSftp extends CacheModel
 
     /**
      * {@inheritDoc}
+     */
+    public function netConnect(): void
+    {
+        // TODO classe a coder..
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function netDeconnect(): void
+    {
+
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * @return bool
      */
     protected function canUse(): bool
     {
-        // TODO classe a coder..
         return false;
     }
 }

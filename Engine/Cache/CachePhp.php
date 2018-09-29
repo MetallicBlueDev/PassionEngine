@@ -14,13 +14,10 @@ class CachePhp extends CacheModel
 
     /**
      * {@inheritDoc}
-     *
-     * @return bool
      */
-    protected function canUse(): bool
+    public function netConnect(): void
     {
-        // Gestionnaire natif; toujours diponible
-        return true;
+        // Rien à faire.
     }
 
     /**
@@ -43,6 +40,14 @@ class CachePhp extends CacheModel
     {
         $rslt = true;
         return $rslt;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function netDeconnect(): void
+    {
+        // Rien à faire.
     }
 
     /**
@@ -150,6 +155,17 @@ class CachePhp extends CacheModel
         sort($dirList);
         reset($dirList);
         return $dirList;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @return bool
+     */
+    protected function canUse(): bool
+    {
+        // Gestionnaire natif; toujours diponible
+        return true;
     }
 
     /**

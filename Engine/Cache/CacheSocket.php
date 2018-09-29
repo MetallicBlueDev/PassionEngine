@@ -59,23 +59,6 @@ class CacheSocket extends CacheModel
     private $passiveData = "";
 
     /**
-     *
-     * {@inheritdoc}
-     *
-     * @return bool
-     */
-    public function canUse(): bool
-    {
-        $rslt = function_exists("fsockopen");
-
-        if (!$rslt) {
-            CoreLogger::addException("Socket function not found");
-        }
-        return $rslt;
-    }
-
-    /**
-     *
      * {@inheritdoc}
      */
     public function netConnect(): void
@@ -103,7 +86,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      */
     public function netDeconnect(): void
@@ -118,7 +100,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @return bool
@@ -130,9 +111,9 @@ class CacheSocket extends CacheModel
         // Envoi de l'identifiant
         if ($this->sendCommandAndCheckResponse("USER " . $this->getTransactionUser(),
                                                array(
-                            331,
-                            503
-                ))) {
+                    331,
+                    503
+            ))) {
             if ($this->lastResponseCode === 503) {
                 // Oops, déjà identifié
                 $rslt = true;
@@ -140,7 +121,7 @@ class CacheSocket extends CacheModel
                 // Envoi du mot de passe
                 $rslt = $this->sendCommandAndCheckResponse("PASS " . $this->getTransactionPass(),
                                                            array(
-                            230
+                        230
                 ));
 
                 if ($rslt) {
@@ -157,7 +138,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $path
@@ -181,7 +161,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $path
@@ -196,7 +175,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $path
@@ -217,7 +195,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $path
@@ -261,7 +238,6 @@ class CacheSocket extends CacheModel
     }
 
     /**
-     *
      * {@inheritdoc}
      *
      * @param string $path
@@ -274,8 +250,8 @@ class CacheSocket extends CacheModel
         if ($this->netConnected()) {
             if (!$this->sendCommandAndCheckResponse("MDTM " . $this->getRootPath($path),
                                                                                  array(
-                                250
-                    ))) {
+                        250
+                ))) {
                 CoreLogger::addException("Bad response for MDTM command. Path : " . $path);
             }
 
@@ -304,9 +280,9 @@ class CacheSocket extends CacheModel
             // Envoi de la requete
             if ($this->sendCommandAndCheckResponse("NLST" . $path,
                                                    array(
-                                150,
-                                125
-                    ))) {
+                        150,
+                        125
+                ))) {
                 // On évite la boucle infinie
                 if ($this->passiveData !== false) {
                     while (!feof($this->passiveData)) {
@@ -320,8 +296,8 @@ class CacheSocket extends CacheModel
 
             // Verification du résultat
             if ($this->receiveResponseCode(array(
-                        226
-                    ))) {
+                    226
+                ))) {
                 $dirList = preg_split("/[" . TR_ENGINE_CRLF . "]+/",
                                       $dirListString,
                                       -1,
@@ -334,6 +310,21 @@ class CacheSocket extends CacheModel
             }
         }
         return $dirList;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return bool
+     */
+    protected function canUse(): bool
+    {
+        $rslt = function_exists("fsockopen");
+
+        if (!$rslt) {
+            CoreLogger::addException("Socket function not found");
+        }
+        return $rslt;
     }
 
     /**
@@ -490,9 +481,9 @@ class CacheSocket extends CacheModel
     {
         if ($this->sendCommandAndCheckResponse("SITE CHMOD " . $mode . " " . $path,
                                                array(
-                            200,
-                            250
-                ))) {
+                    200,
+                    250
+            ))) {
             CoreLogger::addException("Bad response for SITE CHMOD command. Path : " . $path);
         }
     }
@@ -518,14 +509,14 @@ class CacheSocket extends CacheModel
                 if ($overwrite) {
                     $this->sendCommandAndCheckResponse("STOR " . $this->getRootPath($path),
                                                                                     array(
-                                150,
-                                125
+                            150,
+                            125
                     ));
                 } else { // TODO verifier le code réponse du serveur (150 et 125)
                     $this->sendCommandAndCheckResponse("APPE " . $this->getRootPath($path),
                                                                                     array(
-                                150,
-                                125
+                            150,
+                            125
                     ));
                 }
 
@@ -549,8 +540,8 @@ class CacheSocket extends CacheModel
 
                 // Verification
                 if (!$this->receiveResponseCode(array(
-                            226
-                        ))) {
+                        226
+                    ))) {
                     CoreLogger::addException("Bad response for STOR|APPE|fwrite command. Path : " . $path);
                 }
             }
@@ -614,8 +605,8 @@ class CacheSocket extends CacheModel
     {
         if (!$this->sendCommandAndCheckResponse("MKD " . $path,
                                                 array(
-                            257
-                ))) {
+                    257
+            ))) {
             CoreLogger::addException("Bad response for MKD command. Path : " . $path);
         }
 
@@ -652,8 +643,8 @@ class CacheSocket extends CacheModel
             // Envoie de la commande de suppression du fichier
             if (!$this->sendCommandAndCheckResponse("DELE " . $this->getRootPath($path),
                                                                                  array(
-                                250
-                    ))) {
+                        250
+                ))) {
                 CoreLogger::addException("Bad response for DELE command. Path : " . $path);
             }
         }
@@ -697,8 +688,8 @@ class CacheSocket extends CacheModel
             // Envoi de la commande de suppression du fichier
             if ($this->sendCommandAndCheckResponse("RMD " . $this->getRootPath($path),
                                                                                array(
-                                250
-                    ))) {
+                        250
+                ))) {
                 CoreLogger::addException("Bad response for RMD command. Path : " . $path);
             }
         }
@@ -744,8 +735,8 @@ class CacheSocket extends CacheModel
         // Envoi de la requête
         if ($this->sendCommandAndCheckResponse("PASV",
                                                array(
-                            227
-                ))) {
+                    227
+            ))) {
             $matches = array();
 
             // Recherche de l'adresse IP et du port...
