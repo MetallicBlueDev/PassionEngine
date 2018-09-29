@@ -96,7 +96,7 @@ class LibBlock extends LibEntity
         $buffer = "";
 
         if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
-            foreach ($this->blockDatas as $blockData) {
+            foreach ($this->getEntityDatas() as $blockData) {
                 if ($blockData->getSide() !== $selectedSide) {
                     continue;
                 }
@@ -261,12 +261,12 @@ class LibBlock extends LibEntity
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
                          array("block_id",
-                    "side",
-                    "position",
-                    "title",
-                    "type",
-                    "rank",
-                    "all_modules"),
+                "side",
+                "position",
+                "title",
+                "type",
+                "rank",
+                "all_modules"),
                          array("block_id =  '" . $entityId . "'"))->query();
 
         if ($coreSql->affectedRows() > 0) {
@@ -370,12 +370,12 @@ class LibBlock extends LibEntity
             $coreSql = CoreSql::getInstance()->getSelectedBase();
             $coreSql->select(CoreTable::BLOCKS,
                              array("block_id",
-                        "side",
-                        "type",
-                        "rank"),
+                    "side",
+                    "type",
+                    "rank"),
                              array(),
                              array("side",
-                        "position"))->query();
+                    "position"))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blocksIndexer = $coreSql->fetchArray();

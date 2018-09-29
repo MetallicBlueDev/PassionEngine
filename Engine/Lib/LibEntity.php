@@ -140,6 +140,16 @@ abstract class LibEntity
     abstract protected function onViewParameterNotFound(LibEntityData &$entityData): void;
 
     /**
+     * Retourne les entités actuellement en cache.
+     * 
+     * @return LibEntityData[]
+     */
+    protected function &getEntityDatas(): array
+    {
+        return $this->entityDatas;
+    }
+
+    /**
      * Retourne l'identifiant de l'entité.
      *
      * @param string $entityFolderName
@@ -186,7 +196,7 @@ abstract class LibEntity
     {
         $entityArrayDatas = array();
 
-        // Recherche dans le cache
+// Recherche dans le cache
         $coreCache = CoreCache::getInstance($this->getCacheSectionName());
         $cacheFileName = $entityId . ".php";
 
@@ -194,7 +204,7 @@ abstract class LibEntity
             $entityArrayDatas = $this->loadEntityDatas($entityId);
 
             if (!empty($entityArrayDatas)) {
-                // Mise en cache
+// Mise en cache
                 $content = $coreCache->serializeData($entityArrayDatas);
                 $coreCache->writeCacheAsString($cacheFileName,
                                                $content);
