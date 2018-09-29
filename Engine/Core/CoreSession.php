@@ -152,8 +152,8 @@ class CoreSession
         if (self::validLogin($userName) && self::validPassword($userPass)) {
             $userPass = self::cryptPass($userPass);
             $userArrayDatas = self::loadUserData(array(
-                        "name = '" . $userName . "'",
-                        "AND pass = '" . $userPass . "'"
+                    "name = '" . $userName . "'",
+                    "AND pass = '" . $userPass . "'"
             ));
 
             if (count($userArrayDatas) > 1) {
@@ -304,7 +304,7 @@ class CoreSession
         if ($this->hasValidSessionData()) {
             // Rafraichir le cache de session
             $userArrayDatas = self::loadUserData(array(
-                        "user_id = '" . $this->sessionData->getId() . "'"
+                    "user_id = '" . $this->sessionData->getId() . "'"
             ));
 
             if (count($userArrayDatas) > 1) {
@@ -384,7 +384,7 @@ class CoreSession
             $cleanBanishment = true;
             $coreCache->writeCacheAsString(self::BANISHMENT_FILENAME,
                                            "1");
-        } else if ((ExecUtils::getMemorizedTimestamp() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getSelectedCache()->getCacheMTime(self::BANISHMENT_FILENAME)) {
+        } else if ((ExecUtils::getMemorizedTimestamp() - (self::BANISHMENT_DURATION * 24 * 60 * 60)) > $coreCache->getCacheMTime(self::BANISHMENT_FILENAME)) {
             $cleanBanishment = true;
             $coreCache->touchCache(self::BANISHMENT_FILENAME);
         }
@@ -393,9 +393,9 @@ class CoreSession
         if ($cleanBanishment) {
             CoreSql::getInstance()->getSelectedBase()->delete(CoreTable::BANNED,
                                                               array("ip != ''",
-                        "&& (name = 'Hacker' || name = '')",
-                        "&& type = '0'",
-                        "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
+                    "&& (name = 'Hacker' || name = '')",
+                    "&& type = '0'",
+                    "&& DATE_ADD(banishment_date, INTERVAL " . self::BANISHMENT_DURATION . " DAY) > CURDATE()"
             ))->query();
         }
     }
@@ -554,7 +554,7 @@ class CoreSession
 
             if ($sessionArrayDatas['user_id'] === $userId && $sessionArrayDatas['sessionId'] === $sessionId) {
                 // Mise a jour du dernier accès toute les 5 min
-                if (($coreCache->getSelectedCache()->getCacheMTime($sessionId . ".php") + 5 * 60) < ExecUtils::getMemorizedTimestamp()) {
+                if (($coreCache->getCacheMTime($sessionId . ".php") + 5 * 60) < ExecUtils::getMemorizedTimestamp()) {
                     // En base
                     $isValidSession = $this->updateLastConnect($userId);
 
@@ -807,15 +807,15 @@ class CoreSession
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::USERS,
                          array("user_id",
-                    "name",
-                    "email",
-                    "rank",
-                    "registration_date",
-                    "avatar",
-                    "website",
-                    "signature",
-                    "template",
-                    "langue"),
+                "name",
+                "email",
+                "rank",
+                "registration_date",
+                "avatar",
+                "website",
+                "signature",
+                "template",
+                "langue"),
                          $where)->query();
         // TODO vérifier si l'utilisateur n'est pas banni
         if ($coreSql->affectedRows() === 1) {

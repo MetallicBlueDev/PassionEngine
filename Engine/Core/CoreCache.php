@@ -165,14 +165,13 @@ class CoreCache extends CoreDriverSelector
             $content = $this->serializeData($content);
         }
 
-        // Mise en forme de la clé
-        $key = $this->getCurrentSectionPath($path);
+        $relativeSectionPath = $this->getRelativeSectionPath($path);
 
         // Ajout dans le cache
         if ($overwrite) {
-            $this->overwriteCache[$key] = $content;
+            $this->overwriteCache[$relativeSectionPath] = $content;
         } else {
-            $this->writeCache[$key] = $content;
+            $this->writeCache[$relativeSectionPath] = $content;
         }
 
         $variableName = $this->getVariableName();
@@ -341,7 +340,7 @@ class CoreCache extends CoreDriverSelector
             $updateTime = ExecUtils::getMemorizedTimestamp();
         }
 
-        $this->touchCache[$this->getCurrentSectionPath($path)] = $updateTime;
+        $this->touchCache[$this->getRelativeSectionPath($path)] = $updateTime;
     }
 
     /**
@@ -353,7 +352,7 @@ class CoreCache extends CoreDriverSelector
     public function removeCache(string $path,
                                 int $timeLimit = 0): void
     {
-        $this->removeCache[$this->getCurrentSectionPath($path)] = $timeLimit;
+        $this->removeCache[$this->getRelativeSectionPath($path)] = $timeLimit;
     }
 
     /**
@@ -477,8 +476,20 @@ class CoreCache extends CoreDriverSelector
      */
     public function cached(string $path): bool
     {
-        return is_file($this->getCurrentSectionPath($path,
-                                                    true));
+        $fullPath = $this->getFullPath($path);
+        return is_file($fullPath);
+    }
+
+    /**
+     * Retourne la date de dernière modification du fichier.
+     *
+     * @param string $path
+     * @return int
+     */
+    public function &getCacheMTime(string $path): int
+    {
+        $relativeSectionPath = $this->getRelativeSectionPath($path);
+        return $this->getSelectedCache()->getCacheMTime($relativeSectionPath);
     }
 
     /**
@@ -495,7 +506,7 @@ class CoreCache extends CoreDriverSelector
         if ($exist) {
             // Vérification de la validité du checker
             if ($timeLimit > 0) {
-                if ($timeLimit < $this->getSelectedCache()->getCacheMTime(self::CHECKER_FILENAME)) {
+                if ($timeLimit < $this->getCacheMTime(self::CHECKER_FILENAME)) {
                     $valid = true;
                 }
             } else {
@@ -640,21 +651,27 @@ class CoreCache extends CoreDriverSelector
     }
 
     /**
-     * Retourne le chemin de la section courante.
+     * Retourne le chemin avec la section courante.
      *
-     * @param string $dir
-     * @param bool $includeRoot
+     * @param string $path
      * @return string
      */
-    private function &getCurrentSectionPath(string $dir,
-                                            bool $includeRoot = false): string
+    private function &getRelativeSectionPath(string $path): string
     {
-        $dir = $this->currentSection . DIRECTORY_SEPARATOR . $dir;
+        $path = $this->currentSection . DIRECTORY_SEPARATOR . $path;
+        return $path;
+    }
 
-        if ($includeRoot) {
-            $dir = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $dir;
-        }
-        return $dir;
+    /**
+     * Retourne le chemin complet avec la racine et la section courante.
+     *
+     * @param string $path
+     * @return string
+     */
+    private function &getFullPath(string $path): string
+    {
+        $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $this->getRelativeSectionPath($path);
+        return $path;
     }
 
     /**
@@ -715,8 +732,7 @@ class CoreCache extends CoreDriverSelector
 
         // Capture du fichier
         if ($this->cached($path)) {
-            require $this->getCurrentSectionPath($path,
-                                                 true);
+            require $this->getFullPath($path);
         }
         return ${$variableName};
     }

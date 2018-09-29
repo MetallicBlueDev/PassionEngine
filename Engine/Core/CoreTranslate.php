@@ -361,7 +361,7 @@ class CoreTranslate
             if ($coreCache->cached($langCacheFileName)) {
                 $langOriginalPath = CoreLoader::getTranslateAbsolutePath($rootDirectoryPath);
 
-                if ($coreCache->getSelectedCache()->getCacheMTime($langCacheFileName) >= filemtime($langOriginalPath)) {
+                if ($coreCache->getCacheMTime($langCacheFileName) >= filemtime($langOriginalPath)) {
                     $coreCache->readCache($langCacheFileName);
                     $translated = true;
                 }
