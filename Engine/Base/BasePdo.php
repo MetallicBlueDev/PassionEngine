@@ -75,9 +75,9 @@ class BasePdo extends BaseModel
     {
         try {
             // Host = mysql:host=127.0.0.1
-            $this->connectionObject = new PDO($this->getTransactionHost(),
-                                    $this->getTransactionUser(),
-                                    $this->getTransactionPass());
+            $this->setConnectionObject(new PDO($this->getTransactionHost(),
+                                               $this->getTransactionUser(),
+                                               $this->getTransactionPass()));
 
             // Utilisation du typage natif en base de données.
             $this->getPdo()->setAttribute(PDO::ATTR_EMULATE_PREPARES,
@@ -86,7 +86,7 @@ class BasePdo extends BaseModel
                                           false);
         } catch (PDOException $ex) {
             CoreLogger::addException("PDO exception: " . $ex->getMessage());
-            unset($this->connectionObject);
+            $this->unsetConnectionObject();
         }
     }
 
@@ -111,7 +111,7 @@ class BasePdo extends BaseModel
     public function netDeconnect(): void
     {
         if ($this->netConnected()) {
-            unset($this->connectionObject);
+            $this->unsetConnectionObject();
             unset($this->platformSpecific);
         }
     }
@@ -350,7 +350,7 @@ class BasePdo extends BaseModel
      */
     private function &getPdo(): ?PDO
     {
-        return $this->connectionObject;
+        return $this->getConnectionObject();
     }
 
     /**

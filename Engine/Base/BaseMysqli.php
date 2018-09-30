@@ -44,16 +44,16 @@ class BaseMysqli extends BaseModel
             $driver = new mysqli_driver();
             $driver->report_mode = MYSQLI_REPORT_STRICT;
 
-            $this->connectionObject = new mysqli($this->getTransactionHost(),
-                                                 $this->getTransactionUser(),
-                                                 $this->getTransactionPass());
+            $this->setConnectionObject(new mysqli($this->getTransactionHost(),
+                                                  $this->getTransactionUser(),
+                                                  $this->getTransactionPass()));
 
             // Utilisation du typage natif en base de données.
             $this->getMysqli()->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,
                                         true);
         } catch (mysqli_sql_exception $ex) {
             CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
-            unset($this->connectionObject);
+            $this->unsetConnectionObject();
         }
     }
 
@@ -79,7 +79,7 @@ class BaseMysqli extends BaseModel
     {
         if ($this->netConnected()) {
             $this->getMysqli()->close();
-            unset($this->connectionObject);
+            $this->unsetConnectionObject();
         }
     }
 
@@ -252,7 +252,7 @@ class BaseMysqli extends BaseModel
      */
     private function &getMysqli(): mysqli
     {
-        return $this->connectionObject;
+        return $this->getConnectionObject();
     }
 
     /**

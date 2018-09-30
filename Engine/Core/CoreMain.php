@@ -310,6 +310,8 @@ class CoreMain
         } while ($canContinue);
     }
 
+    private $test = null;
+
     /**
      * Préparation TR ENGINE.
      * Procédure de préparation du moteur.

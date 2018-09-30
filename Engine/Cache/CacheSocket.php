@@ -68,15 +68,15 @@ class CacheSocket extends CacheModel
             $socketErrorMessage = "";
 
             // Connexion au serveur
-            $this->connectionObject = fsockopen($this->getTransactionHost(),
-                                                $this->getServerPort(),
-                                                $socketErrorNumber,
-                                                $socketErrorMessage,
-                                                $this->timeOut);
+            $this->setConnectionObject(fsockopen($this->getTransactionHost(),
+                                                 $this->getServerPort(),
+                                                 $socketErrorNumber,
+                                                 $socketErrorMessage,
+                                                 $this->timeOut));
 
-            if ($this->connectionObject === false) {
+            if ($this->getConnectionObject() === false) {
                 CoreLogger::addException("Could not connect to host " . $this->getTransactionHost() . " on port " . $this->getServerPort() . ". ErrorCode = " . $socketErrorNumber . " ErrorMessage = " . $socketErrorMessage);
-                unset($this->connectionObject);
+                $this->unsetConnectionObject();
             } else {
                 // Force le timeout, si possible
                 $this->setTimeOut();
@@ -92,10 +92,10 @@ class CacheSocket extends CacheModel
         if ($this->netConnected()) {
             $this->sendCommand("QUIT");
 
-            if (!fclose($this->connectionObject)) {
+            if (!fclose($this->getConnectionObject())) {
                 CoreLogger::addException("Unable to close connection");
             }
-            unset($this->connectionObject);
+            $this->unsetConnectionObject();
         }
     }
 
@@ -334,7 +334,7 @@ class CacheSocket extends CacheModel
      */
     private function &setTimeOut(): bool
     {
-        $rslt = stream_set_timeout($this->connectionObject,
+        $rslt = stream_set_timeout($this->getConnectionObject(),
                                    $this->timeout);
         return $rslt;
     }
@@ -361,11 +361,11 @@ class CacheSocket extends CacheModel
     /**
      * Envoi une commande sur le serveur.
      *
-     * @param string $cmd : la commande à executer
+     * @param string $cmd : la commande à exécuter
      */
     private function sendCommand(string $cmd): void
     {
-        if (!fwrite($this->connectionObject,
+        if (!fwrite($this->getConnectionObject(),
                     $cmd . TR_ENGINE_CRLF)) {
             CoreLogger::addException("Unable to send command: " . $cmd);
         }
@@ -389,7 +389,7 @@ class CacheSocket extends CacheModel
         $parts = array();
 
         do {
-            $response .= fgets($this->connectionObject,
+            $response .= fgets($this->getConnectionObject(),
                                4096);
         } while (!preg_match("/^([0-9]{3})(-(.*" . TR_ENGINE_CRLF . ")+\\1)? [^" . TR_ENGINE_CRLF . "]+" . TR_ENGINE_CRLF . "$/",
                              $response,

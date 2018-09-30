@@ -19,7 +19,7 @@ abstract class CoreTransaction extends CoreDataStorage
      *
      * @var mixed
      */
-    protected $connectionObject = null;
+    private $connectionObject = null;
 
     /**
      * Nouveau modèle de transaction.
@@ -41,7 +41,6 @@ abstract class CoreTransaction extends CoreDataStorage
             $this->newStorage($transaction);
 
             if ($this->canUse()) {
-                // Connexion au serveur
                 $this->netConnect();
 
                 if (!$this->netConnected()) {
@@ -49,7 +48,6 @@ abstract class CoreTransaction extends CoreDataStorage
                                           FailBase::getErrorCodeName(20));
                 }
 
-                // Sélection d'une base de données
                 if (!$this->netSelect()) {
                     $this->throwException("can not select a node",
                                           FailBase::getErrorCodeName(21));
@@ -143,4 +141,37 @@ abstract class CoreTransaction extends CoreDataStorage
      * @return bool
      */
     abstract protected function canUse(): bool;
+
+    /**
+     * Retourne l'objet de connexion.
+     *
+     * @return mixed
+     * @throws FailBase
+     */
+    protected function &getConnectionObject()
+    {
+        if (!$this->netConnected()) {
+            $this->throwException("connection object unavailable",
+                                  FailBase::getErrorCodeName(13));
+        }
+        return $this->connectionObject;
+    }
+
+    /**
+     * Affecte l'objet de connexion.
+     *
+     * @param mixed $connectionObject
+     */
+    protected function setConnectionObject($connectionObject): void
+    {
+        $this->connectionObject = $connectionObject;
+    }
+
+    /**
+     * Nettoyage en mémoire de l'objet de connexion.
+     */
+    protected function unsetConnectionObject(): void
+    {
+        unset($this->connectionObject);
+    }
 }
