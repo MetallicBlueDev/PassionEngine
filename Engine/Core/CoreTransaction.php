@@ -19,7 +19,7 @@ abstract class CoreTransaction extends CoreDataStorage
      *
      * @var mixed
      */
-    protected $connId = null;
+    protected $connectionObject = null;
 
     /**
      * Nouveau modèle de transaction.
@@ -82,7 +82,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function netConnected(): bool
     {
-        return ($this->connId !== null) ? true : false;
+        return (isset($this->connectionObject) && $this->connectionObject !== null) ? true : false;
     }
 
     /**

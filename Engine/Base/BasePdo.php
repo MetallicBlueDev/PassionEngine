@@ -75,7 +75,7 @@ class BasePdo extends BaseModel
     {
         try {
             // Host = mysql:host=127.0.0.1
-            $this->connId = new PDO($this->getTransactionHost(),
+            $this->connectionObject = new PDO($this->getTransactionHost(),
                                     $this->getTransactionUser(),
                                     $this->getTransactionPass());
 
@@ -86,7 +86,7 @@ class BasePdo extends BaseModel
                                           false);
         } catch (PDOException $ex) {
             CoreLogger::addException("PDO exception: " . $ex->getMessage());
-            unset($this->connId);
+            unset($this->connectionObject);
         }
     }
 
@@ -111,7 +111,7 @@ class BasePdo extends BaseModel
     public function netDeconnect(): void
     {
         if ($this->netConnected()) {
-            unset($this->connId);
+            unset($this->connectionObject);
             unset($this->platformSpecific);
         }
     }
@@ -350,7 +350,7 @@ class BasePdo extends BaseModel
      */
     private function &getPdo(): ?PDO
     {
-        return $this->connId;
+        return $this->connectionObject;
     }
 
     /**

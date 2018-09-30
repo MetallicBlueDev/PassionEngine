@@ -42,16 +42,15 @@ class CacheFtp extends CacheModel
      */
     public function netConnect(): void
     {
-        // Si aucune connexion engagé
-        if ($this->connId === null) {
+        if (!$this->netConnected()) {
             // Connexion au serveur
-            $this->connId = ftp_connect($this->getTransactionHost(),
-                                        $this->getServerPort(),
-                                        $this->timeOut);
+            $this->connectionObject = ftp_connect($this->getTransactionHost(),
+                                                  $this->getServerPort(),
+                                                  $this->timeOut);
 
-            if ($this->connId === false) {
+            if ($this->connectionObject === false) {
                 CoreLogger::addException("Could not connect to host " . $this->getTransactionHost() . " on port " . $this->getServerPort());
-                unset($this->connId);
+                unset($this->connectionObject);
             } else {
                 // Force le timeout, si possible
                 $this->setTimeOut();
@@ -65,9 +64,10 @@ class CacheFtp extends CacheModel
     public function netDeconnect(): void
     {
         if ($this->netConnected()) {
-            if (ftp_close($this->connId)) {
+            if (ftp_close($this->connectionObject)) {
                 CoreLogger::addException("Unable to close connection");
             }
+            unset($this->connectionObject);
         }
     }
 
@@ -81,7 +81,7 @@ class CacheFtp extends CacheModel
         $rslt = false;
 
         // Envoi de l'identifiant
-        if (ftp_login($this->connId,
+        if (ftp_login($this->connectionObject,
                       $this->getTransactionUser(),
                       $this->getTransactionPass())) {
             // Configuration du chemin FTP
@@ -164,7 +164,7 @@ class CacheFtp extends CacheModel
             // Demarrage du mode passif
             if ($this->setPassiveMode()) {
                 // Recherche la liste
-                $dirList = ftp_nlist($this->connId,
+                $dirList = ftp_nlist($this->connectionObject,
                                      $this->getRootPath($path));
 
                 // Si aucune erreur, on nettoie
@@ -179,22 +179,22 @@ class CacheFtp extends CacheModel
 
         // On supprime les mauvaises clés
         $dirListKeys = array_merge(
-                array_keys($dirList,
-                           ".."),
-                           array_keys($dirList,
-                                      "."),
-                                      array_keys($dirList,
-                                                 "index.html"),
-                                                 array_keys($dirList,
-                                                            "index.htm"),
-                                                            array_keys($dirList,
-                                                                       "index.php"),
-                                                                       array_keys($dirList,
-                                                                                  ".htaccess"),
-                                                                                  array_keys($dirList,
-                                                                                             ".svn"),
-                                                                                             array_keys($dirList,
-                                                                                                        "checker.txt")
+            array_keys($dirList,
+                       ".."),
+                       array_keys($dirList,
+                                  "."),
+                                  array_keys($dirList,
+                                             "index.html"),
+                                             array_keys($dirList,
+                                                        "index.htm"),
+                                                        array_keys($dirList,
+                                                                   "index.php"),
+                                                                   array_keys($dirList,
+                                                                              ".htaccess"),
+                                                                              array_keys($dirList,
+                                                                                         ".svn"),
+                                                                                         array_keys($dirList,
+                                                                                                    "checker.txt")
         );
 
         if (is_array($dirListKeys)) {
@@ -219,12 +219,12 @@ class CacheFtp extends CacheModel
         $mTime = 0;
 
         if ($this->netConnected()) {
-            $mTime = ftp_mdtm($this->connId,
+            $mTime = ftp_mdtm($this->connectionObject,
                               $this->getRootPath($path));
 
             if ($mTime === -1) { // Une erreur est survenue
                 CoreLogger::addException("Bad response for ftp_mdtm command. Path : " . $path
-                        . " Turn off the native command.");
+                    . " Turn off the native command.");
             }
         }
         return $mTime;
@@ -237,7 +237,7 @@ class CacheFtp extends CacheModel
      */
     private function &setTimeOut(): bool
     {
-        $rslt = ftp_set_option($this->connId,
+        $rslt = ftp_set_option($this->connectionObject,
                                FTP_TIMEOUT_SEC,
                                $this->timeout);
         return $rslt;
@@ -310,7 +310,7 @@ class CacheFtp extends CacheModel
     private function chmod(string $path,
                            int $mode): void
     {
-        if (ftp_site($this->connId,
+        if (ftp_site($this->connectionObject,
                      "CHMOD " . $mode . " " . $this->getRootPath($path))) {
             CoreLogger::addException("Bad response for ftp_site CHMOD command. Path : " . $path);
         }
@@ -341,7 +341,7 @@ class CacheFtp extends CacheModel
                 rewind($buffer);
 
                 // Ecriture du fichier
-                if (!ftp_fget($this->connId,
+                if (!ftp_fget($this->connectionObject,
                               $buffer,
                               $this->getRootPath($path),
                                                  FTP_ASCII)) {// TODO il faut mettre une path remote ici !
@@ -408,7 +408,7 @@ class CacheFtp extends CacheModel
      */
     private function makeDirectory(string $path): void
     {
-        if (!ftp_mkdir($this->connId,
+        if (!ftp_mkdir($this->connectionObject,
                        $path)) {
             CoreLogger::addException("Bad response for ftp_mkdir command. Path : " . $path);
         }
@@ -444,7 +444,7 @@ class CacheFtp extends CacheModel
 
         if ($deleteFile && $this->netConnected()) {
             // On efface le fichier, si c'est un fichier
-            if (!ftp_delete($this->connId,
+            if (!ftp_delete($this->connectionObject,
                             $this->getRootPath($path))) {
                 CoreLogger::addException("Bad response for ftp_delete command. Path : " . $path);
             }
@@ -486,7 +486,7 @@ class CacheFtp extends CacheModel
 
         // Suppression du dernière dossier
         if ($timeLimit === 0 && $this->netConnected()) {
-            if (!ftp_rmdir($this->connId,
+            if (!ftp_rmdir($this->connectionObject,
                            $this->getRootPath($path))) {
                 CoreLogger::addException("Bad response for ftp_rmdir command. Path : " . $path);
             }
@@ -531,7 +531,7 @@ class CacheFtp extends CacheModel
         $rslt = false;
 
         if ($this->netConnected()) {
-            if (ftp_pasv($this->connId,
+            if (ftp_pasv($this->connectionObject,
                          true)) {
                 $rslt = true;
             }
