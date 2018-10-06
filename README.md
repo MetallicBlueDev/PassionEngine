@@ -18,7 +18,6 @@ See [LICENSE](https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
 ## Source
 * GitHub: https://github.com/Tr4ncer/TREngine
 * Git clone: https://github.com/Tr4ncer/TREngine.git
-* Old warehouse: https://sourceforge.net/projects/trengine/
 
 ## Links
 * NetBeans (IDE): https://netbeans.apache.org/
