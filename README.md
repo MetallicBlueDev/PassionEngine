@@ -3,7 +3,7 @@
 
 **TR Engine** is an Easy PHP CMC.
 
-This project is executed with PHP 7.1.
+This project is executed with PHP 7.2.
 
 ## Documentation
 See the [wiki](https://github.com/Tr4ncer/TREngine/wiki)
@@ -21,6 +21,7 @@ See [LICENSE](https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
 * Old warehouse: https://sourceforge.net/projects/trengine/
 
 ## Links
-* Php: http://www.php.com
-* NetBeans: http://netbeans.apache.org/
-* Website : https://www.trancer-studio.net
+* NetBeans: https://netbeans.apache.org/ (IDE)
+* XAMPP: https://www.apachefriends.org/ (PHP development environment)
+* Php: http://www.php.net (Doc)
+* Website : https://www.trancer-studio.net (personal website)
