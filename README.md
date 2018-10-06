@@ -21,7 +21,8 @@ See [LICENSE](https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
 * Old warehouse: https://sourceforge.net/projects/trengine/
 
 ## Links
-* NetBeans: https://netbeans.apache.org/ (IDE)
-* XAMPP: https://www.apachefriends.org/ (PHP development environment)
-* Php: http://www.php.net (Doc)
-* Website : https://www.trancer-studio.net (personal website)
+* NetBeans (IDE): https://netbeans.apache.org/
+  * Last beautiful build: https://builds.apache.org/job/incubator-netbeans-linux/lastSuccessfulBuild/artifact/nbbuild/
+* XAMPP (PHP development environment): https://www.apachefriends.org/
+* Php (doc & more): http://www.php.net
+* Website (personal website): https://www.trancer-studio.net
