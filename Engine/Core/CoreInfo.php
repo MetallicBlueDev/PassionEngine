@@ -5,13 +5,11 @@ namespace TREngine\Engine\Core;
 /**
  * Recherche d'information rapide sur le moteur d'exécution et son environnement coté serveur.
  *
- * Attention, il faut faire en sorte que cette classe soit compatible PHP 5.6 (date minimale 08/2014).
- *
  * http://php.net/supported-versions.php
- * 5.6 : 31 Dec 2018 -> INCOMPATIBLE
+ * 5.6 : 31 Dec 2018 -> INCOMPATIBLE / CoreInfo uniquement (cette classe).
  * 7.0 : 3 Dec 2018 -> INCOMPATIBLE
  * 7.1 : 1 Dec 2019 <- Version minimale
- * 7.2 : 30 Nov 2020 <- Compatible (vérifié via doc mais jamais exécuté)
+ * 7.2 : 30 Nov 2020 <- Compatible
  * 7.3 : ???
  *
  * @author Sébastien Villemain
@@ -67,7 +65,12 @@ class CoreInfo
      */
     public static function &getGlobalVars($name)
     {
-        return self::$unsafeGlobalVars[$name];
+        $input = &self::$unsafeGlobalVars[$name];
+
+        if ($input === null) {
+            $input = array();
+        }
+        return $input;
     }
 
     /**
