@@ -1,7 +1,7 @@
 <?php
 
-// -------------------------------------------------------------------------//
-// Database settings
+//
+// ** Database settings
 //
 // Transaction type to use (pdo / mysqli)
 $inc['type'] = "PDO";
@@ -22,4 +22,4 @@ $inc['name'] = "trancers_db";
 //
 // Table prefix
 $inc['prefix'] = "tr";
-// -------------------------------------------------------------------------//
+// 
