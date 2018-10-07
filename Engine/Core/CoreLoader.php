@@ -127,11 +127,18 @@ class CoreLoader
     );
 
     /**
+     * Namespace à la racine.
+     *
+     * @var string
+     */
+    private const MAIN_NAMESPACE = "TREngine\\";
+
+    /**
      * Namespace de base.
      *
      * @var string
      */
-    private const NAMESPACE_PATTERN = "TREngine\{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
+    private const NAMESPACE_PATTERN = "{ROOT}{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
 
     /**
      * Tableau des classes chargées.
@@ -322,7 +329,7 @@ class CoreLoader
     public static function &getFilePathFromNamespace(string $fullClassName): string
     {
         // Supprime le premier namespace
-        $path = str_replace("TREngine\\",
+        $path = str_replace(self::MAIN_NAMESPACE,
                             "",
                             $fullClassName);
 
@@ -343,7 +350,7 @@ class CoreLoader
     public static function &getFilePathFromTranslate(string $rootDirectoryPath,
                                                      string $language = ""): string
     {
-        $path = $rootDirectoryPath . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
+        $path = self::getFilePathFromNamespace($rootDirectoryPath) . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
 
         if (!empty($language)) {
             $path .= $language;
@@ -519,9 +526,14 @@ class CoreLoader
                     $info->fileType = $namespaceType;
                 }
 
+                $fullClassName = str_replace("{ROOT}",
+                                             self::MAIN_NAMESPACE,
+                                             self::NAMESPACE_PATTERN);
+
                 $fullClassName = str_replace("{KEYNAME}",
                                              $info->keyName,
-                                             self::NAMESPACE_PATTERN);
+                                             $fullClassName);
+
                 $fullClassName = str_replace("{PREFIX}",
                                              $info->prefixName,
                                              $fullClassName);
