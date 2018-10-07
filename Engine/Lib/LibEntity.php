@@ -80,8 +80,14 @@ abstract class LibEntity
      */
     public function buildEntityData(LibEntityData $entityData): void
     {
-        if ($entityData->isValid() && $entityData->canUse()) {
-            $this->fireBuildEntityData($entityData);
+        if ($entityData->isValid()) {
+            if ($this->loadEntity($entityData)) {
+                if ($entityData->canUse()) {
+                    $this->fireBuildEntityData($entityData);
+                }
+            } else {
+                $this->onEntityNotFound($entityData);
+            }
         }
     }
 
@@ -141,7 +147,7 @@ abstract class LibEntity
 
     /**
      * Retourne les entités actuellement en cache.
-     * 
+     *
      * @return LibEntityData[]
      */
     protected function &getEntityDatas(): array
@@ -196,7 +202,7 @@ abstract class LibEntity
     {
         $entityArrayDatas = array();
 
-// Recherche dans le cache
+        // Recherche dans le cache
         $coreCache = CoreCache::getInstance($this->getCacheSectionName());
         $cacheFileName = $entityId . ".php";
 
@@ -204,7 +210,7 @@ abstract class LibEntity
             $entityArrayDatas = $this->loadEntityDatas($entityId);
 
             if (!empty($entityArrayDatas)) {
-// Mise en cache
+                // Mise en cache
                 $content = $coreCache->serializeData($entityArrayDatas);
                 $coreCache->writeCacheAsString($cacheFileName,
                                                $content);
@@ -249,35 +255,40 @@ abstract class LibEntity
     }
 
     /**
+     * Chargement de l'entité (si nécessaire).
+     *
+     * @param LibEntityData $entityData
+     * @return bool
+     */
+    private function &loadEntity(LibEntityData &$entityData): bool
+    {
+        $fullClassName = $entityData->getFullQualifiedClassName();
+        return CoreLoader::classLoader($fullClassName);
+    }
+
+    /**
      * Lance la compilation d'une entité.
      *
      * @param LibEntityData $entityData
      */
     private function fireBuildEntityData(LibEntityData &$entityData): void
     {
-        $fullClassName = $entityData->getFullQualifiedClassName();
-        $loaded = CoreLoader::classLoader($fullClassName);
+        if ($entityData->isCallableViewMethod()) {
+            $entityModelInstance = $entityData->getNewEntityModel();
 
-        if ($loaded) {
-            if ($entityData->isCallableViewMethod()) {
-                $entityModelInstance = $entityData->getNewEntityModel();
+            if ($entityModelInstance->isInViewList($entityData->getView())) {
+                $this->onBuildBegin($entityData);
 
-                if ($entityModelInstance->isInViewList($entityData->getView())) {
-                    $this->onBuildBegin($entityData);
+                ob_start();
+                $entityModelInstance->display($entityData->getView());
+                $entityData->setTemporyOutputBuffer(ob_get_clean());
 
-                    ob_start();
-                    $entityModelInstance->display($entityData->getView());
-                    $entityData->setTemporyOutputBuffer(ob_get_clean());
-
-                    $this->onBuildEnded($entityData);
-                } else {
-                    $this->onViewParameterNotFound($entityData);
-                }
+                $this->onBuildEnded($entityData);
             } else {
-                $this->onViewMethodNotFound($entityData);
+                $this->onViewParameterNotFound($entityData);
             }
         } else {
-            $this->onEntityNotFound($entityData);
+            $this->onViewMethodNotFound($entityData);
         }
     }
 }

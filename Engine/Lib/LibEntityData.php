@@ -29,7 +29,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      *
      * @var string
      */
-    private $page = CoreLayout::DEFAULT_PAGE;
+    private $page = "";
 
     /**
      * Le paramètre d'affichage.
@@ -51,6 +51,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     protected function __construct()
     {
         parent::__construct();
+        $this->setPage(CoreLayout::DEFAULT_PAGE);
     }
 
     /**
