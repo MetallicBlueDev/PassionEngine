@@ -65,7 +65,11 @@ class CoreInfo
      */
     public static function &getGlobalVars($name)
     {
-        $input = &self::$unsafeGlobalVars[$name];
+        $input = null;
+
+        if (isset(self::$unsafeGlobalVars[$name])) {
+            $input = &self::$unsafeGlobalVars[$name];
+        }
 
         if ($input === null) {
             $input = array();
@@ -142,14 +146,14 @@ class CoreInfo
              *
              * Controle de révision
              * xx -> version courante
-             * xx -> fonctionnalitées ajoutées
+             * xx -> fonctionnalités ajoutées
              * xx -> bugs ou failles critiques corrigés
              * xx -> bug mineur
              *
              * @var string
              */
             define("TR_ENGINE_VERSION",
-                   "0.6.2.0");
+                   "0.7.0.0");
         }
     }
 
