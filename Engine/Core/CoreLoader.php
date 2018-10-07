@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
+use ReflectionClass;
 use TREngine\Engine\Fail\FailLoader;
 use TREngine\Engine\Fail\FailBase;
 
@@ -139,49 +140,9 @@ class CoreLoader
      */
     private static $loadedFiles = null;
 
-    /**
-     * Clé représentant le fichier (chemin de dossier, nom de classe, clé pour inclure un fichier, etc.).
-     *
-     * @var string
-     */
-    private $keyName = "";
-
-    /**
-     * Type de fichier.
-     *
-     * @var string
-     */
-    private $fileType = "";
-
-    /**
-     * Préfixe de la classe si c'est un nom court qui nécessite plus de précision.
-     *
-     * @var string
-     */
-    private $prefixName = "";
-
-    /**
-     * Chemin absolu vers le fichier.
-     *
-     * @var string
-     */
-    private $path = "";
-
-    /**
-     * Représente la clé unique utilisé pour référencer le fichier dans le cache.
-     *
-     * @var string
-     */
-    private $uniqueFileKey = "";
-
-    /**
-     * Nouvelle information sur le fichier à charger.
-     *
-     * @param string $keyName Clé représentant le fichier.
-     */
-    private function __construct(string &$keyName)
+    private function __construct()
     {
-        $this->keyName = $keyName;
+
     }
 
     /**
@@ -198,8 +159,11 @@ class CoreLoader
 
         self::$loadedFiles = array();
 
+        require 'CoreLoaderInfo.php';
+        $CoreLoaderClass = new ReflectionClass(new CoreLoader());
+
         if (!spl_autoload_register(array(
-                'TREngine\Engine\Core\CoreLoader',
+                $CoreLoaderClass->getName(),
                 'classLoader'),
                                    true)) {
             throw new FailLoader("spl_autoload_register fail",
@@ -215,7 +179,7 @@ class CoreLoader
      */
     public static function &classLoader(string $fullClassName): bool
     {
-        $info = new CoreLoader($fullClassName);
+        $info = new CoreLoaderInfo($fullClassName);
         return self::manageLoad($info);
     }
 
@@ -228,7 +192,7 @@ class CoreLoader
      */
     public static function &translateLoader(string $rootDirectoryPath): bool
     {
-        $info = new CoreLoader($rootDirectoryPath);
+        $info = new CoreLoaderInfo($rootDirectoryPath);
         $info->fileType = self::TRANSLATE_FILE;
         return self::manageLoad($info);
     }
@@ -242,7 +206,7 @@ class CoreLoader
      */
     public static function &includeLoader(string $includeKeyName): bool
     {
-        $info = new CoreLoader($includeKeyName);
+        $info = new CoreLoaderInfo($includeKeyName);
         $info->fileType = self::INCLUDE_FILE;
         return self::manageLoad($info);
     }
@@ -259,7 +223,7 @@ class CoreLoader
                                        string $methodName = "",
                                        bool $static = false): bool
     {
-        $info = new CoreLoader($className);
+        $info = new CoreLoaderInfo($className);
         self::buildKeyNameAndFileType($info);
         $rslt = self::loaded($info);
 
@@ -310,7 +274,7 @@ class CoreLoader
      */
     public static function &getIncludeAbsolutePath(string $includeKeyName): string
     {
-        $info = new CoreLoader($includeKeyName);
+        $info = new CoreLoaderInfo($includeKeyName);
         $info->fileType = self::INCLUDE_FILE;
         return self::getAbsolutePath($info);
     }
@@ -324,7 +288,7 @@ class CoreLoader
      */
     public static function &getTranslateAbsolutePath(string $rootDirectoryPath): string
     {
-        $info = new CoreLoader($rootDirectoryPath);
+        $info = new CoreLoaderInfo($rootDirectoryPath);
         $info->fileType = self::TRANSLATE_FILE;
         return self::getAbsolutePath($info);
     }
@@ -339,7 +303,7 @@ class CoreLoader
     public static function &getFullQualifiedClassName(string $className,
                                                       string $prefixName = ""): string
     {
-        $info = new CoreLoader($className);
+        $info = new CoreLoaderInfo($className);
 
         if (!empty($prefixName)) {
             $info->prefixName = $prefixName . "\\";
@@ -408,10 +372,10 @@ class CoreLoader
     /**
      * Retourne le chemin absolu.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @return string
      */
-    private static function &getAbsolutePath(CoreLoader &$info): string
+    private static function &getAbsolutePath(CoreLoaderInfo &$info): string
     {
         self::buildKeyNameAndFileType($info);
         self::buildFilePath($info);
@@ -421,9 +385,9 @@ class CoreLoader
     /**
      * Construction de la clé correspondant au fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      */
-    private static function buildUniqueFileKey(CoreLoader &$info): void
+    private static function buildUniqueFileKey(CoreLoaderInfo &$info): void
     {
         if (empty($info->uniqueFileKey)) {
             $uniqueKey = $info->keyName;
@@ -444,10 +408,10 @@ class CoreLoader
     /**
      * Vérifie si le fichier demandé a été chargé.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @return bool true si c'est déjà chargé.
      */
-    private static function loaded(CoreLoader &$info): bool
+    private static function loaded(CoreLoaderInfo &$info): bool
     {
         self::buildUniqueFileKey($info);
         return isset(self::$loadedFiles[$info->uniqueFileKey]);
@@ -456,11 +420,11 @@ class CoreLoader
     /**
      * Chargeur de fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @return bool true chargé.
      * @throws FailLoader
      */
-    private static function &manageLoad(CoreLoader &$info): bool
+    private static function &manageLoad(CoreLoaderInfo &$info): bool
     {
         $loaded = false;
 
@@ -482,11 +446,11 @@ class CoreLoader
     /**
      * Chargeur de fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @return bool
      * @throws FailLoader
      */
-    private static function &load(CoreLoader &$info): bool
+    private static function &load(CoreLoaderInfo &$info): bool
     {
         $loaded = false;
         self::buildFilePath($info);
@@ -516,9 +480,9 @@ class CoreLoader
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      */
-    private static function buildKeyNameAndFileType(CoreLoader &$info): void
+    private static function buildKeyNameAndFileType(CoreLoaderInfo &$info): void
     {
         if ($info->fileType === self::TRANSLATE_FILE) {
             self::buildGenericKeyNameAndFileTypeFromNamespace($info);
@@ -542,9 +506,9 @@ class CoreLoader
     /**
      * Construction du chemin et du type de fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      */
-    private static function buildGenericKeyNameAndFileTypeFromNamespace(CoreLoader &$info): void
+    private static function buildGenericKeyNameAndFileTypeFromNamespace(CoreLoaderInfo &$info): void
     {
 
         foreach (self::NAMESPACE_TYPES as $namespaceType) {
@@ -578,10 +542,10 @@ class CoreLoader
     /**
      * Détermine le chemin vers le fichier.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @throws FailLoader
      */
-    private static function buildFilePath(CoreLoader &$info): void
+    private static function buildFilePath(CoreLoaderInfo &$info): void
     {
         if (empty($info->path)) {
             $path = "";
@@ -617,10 +581,10 @@ class CoreLoader
     /**
      * Charge le fichier suivant son type, son nom et son chemin.
      *
-     * @param CoreLoader $info Information sur le fichier.
+     * @param CoreLoaderInfo $info Information sur le fichier.
      * @return bool
      */
-    private static function &loadFilePath(CoreLoader &$info): bool
+    private static function &loadFilePath(CoreLoaderInfo &$info): bool
     {
         $loaded = false;
 
