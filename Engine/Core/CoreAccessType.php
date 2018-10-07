@@ -184,16 +184,6 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     }
 
     /**
-     * Détermine si c'est un accès personnalisé.
-     *
-     * @return bool
-     */
-    public function isCustomZone(): bool
-    {
-        return !empty($this->getZone()) && !$this->isBlockZone() && !$this->isModuleZone();
-    }
-
-    /**
      * Détermine si c'est un accès à une page spécifique.
      *
      * @return bool
