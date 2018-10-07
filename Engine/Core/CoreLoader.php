@@ -199,8 +199,8 @@ class CoreLoader
         self::$loadedFiles = array();
 
         if (!spl_autoload_register(array(
-                    'TREngine\Engine\Core\CoreLoader',
-                    'classLoader'),
+                'TREngine\Engine\Core\CoreLoader',
+                'classLoader'),
                                    true)) {
             throw new FailLoader("spl_autoload_register fail",
                                  FailBase::getErrorCodeName(4));
@@ -520,24 +520,10 @@ class CoreLoader
      */
     private static function buildKeyNameAndFileType(CoreLoader &$info): void
     {
-        if (empty($info->fileType)) {
-            self::buildGenericKeyNameAndFileType($info);
-        }
-
         if ($info->fileType === self::TRANSLATE_FILE) {
             self::buildGenericKeyNameAndFileTypeFromNamespace($info);
-        }
-    }
-
-    /**
-     * Construction du chemin et du type de fichier.
-     *
-     * @param CoreLoader $info Information sur le fichier.
-     */
-    private static function buildGenericKeyNameAndFileType(CoreLoader &$info): void
-    {
-        if (strpos($info->keyName,
-                   "\Block\Block") !== false) {
+        } else if (strpos($info->keyName,
+                          "\Block\Block") !== false) {
             $info->fileType = self::BLOCK_FILE;
         } else if (strpos($info->keyName,
                           "Module\Module") !== false) {
@@ -565,7 +551,9 @@ class CoreLoader
             if (strrpos($info->keyName,
                         $namespaceType,
                         -strlen($info->keyName)) !== false) {
-                $info->fileType = $namespaceType;
+                if (empty($info->fileType)) {
+                    $info->fileType = $namespaceType;
+                }
 
                 $fullClassName = str_replace("{KEYNAME}",
                                              $info->keyName,
