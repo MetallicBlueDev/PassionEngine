@@ -185,7 +185,7 @@ class CoreInfo
             // Nous sommes dans l'index
             $baseDir = getcwd();
         } else {
-            $baseDir = $this->getIndexDirectoryFromCustomFolder();
+            $baseDir = $this->getIndexDirectoryFromCurrentFolder();
         }
         return $baseDir;
     }
@@ -195,7 +195,7 @@ class CoreInfo
      *
      * @return string
      */
-    private function getIndexDirectoryFromCustomFolder()
+    private function getIndexDirectoryFromCurrentFolder()
     {
         $pathFromWorkingFolder = "";
 
