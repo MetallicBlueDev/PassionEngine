@@ -11,6 +11,7 @@ use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Core\CoreLayout;
 use TREngine\Engine\Core\CoreTranslate;
 use TREngine\Engine\Fail\FailModule;
+use TREngine\Engine\Fail\FailBase;
 use TREngine\Engine\Exec\ExecUtils;
 
 /**
