@@ -28,7 +28,7 @@ use TREngine\Engine\Exec\ExecEmail;
 class ModuleIndex extends ModuleModel
 {
 
-    public function display()
+    public function display(string $view): void
     {
         if (CoreSession::connected()) {
             $this->account();
@@ -37,7 +37,12 @@ class ModuleIndex extends ModuleModel
         }
     }
 
-    public function account()
+    public function getViewList(): array
+    {
+        return array();
+    }
+
+    private function account()
     {
         if (CoreSession::connected()) {
             // Ajout des formulaires dans les onglets
@@ -101,10 +106,10 @@ class ModuleIndex extends ModuleModel
             $coreSession = CoreSession::getInstance();
 
             $coreSql->update(
-                    CoreTable::USERS,
-                    $values,
-                    array(
-                        "user_id = '" . $coreSession->getSessionData()->getId() . "'")
+                CoreTable::USERS,
+                $values,
+                array(
+                    "user_id = '" . $coreSession->getSessionData()->getId() . "'")
             )->query();
 
             if ($coreSql->affectedRows() > 0) {
@@ -214,11 +219,11 @@ class ModuleIndex extends ModuleModel
                     $name = ExecString::secureText($name);
                     $selectedBase = CoreSql::getInstance()->getSelectedBase();
                     $selectedBase->select(
-                            CoreTable::USERS,
-                            array(
-                                "user_id"),
-                            array(
-                                "name = '" . $name . "'")
+                        CoreTable::USERS,
+                        array(
+                            "user_id"),
+                        array(
+                            "name = '" . $name . "'")
                     )->query();
 
                     if ($selectedBase->affectedRows() > 0) {
@@ -246,10 +251,10 @@ class ModuleIndex extends ModuleModel
                         $values['template'] = $template;
                         $selectedBase0 = CoreSql::getInstance()->getSelectedBase();
                         $selectedBase0->update(
-                                CoreTable::USERS,
-                                $values,
-                                array(
-                                    "user_id = '" . $sessionData->getId() . "'")
+                            CoreTable::USERS,
+                            $values,
+                            array(
+                                "user_id = '" . $sessionData->getId() . "'")
                         )->query();
 
                         if ($selectedBase0->affectedRows() > 0) {
@@ -432,11 +437,11 @@ class ModuleIndex extends ModuleModel
                 if (ExecEmail::isValidEmail($email)) {
                     $selectedBase1 = CoreSql::getInstance()->getSelectedBase();
                     $selectedBase1->select(
-                            CoreTable::USERS,
-                            array(
-                                "name"),
-                            array(
-                                "email = '" . $email . "'")
+                        CoreTable::USERS,
+                        array(
+                            "name"),
+                        array(
+                            "email = '" . $email . "'")
                     )->query();
 
                     if ($selectedBase1->affectedRows() == 1) {
@@ -493,11 +498,11 @@ class ModuleIndex extends ModuleModel
                 if (CoreSession::validLogin($login)) {
                     $selectedBase2 = CoreSql::getInstance()->getSelectedBase();
                     $selectedBase2->select(
-                            CoreTable::USERS,
-                            array(
-                                "name, email"),
-                            array(
-                                "name = '" . $login . "'")
+                        CoreTable::USERS,
+                        array(
+                            "name, email"),
+                        array(
+                            "name = '" . $login . "'")
                     )->query();
 
                     if ($selectedBase2->affectedRows() == 1) {
@@ -557,8 +562,8 @@ class ModuleIndex extends ModuleModel
         }
 
         $moreLink .= ($currentView !== "forgetlogin" ? "<li>" . $route->setView("forgetlogin")->getLink(LINK_TO_FORGET_LOGIN) . "</li>" : "")
-                . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
-                . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
+            . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
+            . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
 
         return $moreLink;
     }
