@@ -68,7 +68,7 @@ class LibMakeStyle
 
     /**
      * Détermine si le fichier template est valide.
-     * Par défaut, null car non vérifié.
+     * Par défaut, valeur nulle car non vérifié.
      *
      * @var bool
      */

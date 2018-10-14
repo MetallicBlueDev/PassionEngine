@@ -18,158 +18,158 @@ class CoreTranslate
      * @var array
      */
     private const LANGUAGE_LIST = array(
-        "aa" => "Afar",
-        "ab" => "Abkhazian",
-        "af" => "Afrikaans",
-        "am" => "Amharic",
-        "ar" => "Arabic",
-        "as" => "Assamese",
-        "ae" => "Avestan",
-        "ay" => "Aymara",
-        "az" => "Azerbaijani",
-        "ba" => "Bashkir",
-        "be" => "Belarusian",
-        "bn" => "Bengali",
-        "bh" => "Bihari",
-        "bi" => "Bislama",
-        "bo" => "Tibetan",
-        "bs" => "Bosnian",
-        "br" => "Breton",
-        "bg" => "Bulgarian",
-        "ca" => "Catalan",
-        "cs" => "Czech",
-        "ch" => "Chamorro",
-        "ce" => "Chechen",
-        "cn" => "ChineseSimp",
-        "cv" => "Chuvash",
-        "kw" => "Cornish",
-        "co" => "Corsican",
-        "cy" => "Welsh",
-        "da" => "Danish",
-        "de" => "German",
-        "dz" => "Dzongkha",
-        "el" => "Greek",
-        "en" => "English",
-        "eo" => "Esperanto",
-        "et" => "Estonian",
-        "eu" => "Basque",
-        "fo" => "Faroese",
-        "fa" => "Persian",
-        "fj" => "Fijian",
-        "fi" => "Finnish",
-        "fr" => "French",
-        "fy" => "Frisian",
-        "gd" => "Gaelic",
-        "ga" => "Irish",
-        "gl" => "Gallegan",
-        "gv" => "Manx",
-        "gn" => "Guarani",
-        "gu" => "Gujarati",
-        "ha" => "Hausa",
-        "he" => "Hebrew",
-        "hz" => "Herero",
-        "hi" => "Hindi",
-        "ho" => "Hiri Motu",
-        "hr" => "Croatian",
-        "hu" => "Hungarian",
-        "hy" => "Armenian",
-        "iu" => "Inuktitut",
-        "ie" => "Interlingue",
-        "id" => "Indonesian",
-        "ik" => "Inupiaq",
-        "is" => "Icelandic",
-        "it" => "Italian",
-        "jw" => "Javanese",
-        "ja" => "Japanese",
-        "kl" => "Kalaallisut",
-        "kn" => "Kannada",
-        "ks" => "Kashmiri",
-        "ka" => "Georgian",
-        "kk" => "Kazakh",
-        "km" => "Khmer",
-        "ki" => "Kikuyu",
-        "rw" => "Kinyarwanda",
-        "ky" => "Kirghiz",
-        "kv" => "Komi",
-        "ko" => "Korean",
-        "ku" => "Kurdish",
-        "lo" => "Lao",
-        "la" => "Latin",
-        "lv" => "Latvian",
-        "ln" => "Lingala",
-        "lt" => "Lithuanian",
-        "lb" => "Letzeburgesch",
-        "mh" => "Marshall",
-        "ml" => "Malayalam",
-        "mr" => "Marathi",
-        "mk" => "Macedonian",
-        "mg" => "Malagasy",
-        "mt" => "Maltese",
-        "mo" => "Moldavian",
-        "mn" => "Mongolian",
-        "mi" => "Maori",
-        "ms" => "Malay",
-        "my" => "Burmese",
-        "na" => "Nauru",
-        "nv" => "Navajo",
-        "ng" => "Ndonga",
-        "ne" => "Nepali",
-        "nl" => "Dutch",
-        "nb" => "Norwegian",
-        "ny" => "Chichewa",
-        "or" => "Oriya",
-        "om" => "Oromo",
-        "pa" => "Panjabi",
-        "pi" => "Pali",
-        "pl" => "Polish",
-        "pt" => "Portuguese",
-        "ps" => "Pushto",
-        "qu" => "Quechua",
-        "ro" => "Romanian",
-        "rn" => "Rundi",
-        "ru" => "Russian",
-        "sg" => "Sango",
-        "sa" => "Sanskrit",
-        "si" => "Sinhalese",
-        "sk" => "Slovak",
-        "sl" => "Slovenian",
-        "sm" => "Samoan",
-        "sn" => "Shona",
-        "sd" => "Sindhi",
-        "so" => "Somali",
-        "es" => "Spanish",
-        "sq" => "Albanian",
-        "sc" => "Sardinian",
-        "sr" => "Serbian",
-        "ss" => "Swati",
-        "su" => "Sundanese",
-        "sw" => "Swahili",
-        "sv" => "Swedish",
-        "ty" => "Tahitian",
-        "ta" => "Tamil",
-        "tt" => "Tatar",
-        "te" => "Telugu",
-        "tg" => "Tajik",
-        "tl" => "Tagalog",
-        "th" => "Thai",
-        "ti" => "Tigrinya",
-        "tn" => "Tswana",
-        "ts" => "Tsonga",
-        "tk" => "Turkmen",
-        "tr" => "Turkish",
-        "tw" => "ChineseTrad",
-        "ug" => "Uighur",
-        "uk" => "Ukrainian",
-        "ur" => "Urdu",
-        "uz" => "Uzbek",
-        "vi" => "Vietnamese",
-        "wo" => "Wolof",
-        "xh" => "Xhosa",
-        "yi" => "Yiddish",
-        "yo" => "Yoruba",
-        "za" => "Zhuang",
-        "zh" => "Chinese",
-        "zu" => "Zulu"
+        'aa' => 'Afar',
+        'ab' => 'Abkhazian',
+        'af' => 'Afrikaans',
+        'am' => 'Amharic',
+        'ar' => 'Arabic',
+        'as' => 'Assamese',
+        'ae' => 'Avestan',
+        'ay' => 'Aymara',
+        'az' => 'Azerbaijani',
+        'ba' => 'Bashkir',
+        'be' => 'Belarusian',
+        'bn' => 'Bengali',
+        'bh' => 'Bihari',
+        'bi' => 'Bislama',
+        'bo' => 'Tibetan',
+        'bs' => 'Bosnian',
+        'br' => 'Breton',
+        'bg' => 'Bulgarian',
+        'ca' => 'Catalan',
+        'cs' => 'Czech',
+        'ch' => 'Chamorro',
+        'ce' => 'Chechen',
+        'cn' => 'ChineseSimp',
+        'cv' => 'Chuvash',
+        'kw' => 'Cornish',
+        'co' => 'Corsican',
+        'cy' => 'Welsh',
+        'da' => 'Danish',
+        'de' => 'German',
+        'dz' => 'Dzongkha',
+        'el' => 'Greek',
+        'en' => 'English',
+        'eo' => 'Esperanto',
+        'et' => 'Estonian',
+        'eu' => 'Basque',
+        'fo' => 'Faroese',
+        'fa' => 'Persian',
+        'fj' => 'Fijian',
+        'fi' => 'Finnish',
+        'fr' => 'French',
+        'fy' => 'Frisian',
+        'gd' => 'Gaelic',
+        'ga' => 'Irish',
+        'gl' => 'Gallegan',
+        'gv' => 'Manx',
+        'gn' => 'Guarani',
+        'gu' => 'Gujarati',
+        'ha' => 'Hausa',
+        'he' => 'Hebrew',
+        'hz' => 'Herero',
+        'hi' => 'Hindi',
+        'ho' => 'Hiri Motu',
+        'hr' => 'Croatian',
+        'hu' => 'Hungarian',
+        'hy' => 'Armenian',
+        'iu' => 'Inuktitut',
+        'ie' => 'Interlingue',
+        'id' => 'Indonesian',
+        'ik' => 'Inupiaq',
+        'is' => 'Icelandic',
+        'it' => 'Italian',
+        'jw' => 'Javanese',
+        'ja' => 'Japanese',
+        'kl' => 'Kalaallisut',
+        'kn' => 'Kannada',
+        'ks' => 'Kashmiri',
+        'ka' => 'Georgian',
+        'kk' => 'Kazakh',
+        'km' => 'Khmer',
+        'ki' => 'Kikuyu',
+        'rw' => 'Kinyarwanda',
+        'ky' => 'Kirghiz',
+        'kv' => 'Komi',
+        'ko' => 'Korean',
+        'ku' => 'Kurdish',
+        'lo' => 'Lao',
+        'la' => 'Latin',
+        'lv' => 'Latvian',
+        'ln' => 'Lingala',
+        'lt' => 'Lithuanian',
+        'lb' => 'Letzeburgesch',
+        'mh' => 'Marshall',
+        'ml' => 'Malayalam',
+        'mr' => 'Marathi',
+        'mk' => 'Macedonian',
+        'mg' => 'Malagasy',
+        'mt' => 'Maltese',
+        'mo' => 'Moldavian',
+        'mn' => 'Mongolian',
+        'mi' => 'Maori',
+        'ms' => 'Malay',
+        'my' => 'Burmese',
+        'na' => 'Nauru',
+        'nv' => 'Navajo',
+        'ng' => 'Ndonga',
+        'ne' => 'Nepali',
+        'nl' => 'Dutch',
+        'nb' => 'Norwegian',
+        'ny' => 'Chichewa',
+        'or' => 'Oriya',
+        'om' => 'Oromo',
+        'pa' => 'Panjabi',
+        'pi' => 'Pali',
+        'pl' => 'Polish',
+        'pt' => 'Portuguese',
+        'ps' => 'Pushto',
+        'qu' => 'Quechua',
+        'ro' => 'Romanian',
+        'rn' => 'Rundi',
+        'ru' => 'Russian',
+        'sg' => 'Sango',
+        'sa' => 'Sanskrit',
+        'si' => 'Sinhalese',
+        'sk' => 'Slovak',
+        'sl' => 'Slovenian',
+        'sm' => 'Samoan',
+        'sn' => 'Shona',
+        'sd' => 'Sindhi',
+        'so' => 'Somali',
+        'es' => 'Spanish',
+        'sq' => 'Albanian',
+        'sc' => 'Sardinian',
+        'sr' => 'Serbian',
+        'ss' => 'Swati',
+        'su' => 'Sundanese',
+        'sw' => 'Swahili',
+        'sv' => 'Swedish',
+        'ty' => 'Tahitian',
+        'ta' => 'Tamil',
+        'tt' => 'Tatar',
+        'te' => 'Telugu',
+        'tg' => 'Tajik',
+        'tl' => 'Tagalog',
+        'th' => 'Thai',
+        'ti' => 'Tigrinya',
+        'tn' => 'Tswana',
+        'ts' => 'Tsonga',
+        'tk' => 'Turkmen',
+        'tr' => 'Turkish',
+        'tw' => 'ChineseTrad',
+        'ug' => 'Uighur',
+        'uk' => 'Ukrainian',
+        'ur' => 'Urdu',
+        'uz' => 'Uzbek',
+        'vi' => 'Vietnamese',
+        'wo' => 'Wolof',
+        'xh' => 'Xhosa',
+        'yi' => 'Yiddish',
+        'yo' => 'Yoruba',
+        'za' => 'Zhuang',
+        'zh' => 'Chinese',
+        'zu' => 'Zulu'
     );
 
     /**
@@ -286,7 +286,7 @@ class CoreTranslate
     public static function &getLangList(): array
     {
         return CoreCache::getInstance()->getFileList(CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . CoreLoader::TRANSLATE_FILE,
-                                                     "." . CoreLoader::TRANSLATE_EXTENSION);
+                                                     '.' . CoreLoader::TRANSLATE_EXTENSION);
     }
 
     /**
@@ -294,14 +294,14 @@ class CoreTranslate
      *
      * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      */
-    public static function removeCache(string $rootDirectoryPath = ""): void
+    public static function removeCache(string $rootDirectoryPath = ''): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
         $langCacheFileName = self::getLangCachePrefixFileName($rootDirectoryPath);
         $langues = self::getLangList();
 
         foreach ($langues as $langue) {
-            $coreCache->removeCache($langCacheFileName . $langue . "." . CoreLoader::TRANSLATE_EXTENSION . ".php");
+            $coreCache->removeCache($langCacheFileName . $langue . '.' . CoreLoader::TRANSLATE_EXTENSION . '.php');
         }
     }
 
@@ -315,7 +315,7 @@ class CoreTranslate
     public static function &getConstantDescription(string $constantName,
                                                    array $args = null): string
     {
-        $rslt = "";
+        $rslt = '';
 
         if (!empty($constantName) && defined($constantName)) {
             $rslt = constant($constantName);
@@ -377,7 +377,7 @@ class CoreTranslate
     {
         $translated = false;
 
-        if (CoreLoader::isCallable("CoreCache")) {
+        if (CoreLoader::isCallable('CoreCache')) {
             $coreCache = CoreCache::getInstance(CoreCacheSection::TRANSLATE);
             $langCacheFileName = $this->getLangCacheFileName($rootDirectoryPath);
 
@@ -401,7 +401,7 @@ class CoreTranslate
      */
     private function getLangCacheFileName(string $rootDirectoryPath): string
     {
-        return self::getLangCachePrefixFileName($rootDirectoryPath) . $this->getCurrentLanguage() . ".php";
+        return self::getLangCachePrefixFileName($rootDirectoryPath) . $this->getCurrentLanguage() . '.php';
     }
 
     /**
@@ -412,7 +412,7 @@ class CoreTranslate
      */
     private function getTranslation(string $rootDirectoryPath): string
     {
-        $content = "";
+        $content = '';
 
         // Initialisation de la variable de cache
         $this->cache = array();
@@ -427,17 +427,17 @@ class CoreTranslate
     }
 
     /**
-     * Retourne les données de tradution pour mise en cache.
+     * Retourne les données de traduction pour mise en cache.
      *
      * @return string
      */
     private function serializeTranslation(): string
     {
-        $content = "";
+        $content = '';
 
         foreach ($this->cache as $key => $value) {
             if (!empty($key) && !empty($value)) {
-                $content .= "define(\"" . $key . "\",\"" . self::entitiesTranslate($value) . "\");";
+                $content .= "define('" . $key . "','" . self::entitiesTranslate($value) . "');";
             }
         }
         return $content;
@@ -452,7 +452,7 @@ class CoreTranslate
     private function createTranslationCache(string $rootDirectoryPath,
                                             string $content): void
     {
-        if (CoreLoader::isCallable("CoreCache")) {
+        if (CoreLoader::isCallable('CoreCache')) {
             $langCacheFileName = $this->getLangCacheFileName($rootDirectoryPath);
             CoreCache::getInstance(CoreCacheSection::TRANSLATE)->writeCacheAsString($langCacheFileName,
                                                                                     $content);
@@ -466,7 +466,7 @@ class CoreTranslate
      */
     private function translateWithBuffer(string $content): void
     {
-        eval(" $content ");
+        eval($content);
     }
 
     /**
@@ -475,15 +475,15 @@ class CoreTranslate
      * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
      * @return string
      */
-    private static function getLangCachePrefixFileName(string $rootDirectoryPath = ""): string
+    private static function getLangCachePrefixFileName(string $rootDirectoryPath = ''): string
     {
         if (!empty($rootDirectoryPath) && substr($rootDirectoryPath,
                                                  -1) !== DIRECTORY_SEPARATOR) {
             $rootDirectoryPath .= DIRECTORY_SEPARATOR;
         }
         return str_replace(DIRECTORY_SEPARATOR,
-                           "_",
-                           $rootDirectoryPath) . CoreLoader::TRANSLATE_EXTENSION . "_";
+                           '_',
+                           $rootDirectoryPath) . CoreLoader::TRANSLATE_EXTENSION . '_';
     }
 
     /**
@@ -493,12 +493,12 @@ class CoreTranslate
      */
     private static function &getLanguageExtension(): string
     {
-        $validExtension = "";
+        $validExtension = '';
 
         // Recherche de la langue du client
         $acceptedLanguages = explode(',',
-                                     CoreRequest::getString("HTTP_ACCEPT_LANGUAGE",
-                                                            "",
+                                     CoreRequest::getString('HTTP_ACCEPT_LANGUAGE',
+                                                            '',
                                                             CoreRequestType::SERVER));
         $extension = strtolower(substr(trim($acceptedLanguages[0]),
                                             0,
@@ -520,9 +520,9 @@ class CoreTranslate
     private static function &getLanguageExtensionFromUrl(): string
     {
         // Recherche de l'URL
-        if (!defined("TR_ENGINE_URL")) {
-            $url = CoreRequest::getString("SERVER_NAME",
-                                          "",
+        if (!defined('TR_ENGINE_URL')) {
+            $url = CoreRequest::getString('SERVER_NAME',
+                                          '',
                                           CoreRequestType::SERVER);
         } else {
             $url = TR_ENGINE_URL;
@@ -540,7 +540,7 @@ class CoreTranslate
                    $matches[0],
                    $matches);
 
-        $validExtension = "";
+        $validExtension = '';
         $extension = $matches[0];
 
         if (self::canUseExtension($extension)) {
@@ -554,13 +554,13 @@ class CoreTranslate
      */
     private function configureLocale(): void
     {
-        if ($this->getCurrentLanguage() === "french" && TR_ENGINE_PHP_OS === "WIN") {
+        if ($this->getCurrentLanguage() === 'french' && TR_ENGINE_PHP_OS === 'WIN') {
             setlocale(LC_TIME,
-                      "french");
-        } else if ($this->getCurrentLanguage() === "french" && TR_ENGINE_PHP_OS === "BSD") {
+                      'french');
+        } else if ($this->getCurrentLanguage() === 'french' && TR_ENGINE_PHP_OS === 'BSD') {
             setlocale(LC_TIME,
-                      "fr_FR.ISO8859-1");
-        } else if ($this->getCurrentLanguage() === "french") {
+                      'fr_FR.ISO8859-1');
+        } else if ($this->getCurrentLanguage() === 'french') {
             setlocale(LC_TIME,
                       'fr_FR');
         } else {
@@ -569,7 +569,7 @@ class CoreTranslate
                            $this->getCurrentLanguage())) {
                 // Dernière tentative de formatage sous forme "fr_FR"
                 setlocale(LC_TIME,
-                          strtolower($this->getCurrentLanguageExtension()) . "_" . strtoupper($this->getCurrentLanguageExtension()));
+                          strtolower($this->getCurrentLanguageExtension()) . '_' . strtoupper($this->getCurrentLanguageExtension()));
             }
         }
     }
@@ -584,7 +584,7 @@ class CoreTranslate
     private static function &entitiesTranslate(string $text): string
     {
         $text = ExecString::entitiesUtf8($text);
-        //$text = ExecEntities::addSlashes($text);
+        $text = addSlashes($text);
         return $text;
     }
 
@@ -625,13 +625,13 @@ class CoreTranslate
      */
     private static function &getLanguageBySession(): string
     {
-        $language = "";
+        $language = '';
 
-        if (CoreLoader::isCallable("CoreSession")) {
+        if (CoreLoader::isCallable('CoreSession')) {
             $language = strtolower(trim(CoreSession::getInstance()->getSessionData()->getLangue()));
 
             if (!self::canUseLanguage($language)) {
-                $language = "";
+                $language = '';
             }
         }
         return $language;
@@ -648,7 +648,7 @@ class CoreTranslate
         $language = strtolower(trim(self::LANGUAGE_LIST[$extension]));
 
         if (!self::canUseLanguage($language)) {
-            $language = "";
+            $language = '';
         }
         return $language;
     }
@@ -660,16 +660,16 @@ class CoreTranslate
      */
     private static function &getLanguageByDefault(): string
     {
-        $language = "";
+        $language = '';
 
-        if (CoreLoader::isCallable("CoreMain")) {
+        if (CoreLoader::isCallable('CoreMain')) {
             // Utilisation de la langue par défaut du site
             $language = CoreMain::getInstance()->getConfigs()->getDefaultLanguage();
         }
 
         // Malheureusement la langue par défaut est aussi invalide
         if (empty($language) || !self::canUseLanguage($language)) {
-            $language = "english";
+            $language = 'english';
         }
         return $language;
     }
@@ -683,6 +683,6 @@ class CoreTranslate
     private static function canUseLanguage(string $language): bool
     {
         return !empty($language) && is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
-                                                                                                                                   $language) . ".php");
+                                                                                                                                   $language) . '.php');
     }
 }
