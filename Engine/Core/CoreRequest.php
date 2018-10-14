@@ -274,7 +274,8 @@ class CoreRequest
         if (!$useDefault) {
             throw new FailEngine("invalid request method",
                                  FailBase::getErrorCodeName(9),
-                                                            array($hash));
+                                                            array($hash),
+                                                            true);
         }
 
         $hash = self::getRequestMethod();

@@ -6,5 +6,10 @@
             <name>TREngine</name>
         </data>
         <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
+        <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">
+            <word>block</word>
+            <word>template</word>
+            <word>templates</word>
+        </spellchecker-wordlist>
     </configuration>
 </project>

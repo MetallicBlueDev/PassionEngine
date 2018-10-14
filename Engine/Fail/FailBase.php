@@ -34,21 +34,31 @@ abstract class FailBase extends Exception
     private $failArgs = array();
 
     /**
+     * Utiliser le tableau de valeur dans la traduction du message.
+     *
+     * @var bool
+     */
+    private $useArgsInTranslate = false;
+
+    /**
      * Création d'une nouvelle exception.
      *
-     * @param string $message
-     * @param int $failCode
-     * @param array $failArgs
+     * @param string $message Message brut.
+     * @param int $failCode Code d'erreur.
+     * @param array $failArgs Tableau de valeur.
+     * @param bool $useArgsInTranslate Détermine si il faut utiliser le tableau de valeur dans la traduction du message.
      */
     public function __construct(string $message,
                                 string $failCode = "",
-                                array $failArgs = array())
+                                array $failArgs = array(),
+                                bool $useArgsInTranslate = false)
     {
         parent::__construct($message,
                             self::getErrorCodeValue($failCode),
                                                     null);
         $this->failSourceName = self::makeFailSourceName();
         $this->failArgs = $failArgs;
+        $this->useArgsInTranslate = $useArgsInTranslate;
     }
 
     /**
@@ -69,6 +79,16 @@ abstract class FailBase extends Exception
     public function getFailArgs(): array
     {
         return $this->failArgs;
+    }
+
+    /**
+     * Détermine si il faut utiliser le tableau de valeur dans la traduction du message.
+     *
+     * @return bool
+     */
+    public function useArgsInTranslate(): bool
+    {
+        return $this->useArgsInTranslate;
     }
 
     /**

@@ -28,7 +28,9 @@ abstract class ModuleModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24)) . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24),
+                                                                                              array($this->getModuleData()->getName()),
+                                                                                              true));
     }
 
     /**
@@ -37,7 +39,9 @@ abstract class ModuleModel extends LibEntityModel
     public function setting(): void
     {
         throw new FailModule("Invalid setting method",
-                             FailBase::getErrorCodeName(24));
+                             FailBase::getErrorCodeName(24),
+                                                        array($this->getModuleData()->getName()),
+                                                        true);
     }
 
     /**

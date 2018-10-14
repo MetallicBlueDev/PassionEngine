@@ -80,7 +80,8 @@ class CoreAccess
         if ($rankLitteral === false) {
             throw new FailEngine("invalid rank number",
                                  FailBase::getErrorCodeName(1),
-                                                            array($rank));
+                                                            array($rank),
+                                                            true);
         }
 
         $rankLitteral = defined($rankLitteral) ? constant($rankLitteral) : $rankLitteral;

@@ -165,7 +165,8 @@ class LibBlock extends LibEntity
         if ($sideName === false) {
             throw new FailBlock("invalid block side number",
                                 FailBase::getErrorCodeName(16),
-                                                           array($side));
+                                                           array($side),
+                                                           true);
         }
         return $sideName;
     }
@@ -182,7 +183,8 @@ class LibBlock extends LibEntity
         if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
             throw new FailBlock("invalid block side name",
                                 FailBase::getErrorCodeName(16),
-                                                           array($sideName));
+                                                           array($sideName),
+                                                           true);
         }
 
         $side = CoreLayout::BLOCK_SIDE_LIST[$sideName];
@@ -333,7 +335,9 @@ class LibBlock extends LibEntity
      */
     protected function onEntityNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25),
+                                                                                              array($entityData->getFolderName()),
+                                                                                              true));
     }
 
     /**
@@ -343,7 +347,9 @@ class LibBlock extends LibEntity
      */
     protected function onViewMethodNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25),
+                                                                                              array($entityData->getFolderName()),
+                                                                                              true));
     }
 
     /**
@@ -353,7 +359,9 @@ class LibBlock extends LibEntity
      */
     protected function onViewParameterNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25),
+                                                                                              array($entityData->getFolderName()),
+                                                                                              true));
     }
 
     /**

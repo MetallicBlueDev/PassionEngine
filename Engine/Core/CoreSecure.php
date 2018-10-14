@@ -67,7 +67,7 @@ class CoreSecure
     private $locked = false;
 
     /**
-     * Stats et debug mode.
+     * Activation du mode debug.
      *
      * @var bool
      */
@@ -186,8 +186,12 @@ class CoreSecure
      */
     private function &getErrorMessageTitle(Throwable $ex): string
     {
-        // Message d'erreur depuis une constante
-        $errorMessageTitle = CoreTranslate::getConstantDescription(FailBase::getErrorCodeName($ex->getCode()));
+        if ($ex instanceof FailBase && $ex->useArgsInTranslate()) {
+            $errorMessageTitle = CoreTranslate::getConstantDescription(FailBase::getErrorCodeName($ex->getCode()),
+                                                                                                  $ex->getFailArgs());
+        } else {
+            $errorMessageTitle = CoreTranslate::getConstantDescription(FailBase::getErrorCodeName($ex->getCode()));
+        }
 
         if (empty($errorMessageTitle)) {
             $errorMessageTitle = "Stop loading";

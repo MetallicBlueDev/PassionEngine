@@ -95,14 +95,16 @@ abstract class CoreDriverSelector
         if (!$loaded) {
             $this->throwException("driver not found",
                                   FailBase::getErrorCodeName(2),
-                                                             array($rawConfigs['type']));
+                                                             array($rawConfigs['type']),
+                                                             true);
         }
 
         if (!CoreLoader::isCallable($fullClassName,
                                     "initialize")) {
             $this->throwException("unable to initialize driver",
                                   FailBase::getErrorCodeName(3),
-                                                             array($fullClassName));
+                                                             array($fullClassName),
+                                                             true);
         }
         return $fullClassName;
     }

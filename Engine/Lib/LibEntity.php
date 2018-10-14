@@ -57,7 +57,8 @@ abstract class LibEntity
         if ($entityId < 0) {
             $this->throwException("invalid entity folder name",
                                   FailBase::getErrorCodeName(15),
-                                                             array($entityFolderName));
+                                                             array($entityFolderName),
+                                                             true);
         }
         return $this->getEntityData($entityId);
     }
