@@ -2,6 +2,7 @@
 
 namespace TREngine\Engine\Core;
 
+use TREngine\Engine\Fail\FailEngine;
 use TREngine\Engine\Fail\FailBase;
 
 /**
@@ -66,7 +67,7 @@ class CoreAccess
     }
 
     /**
-     * Retourne le type d'acces avec la traduction.
+     * Retourne le type d'accès avec la traduction.
      *
      * @param int $rank
      * @return string accès traduit (si possible).

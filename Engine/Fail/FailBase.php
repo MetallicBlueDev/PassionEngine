@@ -40,7 +40,9 @@ abstract class FailBase extends Exception
      * @param int $failCode
      * @param array $failArgs
      */
-    public function __construct(string $message, string $failCode = "", array $failArgs = array())
+    public function __construct(string $message,
+                                string $failCode = "",
+                                array $failArgs = array())
     {
         parent::__construct($message,
                             self::getErrorCodeValue($failCode),
@@ -82,22 +84,6 @@ abstract class FailBase extends Exception
     }
 
     /**
-     * Retourne la description du code d'erreur (une constante).
-     *
-     * @param string $errorCodeName Nom du code d'erreur.
-     * @return string Description du code d'erreur.
-     */
-    public static function &getErrorCodeDescription(string $errorCodeName): string
-    {
-        $rslt = "";
-
-        if (!empty($errorCodeName) && defined($errorCodeName)) {
-            $rslt = constant($errorCodeName);
-        }
-        return $rslt;
-    }
-
-    /**
      * Retourne la valeur du code d'erreur.
      *
      * @param string $errorCodeName Nom du code d'erreur.
@@ -108,7 +94,9 @@ abstract class FailBase extends Exception
         $rslt = 0;
 
         if (!empty($errorCodeName)) {
-            $codeValue = str_replace(self::ERROR_CODE, "", $errorCodeName);
+            $codeValue = str_replace(self::ERROR_CODE,
+                                     "",
+                                     $errorCodeName);
 
             if (is_numeric($codeValue)) {
                 $rslt = (int) $codeValue;

@@ -13,7 +13,7 @@ class CoreTranslate
 {
 
     /**
-     * Liste des differentes langues.
+     * Liste des différentes langues.
      *
      * @var array
      */
@@ -187,7 +187,7 @@ class CoreTranslate
     private $languageInfos = array();
 
     /**
-     * Mémorise (temporairement) les données de tradution.
+     * Mémorise temporairement les données de traduction.
      *
      * @var array
      */
@@ -303,6 +303,29 @@ class CoreTranslate
         foreach ($langues as $langue) {
             $coreCache->removeCache($langCacheFileName . $langue . "." . CoreLoader::TRANSLATE_EXTENSION . ".php");
         }
+    }
+
+    /**
+     * Retourne la description du code d'erreur (une constante).
+     *
+     * @param string $constantName Nom de la constante.
+     * @param array $args Tableau de valeur.
+     * @return string Description du code d'erreur.
+     */
+    public static function &getConstantDescription(string $constantName,
+                                                   array $args = null): string
+    {
+        $rslt = "";
+
+        if (!empty($constantName) && defined($constantName)) {
+            $rslt = constant($constantName);
+        }
+
+        if (!empty($rslt) && $args !== null) {
+            $rslt = vsprintf($rslt,
+                             $args);
+        }
+        return $rslt;
     }
 
     /**
@@ -552,7 +575,7 @@ class CoreTranslate
     }
 
     /**
-     * Conversion des caratères spéciaux en entitiées UTF-8.
+     * Conversion des caractères spéciaux en entitiées UTF-8.
      * Ajout d'antislashes pour utilisation dans le cache.
      *
      * @param string

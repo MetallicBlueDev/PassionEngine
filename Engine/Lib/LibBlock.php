@@ -333,7 +333,7 @@ class LibBlock extends LibEntity
      */
     protected function onEntityNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
     }
 
     /**
@@ -343,7 +343,7 @@ class LibBlock extends LibEntity
      */
     protected function onViewMethodNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
     }
 
     /**
@@ -353,7 +353,7 @@ class LibBlock extends LibEntity
      */
     protected function onViewParameterNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(25)) . " (" . $entityData->getFolderName() . ")");
     }
 
     /**

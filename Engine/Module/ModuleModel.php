@@ -28,7 +28,7 @@ abstract class ModuleModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24)) . ((!empty($this->getModuleData()->getName())) ? " (" . $this->getModuleData()->getName() . ")" : ""));
     }
 
     /**
@@ -47,14 +47,14 @@ abstract class ModuleModel extends LibEntityModel
     {
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->insert(
-                CoreTable::MODULES,
-                array("name", "rank"),
-                array($this->getModuleData()->getName(), 0))->query();
+            CoreTable::MODULES,
+            array("name", "rank"),
+            array($this->getModuleData()->getName(), 0))->query();
         $moduleId = $coreSql->insertId();
         $coreSql->insert(
-                CoreTable::MODULES_CONFIGS,
-                array("module_id", "name", "value"),
-                array($moduleId, "key", "value"))->query();
+            CoreTable::MODULES_CONFIGS,
+            array("module_id", "name", "value"),
+            array($moduleId, "key", "value"))->query();
     }
 
     /**

@@ -215,7 +215,7 @@ class LibModule extends LibEntity
      */
     protected function onEntityNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
     }
 
     /**
@@ -225,7 +225,7 @@ class LibModule extends LibEntity
      */
     protected function onViewMethodNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
     }
 
     /**
@@ -235,7 +235,7 @@ class LibModule extends LibEntity
      */
     protected function onViewParameterNotFound(LibEntityData &$entityData): void
     {
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
+        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24)) . " (" . $entityData->getName() . ")");
     }
 
     /**

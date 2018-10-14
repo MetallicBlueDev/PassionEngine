@@ -228,7 +228,7 @@ class CoreMain
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
             $libMakeStyle->assignString("closeText",
-                                        FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(8)));
+                                        CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(8)));
             $libMakeStyle->assignString("closeReason",
                                         $this->getConfigs()->getDefaultSiteCloseReason());
             $libMakeStyle->display("close");

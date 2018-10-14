@@ -187,7 +187,7 @@ class CoreSecure
     private function &getErrorMessageTitle(Throwable $ex): string
     {
         // Message d'erreur depuis une constante
-        $errorMessageTitle = FailBase::getErrorCodeDescription(FailBase::getErrorCodeName($ex->getCode()));
+        $errorMessageTitle = CoreTranslate::getConstantDescription(FailBase::getErrorCodeName($ex->getCode()));
 
         if (empty($errorMessageTitle)) {
             $errorMessageTitle = "Stop loading";
@@ -273,7 +273,7 @@ class CoreSecure
                     } else if ($key === "args" && !empty($value) && is_array($value)) {
                         $errorLine .= " with [<span class=\"text_small\">" . print_r($value,
                                                                                      true)
-                                . "</span>]";
+                            . "</span>]";
                     } else if ($key === "line" || $key == "class") {
                         $errorLine .= " in <span class=\"text_bold\">" . $key . "</span> " . $value;
                     }
