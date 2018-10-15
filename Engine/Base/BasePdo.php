@@ -63,7 +63,7 @@ class BasePdo extends BaseModel
         }
 
         if (!$rslt) {
-            CoreLogger::addException("PDO driver not found: " . $driverName);
+            CoreLogger::addException('PDO driver not found: ' . $driverName);
         }
         return $rslt;
     }
@@ -85,7 +85,7 @@ class BasePdo extends BaseModel
             $this->getPdo()->setAttribute(PDO::ATTR_STRINGIFY_FETCHES,
                                           false);
         } catch (PDOException $ex) {
-            CoreLogger::addException("PDO exception: " . $ex->getMessage());
+            CoreLogger::addException('PDO exception: ' . $ex->getMessage());
             $this->unsetConnectionObject();
         }
     }
@@ -100,7 +100,7 @@ class BasePdo extends BaseModel
         $rslt = false;
 
         if ($this->netConnected()) {
-            $rslt = ($this->getPdo()->exec("USE " . $this->getDatabaseName()) !== false);
+            $rslt = ($this->getPdo()->exec('USE ' . $this->getDatabaseName()) !== false);
         }
         return $rslt;
     }
@@ -204,7 +204,7 @@ class BasePdo extends BaseModel
     public function &getLastError(): array
     {
         $error = parent::getLastError();
-        $error[] = "<span class=\"text_bold\">Pdo response</span> : " . $this->getPdoErrorMessage();
+        $error[] = '<span class="text_bold">Pdo response</span> : ' . $this->getPdoErrorMessage();
         return $error;
     }
 
@@ -228,7 +228,7 @@ class BasePdo extends BaseModel
         $this->lastQueryResult = $this->getPdo()->query($this->getSql());
 
         if ($this->lastQueryResult === false) {
-            CoreLogger::addException("PDO query: " . $this->getPdoErrorMessage());
+            CoreLogger::addException('PDO query: ' . $this->getPdoErrorMessage());
         }
     }
 
@@ -262,22 +262,20 @@ class BasePdo extends BaseModel
     protected function converEscapeString(string $str): string
     {
         // Impossible d'utiliser $this->getPdo()->quote($str) car incompatible avec la méthode interne addQuote()
-        return str_replace(array(
-            '\\',
+        return str_replace(array('\\',
             "\0",
             "\n",
             "\r",
             "'",
             '"',
             "\x1a"),
-                           array(
-                '\\\\',
-                '\\0',
-                '\\n',
-                '\\r',
-                "\\'",
-                '\\"',
-                '\\Z'),
+                           array('\\\\',
+            '\\0',
+            '\\n',
+            '\\r',
+            "\\'",
+            '\\"',
+            '\\Z'),
                            $str);
     }
 
@@ -314,7 +312,7 @@ class BasePdo extends BaseModel
     {
         $dataSourceName = $this->getTransactionHost();
         $pos = strpos($dataSourceName,
-                      ":");
+                      ':');
 
         if ($pos !== false) {
             $this->driverName = substr($dataSourceName,
@@ -323,8 +321,8 @@ class BasePdo extends BaseModel
         }
 
         if ($this->driverName === null) {
-            CoreLogger::addException("Invalid PDO driver syntax");
-            $this->driverName = "";
+            CoreLogger::addException('Invalid PDO driver syntax');
+            $this->driverName = '';
         }
     }
 
@@ -333,12 +331,12 @@ class BasePdo extends BaseModel
      */
     private function checkPlatformSpecific(): void
     {
-        $fullClassName = "TREngine\Engine\Base\PdoSpecific\\" . ucfirst($this->getDriverName()) . "Specific";
+        $fullClassName = 'TREngine\Engine\Base\PdoSpecific\\' . ucfirst($this->getDriverName()) . 'Specific';
 
         if (CoreLoader::classLoader($fullClassName)) {
             $this->platformSpecific = new $fullClassName();
         } else {
-            CoreLogger::addException("PDO platform specific implementation not found: " . $this->getDriverName());
+            CoreLogger::addException('PDO platform specific implementation not found: ' . $this->getDriverName());
             $this->platformSpecific = new PdoPlatformSpecific();
         }
     }
@@ -381,7 +379,7 @@ class BasePdo extends BaseModel
     private function &getPdoErrorMessage(): string
     {
         $error = $this->getPdo()->errorInfo();
-        $message = implode(" // ",
+        $message = implode(' // ',
                            $error);
         return $message;
     }

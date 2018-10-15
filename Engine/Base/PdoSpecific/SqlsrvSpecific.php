@@ -12,7 +12,7 @@ class SqlsrvSpecific extends PgsqlSpecific
 
     public function &getTablesListQuery(string $databasePrefix): string
     {
-        $sql = "SELECT name FROM sysobjects WHERE type = 'U' AND name LIKE '" . $databasePrefix . "%' ORDER BY name";
+        $sql = 'SELECT name FROM sysobjects WHERE type = \'U\' AND name LIKE \'' . $databasePrefix . '%\' ORDER BY name';
         return $sql;
     }
 }

@@ -23,28 +23,28 @@ abstract class BaseModel extends CoreTransaction
      *
      * @var mixed
      */
-    protected $lastQueryResult = "";
+    protected $lastQueryResult = '';
 
     /**
-     * Quote pour les colonnes.
+     * Caractère entourant les colonnes.
      *
      * @var string
      */
-    protected $quoteKey = "`";
+    protected $quoteKey = '`';
 
     /**
-     * Quote pour les valeurs.
+     * Caractère entourant les valeurs.
      *
      * @var string
      */
-    protected $quoteValue = "'";
+    protected $quoteValue = '\'';
 
     /**
      * Dernière requête SQL.
      *
      * @var string
      */
-    private $sql = "";
+    private $sql = '';
 
     /**
      * Mémoire tampon: tableau contenant des objets standards.
@@ -67,7 +67,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &getDatabaseName(): string
     {
-        return $this->getString("name");
+        return $this->getString('name');
     }
 
     /**
@@ -77,7 +77,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &getDatabasePrefix(): string
     {
-        return $this->getString("prefix");
+        return $this->getString('prefix');
     }
 
     /**
@@ -87,18 +87,18 @@ abstract class BaseModel extends CoreTransaction
      */
     public function setAutoFreeResult(bool $enabled)
     {
-        $this->setDataValue("autofreeresult",
+        $this->setDataValue('autofreeresult',
                             $enabled);
     }
 
     /**
-     * Etat du nettoyage automatique de la mémoire.
+     * état du nettoyage automatique de la mémoire.
      *
      * @return bool
      */
     public function autoFreeResult(): bool
     {
-        return $this->getBool("autofreeresult");
+        return $this->getBool('autofreeresult');
     }
 
     /**
@@ -137,12 +137,12 @@ abstract class BaseModel extends CoreTransaction
                             array $values,
                             array $where = array(),
                             array $orderBy = array(),
-                            string $limit = ""): BaseModel
+                            string $limit = ''): BaseModel
     {
-        $this->setSqlCommand("SELECT");
-        $this->setSqlAfterCommand(implode(", ",
+        $this->setSqlCommand('SELECT');
+        $this->setSqlAfterCommand(implode(', ',
                                           $this->converFieldWithTableName($values)));
-        $this->setSqlFrom("FROM " . $this->getTableName($table));
+        $this->setSqlFrom('FROM ' . $this->getTableName($table));
 
         if (!empty($where)) {
             $this->where($where);
@@ -151,7 +151,7 @@ abstract class BaseModel extends CoreTransaction
             $this->orderBy($orderBy);
         }
         if (!empty($limit)) {
-            $this->setSqlLimit("LIMIT " . $limit);
+            $this->setSqlLimit('LIMIT ' . $limit);
         }
         $this->setQueryBuilded(false);
         return $this;
@@ -169,13 +169,13 @@ abstract class BaseModel extends CoreTransaction
                             array $keys,
                             array $values): BaseModel
     {
-        $this->setSqlCommand("INSERT INTO");
+        $this->setSqlCommand('INSERT INTO');
         $this->setSqlFrom($this->getTableName($table));
-        $this->setSqlAfterFrom("(" . implode(", ",
+        $this->setSqlAfterFrom('(' . implode(', ',
                                              $this->converKey($keys))
-                . ") VALUES (" . implode(", ",
-                                         $this->converValue($values))
-                . ")");
+            . ') VALUES (' . implode(', ',
+                                     $this->converValue($values))
+            . ')');
         $this->setQueryBuilded(false);
         return $this;
     }
@@ -184,7 +184,7 @@ abstract class BaseModel extends CoreTransaction
      * Mise à jour des informations d'une table.
      *
      * @param string $table Nom de la table
-     * @param array $values Sous la forme array("ColumnName" => "Value")
+     * @param array $values Sous la forme array('ColumnName' => 'Value')
      * @param array $where
      * @param array $orderBy
      * @param string $limit
@@ -194,19 +194,19 @@ abstract class BaseModel extends CoreTransaction
                             array $values,
                             array $where,
                             array $orderBy = array(),
-                            string $limit = ""): BaseModel
+                            string $limit = ''): BaseModel
     {
-        $this->setSqlCommand("UPDATE");
+        $this->setSqlCommand('UPDATE');
         $this->setSqlFrom($this->getTableName($table));
 
         // Affectation des clès à leurs valeurs
         $valuesString = array();
         foreach ($values as $key => $value) {
-            $valuesString[] = $this->converKey($key) . " = " . $this->converValue($value);
+            $valuesString[] = $this->converKey($key) . ' = ' . $this->converValue($value);
         }
-        $this->setSqlAfterFrom("SET "
-                . implode(", ",
-                          $valuesString));
+        $this->setSqlAfterFrom('SET '
+            . implode(', ',
+                      $valuesString));
         if (!empty($where)) {
             $this->where($where);
         }
@@ -214,7 +214,7 @@ abstract class BaseModel extends CoreTransaction
             $this->orderBy($orderBy);
         }
         if (!empty($limit)) {
-            $this->setSqlLimit("LIMIT " . $limit);
+            $this->setSqlLimit('LIMIT ' . $limit);
         }
         $this->setQueryBuilded(false);
         return $this;
@@ -230,15 +230,15 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &delete(string $table,
                             array $where = array(),
-                            string $limit = ""): BaseModel
+                            string $limit = ''): BaseModel
     {
-        $this->setSqlCommand("DELETE");
-        $this->setSqlFrom("FROM " . $this->getTableName($table));
+        $this->setSqlCommand('DELETE');
+        $this->setSqlFrom('FROM ' . $this->getTableName($table));
         if (!empty($where)) {
             $this->where($where);
         }
         if (!empty($limit)) {
-            $this->setSqlLimit("LIMIT " . $limit);
+            $this->setSqlLimit('LIMIT ' . $limit);
         }
         $this->setQueryBuilded(false);
         return $this;
@@ -252,7 +252,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &where(array $where): BaseModel
     {
-        $this->setSqlWhere(implode(" ",
+        $this->setSqlWhere(implode(' ',
                                    $this->converFieldWithTableName($where)));
         return $this;
     }
@@ -265,7 +265,7 @@ abstract class BaseModel extends CoreTransaction
      */
     public function &orderBy(array $orderBy): BaseModel
     {
-        $this->setSqlOrderBy(implode(", ",
+        $this->setSqlOrderBy(implode(', ',
                                      $this->converFieldWithTableName($orderBy)
         ));
         return $this;
@@ -296,14 +296,14 @@ abstract class BaseModel extends CoreTransaction
                                string $secondTable,
                                string $joinTableField,
                                string $condition,
-                               string $secondTableField = ""): BaseModel
+                               string $secondTableField = ''): BaseModel
     {
         return $this->join($joinTable,
                            $secondTable,
                            $joinTableField,
                            $condition,
                            $secondTableField,
-                           "INNER");
+                           'INNER');
     }
 
     /**
@@ -320,14 +320,14 @@ abstract class BaseModel extends CoreTransaction
                               string $secondTable,
                               string $joinTableField,
                               string $condition,
-                              string $secondTableField = ""): BaseModel
+                              string $secondTableField = ''): BaseModel
     {
         return $this->join($joinTable,
                            $secondTable,
                            $joinTableField,
                            $condition,
                            $secondTableField,
-                           "LEFT");
+                           'LEFT');
     }
 
     /**
@@ -344,14 +344,14 @@ abstract class BaseModel extends CoreTransaction
                                string $secondTable,
                                string $joinTableField,
                                string $condition,
-                               string $secondTableField = ""): BaseModel
+                               string $secondTableField = ''): BaseModel
     {
         return $this->join($joinTable,
                            $secondTable,
                            $joinTableField,
                            $condition,
                            $secondTableField,
-                           "RIGHT");
+                           'RIGHT');
     }
 
     /**
@@ -368,14 +368,14 @@ abstract class BaseModel extends CoreTransaction
                                string $secondTable,
                                string $joinTableField,
                                string $condition,
-                               string $secondTableField = ""): BaseModel
+                               string $secondTableField = ''): BaseModel
     {
         return $this->join($joinTable,
                            $secondTable,
                            $joinTableField,
                            $condition,
                            $secondTableField,
-                           "CROSS");
+                           'CROSS');
     }
 
     /**
@@ -392,7 +392,7 @@ abstract class BaseModel extends CoreTransaction
      * @param string $sql
      * @throws FailSql
      */
-    public function query(string $sql = ""): void
+    public function query(string $sql = ''): void
     {
         $this->beginExecuteQuery($sql);
         $this->executeQuery();
@@ -422,7 +422,7 @@ abstract class BaseModel extends CoreTransaction
      *
      * @param string $name
      */
-    public function freeBuffer(string $name = ""): void
+    public function freeBuffer(string $name = ''): void
     {
         if (empty($name)) {
             unset($this->buffer);
@@ -438,7 +438,7 @@ abstract class BaseModel extends CoreTransaction
      * @param string $columnName clé à utiliser
      */
     public function addArrayBuffer(string $name,
-                                   string $columnName = ""): void
+                                   string $columnName = ''): void
     {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchArray() as $row) {
@@ -457,13 +457,13 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Ajoute le dernier résultat dans la mémoire tampon typé en object.
+     * Ajoute le dernier résultat dans la mémoire tampon typé en objet.
      *
      * @param string $name
      * @param string $key clé à utiliser
      */
     public function addObjectBuffer(string $name,
-                                    string $key = ""): void
+                                    string $key = ''): void
     {
         if (!isset($this->buffer[$name])) {
             foreach ($this->fetchObject() as $row) {
@@ -515,7 +515,7 @@ abstract class BaseModel extends CoreTransaction
     public function &getLastError(): array
     {
         $rslt = array(
-            "<span class=\"text_bold\">Last Sql query</span> : " . $this->sql
+            '<span class="text_bold">Last Sql query</span> : ' . $this->sql
         );
         return $rslt;
     }
@@ -545,7 +545,7 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Remise à zéro du tableau de clés déjà quoté.
+     * Remise à zéro du tableau de clés déjà protégées.
      */
     public function resetQuoted(): void
     {
@@ -568,7 +568,7 @@ abstract class BaseModel extends CoreTransaction
     {
         $this->showColumns($this->getTableName(CoreTable::CONFIG));
         $info = $this->fetchArray();
-        return isset($info['Collation']) ? $info['Collation'] : "?";
+        return isset($info['Collation']) ? $info['Collation'] : '?';
     }
 
     /**
@@ -580,7 +580,7 @@ abstract class BaseModel extends CoreTransaction
 
         if (empty($sql) || strpos($sql,
                                   $this->getDatabasePrefix()) === false) {
-            $this->throwException("invalid tables list sql command.");
+            $this->throwException('invalid tables list sql command.');
         }
 
         $this->query($sql);
@@ -595,7 +595,7 @@ abstract class BaseModel extends CoreTransaction
 
         if (empty($sql) || strpos($sql,
                                   $fullTableName) === false) {
-            $this->throwException("invalid columns list sql command.");
+            $this->throwException('invalid columns list sql command.');
         }
 
         $this->query($sql);
@@ -617,7 +617,7 @@ abstract class BaseModel extends CoreTransaction
      * @throws FailSql
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailSql($message,
@@ -648,10 +648,10 @@ abstract class BaseModel extends CoreTransaction
         }
         $joinTableName = $this->getTableName($joinTable);
         $secondTableName = $this->getTableName($secondTable);
-        $this->setSqlAfterFrom($type . " JOIN " . $joinTableName
-                . " ON " . $secondTableName . "." . $joinTableField
-                . " " . $condition . " "
-                . $joinTableName . "." . $secondTableField);
+        $this->setSqlAfterFrom($type . ' JOIN ' . $joinTableName
+            . ' ON ' . $secondTableName . '.' . $joinTableField
+            . ' ' . $condition . ' '
+            . $joinTableName . '.' . $secondTableField);
         return $this;
     }
 
@@ -683,7 +683,7 @@ abstract class BaseModel extends CoreTransaction
         // Ne pas quoter les champs avec la notation avec les point
         if (($isValue && !ExecUtils::inArrayStrictCaseSensitive($s,
                                                                 $this->quoted)) || (!$isValue && strpos($s,
-                                                                                                        ".") === false && !isset($this->quoted[$s]))) {
+                                                                                                        '.') === false && !isset($this->quoted[$s]))) {
             if ($isValue) {
                 $q = $this->quoteValue;
             } else {
@@ -710,7 +710,7 @@ abstract class BaseModel extends CoreTransaction
         if (is_bool($value)) {
             $value = ($value === true) ? 1 : 0;
         } else if (is_null($value)) {
-            $value = "NULL";
+            $value = 'NULL';
         } else if (is_string($value)) {
             $value = $this->converEscapeString($value);
         }
@@ -737,8 +737,8 @@ abstract class BaseModel extends CoreTransaction
             $key = $this->addQuote($key);
         }
         // Converti les multiples espaces (tabulation, espace en trop) en espace simple
-        $key = preg_replace("/[\s]+/",
-                            " ",
+        $key = preg_replace('/[\s]+/',
+                            ' ',
                             $key);
         return $key;
     }
@@ -755,13 +755,13 @@ abstract class BaseModel extends CoreTransaction
     }
 
     /**
-     * Retourne le nom de la table avec le préfixage.
+     * Retourne le nom de la table avec son préfixe.
      *
      * @param string $table
      */
     protected function getTableName(string $table): string
     {
-        return $this->getDatabasePrefix() . "_" . $table;
+        return $this->getDatabasePrefix() . '_' . $table;
     }
 
     /**
@@ -774,13 +774,13 @@ abstract class BaseModel extends CoreTransaction
     {
         foreach ($values as &$value) {
             $pos = strpos($value,
-                          ".");
+                          '.');
             if ($pos !== false) {
                 $value = $this->getTableName(substr($value,
                                                     0,
                                                     $pos))
-                        . substr($value,
-                                 $pos);
+                    . substr($value,
+                             $pos);
             }
         }
         return $values;
@@ -815,7 +815,7 @@ abstract class BaseModel extends CoreTransaction
 
         // Création d'une exception si une réponse est négative (false)
         if ($this->lastQueryResult === false) {
-            $this->throwException("bad query",
+            $this->throwException('bad query',
                                   FailBase::getErrorCodeName(19),
                                                              array($this->sql));
         }
@@ -840,12 +840,12 @@ abstract class BaseModel extends CoreTransaction
         $this->checkQueryCondition();
 
         $this->sql = $this->getSqlCommand()
-                . " " . $this->getSqlAfterCommand()
-                . " " . $this->getSqlFrom()
-                . " " . $this->getSqlAfterFrom()
-                . " " . $this->getSqlWhere()
-                . " " . $this->getSqlOrderBy()
-                . " " . $this->getSqlLimit();
+            . ' ' . $this->getSqlAfterCommand()
+            . ' ' . $this->getSqlFrom()
+            . ' ' . $this->getSqlAfterFrom()
+            . ' ' . $this->getSqlWhere()
+            . ' ' . $this->getSqlOrderBy()
+            . ' ' . $this->getSqlLimit();
     }
 
     /**
@@ -864,7 +864,7 @@ abstract class BaseModel extends CoreTransaction
     private function checkDistinctCondition(): void
     {
         if ($this->hasSqlDistinct()) {
-            $this->setSqlCommand($this->getSqlCommand() . " DISTINCT");
+            $this->setSqlCommand($this->getSqlCommand() . ' DISTINCT');
         }
     }
 
@@ -877,8 +877,8 @@ abstract class BaseModel extends CoreTransaction
 
         if (!empty($sqlWhere)) {
             if (strpos($sqlWhere,
-                       "WHERE") === false) {
-                $this->setSqlWhere("WHERE " . $sqlWhere);
+                       'WHERE') === false) {
+                $this->setSqlWhere('WHERE ' . $sqlWhere);
             }
         }
     }
@@ -892,8 +892,8 @@ abstract class BaseModel extends CoreTransaction
 
         if (!empty($sqlOrderBy)) {
             if (strpos($sqlOrderBy,
-                       "ORDER BY") === false) {
-                $this->setSqlOrderBy("ORDER BY " . $sqlOrderBy);
+                       'ORDER BY') === false) {
+                $this->setSqlOrderBy('ORDER BY ' . $sqlOrderBy);
             }
         }
     }
@@ -905,7 +905,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlCommand(string $command): void
     {
-        $this->setDataValue("sqlcommand",
+        $this->setDataValue('sqlcommand',
                             $command);
     }
 
@@ -916,7 +916,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlCommand(): string
     {
-        return $this->getString("sqlcommand");
+        return $this->getString('sqlcommand');
     }
 
     /**
@@ -926,7 +926,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlAfterCommand(string $command): void
     {
-        $this->setDataValue("sqlaftercommand",
+        $this->setDataValue('sqlaftercommand',
                             $command);
     }
 
@@ -937,7 +937,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlAfterCommand(): string
     {
-        return $this->getString("sqlaftercommand");
+        return $this->getString('sqlaftercommand');
     }
 
     /**
@@ -947,7 +947,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlFrom(string $from): void
     {
-        $this->setDataValue("sqlfrom",
+        $this->setDataValue('sqlfrom',
                             $from);
     }
 
@@ -958,7 +958,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlFrom(): string
     {
-        return $this->getString("sqlfrom");
+        return $this->getString('sqlfrom');
     }
 
     /**
@@ -968,7 +968,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlAfterFrom(string $command): void
     {
-        $this->setDataValue("sqlafterfrom",
+        $this->setDataValue('sqlafterfrom',
                             $command);
     }
 
@@ -979,7 +979,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlAfterFrom(): string
     {
-        return $this->getString("sqlafterfrom");
+        return $this->getString('sqlafterfrom');
     }
 
     /**
@@ -989,7 +989,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlWhere(string $where): void
     {
-        $this->setDataValue("sqlwhere",
+        $this->setDataValue('sqlwhere',
                             $where);
     }
 
@@ -1000,7 +1000,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlWhere(): string
     {
-        return $this->getString("sqlwhere");
+        return $this->getString('sqlwhere');
     }
 
     /**
@@ -1010,7 +1010,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlLimit(string $limit): void
     {
-        $this->setDataValue("sqllimit",
+        $this->setDataValue('sqllimit',
                             $limit);
     }
 
@@ -1021,7 +1021,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlLimit(): string
     {
-        return $this->getString("sqllimit");
+        return $this->getString('sqllimit');
     }
 
     /**
@@ -1031,7 +1031,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlOrderBy(string $orderBy): void
     {
-        $this->setDataValue("sqlorderby",
+        $this->setDataValue('sqlorderby',
                             $orderBy);
     }
 
@@ -1042,7 +1042,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &getSqlOrderBy(): string
     {
-        return $this->getString("sqlorderby");
+        return $this->getString('sqlorderby');
     }
 
     /**
@@ -1052,7 +1052,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setSqlDistinct(bool $enabled): void
     {
-        $this->setDataValue("sqldistinct",
+        $this->setDataValue('sqldistinct',
                             $enabled);
     }
 
@@ -1063,7 +1063,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &hasSqlDistinct(): bool
     {
-        return $this->getBool("sqldistinct");
+        return $this->getBool('sqldistinct');
     }
 
     /**
@@ -1073,7 +1073,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function setQueryBuilded(bool $builded): void
     {
-        $this->setDataValue("querybuilded",
+        $this->setDataValue('querybuilded',
                             $builded);
     }
 
@@ -1084,7 +1084,7 @@ abstract class BaseModel extends CoreTransaction
      */
     private function &queryBuilded(): bool
     {
-        return $this->getBool("querybuilded");
+        return $this->getBool('querybuilded');
     }
 
     /**
@@ -1092,6 +1092,6 @@ abstract class BaseModel extends CoreTransaction
      */
     private function resetSql(): void
     {
-        $this->unsetDataValues("sql");
+        $this->unsetDataValues('sql');
     }
 }

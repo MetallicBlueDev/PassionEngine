@@ -26,10 +26,10 @@ class BaseMysqli extends BaseModel
      */
     protected function canUse(): bool
     {
-        $rslt = class_exists("mysqli");
+        $rslt = class_exists('mysqli');
 
         if (!$rslt) {
-            CoreLogger::addException("MySqli driver not found");
+            CoreLogger::addException('MySqli driver not found');
         }
         return $rslt;
     }
@@ -52,7 +52,7 @@ class BaseMysqli extends BaseModel
             $this->getMysqli()->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,
                                         true);
         } catch (mysqli_sql_exception $ex) {
-            CoreLogger::addException("MySqli connect_error: " . $ex->getMessage());
+            CoreLogger::addException('MySqli connect_error: ' . $ex->getMessage());
             $this->unsetConnectionObject();
         }
     }
@@ -118,7 +118,7 @@ class BaseMysqli extends BaseModel
             $nbRows = $rslt->num_rows;
 
             if (empty($className)) {
-                $className = "stdClass";
+                $className = 'stdClass';
             }
             for ($i = 0; $i < $nbRows; $i++) {
                 $values[] = $rslt->fetch_object($className);
@@ -183,7 +183,7 @@ class BaseMysqli extends BaseModel
     public function &getLastError(): array
     {
         $error = parent::getLastError();
-        $error[] = "<span class=\"text_bold\">MySqli response</span> : " . $this->getMysqli()->error;
+        $error[] = '<span class="text_bold">MySqli response</span> : ' . $this->getMysqli()->error;
         return $error;
     }
 
@@ -207,7 +207,7 @@ class BaseMysqli extends BaseModel
         $this->lastQueryResult = $this->getMysqli()->query($this->getSql());
 
         if ($this->lastQueryResult === false) {
-            CoreLogger::addException("MySqli query: " . $this->getMysqli()->error);
+            CoreLogger::addException('MySqli query: ' . $this->getMysqli()->error);
         }
     }
 
@@ -218,7 +218,7 @@ class BaseMysqli extends BaseModel
      */
     protected function &getTablesListQuery(): string
     {
-        $sql = "SHOW TABLES LIKE '" . $this->getDatabasePrefix() . "%'";
+        $sql = 'SHOW TABLES LIKE \'' . $this->getDatabasePrefix() . '%\'';
         return $sql;
     }
 
@@ -230,7 +230,7 @@ class BaseMysqli extends BaseModel
      */
     protected function &getColumnsListQuery(string $fullTableName): string
     {
-        $sql = "SHOW FULL COLUMNS FROM '" . $fullTableName . "'";
+        $sql = 'SHOW FULL COLUMNS FROM \'' . $fullTableName . '\'';
         return $sql;
     }
 
