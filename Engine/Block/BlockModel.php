@@ -22,7 +22,7 @@ abstract class BlockModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . ((!empty($this->getBlockData()->getTitle())) ? " (" . $this->getBlockData()->getTitle() . ")" : ""));
+        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . ((!empty($this->getBlockData()->getTitle())) ? ' (' . $this->getBlockData()->getTitle() . ')' : ''));
     }
 
     /**
@@ -30,7 +30,7 @@ abstract class BlockModel extends LibEntityModel
      */
     public function setting(): void
     {
-        throw new FailBlock("Invalid setting method");
+        throw new FailBlock('Invalid setting method');
     }
 
     /**
@@ -38,7 +38,7 @@ abstract class BlockModel extends LibEntityModel
      */
     public function install(): void
     {
-        throw new FailBlock("Invalid install method");
+        throw new FailBlock('Invalid install method');
     }
 
     /**
@@ -46,7 +46,7 @@ abstract class BlockModel extends LibEntityModel
      */
     public function uninstall(): void
     {
-        throw new FailBlock("Invalid uninstall method");
+        throw new FailBlock('Invalid uninstall method');
     }
 
     /**

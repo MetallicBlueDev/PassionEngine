@@ -32,7 +32,7 @@ abstract class CacheModel extends CoreTransaction
      * @throws FailCache
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailCache($message,
@@ -51,23 +51,23 @@ abstract class CacheModel extends CoreTransaction
         if (!empty($transaction)) {
             $matches = array();
 
-            if (preg_match("/(ftp:\/\/)(.+)/",
+            if (preg_match('/(ftp:\/\/)(.+)/',
                            $transaction['host'],
                            $matches)) {
                 $transaction['host'] = $matches[2];
             }
 
-            if (preg_match("/(.+)(\/)/",
+            if (preg_match('/(.+)(\/)/',
                            $transaction['host'],
                            $matches)) {
                 $transaction['host'] = $matches[1];
             }
 
             // Réglage de configuration
-            $transaction['host'] = (empty($transaction['host'])) ? "127.0.0.1" : $transaction['host'];
+            $transaction['host'] = (empty($transaction['host'])) ? '127.0.0.1' : $transaction['host'];
             $transaction['port'] = (is_numeric($transaction['port'])) ? $transaction['port'] : 21;
-            $transaction['user'] = (empty($transaction['user'])) ? "root" : $transaction['user'];
-            $transaction['pass'] = (empty($transaction['pass'])) ? "" : $transaction['pass'];
+            $transaction['user'] = (empty($transaction['user'])) ? 'root' : $transaction['user'];
+            $transaction['pass'] = (empty($transaction['pass'])) ? '' : $transaction['pass'];
 
             // Le dossier root sera redéfini après être identifié
             $transaction['root'] = (empty($transaction['root'])) ? DIRECTORY_SEPARATOR : $transaction['root'];
@@ -83,7 +83,7 @@ abstract class CacheModel extends CoreTransaction
      */
     public function &getServerPort(): int
     {
-        return $this->getInt("port");
+        return $this->getInt('port');
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class CacheModel extends CoreTransaction
      */
     public function &getServerRoot(): string
     {
-        return $this->getString("root");
+        return $this->getString('root');
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class CacheModel extends CoreTransaction
      */
     public function setServerRoot(string &$newRoot): void
     {
-        $this->setDataValue("root",
+        $this->setDataValue('root',
                             $newRoot);
     }
 
@@ -167,7 +167,7 @@ abstract class CacheModel extends CoreTransaction
             $pathIsDir = true;
         } else {
             // Recherche du bout du path
-            $supposedFileName = "";
+            $supposedFileName = '';
             $pos = strrpos(DIRECTORY_SEPARATOR,
                            $path);
 
@@ -180,7 +180,7 @@ abstract class CacheModel extends CoreTransaction
 
             // Si ce n'est pas un fichier (avec ext.)
             if (strpos($supposedFileName,
-                       ".") === false) {
+                       '.') === false) {
                 $pathIsDir = true;
             }
         }
@@ -201,12 +201,12 @@ abstract class CacheModel extends CoreTransaction
                       -3);
 
         // Entête des fichier PHP
-        if ($ext === "php") {
+        if ($ext === 'php') {
             // Recherche du dossier parent
-            $dirBase = "";
+            $dirBase = '';
 
             $localDir = str_replace(TR_ENGINE_INDEX_DIRECTORY,
-                                    "",
+                                    '',
                                     $filePath);
 
             if ($localDir[0] === DIRECTORY_SEPARATOR) {
@@ -218,17 +218,17 @@ abstract class CacheModel extends CoreTransaction
                                    $localDir));
 
             for ($i = 1; $i < $nbDir; $i++) {
-                $dirBase .= ".." . DIRECTORY_SEPARATOR;
+                $dirBase .= '..' . DIRECTORY_SEPARATOR;
             }
 
             // Ecriture de l'entête
-            $content = "<?php\n"
-                    . "if (!defined(\"TR_ENGINE_INDEX\")){"
-                    . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
-                    . "}"
-                    . "// Generated on " . date('Y-m-d H:i:s') . "\n"
-                    . $content
-                    . "\n?>";
+            $content = '<?php\n'
+                . 'if (!defined(\'TR_ENGINE_INDEX\')){'
+                . 'require \'' . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . 'SecurityCheck.php\';'
+                . '}'
+                . '// Generated on \' . date(\'Y-m-d H:i:s\') . \'\n'
+                . $content
+                . '\n?>';
         }
         return $content;
     }

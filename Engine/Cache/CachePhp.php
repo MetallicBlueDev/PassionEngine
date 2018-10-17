@@ -84,7 +84,7 @@ class CachePhp extends CacheModel
     {
         if (!touch(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path,
                    $updateTime)) {
-            CoreLogger::addException("Touch error on " . $path);
+            CoreLogger::addException('Touch error on ' . $path);
         }
     }
 
@@ -142,7 +142,7 @@ class CachePhp extends CacheModel
 
             if (!empty($file)) {
                 // Si c'est un fichier valide
-                if ($file !== ".." && $file !== "." && $file !== "index.html" && $file !== "index.htm" && $file !== "index.php" && $file !== ".htaccess" && $file !== ".svn" && $file !== "checker.txt") {
+                if ($file !== '..' && $file !== '.' && $file !== 'index.html' && $file !== 'index.htm' && $file !== 'index.php' && $file !== '.htaccess' && $file !== '.svn' && $file !== 'checker.txt') {
                     $dirList[] = $file;
                 }
             }
@@ -208,8 +208,8 @@ class CachePhp extends CacheModel
             if ($nbBytesCmd !== $nbBytesFile) {
                 @unlink(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
 
-                CoreLogger::addException("Bad response for fwrite command. Path : " . $pathFile . ". "
-                    . "Server response : " . $nbBytesCmd . " bytes writed, " . $nbBytesFile . " bytes readed");
+                CoreLogger::addException('Bad response for fwrite command. Path : ' . $pathFile . '. '
+                    . 'Server response : ' . $nbBytesCmd . ' bytes writed, ' . $nbBytesFile . ' bytes readed');
             }
 
             // Libere le verrou
@@ -238,7 +238,7 @@ class CachePhp extends CacheModel
         $strlen = strlen($pathFile);
         $isHtaccessFile = (substr($pathFile,
                                   -9,
-                                  $strlen) === ".htaccess");
+                                  $strlen) === '.htaccess');
 
         // Si c'est un htaccess, on essai de corriger le problème
         if ($isHtaccessFile) {
@@ -246,16 +246,16 @@ class CachePhp extends CacheModel
             $htaccessPath = substr($pathFile,
                                    0,
                                    $strlen - 9);
-            $this->writeFile($htaccessPath . "index.html",
+            $this->writeFile($htaccessPath . 'index.html',
                              $content,
                              $overwrite);
 
             // Puis on renomme
-            rename($htaccessPath . "index.html",
-                   $htaccessPath . ".htaccess");
+            rename($htaccessPath . 'index.html',
+                   $htaccessPath . '.htaccess');
         }
 
-        CoreLogger::addException("Bad response for fopen command. Path : " . $pathFile);
+        CoreLogger::addException('Bad response for fopen command. Path : ' . $pathFile);
     }
 
     /**
@@ -272,7 +272,7 @@ class CachePhp extends CacheModel
         $dirs = explode(DIRECTORY_SEPARATOR,
                         TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path);
         $nbDir = count($dirs);
-        $currentPath = "";
+        $currentPath = '';
         $count = 0;
 
         if ($nbDir > 0) {
@@ -292,12 +292,12 @@ class CachePhp extends CacheModel
                     $this->makeDirectory($currentPath);
 
                     // Des petites fichiers bonus...
-                    if ($dir === "tmp") {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . "index.php",
-                                         "header(\"Location: .." . DIRECTORY_SEPARATOR . "index.php\");");
+                    if ($dir === 'tmp') {
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . 'index.php',
+                                         'header(\'Location: ..' . DIRECTORY_SEPARATOR . 'index.php\');');
                     } else {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . ".htaccess",
-                                         "deny from all");
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . '.htaccess',
+                                         'deny from all');
                     }
                 }
             }
@@ -319,7 +319,7 @@ class CachePhp extends CacheModel
 
         // Vérification de l'existence du fichier
         if (!is_dir($path)) {
-            CoreLogger::addException("Bad response for mkdir|chmod command. Path : " . $path);
+            CoreLogger::addException('Bad response for mkdir|chmod command. Path : ' . $path);
         }
     }
 
@@ -352,7 +352,7 @@ class CachePhp extends CacheModel
             }
 
             if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
-                CoreLogger::addException("Bad response for fopen|unlink command. Path : " . $path);
+                CoreLogger::addException('Bad response for fopen|unlink command. Path : ' . $path);
             }
         }
     }
@@ -401,7 +401,7 @@ class CachePhp extends CacheModel
 
             if (!empty($file)) {
                 // Si c'est un fichier valide
-                if ($file !== ".." && $file !== "." && $file !== ".svn") {
+                if ($file !== '..' && $file !== '.' && $file !== '.svn') {
                     // Vérification avant suppression
                     if (!$this->canRemove($dirPath,
                                           $file,
@@ -431,7 +431,7 @@ class CachePhp extends CacheModel
             rmdir(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
 
             if (is_dir(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath)) {
-                CoreLogger::addException("Bad response for rmdir command. Path : " . $dirPath);
+                CoreLogger::addException('Bad response for rmdir command. Path : ' . $dirPath);
             }
         }
     }

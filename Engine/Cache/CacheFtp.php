@@ -29,10 +29,10 @@ class CacheFtp extends CacheModel
      */
     public function canUse(): bool
     {
-        $rslt = extension_loaded("ftp") && function_exists('ftp_connect');
+        $rslt = extension_loaded('ftp') && function_exists('ftp_connect');
 
         if (!$rslt) {
-            CoreLogger::addException("FTP function not found");
+            CoreLogger::addException('FTP function not found');
         }
         return $rslt;
     }
@@ -49,7 +49,7 @@ class CacheFtp extends CacheModel
                                                    $this->timeOut));
 
             if ($this->getConnectionObject() === false) {
-                CoreLogger::addException("Could not connect to host " . $this->getTransactionHost() . " on port " . $this->getServerPort());
+                CoreLogger::addException('Could not connect to host ' . $this->getTransactionHost() . ' on port ' . $this->getServerPort());
                 $this->unsetConnectionObject();
             } else {
                 // Force le timeout, si possible
@@ -65,7 +65,7 @@ class CacheFtp extends CacheModel
     {
         if ($this->netConnected()) {
             if (ftp_close($this->getConnectionObject())) {
-                CoreLogger::addException("Unable to close connection");
+                CoreLogger::addException('Unable to close connection');
             }
             $this->unsetConnectionObject();
         }
@@ -88,7 +88,7 @@ class CacheFtp extends CacheModel
             $this->rootConfig();
             $rslt = true;
         } else {
-            CoreLogger::addException("Unable to login.");
+            CoreLogger::addException('Unable to login.');
         }
         return $rslt;
     }
@@ -180,21 +180,21 @@ class CacheFtp extends CacheModel
         // On supprime les mauvaises clés
         $dirListKeys = array_merge(
             array_keys($dirList,
-                       ".."),
+                       '..'),
                        array_keys($dirList,
-                                  "."),
+                                  '.'),
                                   array_keys($dirList,
-                                             "index.html"),
+                                             'index.html'),
                                              array_keys($dirList,
-                                                        "index.htm"),
+                                                        'index.htm'),
                                                         array_keys($dirList,
-                                                                   "index.php"),
+                                                                   'index.php'),
                                                                    array_keys($dirList,
-                                                                              ".htaccess"),
+                                                                              '.htaccess'),
                                                                               array_keys($dirList,
-                                                                                         ".svn"),
+                                                                                         '.svn'),
                                                                                          array_keys($dirList,
-                                                                                                    "checker.txt")
+                                                                                                    'checker.txt')
         );
 
         if (is_array($dirListKeys)) {
@@ -223,8 +223,8 @@ class CacheFtp extends CacheModel
                               $this->getRootPath($path));
 
             if ($mTime === -1) { // Une erreur est survenue
-                CoreLogger::addException("Bad response for ftp_mdtm command. Path : " . $path
-                    . " Turn off the native command.");
+                CoreLogger::addException('Bad response for ftp_mdtm command. Path : ' . $path
+                    . ' Turn off the native command.');
             }
         }
         return $mTime;
@@ -263,7 +263,7 @@ class CacheFtp extends CacheModel
         // Si aucun root n'est précisé
         if ($this->getServerRoot() === DIRECTORY_SEPARATOR) {
             // On commence la recherche
-            $pathFound = "";
+            $pathFound = '';
             $listNames = $this->getNameList();
 
             if (is_array($listNames)) {
@@ -283,21 +283,21 @@ class CacheFtp extends CacheModel
                     }
 
                     // On verifie si c'est bon et on arrete si c'est trouvé
-                    if (!empty($pathFound) && is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
+                    if (!empty($pathFound) && is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . 'SecurityCheck.php')) {
                         break;
                     } else {
                         // Resets
-                        $pathFound = $pathRebuild = "";
+                        $pathFound = $pathRebuild = '';
                     }
                 }
             }
         }
 
         // Vérification du root path
-        if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php")) {
+        if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . 'SecurityCheck.php')) {
             $this->setServerRoot($pathFound);
         } else if (empty($this->getServerRoot())) {
-            CoreLogger::addException("Unable to configure root path.");
+            CoreLogger::addException('Unable to configure root path.');
         }
     }
 
@@ -311,8 +311,8 @@ class CacheFtp extends CacheModel
                            int $mode): void
     {
         if (ftp_site($this->getConnectionObject(),
-                     "CHMOD " . $mode . " " . $this->getRootPath($path))) {
-            CoreLogger::addException("Bad response for ftp_site CHMOD command. Path : " . $path);
+                     'CHMOD ' . $mode . ' ' . $this->getRootPath($path))) {
+            CoreLogger::addException('Bad response for ftp_site CHMOD command. Path : ' . $path);
         }
     }
 
@@ -335,7 +335,7 @@ class CacheFtp extends CacheModel
             if ($this->setPassiveMode()) {
                 // Tentative de création du fichier
                 $buffer = fopen($this->getRootPath($path),
-                                                   "a"); // TODO il faut mettre un path local ici !
+                                                   'a'); // TODO il faut mettre un path local ici !
                 fwrite($buffer,
                        $content);
                 rewind($buffer);
@@ -345,7 +345,7 @@ class CacheFtp extends CacheModel
                               $buffer,
                               $this->getRootPath($path),
                                                  FTP_ASCII)) {// TODO il faut mettre une path remote ici !
-                    CoreLogger::addException("Bad response for ftp_fget command. Path : " . $path);
+                    CoreLogger::addException('Bad response for ftp_fget command. Path : ' . $path);
                 }
 
                 fclose($buffer);
@@ -367,7 +367,7 @@ class CacheFtp extends CacheModel
         $dirs = explode(DIRECTORY_SEPARATOR,
                         $this->getPath($path));
         $nbDir = count($dirs);
-        $currentPath = "";
+        $currentPath = '';
         $count = 0;
 
         if ($nbDir > 0) {
@@ -389,12 +389,12 @@ class CacheFtp extends CacheModel
                     }
 
                     // Des petites fichiers bonus...
-                    if ($dir === "tmp") {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . "index.php",
-                                         "header(\"Location: .." . DIRECTORY_SEPARATOR . "index.php\");");
+                    if ($dir === 'tmp') {
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . 'index.php',
+                                         'header(\'Location: ..' . DIRECTORY_SEPARATOR . 'index.php\');');
                     } else {
-                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . ".htaccess",
-                                         "deny from all");
+                        $this->writeFile($currentPath . DIRECTORY_SEPARATOR . '.htaccess',
+                                         'deny from all');
                     }
                 }
             }
@@ -410,7 +410,7 @@ class CacheFtp extends CacheModel
     {
         if (!ftp_mkdir($this->getConnectionObject(),
                        $path)) {
-            CoreLogger::addException("Bad response for ftp_mkdir command. Path : " . $path);
+            CoreLogger::addException('Bad response for ftp_mkdir command. Path : ' . $path);
         }
 
         // Ajuste les droits CHMOD
@@ -446,7 +446,7 @@ class CacheFtp extends CacheModel
             // On efface le fichier, si c'est un fichier
             if (!ftp_delete($this->getConnectionObject(),
                             $this->getRootPath($path))) {
-                CoreLogger::addException("Bad response for ftp_delete command. Path : " . $path);
+                CoreLogger::addException('Bad response for ftp_delete command. Path : ' . $path);
             }
         }
     }
@@ -488,7 +488,7 @@ class CacheFtp extends CacheModel
         if ($timeLimit === 0 && $this->netConnected()) {
             if (!ftp_rmdir($this->getConnectionObject(),
                            $this->getRootPath($path))) {
-                CoreLogger::addException("Bad response for ftp_rmdir command. Path : " . $path);
+                CoreLogger::addException('Bad response for ftp_rmdir command. Path : ' . $path);
             }
         }
     }
