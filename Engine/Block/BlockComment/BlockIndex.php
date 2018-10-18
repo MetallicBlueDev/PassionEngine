@@ -6,7 +6,6 @@ use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Exec\ExecUtils;
 
 /**
- * Block login, accès rapide à une connexion, à une déconnexion et à son compte.
  *
  * @author Sébastien Villemain
  */
@@ -22,7 +21,7 @@ class BlockIndex extends BlockModel
 
     private function &render()
     {
-        $content = "";
+        $content = '';
         return $content;
     }
 

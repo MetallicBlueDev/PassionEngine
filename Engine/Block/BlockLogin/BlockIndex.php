@@ -5,7 +5,6 @@ namespace TREngine\Engine\Block\BlockLogin;
 use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreHtml;
 use TREngine\Engine\Core\CoreRoute;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreSession;
@@ -16,7 +15,7 @@ use TREngine\Engine\Lib\LibForm;
 use TREngine\Engine\Lib\LibMakeStyle;
 
 /**
- * Block login.
+ * Block Login.
  * Panneau d'accès rapide avec son compte.
  *
  * @author Sébastien Villemain
@@ -24,10 +23,10 @@ use TREngine\Engine\Lib\LibMakeStyle;
 class BlockIndex extends BlockModel
 {
 
-    private const LOCAL_VIEW_REGISTRATION = "registration";
-    private const LOCAL_VIEW_LOGON = "logon";
-    private const LOCAL_VIEW_FORGET_LOGIN = "forgetlogin";
-    private const LOCAL_VIEW_FORGET_PASS = "forgetpass";
+    private const LOCAL_VIEW_REGISTRATION = 'registration';
+    private const LOCAL_VIEW_LOGON = 'logon';
+    private const LOCAL_VIEW_FORGET_LOGIN = 'forgetlogin';
+    private const LOCAL_VIEW_FORGET_PASS = 'forgetpass';
 
     /**
      * Affiche le texte de bienvenue.
@@ -44,7 +43,7 @@ class BlockIndex extends BlockModel
     private $displayAvatar = false;
 
     /**
-     * Affiche les icons rapides.
+     * Affiche les icônes rapides.
      *
      * @var bool
      */
@@ -66,10 +65,10 @@ class BlockIndex extends BlockModel
     public function uninstall(): void
     {
         $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
-        $coreCache->removeCache("login-logonblock.php");
-        $coreCache->removeCache("login-forgetloginblock.php");
-        $coreCache->removeCache("login-forgetpassblock.php");
-        $coreCache->removeCache("login-registrationblock.php");
+        $coreCache->removeCache('login-logonblock.php');
+        $coreCache->removeCache('login-forgetloginblock.php');
+        $coreCache->removeCache('login-forgetpassblock.php');
+        $coreCache->removeCache('login-registrationblock.php');
     }
 
     public function getViewList(): array
@@ -99,18 +98,18 @@ class BlockIndex extends BlockModel
     private function renderTemplate(): void
     {
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("blockTitle",
+        $libMakeStyle->assignString('blockTitle',
                                     $this->getBlockData()
-                        ->getTitle());
-        $libMakeStyle->assignString("blockContent",
+                ->getTitle());
+        $libMakeStyle->assignString('blockContent',
                                     $this->renderContent());
         $libMakeStyle->display($this->getBlockData()
-                        ->getTemplateName());
+                ->getTemplateName());
     }
 
     private function &renderContent(): string
     {
-        $content = "";
+        $content = '';
 
         if (CoreSession::connected()) {
             $content .= $this->getUserInfos();
@@ -122,7 +121,7 @@ class BlockIndex extends BlockModel
 
     private function &getUserInfos(): string
     {
-        $content = "";
+        $content = '';
         $sessionData = CoreSession::getInstance()->getSessionData();
 
         if ($this->displayText) {
@@ -141,70 +140,70 @@ class BlockIndex extends BlockModel
 
     private function &getUserName(CoreSessionData $sessionData): string
     {
-        $content = WELCOME . " <span class=\"text_bold\">" . $sessionData->getName() . "</span> !<br />";
+        $content = WELCOME . ' <span class=\'text_bold\'>' . $sessionData->getName() . '</span> !<br />';
         return $content;
     }
 
     private function &getUserAvatar(CoreSessionData $sessionData): string
     {
         $content = CoreRoute::getNewRoute()
-                        ->setModule("connect")
-                        ->setView("account")
-                        ->getLink(ExecImage::getTag($sessionData->getAvatar(),
-                                                    80))
-                . "<br />";
+                ->setModule('connect')
+                ->setView('account')
+                ->getLink(ExecImage::getTag($sessionData->getAvatar(),
+                                            80))
+            . '<br />';
         return $content;
     }
 
     private function &getUserIcons(): string
     {
 
-        $route = CoreRoute::getNewRoute()->setModule("connect");
-        $content = $route->setView("logout")->getLink(BLOCKLOGIN_LOGOUT)
-                . "<br />"
-                . $route->setView("account")->getLink(BLOCKLOGIN_MY_ACCOUNT)
-                . "<br />"
-                . $route->setModule("receiptbox")->getLink(BLOCKLOGIN_MY_RECEIPTBOX . " (?)")
-                . "<br />";
+        $route = CoreRoute::getNewRoute()->setModule('connect');
+        $content = $route->setView('logout')->getLink(BLOCKLOGIN_LOGOUT)
+            . '<br />'
+            . $route->setView('account')->getLink(BLOCKLOGIN_MY_ACCOUNT)
+            . '<br />'
+            . $route->setModule('receiptbox')->getLink(BLOCKLOGIN_MY_RECEIPTBOX . ' (?)')
+            . '<br />';
         return $content;
     }
 
     private function &getGeneralPane(): string
     {
         $redirectionLinks = $this->getRedirectionLinks();
-        $content = "<div id=\"login-logonblock\">"
-                . $this->getLocalViewForm($redirectionLinks)
-                . "</div>";
+        $content = '<div id=\'login-logonblock\'>'
+            . $this->getLocalViewForm($redirectionLinks)
+            . '</div>';
         return $content;
     }
 
     private function &getRedirectionLinks(): string
     {
-        $moreLink = "<ul>";
+        $moreLink = '<ul>';
         $route = CoreRoute::getNewRoute()
-                ->setModule("connect")->setJsMode(true,
-                                                  "#login-logonblock")
-                ->setBlockData($this->getBlockData());
+            ->setModule('connect')->setJsMode(true,
+                                              '#login-logonblock')
+            ->setBlockData($this->getBlockData());
 
         if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-            $moreLink .= "<li><span class=\"text_bold\">"
-                    . $route->setView("registration")->getLink(BLOCKLOGIN_GET_ACCOUNT)
-                    . "</span></li>";
+            $moreLink .= '<li><span class=\'text_bold\'>'
+                . $route->setView('registration')->getLink(BLOCKLOGIN_GET_ACCOUNT)
+                . '</span></li>';
         }
 
-        $moreLink .= "<li>"
-                . $route->setView("logon")->getLink(BLOCKLOGIN_GET_LOGON)
-                . "</li>" . "<li>"
-                . $route->setView("forgetlogin")->getLink(BLOCKLOGIN_GET_FORGET_LOGIN)
-                . "</li>" . "<li>"
-                . $route->setView("forgetpass")->getLink(BLOCKLOGIN_GET_FORGET_PASS)
-                . "</li></ul>";
+        $moreLink .= '<li>'
+            . $route->setView('logon')->getLink(BLOCKLOGIN_GET_LOGON)
+            . '</li>' . '<li>'
+            . $route->setView('forgetlogin')->getLink(BLOCKLOGIN_GET_FORGET_LOGIN)
+            . '</li>' . '<li>'
+            . $route->setView('forgetpass')->getLink(BLOCKLOGIN_GET_FORGET_PASS)
+            . '</li></ul>';
         return $moreLink;
     }
 
     private function &getLocalViewForm(string $redirectionLinks): string
     {
-        $content = "";
+        $content = '';
 
         switch ($this->getBlockData()->getView()) {
             case self::LOCAL_VIEW_LOGON:
@@ -234,44 +233,44 @@ class BlockIndex extends BlockModel
      */
     private function &getLogonForm(string $redirectionLinks): string
     {
-        $form = new LibForm("login-logonblock");
-        $form->addInputText("login",
+        $form = new LibForm('login-logonblock');
+        $form->addInputText('login',
                             LOGIN,
-                            "",
-                            "maxlength=\"180\"");
-        $form->addInputPassword("password",
+                            '',
+                            'maxlength=\'180\'');
+        $form->addInputPassword('password',
                                 PASSWORD,
-                                "maxlength=\"180\"");
+                                'maxlength=\'180\'');
         $form->addInputHiddenReferer();
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("logon");
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('logon');
         $form->addInputHiddenLayout(CoreLayout::MODULE);
-        $form->addInputSubmit("submit",
+        $form->addInputSubmit('submit',
                               BLOCKLOGIN_GET_LOGON);
         $form->addHtmlInFieldset($redirectionLinks);
-        CoreHtml::getInstance()->addJavascript("validLogon('#form-login-logonblock', '#form-login-logonblock-login-input', '#form-login-logonblock-password-input');");
-        return $form->render("login-logonblock");
+        CoreHtml::getInstance()->addJavascript('validLogon(\'#form-login-logonblock\', \'#form-login-logonblock-login-input\', \'#form-login-logonblock-password-input\');');
+        return $form->render('login-logonblock');
     }
 
     /**
-     * Formulaire d'identifiant oublié.
+     * Formulaire pour un identifiant oublié.
      *
      * @param string $redirectionLinks
      * @return string
      */
     private function &getForgetLoginForm(string $redirectionLinks): string
     {
-        $form = new LibForm("login-forgetloginblock");
-        $form->addInputText("email",
-                            EMAIL . " ");
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("forgetlogin");
+        $form = new LibForm('login-forgetloginblock');
+        $form->addInputText('email',
+                            EMAIL . ' ');
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('forgetlogin');
         $form->addInputHiddenLayout(CoreLayout::MODULE);
-        $form->addInputSubmit("submit",
+        $form->addInputSubmit('submit',
                               VALID);
         $form->addHtmlInFieldset($redirectionLinks);
-        CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetloginblock', '#form-login-forgetloginblock-email-input');");
-        return $form->render("login-forgetloginblock");
+        CoreHtml::getInstance()->addJavascript('validForgetLogin(\'#form-login-forgetloginblock\', \'#form-login-forgetloginblock-email-input\');');
+        return $form->render('login-forgetloginblock');
     }
 
     /**
@@ -282,17 +281,17 @@ class BlockIndex extends BlockModel
      */
     private function &getForgetPassForm(string $redirectionLinks): string
     {
-        $form = new LibForm("login-forgetpassblock");
-        $form->addInputText("login",
-                            LOGIN . " ");
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("forgetpass");
+        $form = new LibForm('login-forgetpassblock');
+        $form->addInputText('login',
+                            LOGIN . ' ');
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('forgetpass');
         $form->addInputHiddenLayout(CoreLayout::MODULE);
-        $form->addInputSubmit("submit",
+        $form->addInputSubmit('submit',
                               VALID);
         $form->addHtmlInFieldset($redirectionLinks);
-        CoreHtml::getInstance()->addJavascript("validForgetPass('#form-login-forgetpassblock', '#form-login-forgetpassblock-login-input');");
-        return $form->render("login-forgetpassblock");
+        CoreHtml::getInstance()->addJavascript('validForgetPass(\'#form-login-forgetpassblock\', \'#form-login-forgetpassblock-login-input\');');
+        return $form->render('login-forgetpassblock');
     }
 
     /**
@@ -303,16 +302,16 @@ class BlockIndex extends BlockModel
      */
     private function &getRegistrationForm(string $redirectionLinks): string
     { // TODO registration block a coder
-        $form = new LibForm("login-registrationblock");
-        $form->addInputText("login",
-                            LOGIN . " ");
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenview("registration");
-        // $form->addInputHidden("layout", "module");
-        $form->addInputSubmit("submit",
+        $form = new LibForm('login-registrationblock');
+        $form->addInputText('login',
+                            LOGIN . ' ');
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenview('registration');
+        // $form->addInputHidden('layout', 'module');
+        $form->addInputSubmit('submit',
                               VALID);
         $form->addHtmlInFieldset($redirectionLinks);
-        // CoreHtml::getInstance()->addJavascript("validForgetPass('#form-login-registrationblock', '#form-login-registrationblock-login-input');");
-        return $form->render("login-registrationblock");
+        // CoreHtml::getInstance()->addJavascript('validForgetPass('#form-login-registrationblock', '#form-login-registrationblock-login-input');');
+        return $form->render('login-registrationblock');
     }
 }

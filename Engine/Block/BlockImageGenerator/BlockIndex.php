@@ -7,7 +7,6 @@ use TREngine\Engine\Fail\FailBlock;
 use TREngine\Engine\Core\CoreMain;
 use TREngine\Engine\Core\CoreRequest;
 use TREngine\Engine\Core\CoreRequestType;
-use TREngine\Engine\Core\CoreSecure;
 
 /**
  * Block permettant de générer une image.
@@ -26,22 +25,22 @@ class BlockIndex extends BlockModel
         $mode = null;
 
         if (CoreMain::getInstance()->getRoute()->isBlockLayout()) {
-            $mode = CoreRequest::getString("mode",
-                                           "",
+            $mode = CoreRequest::getString('mode',
+                                           '',
                                            CoreRequestType::GET);
         }
 
         // Type d'affichage demandé
         switch ($mode) {
-            case "code":
+            case 'code':
                 $this->renderCode();
                 break;
-            case "text":
+            case 'text':
                 $this->renderText();
                 break;
             default:
-                throw new FailBlock("invalid image mode",
-                                    "",
+                throw new FailBlock('invalid image mode',
+                                    '',
                                     array($mode));
         }
     }
@@ -63,13 +62,13 @@ class BlockIndex extends BlockModel
      */
     private function renderCode()
     {
-        $code = CoreRequest::getString("code",
-                                       "",
+        $code = CoreRequest::getString('code',
+                                       '',
                                        CoreRequestType::GET);
 
         if (empty($code)) {
-            throw new FailBlock("invalid captcha code",
-                                "",
+            throw new FailBlock('invalid captcha code',
+                                '',
                                 array($code));
         }
 
@@ -79,9 +78,9 @@ class BlockIndex extends BlockModel
                        2,
                        5);
 
-        header("Content-type: image/png");
-        $im = imagecreatefromjpeg("Resources/ImageGenerator/captcha.jpg");
-        $id = imagecreatefromjpeg("Resources/ImageGenerator/captcha.jpg");
+        header('Content-type: image/png');
+        $im = imagecreatefromjpeg('Resources/ImageGenerator/captcha.jpg');
+        $id = imagecreatefromjpeg('Resources/ImageGenerator/captcha.jpg');
         $grey = imagecolorallocate($im,
                                    128,
                                    128,
@@ -90,7 +89,7 @@ class BlockIndex extends BlockModel
                                     0,
                                     0,
                                     0);
-        $font = "Resources/ImageGenerator/Alanden_.ttf";
+        $font = 'Resources/ImageGenerator/Alanden_.ttf';
 
         for ($i = 0; $i < 5; $i++) {
             $angle = mt_rand(10,
@@ -138,19 +137,19 @@ class BlockIndex extends BlockModel
     }
 
     /**
-     * Methode text & email.
-     * 
+     * Texte et mail.
+     *
      * @throws FailBlock
      */
     private function renderText()
     {
-        $text = CoreRequest::getString("text",
-                                       "",
+        $text = CoreRequest::getString('text',
+                                       '',
                                        CoreRequestType::GET);
 
         if (empty($text)) {
-            throw new FailBlock("invalid captcha text",
-                                "",
+            throw new FailBlock('invalid captcha text',
+                                '',
                                 array($text));
         }
 
@@ -158,17 +157,17 @@ class BlockIndex extends BlockModel
         $text = urldecode($text);
         $text = base64_decode($text);
 
-        if (preg_match("/_AT_/",
+        if (preg_match('/_AT_/',
                        $text)) {
-            $text = str_replace("_AT_",
-                                "@",
+            $text = str_replace('_AT_',
+                                '@',
                                 $text);
-            $text = str_replace("_POINT_",
-                                ".",
+            $text = str_replace('_POINT_',
+                                '.',
                                 $text);
         }
 
-        header("Content-type: image/png");
+        header('Content-type: image/png');
 
         if (strlen($text) < 5) {
             $morePixel = 5;
@@ -206,7 +205,7 @@ class BlockIndex extends BlockModel
                      2,
                      12,
                      $textColor,
-                     "Resources/ImageGenerator/nokiafc22.ttf",
+                     'Resources/ImageGenerator/nokiafc22.ttf',
                      $text);
         imagecolortransparent($image,
                               $font); // implication de la transparence

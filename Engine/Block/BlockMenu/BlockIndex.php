@@ -5,7 +5,6 @@ namespace TREngine\Engine\Block\BlockMenu;
 use TREngine\Engine\Block\BlockModel;
 use TREngine\Engine\Core\CoreCache;
 use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreTable;
 use TREngine\Engine\Lib\LibMakeStyle;
 use TREngine\Engine\Lib\LibMenu;
 
@@ -22,10 +21,10 @@ class BlockIndex extends BlockModel
         $menus = $this->getMenu();
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("blockTitle",
+        $libMakeStyle->assignString('blockTitle',
                                     $this->getBlockData()->getTitle());
-        $libMakeStyle->assignString("blockContent",
-                                    "<nav class=\"menu\">" . $menus->render() . "</nav>");
+        $libMakeStyle->assignString('blockContent',
+                                    '<nav class=\'menu\'>' . $menus->render() . '</nav>');
         $libMakeStyle->display($this->getBlockData()->getTemplateName());
     }
 
@@ -36,7 +35,7 @@ class BlockIndex extends BlockModel
 
     public function uninstall()
     {
-        CoreCache::getInstance(CoreCacheSection::MENUS)->removeCache("block" . $this->getBlockData()->getId() . ".php");
+        CoreCache::getInstance(CoreCacheSection::MENUS)->removeCache('block' . $this->getBlockData()->getId() . '.php');
     }
 
     protected function getMenu()

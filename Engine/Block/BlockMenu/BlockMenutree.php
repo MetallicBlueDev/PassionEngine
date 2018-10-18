@@ -18,13 +18,13 @@ class BlockMenutree extends BlockMenu
     {
         $this->configure();
         $menus = $this->getMenu();
-        $menus->addAttribute("class",
-                             "treeview");
+        $menus->addAttribute('class',
+                             'treeview');
 
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("blockTitle",
+        $libMakeStyle->assignString('blockTitle',
                                     $this->getBlockData()->getTitle());
-        $libMakeStyle->assignString("blockContent",
+        $libMakeStyle->assignString('blockContent',
                                     $menus->render());
         $libMakeStyle->display($this->getBlockData()->getTemplateName());
     }
@@ -35,15 +35,15 @@ class BlockMenutree extends BlockMenu
 
         if (isset($configs['type'])) {
             switch (strtolower($configs['type'])) {
-                case "black":
-                case "red":
-                case "gray":
-                case "famfamfam":
+                case 'black':
+                case 'red':
+                case 'gray':
+                case 'famfamfam':
                     break;
             }
         }
 
-        ExecJQuery::checkTreeView("#block" . $this->getBlockData()->getId());
+        ExecJQuery::checkTreeView('#block' . $this->getBlockData()->getId());
     }
 
     public function install()
