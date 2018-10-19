@@ -78,7 +78,7 @@ class CoreAccess
                                      CoreAccessRank::RANK_LIST);
 
         if ($rankLitteral === false) {
-            throw new FailEngine("invalid rank number",
+            throw new FailEngine('invalid rank number',
                                  FailBase::getErrorCodeName(1),
                                                             array($rank),
                                                             true);
@@ -91,7 +91,7 @@ class CoreAccess
     /**
      * Liste des niveaux d'accès disponibles.
      *
-     * @return array array("numeric" => identifiant int, "letters" => nom du niveau)
+     * @return array array('numeric' => identifiant entier, 'letters' => nom du niveau)
      */
     public static function &getRankList(): array
     {
@@ -99,8 +99,8 @@ class CoreAccess
 
         foreach (CoreAccessRank::RANK_LIST as $rank) {
             $rankList[] = array(
-                "numeric" => $rank,
-                "letters" => self::getRankAsLitteral($rank));
+                'numeric' => $rank,
+                'letters' => self::getRankAsLitteral($rank));
         }
         return $rankList;
     }

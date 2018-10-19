@@ -15,27 +15,27 @@ class CoreAccessZone
      *
      * @var string
      */
-    public const MODULE = "MODULE";
+    public const MODULE = 'MODULE';
 
     /**
      * Zone pour un block.
      *
      * @var string
      */
-    public const BLOCK = "BLOCK";
+    public const BLOCK = 'BLOCK';
 
     /**
      * Zone pour un client/une session.
      *
      * @var string
      */
-    public const SESSION = "SESSION";
+    public const SESSION = 'SESSION';
 
     /**
      * Zone pour un élément de menu.
      *
      * @var string
      */
-    public const MENU = "MENU";
+    public const MENU = 'MENU';
 
 }

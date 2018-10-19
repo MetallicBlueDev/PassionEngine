@@ -11,7 +11,7 @@ class CoreAccessRank
 {
 
     /**
-     * Accès non défini (cas de désactivation).
+     * Accès non défini (désactivé).
      *
      * @var int
      */
@@ -48,13 +48,13 @@ class CoreAccessRank
     /**
      * Liste des rangs valides.
      *
-     * @var array array("name" => 0)
+     * @var array array('name' => 0)
      */
     public const RANK_LIST = array(
-        "ACCESS_NONE" => self::NONE,
-        "ACCESS_PUBLIC" => self::PUBLIC,
-        "ACCESS_REGISTRED" => self::REGISTRED,
-        "ACCESS_ADMIN" => self::ADMIN,
-        "ACCESS_SPECIFIC_RIGHT" => self::SPECIFIC_RIGHT);
+        'ACCESS_NONE' => self::NONE,
+        'ACCESS_PUBLIC' => self::PUBLIC,
+        'ACCESS_REGISTRED' => self::REGISTRED,
+        'ACCESS_ADMIN' => self::ADMIN,
+        'ACCESS_SPECIFIC_RIGHT' => self::SPECIFIC_RIGHT);
 
 }

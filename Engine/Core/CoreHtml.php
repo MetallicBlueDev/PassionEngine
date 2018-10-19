@@ -27,31 +27,31 @@ class CoreHtml
      *
      * @var string
      */
-    private $cookieTestName = "test";
+    private $cookieTestName = 'test';
 
     /**
-     * Etat du javaScript chez le client.
+     * Détermine si le javaScript est actif chez le client.
      *
      * @var bool
      */
     private $javaScriptEnabled = false;
 
     /**
-     * Fonctions et codes javascript demandées.
+     * Fonctions et codes javaScript demandées.
      *
      * @var string
      */
-    private $javaScriptCode = "";
+    private $javaScriptCode = '';
 
     /**
-     * Fonctions et codes javascript JQUERY demandées.
+     * Fonctions et codes javaScript JQUERY demandées.
      *
      * @var string
      */
-    private $javaScriptJquery = "";
+    private $javaScriptJquery = '';
 
     /**
-     * Fichiers de javascript demandées.
+     * Fichiers de javaScript demandées.
      *
      * @var array
      */
@@ -69,10 +69,10 @@ class CoreHtml
      *
      * @var string
      */
-    private $title = "";
+    private $title = '';
 
     /**
-     * Mots clès de la page courante.
+     * Mots clés de la page courante.
      *
      * @var array
      */
@@ -83,27 +83,27 @@ class CoreHtml
      *
      * @var string
      */
-    private $description = "";
+    private $description = '';
 
     /**
      * Nouveau gestionnaire.
      */
     private function __construct()
     {
-        // Configuration du préfixe accessible
-        if (CoreLoader::isCallable("CoreMain")) {
+// Configuration du préfixe accessible
+        if (CoreLoader::isCallable('CoreMain')) {
             $prefix = CoreMain::getInstance()->getConfigs()->getCookiePrefix();
         } else {
-            $prefix = "tr";
+            $prefix = 'tr';
         }
 
-        // Composition du nom du cookie de test
+// Composition du nom du cookie de test
         $this->cookieTestName = ExecCrypt::cryptByStandard(
-                        $prefix . "_" . $this->cookieTestName,
-                        self::getSalt()
+                $prefix . '_' . $this->cookieTestName,
+                self::getSalt()
         );
 
-        // Vérification du javascript du client
+// Vérification du javascript du client
         $this->checkJavascriptEnabled();
     }
 
@@ -157,13 +157,13 @@ class CoreHtml
     }
 
     /**
-     * Ajoute un code javascript (compatible Jquery et javascript pur) à exécuter.
+     * Ajoute un code javaScript (compatible JQUERY et javaScript pur) à exécuter.
      *
      * @param string $javaScript
      */
     public function addJavascript(string $javaScript): void
     {
-        if ($this->javascriptEnabled() && CoreLoader::isCallable("CoreMain") && CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
+        if ($this->javascriptEnabled() && CoreLoader::isCallable('CoreMain') && CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
             $this->addJavascriptJquery($javaScript);
         } else {
             $this->addJavascriptCode($javaScript);
@@ -171,37 +171,39 @@ class CoreHtml
     }
 
     /**
-     * Retourne l'état du javascript du client.
+     * Retourne l'état du javaScript du client.
      *
      * @return bool
      */
     public function &javascriptEnabled(): bool
     {
+// Example : Do not align after formatting.
+        // Example : Functional alignment after formatting.
         return $this->javaScriptEnabled;
     }
 
     /**
-     * Ajoute un fichier javascript à l'entête.
+     * Ajoute un fichier javaScript à l'entête.
      *
      * @param string $fileName
      * @param string $options
      */
     public function addJavascriptFile(string $fileName,
-                                      string $options = ""): void
+                                      string $options = ''): void
     {
         if (!array_key_exists($fileName,
                               $this->javaScriptFile)) {
-            if ($fileName === "jquery.js") {
-                // Fixe JQuery en 1ere position
+            if ($fileName === 'jquery.js') {
+// Fixe JQuery en 1ere position
                 $this->javaScriptFile = array_merge(array(
                     $fileName => $options),
                                                     $this->javaScriptFile);
-            } else if ($fileName === "tr_engine.js") {
-                // Fixe tr_engine en 2em position
-                if (array_key_exists("jquery.js",
+            } else if ($fileName === 'tr_engine.js') {
+// Fixe tr_engine en 2em position
+                if (array_key_exists('jquery.js',
                                      $this->javaScriptFile)) {
                     $this->javaScriptFile = array_merge(array(
-                        "jquery.js" => $this->javaScriptFile['jquery.js'],
+                        'jquery.js' => $this->javaScriptFile['jquery.js'],
                         $fileName => $options),
                                                         $this->javaScriptFile);
                 } else {
@@ -222,9 +224,9 @@ class CoreHtml
      * @param string $options
      */
     public function addCssResourceFile(string $fileName,
-                                       string $options = ""): void
+                                       string $options = ''): void
     {
-        $this->addCssFile("Resources" . DIRECTORY_SEPARATOR . "Css" . DIRECTORY_SEPARATOR . $fileName,
+        $this->addCssFile('Resources' . DIRECTORY_SEPARATOR . 'Css' . DIRECTORY_SEPARATOR . $fileName,
                           $options);
     }
 
@@ -235,9 +237,9 @@ class CoreHtml
      * @param string $options
      */
     public function addCssTemplateFile(string $fileName,
-                                       string $options = ""): void
+                                       string $options = ''): void
     {
-        if (CoreLoader::isCallable("LibMakeStyle")) {
+        if (CoreLoader::isCallable('LibMakeStyle')) {
             $this->addCssFile(LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . $fileName,
                               $options);
         }
@@ -250,31 +252,31 @@ class CoreHtml
      */
     public function getMetaTitle(): string
     {
-        $title = "";
+        $title = '';
 
-        if (CoreLoader::isCallable("CoreMain")) {
+        if (CoreLoader::isCallable('CoreMain')) {
             $coreMain = CoreMain::getInstance();
             $title = $coreMain->getConfigs()->getDefaultSiteName();
 
             if (empty($this->title)) {
-                // Titre automatique
-                $title .= " - " . $coreMain->getConfigs()->getDefaultSiteSlogan();
+// Titre automatique
+                $title .= ' - ' . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
-                if (CoreLoader::isCallable("LibModule")) {
-                    $title .= " / " . CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName();
+                if (CoreLoader::isCallable('LibModule')) {
+                    $title .= ' / ' . CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName();
                 }
             } else {
-                // Titre manuel
-                $title = $this->title . " - " . $title;
+// Titre manuel
+                $title = $this->title . ' - ' . $title;
             }
         } else {
-            // Titre en mode dégradé
-            $title .= CoreRequest::getString("SERVER_NAME",
-                                             "",
+// Titre en mode dégradé
+            $title .= CoreRequest::getString('SERVER_NAME',
+                                             '',
                                              CoreRequestType::SERVER);
 
             if (!empty($this->title)) {
-                $title .= " - " . $this->title;
+                $title .= ' - ' . $this->title;
             }
         }
         return ExecString::textDisplay($title);
@@ -287,15 +289,15 @@ class CoreHtml
      */
     public function getMetaHeaders(): string
     {
-        // TODO ajouter un support RSS XML
+// TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-                . "<meta name=\"generator\" content=\"TR ENGINE\" />\n"
-                . "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\" />\n"
-                . "<meta http-equiv=\"content-script-type\" content=\"text/javascript\" />\n"
-                . "<meta http-equiv=\"content-style-type\" content=\"text/css\" />\n"
-                . "<link rel=\"shortcut icon\" type=\"image/x-icon\" href=\"" . LibMakeStyle::getTemplateDirectory() . "/favicon.ico\" />\n"
-                . $this->getMetaIncludeJavascript()
-                . $this->getMetaIncludeCss();
+            . '<meta name="generator" content="TR ENGINE" />\n'
+            . '<meta http-equiv="content-type" content="text/html; charset=utf-8" />\n'
+            . '<meta http-equiv="content-script-type" content="text/javascript" />\n'
+            . '<meta http-equiv="content-style-type" content="text/css" />\n'
+            . '<link rel="shortcut icon" type="image/x-icon" href="' . LibMakeStyle::getTemplateDirectory() . '/favicon.ico" />\n'
+            . $this->getMetaIncludeJavascript()
+            . $this->getMetaIncludeCss();
     }
 
     /**
@@ -305,7 +307,7 @@ class CoreHtml
      */
     public function getMetaFooters(): string
     {
-        // TODO continuer le footer
+// TODO continuer le footer
         return $this->getMetaExecuteJavascript();
     }
 
@@ -320,7 +322,7 @@ class CoreHtml
     }
 
     /**
-     * Affecte les mots clès de la page courante.
+     * Affecte les mots clés de la page courante.
      *
      * @param array $keywords un tableau de mots clés
      */
@@ -345,81 +347,81 @@ class CoreHtml
     }
 
     /**
-     * Retourne un lien cliquable sans javascript.
+     * Retourne un lien HTML sans javaScript.
      *
      * @param string $link Adresse URL de base.
-     * @param string $displayContent Données à afficher (texte simple ou code html)
+     * @param string $displayContent Données à afficher (texte simple ou code HTML)
      * @param string $onclick Données à exécuter lors du clique
      * @param string $addons Code additionnel
      * @return string
      */
     public static function &getLink(string $link,
-                                    string $displayContent = "",
-                                    string $onclick = "",
-                                    string $addons = ""): string
+                                    string $displayContent = '',
+                                    string $onclick = '',
+                                    string $addons = ''): string
     {
-        $htmlLink = "<a href=\"" . CoreUrlRewriting::getLink($link) . "\"";
+        $htmlLink = '<a href="' . CoreUrlRewriting::getLink($link) . '"';
 
-        // TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
-        if (preg_match("/^[A-Za-z0-9.\s]+$/ie",
+// TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
+        if (preg_match('/^[A-Za-z0-9.\s]+$/ie',
                        $displayContent)) {
-            $htmlLink .= " title=\"" . $displayContent . "\"";
+            $htmlLink .= ' title="' . $displayContent . '"';
         }
 
         if (!empty($onclick)) {
-            $htmlLink .= " onclick=\"" . $onclick . "\"";
+            $htmlLink .= ' onclick="' . $onclick . '"';
         }
 
         if (!empty($addons)) {
-            $htmlLink .= " " . $addons;
+            $htmlLink .= ' ' . $addons;
         }
 
-        $htmlLink .= ">";
+        $htmlLink .= '>';
 
         if (!empty($displayContent)) {
             $htmlLink .= $displayContent;
         }
 
-        $htmlLink .= "</a>";
+        $htmlLink .= '</a>';
         return $htmlLink;
     }
 
     /**
-     * Redirection ou chargement via javascript vers une page.
+     * Redirection ou chargement via javaScript vers une page.
      *
      * @param string $url La page demandée à charger.
      * @param int $tps Temps avant le chargement de la page.
      * @param string $method Identifiant de la division de destination si ce n'est pas toute la page.
      */
-    public function redirect(string $url = "",
+    public function redirect(string $url = '',
                              int $tps = 0,
-                             string $method = "window"): void
+                             string $method = 'window'): void
     {
-        // Configuration de l'url
-        if (empty($url) || $url === "index.php?") {
-            $url = "index.php";
+// Configuration de l'url
+        if (empty($url) || $url === 'index.php?') {
+            $url = 'index.php';
         }
 
-        // Redirection
-        if ($this->javascriptEnabled() && ($tps > 0 || $method !== "windows")) {
-            // Configuration du temps
+// Redirection
+        if ($this->javascriptEnabled() && ($tps > 0 || $method !== 'windows')) {
+// Configuration du temps
             $tps = $tps * 1000;
 
-            if (CoreRequest::getRequestMethod() === CoreRequestType::POST && $method !== "window") {
-                // Commande ajax pour la redirection
-                $this->addJavascriptCode("setTimeout(function(){ $('" . $method . "').load('" . $url . "'); }, $tps);");
+            if (CoreRequest::getRequestMethod() === CoreRequestType::POST && $method !== 'window') {
+// Commande ajax pour la redirection
+                $this->addJavascriptCode('setTimeout(function(){ $(\'' . $method . '\').load(\'' . $url . '\'); }, $tps);');
             } else {
-                // Commande par défaut
-                $this->addJavascriptCode("setTimeout('window.location = \"" . $url . "\"','" . $tps . "');");
+// Commande par défaut
+                $this->addJavascriptCode('setTimeout(\'window.location = \'' . $url . '\'\', \'' . $tps . '\');');
             }
         } else {
             // Redirection php sans timeout
-            header("Location: " . $url);
+            header('Location: ' . $url);
         }
     }
 
     /**
-     * Inclus et exécute le javascript de facon autonome.
+     * Inclus et exécute le javaScript de façon autonome.
      */
     public function selfJavascript(): void
     {
@@ -433,11 +435,11 @@ class CoreHtml
      */
     public function &getLoader(): string
     {
-        $rslt = "";
+        $rslt = '';
 
         if ($this->javascriptEnabled()) {
-            $libMakeStyle = new LibMakeStyle("loader");
-            $rslt = "<div id=\"loader\">" . $libMakeStyle->render() . "</div>";
+            $libMakeStyle = new LibMakeStyle('loader');
+            $rslt = '<div id="loader">' . $libMakeStyle->render() . '</div>';
         }
         return $rslt;
     }
@@ -449,25 +451,25 @@ class CoreHtml
      */
     private function &getSalt(): string
     {
-        // Configuration de la clès si accessible
-        if (CoreLoader::isCallable("CoreMain")) {
+// Configuration de la clé si accessible
+        if (CoreLoader::isCallable('CoreMain')) {
             $key = CoreMain::getInstance()->getConfigs()->getCryptKey();
         } else {
-            $key = "A4bT9D4V";
+            $key = 'A4bT9D4V';
         }
         return $key;
     }
 
     /**
-     * Détection du javascript chez le client.
+     * Détection du javaScript chez le client.
      */
     private function checkJavascriptEnabled(): void
     {
-        // Récuperation du cookie en php
+// Récuperation du cookie en php
         $cookieTest = ExecCookie::getCookie($this->cookieTestName);
 
-        // Vérification de l'existance du cookie
-        $this->javaScriptEnabled = ($cookieTest === "1") ? true : false;
+// Vérification de l'existance du cookie
+        $this->javaScriptEnabled = ($cookieTest === '1') ? true : false;
     }
 
     /**
@@ -477,13 +479,13 @@ class CoreHtml
      * @param string $options
      */
     private function addCssFile(string $filePath,
-                                string $options = ""): void
+                                string $options = ''): void
     {
-        if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace("/",
+        if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
                                                                                   DIRECTORY_SEPARATOR,
                                                                                   $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,
-                                    "/",
+                                    '/',
                                     $filePath);
 
             if (!array_key_exists($filePath,
@@ -500,14 +502,14 @@ class CoreHtml
      */
     private function getMetaKeywords(): string
     {
-        $keywords = "";
+        $keywords = '';
 
         if (empty($this->keywords)) {
-            $keywords = implode(", ",
+            $keywords = implode(', ',
                                 $this->keywords);
         }
 
-        if (CoreLoader::isCallable("CoreMain")) {
+        if (CoreLoader::isCallable('CoreMain')) {
             if (empty($this->description)) {
                 $this->description = CoreMain::getInstance()->getConfigs()->getDefaultDescription();
             }
@@ -519,13 +521,13 @@ class CoreHtml
 
         $keywords = strip_tags($keywords);
 
-        // 500 caractères maximum
+// 500 caractères maximum
         $keywords = (strlen($keywords) > 500) ? substr($keywords,
                                                        0,
                                                        500) : $keywords;
 
-        return "<meta name=\"description\" content=\"" . ExecString::textDisplay($this->description) . "\" />\n"
-                . "<meta name=\"keywords\" content=\"" . ExecString::textDisplay($keywords) . "\" />\n";
+        return '<meta name="description" content="' . ExecString::textDisplay($this->description) . '" />\n'
+            . '<meta name="keywords" content="' . ExecString::textDisplay($keywords) . '" />\n';
     }
 
     /**
@@ -542,11 +544,11 @@ class CoreHtml
             $this->resetJavascript();
         }
 
-        $meta = "";
+        $meta = '';
 
-        // Conception de l'entête
+// Conception de l'entête
         foreach ($this->javaScriptFile as $fileName => $options) {
-            $meta .= "<script" . ((!empty($options)) ? " " . $options : "") . " type=\"text/javascript\" src=\"Resources/Js/" . $fileName . "\"></script>\n";
+            $meta .= '<script' . ((!empty($options)) ? ' ' . $options : '') . ' type="text/javascript" src="Resources/Js/' . $fileName . '"></script>\n';
         }
         return $meta;
     }
@@ -558,32 +560,32 @@ class CoreHtml
      */
     private function checkMetaIncludeJavascript(bool $forceIncludes = false): void
     {
-        $fullScreen = CoreLoader::isCallable("CoreMain") ? CoreMain::getInstance()->getRoute()->isDefaultLayout() : true;
+        $fullScreen = CoreLoader::isCallable('CoreMain') ? CoreMain::getInstance()->getRoute()->isDefaultLayout() : true;
 
         if (($fullScreen || $forceIncludes) && $this->javascriptEnabled()) {
             if (!empty($this->javaScriptJquery)) {
-                $this->addJavascriptFile("jquery.js");
+                $this->addJavascriptFile('jquery.js');
             }
 
-            $this->addJavascriptFile("tr_engine.js");
+            $this->addJavascriptFile('tr_engine.js');
         } else {
             $this->resetJavascript();
         }
 
-        // Lorsque l'on ne force pas l'inclusion on fait un nouveau test
+// Lorsque l'on ne force pas l'inclusion on fait un nouveau test
         if (!$forceIncludes) {
             if (!$this->javascriptEnabled() && !CoreSecure::getInstance()->locked()) {
-                $this->addJavascriptFile("javascriptenabled.js");
-                $this->addJavascriptCode("javascriptEnabled('" . $this->cookieTestName . "');");
+                $this->addJavascriptFile('javascriptenabled.js');
+                $this->addJavascriptCode('javascriptEnabled(\'' . $this->cookieTestName . '\');');
             }
         }
 
-        if (CoreLoader::isCallable("CoreMain")) {
+        if (CoreLoader::isCallable('CoreMain')) {
             $coreMain = CoreMain::getInstance();
 
-            if ($coreMain->getAgentInfos()->getBrowserName() === "Internet Explorer" && $coreMain->getAgentInfos()->getBrowserVersion() < "7") {
-                $this->addJavascriptFile("pngfix.js",
-                                         "defer");
+            if ($coreMain->getAgentInfos()->getBrowserName() === 'Internet Explorer' && $coreMain->getAgentInfos()->getBrowserVersion() < '7') {
+                $this->addJavascriptFile('pngfix.js',
+                                         'defer');
             }
         }
     }
@@ -593,8 +595,8 @@ class CoreHtml
      */
     private function resetJavascript(): void
     {
-        $this->javaScriptCode = "";
-        $this->javaScriptJquery = "";
+        $this->javaScriptCode = '';
+        $this->javaScriptJquery = '';
         $this->javaScriptFile = array();
     }
 
@@ -605,18 +607,18 @@ class CoreHtml
      */
     private function &getMetaIncludeCss(): string
     {
-        $this->addCssTemplateFile("engine.css");
-        $this->addCssTemplateFile("main.css");
+        $this->addCssTemplateFile('engine.css');
+        $this->addCssTemplateFile('main.css');
 
-        $meta = "";
+        $meta = '';
 
-        // Conception de l'entête
+// Conception de l'entête
         foreach ($this->cssFile as $filePath => $options) {
             if (!empty($options)) {
-                $options = " " . $options;
+                $options = ' ' . $options;
             }
 
-            $meta .= "<link rel=\"stylesheet\" href=\"" . $filePath . "\" type=\"text/css\" />\n";
+            $meta .= '<link rel="stylesheet" href="' . $filePath . '" type="text/css" />\n';
         }
         return $meta;
     }
@@ -628,19 +630,19 @@ class CoreHtml
      */
     private function &getMetaExecuteJavascript(): string
     {
-        $script = "<script type=\"text/javascript\">\n";
+        $script = '<script type="text/javascript">\n';
 
         if (!empty($this->javaScriptCode)) {
             $script .= $this->javaScriptCode;
         }
 
         if (!empty($this->javaScriptJquery)) {
-            $script .= "$(document).ready(function(){";
+            $script .= '$(document).ready(function(){';
             $script .= $this->javaScriptJquery;
-            $script .= "});";
+            $script .= '});';
         }
 
-        $script .= "</script>\n";
+        $script .= '</script>\n';
         return $script;
     }
 }

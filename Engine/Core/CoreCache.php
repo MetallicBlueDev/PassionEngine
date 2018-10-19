@@ -20,26 +20,26 @@ class CoreCache extends CoreDriverSelector
      *
      * @var string
      */
-    const MODE_PHP = "php";
+    const MODE_PHP = 'php';
 
     /**
      * Utilisation des transactions FTP.
      *
      * @var string
      */
-    const MODE_FTP = "ftp";
+    const MODE_FTP = 'ftp';
 
     /**
      * Utilisation des transactions FTP sécurisées.
      *
      * @var string
      */
-    const MODE_SFTP = "sftp";
+    const MODE_SFTP = 'sftp';
 
     /**
      * @var string
      */
-    private const CHECKER_FILENAME = "checker.txt";
+    private const CHECKER_FILENAME = 'checker.txt';
 
     /**
      * Gestionnaire de cache.
@@ -63,21 +63,21 @@ class CoreCache extends CoreDriverSelector
     private $overwriteCache = array();
 
     /**
-     * Ecriture du cache à la suite.
+     * Cache d'écriture.
      *
      * @var array
      */
     private $writeCache = array();
 
     /**
-     * Suppression du cache.
+     * Cache de suppression.
      *
      * @var array
      */
     private $removeCache = array();
 
     /**
-     * Mise à jour de dernière modification du cache.
+     * Cache de mise à jour de la date de modification.
      *
      * @var array
      */
@@ -176,16 +176,16 @@ class CoreCache extends CoreDriverSelector
 
         $variableName = $this->getVariableName();
 
-        // Supprime la déclaration de la variable $tmp = "myData"; = > myData
+        // Supprime la déclaration de la variable $tmp = 'myData'; = > myData
         $pos = strpos($content,
-                      "$" . $variableName . " = \"");
+                      '$' . $variableName . ' = \'');
 
         if ($pos !== false && $pos === 0) {
-            $content = str_replace("$" . $variableName . " = \"",
-                                   "",
+            $content = str_replace('$' . $variableName . ' = \'',
+                                   '',
                                    $content);
             $pos = strrpos($content,
-                           "\";");
+                           '\';');
 
             if ($pos !== false && $pos > 0) {
                 $content = substr($content,
@@ -210,7 +210,7 @@ class CoreCache extends CoreDriverSelector
     public function &writeCacheWithVariable(string $path,
                                             string $content,
                                             bool $overwrite = true,
-                                            string $cacheVariableName = "",
+                                            string $cacheVariableName = '',
                                             array $cacheVariables = array()): string
     {
         $content = $this->writeCacheAsString($path,
@@ -221,7 +221,7 @@ class CoreCache extends CoreDriverSelector
             $matches = array();
 
             // Recherche la variable à remplacer
-            if (preg_match_all("/[$]" . $cacheVariableName . "([[]([A-Za-z0-9]+)[]]|)/",
+            if (preg_match_all('/[$]' . $cacheVariableName . '([[]([A-Za-z0-9]+)[]]|)/',
                                $content,
                                $matches,
                                PREG_PATTERN_ORDER) !== false) {
@@ -261,7 +261,7 @@ class CoreCache extends CoreDriverSelector
      * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
      */
     public function readCache(string $path,
-                              string $dynamicVariableName = "",
+                              string $dynamicVariableName = '',
                               array $dynamicVariableValue = []): void
     {
         $this->readCacheAsString($path,
@@ -278,15 +278,15 @@ class CoreCache extends CoreDriverSelector
      * @return string
      */
     public function &readCacheAsString(string $path,
-                                       string $dynamicVariableName = "",
+                                       string $dynamicVariableName = '',
                                        array $dynamicVariableValue = []): string
     {
         $cacheData = $this->readCacheAsMixed($path,
-                                             "",
+                                             '',
                                              $dynamicVariableName,
                                              $dynamicVariableValue);
         if (!is_string($cacheData)) {
-            $cacheData = "";
+            $cacheData = '';
         }
         return $cacheData;
     }
@@ -300,7 +300,7 @@ class CoreCache extends CoreDriverSelector
      * @return array
      */
     public function &readCacheAsArray(string $path,
-                                      string $dynamicVariableName = "",
+                                      string $dynamicVariableName = '',
                                       array $dynamicVariableValue = []): array
     {
         $cacheData = $this->readCacheAsMixed($path,
@@ -357,7 +357,7 @@ class CoreCache extends CoreDriverSelector
 
     /**
      * Retourne la liste des fichiers et dossiers présents.
-     * Un filtre automatique est appliqué sur les éléments tel que "..", "." ou encore "index.html"...
+     * Un filtre automatique est appliqué sur les éléments tel que '..', '.' ou encore 'index.html'...
      *
      * @param string $path
      * @return array
@@ -368,8 +368,8 @@ class CoreCache extends CoreDriverSelector
 
         $this->changeCurrentSection(CoreCacheSection::FILELISTER);
         $fileName = str_replace(DIRECTORY_SEPARATOR,
-                                "_",
-                                $path) . ".php";
+                                '_',
+                                $path) . '.php';
 
         if ($this->cached($fileName)) {
             $dirList = $this->readCacheAsArray($fileName);
@@ -389,7 +389,7 @@ class CoreCache extends CoreDriverSelector
      * @return array
      */
     public function &getFileList(string $dirPath,
-                                 string $extension = ".class"): array
+                                 string $extension = '.class'): array
     {
         $names = array();
         $files = $this->getNameList($dirPath);
@@ -415,7 +415,7 @@ class CoreCache extends CoreDriverSelector
     public function changeCurrentSection(string $newSectionPath = CoreCacheSection::TMP): void
     {
         $newSectionPath = empty($newSectionPath) ? CoreCacheSection::TMP : $newSectionPath;
-        $newSectionPath = str_replace("/",
+        $newSectionPath = str_replace('/',
                                       DIRECTORY_SEPARATOR,
                                       $newSectionPath);
 
@@ -434,19 +434,19 @@ class CoreCache extends CoreDriverSelector
     /**
      * Sérialise la variable en chaîne de caractères pour une mise en cache.
      *
-     * @param mixed $data ($data = "data") or array $data ($data = array("name" => "data"))
+     * @param mixed $data ($data = 'data') or array $data ($data = array('name' => 'data'))
      * @param string $lastKey clé supplémentaire
      * @return string
      */
     public function &serializeData($data,
-                                   string $lastKey = ""): string
+                                   string $lastKey = ''): string
     {
-        $content = "";
+        $content = '';
 
         if (is_array($data)) {
             foreach ($data as $key => $value) {
-                $newKey = $lastKey . "[" . ExecString::addQuotesForNonNumeric($key,
-                                                                              true) . "]";
+                $newKey = $lastKey . '[' . ExecString::addQuotesForNonNumeric($key,
+                                                                              true) . ']';
 
                 if (is_array($value)) {
                     $content .= $this->serializeData($value,
@@ -458,8 +458,8 @@ class CoreCache extends CoreDriverSelector
             }
         } else {
             if (!empty($lastKey)) {
-                $lastKey = "[" . ExecString::addQuotesForNonNumeric($lastKey,
-                                                                    true) . "]";
+                $lastKey = '[' . ExecString::addQuotesForNonNumeric($lastKey,
+                                                                    true) . ']';
             }
 
             $content .= $this->serializeVariable($lastKey,
@@ -471,8 +471,8 @@ class CoreCache extends CoreDriverSelector
     /**
      * Détermine si le fichier est en cache.
      *
-     * @param string $path chemin vers le fichier cache
-     * @return bool true le fichier est en cache
+     * @param string $path Chemin vers le fichier cache.
+     * @return bool Le fichier est en cache.
      */
     public function cached(string $path): bool
     {
@@ -518,13 +518,13 @@ class CoreCache extends CoreDriverSelector
             // Mise à jour ou creation du fichier checker
             if (!$exist) {
                 $this->writeCacheAsString(self::CHECKER_FILENAME,
-                                          "1");
+                                          '1');
             } else {
                 $this->touchCache(self::CHECKER_FILENAME);
             }
 
             // Suppression du cache périmé
-            $this->removeCache("",
+            $this->removeCache('',
                                $timeLimit);
         }
     }
@@ -598,7 +598,7 @@ class CoreCache extends CoreDriverSelector
      * @throws FailCache
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailCache($message,
@@ -621,8 +621,8 @@ class CoreCache extends CoreDriverSelector
                                       array $cacheVariables): string
     {
         // Suppression des caractères d'échappements
-        $content = str_replace("\\\"",
-                               "\"",
+        $content = str_replace('\\\'',
+                               '\'',
                                $content);
 
         // Utilisation des variables en cache
@@ -631,13 +631,13 @@ class CoreCache extends CoreDriverSelector
 
         // Remplacement de toutes les variables
         foreach ($matches[2] as $value) {
-            if ($value === "") {
+            if ($value === '') {
                 $hasEmpty = true;
                 continue;
             }
 
             // Remplace la variable par sa valeur
-            $content = str_replace("\$" . $cacheVariableName . "[" . $value . "]",
+            $content = str_replace('\$' . $cacheVariableName . '[' . $value . ']',
                                    ${$cacheVariableName}[$value],
                                    $content);
         }
@@ -684,8 +684,8 @@ class CoreCache extends CoreDriverSelector
     private function &serializeVariable(string $key,
                                         $value): string
     {
-        $content = "$" . $this->getVariableName($key) . " = " . ExecString::addQuotesForNonNumeric($value,
-                                                                                                   false) . "; ";
+        $content = '$' . $this->getVariableName($key) . ' = ' . ExecString::addQuotesForNonNumeric($value,
+                                                                                                   false) . '; ';
         return $content;
     }
 
@@ -695,25 +695,25 @@ class CoreCache extends CoreDriverSelector
      * @param string $key
      * @return string
      */
-    private function &getVariableName(string $key = ""): string
+    private function &getVariableName(string $key = ''): string
     {
         if (empty($this->currentSection)) {
             $this->changeCurrentSection();
         }
 
         $variableName = str_replace(DIRECTORY_SEPARATOR,
-                                    "_",
+                                    '_',
                                     $this->currentSection) . $key;
         return $variableName;
     }
 
     /**
-     * Lecture du cache ciblé puis retourne les données.
+     * Lecture du cache demandé puis retourne les données.
      *
      * @param string $path Chemin du cache.
      * @param mixed $initialValue Donnée d'initialisation.
-     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directment dans le cache.
-     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directment dans le cache.
+     * @param string $dynamicVariableName Nom de la variable qui sera utilisé directement dans le cache.
+     * @param array $dynamicVariableValue Pointeur vers la variable qui sera utilisé directement dans le cache.
      * @return mixed
      */
     private function &readCacheAsMixed(string $path,

@@ -84,7 +84,7 @@ abstract class CoreDriverSelector
      */
     private function &getFullClassName(array &$rawConfigs): string
     {
-        $fullClassName = "";
+        $fullClassName = '';
         $loaded = false;
 
         if (!empty($rawConfigs) && isset($rawConfigs['type'])) {
@@ -93,15 +93,15 @@ abstract class CoreDriverSelector
         }
 
         if (!$loaded) {
-            $this->throwException("driver not found",
+            $this->throwException('driver not found',
                                   FailBase::getErrorCodeName(2),
                                                              array($rawConfigs['type']),
                                                              true);
         }
 
         if (!CoreLoader::isCallable($fullClassName,
-                                    "initialize")) {
-            $this->throwException("unable to initialize driver",
+                                    'initialize')) {
+            $this->throwException('unable to initialize driver',
                                   FailBase::getErrorCodeName(3),
                                                              array($fullClassName),
                                                              true);

@@ -18,7 +18,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      *
      * @var string
      */
-    private const FULL_ACCESS = "all";
+    private const FULL_ACCESS = 'all';
 
     /**
      * Identifiant de l'accès passe partout.
@@ -70,7 +70,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
             self::$fullAccessType = self::getTypeFromDatas(self::FULL_ACCESS,
                                                            CoreAccessRank::ADMIN,
                                                            self::FULL_ACCESS_ID,
-                                                           "admin");
+                                                           'admin');
         }
         return self::$fullAccessType;
     }
@@ -90,10 +90,10 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
                                              string $name): CoreAccessType
     {
         $infos = array(
-            "zone" => $zone,
-            "rank" => $rank,
-            "identifier" => $identifier,
-            "name" => $name);
+            'zone' => $zone,
+            'rank' => $rank,
+            'identifier' => $identifier,
+            'name' => $name);
         return self::getTypeFromArray($infos);
     }
 
@@ -104,7 +104,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &getRank(): int
     {
-        return $this->getInt("rank",
+        return $this->getInt('rank',
                              CoreAccessRank::NONE);
     }
 
@@ -116,7 +116,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &getZone(): string
     {
-        return $this->getString("zone");
+        return $this->getString('zone');
     }
 
     /**
@@ -127,7 +127,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &getPage(): string
     {
-        return $this->getString("page");
+        return $this->getString('page');
     }
 
     /**
@@ -137,9 +137,9 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function setPage(string $newPage)
     {
-        $this->setDataValue("page",
+        $this->setDataValue('page',
                             $newPage);
-        $this->unsetValue("validity");
+        $this->unsetValue('validity');
     }
 
     /**
@@ -150,7 +150,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &getId(): int
     {
-        return $this->getInt("identifier");
+        return $this->getInt('identifier');
     }
 
     /**
@@ -160,7 +160,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     public function &getName(): string
     {
-        return $this->getString("name");
+        return $this->getString('name');
     }
 
     /**
@@ -203,7 +203,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
         if (!$this->alreadyChecked()) {
             $this->checkValidity();
         }
-        return $this->getBool("validity");
+        return $this->getBool('validity');
     }
 
     /**
@@ -255,7 +255,7 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
             }
         }
 
-        $this->setDataValue("validity",
+        $this->setDataValue('validity',
                             $valid);
     }
 
@@ -270,14 +270,14 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
         $moduleData = null;
 
         // Recherche d'informations sur le module
-        if (CoreLoader::isCallable("LibModule")) {
+        if (CoreLoader::isCallable('LibModule')) {
             $moduleData = LibModule::getInstance()->getEntityDataByFolderName($this->getName());
         }
 
         if ($moduleData !== null && $moduleData->getId() >= 0 && $moduleData->isCallableViewMethod()) {
-            $this->setDataValue("page",
+            $this->setDataValue('page',
                                 $moduleData->getName());
-            $this->setDataValue("identifier",
+            $this->setDataValue('identifier',
                                 $moduleData->getId());
             $valid = true;
         }
@@ -295,14 +295,14 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
         $blockInfo = null;
 
         // Recherche d'information sur le block
-        if (CoreLoader::isCallable("LibBlock")) {
+        if (CoreLoader::isCallable('LibBlock')) {
             $blockInfo = LibBlock::getInstance()->getEntityData($this->getId());
         }
 
         if ($blockInfo !== null && $blockInfo->getId() >= 0 && $blockInfo->isCallableViewMethod()) {
-            $this->setDataValue("page",
+            $this->setDataValue('page',
                                 $blockInfo->getType());
-            $this->setDataValue("identifier",
+            $this->setDataValue('identifier',
                                 $blockInfo->getId());
             $valid = true;
         }
@@ -316,6 +316,6 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
      */
     private function alreadyChecked(): bool
     {
-        return $this->exist("validity");
+        return $this->exist('validity');
     }
 }

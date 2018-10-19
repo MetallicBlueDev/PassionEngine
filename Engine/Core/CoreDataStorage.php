@@ -96,7 +96,7 @@ abstract class CoreDataStorage
      */
     public function &getSubString(string $key,
                                   string $subKey,
-                                  string $defaultValue = ""): string
+                                  string $defaultValue = ''): string
     {
         $value = $this->getArray($key);
 
