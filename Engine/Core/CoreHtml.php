@@ -90,20 +90,20 @@ class CoreHtml
      */
     private function __construct()
     {
-// Configuration du préfixe accessible
+        // Configuration du préfixe accessible
         if (CoreLoader::isCallable('CoreMain')) {
             $prefix = CoreMain::getInstance()->getConfigs()->getCookiePrefix();
         } else {
             $prefix = 'tr';
         }
 
-// Composition du nom du cookie de test
+        // Composition du nom du cookie de test
         $this->cookieTestName = ExecCrypt::cryptByStandard(
                 $prefix . '_' . $this->cookieTestName,
                 self::getSalt()
         );
 
-// Vérification du javascript du client
+        // Vérification du javascript du client
         $this->checkJavascriptEnabled();
     }
 
@@ -177,7 +177,7 @@ class CoreHtml
      */
     public function &javascriptEnabled(): bool
     {
-// Example : Do not align after formatting.
+        // Example : Do not align after formatting.
         // Example : Functional alignment after formatting.
         return $this->javaScriptEnabled;
     }
@@ -194,12 +194,12 @@ class CoreHtml
         if (!array_key_exists($fileName,
                               $this->javaScriptFile)) {
             if ($fileName === 'jquery.js') {
-// Fixe JQuery en 1ere position
+                // Fixe JQuery en 1ere position
                 $this->javaScriptFile = array_merge(array(
                     $fileName => $options),
                                                     $this->javaScriptFile);
             } else if ($fileName === 'tr_engine.js') {
-// Fixe tr_engine en 2em position
+                // Fixe tr_engine en 2em position
                 if (array_key_exists('jquery.js',
                                      $this->javaScriptFile)) {
                     $this->javaScriptFile = array_merge(array(
@@ -259,18 +259,18 @@ class CoreHtml
             $title = $coreMain->getConfigs()->getDefaultSiteName();
 
             if (empty($this->title)) {
-// Titre automatique
+                // Titre automatique
                 $title .= ' - ' . $coreMain->getConfigs()->getDefaultSiteSlogan();
 
                 if (CoreLoader::isCallable('LibModule')) {
                     $title .= ' / ' . CoreMain::getInstance()->getRoute()->getRequestedModuleData()->getName();
                 }
             } else {
-// Titre manuel
+                // Titre manuel
                 $title = $this->title . ' - ' . $title;
             }
         } else {
-// Titre en mode dégradé
+            // Titre en mode dégradé
             $title .= CoreRequest::getString('SERVER_NAME',
                                              '',
                                              CoreRequestType::SERVER);
@@ -289,13 +289,13 @@ class CoreHtml
      */
     public function getMetaHeaders(): string
     {
-// TODO ajouter un support RSS XML
+        //TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-            . '<meta name="generator" content="TR ENGINE" />\n'
-            . '<meta http-equiv="content-type" content="text/html; charset=utf-8" />\n'
-            . '<meta http-equiv="content-script-type" content="text/javascript" />\n'
-            . '<meta http-equiv="content-style-type" content="text/css" />\n'
-            . '<link rel="shortcut icon" type="image/x-icon" href="' . LibMakeStyle::getTemplateDirectory() . '/favicon.ico" />\n'
+            . '<meta name="generator" content="TR ENGINE" />' . "\n"
+            . '<meta http-equiv="content-type" content="text/html; charset=utf-8" />' . "\n"
+            . '<meta http-equiv="content-script-type" content="text/javascript" />' . "\n"
+            . '<meta http-equiv="content-style-type" content="text/css" />' . "\n"
+            . '<link rel="shortcut icon" type="image/x-icon" href="' . LibMakeStyle::getTemplateDirectory() . '/favicon.ico" />' . "\n"
             . $this->getMetaIncludeJavascript()
             . $this->getMetaIncludeCss();
     }
@@ -307,7 +307,7 @@ class CoreHtml
      */
     public function getMetaFooters(): string
     {
-// TODO continuer le footer
+        // TODO continuer le footer
         return $this->getMetaExecuteJavascript();
     }
 
@@ -362,7 +362,7 @@ class CoreHtml
     {
         $htmlLink = '<a href="' . CoreUrlRewriting::getLink($link) . '"';
 
-// TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
+        // TODO A vérifier /^[A-Za-z0-9.-\s]+$/ie pas compatible avec les traductions
         if (preg_match('/^[A-Za-z0-9.\s]+$/ie',
                        $displayContent)) {
             $htmlLink .= ' title="' . $displayContent . '"';
@@ -397,21 +397,21 @@ class CoreHtml
                              int $tps = 0,
                              string $method = 'window'): void
     {
-// Configuration de l'url
+        // Configuration de l'url
         if (empty($url) || $url === 'index.php?') {
             $url = 'index.php';
         }
 
-// Redirection
+        // Redirection
         if ($this->javascriptEnabled() && ($tps > 0 || $method !== 'windows')) {
-// Configuration du temps
+            // Configuration du temps
             $tps = $tps * 1000;
 
             if (CoreRequest::getRequestMethod() === CoreRequestType::POST && $method !== 'window') {
-// Commande ajax pour la redirection
+                // Commande ajax pour la redirection
                 $this->addJavascriptCode('setTimeout(function(){ $(\'' . $method . '\').load(\'' . $url . '\'); }, $tps);');
             } else {
-// Commande par défaut
+                // Commande par défaut
                 $this->addJavascriptCode('setTimeout(\'window.location = \'' . $url . '\'\', \'' . $tps . '\');');
             }
         } else {
@@ -451,7 +451,7 @@ class CoreHtml
      */
     private function &getSalt(): string
     {
-// Configuration de la clé si accessible
+        // Configuration de la clé si accessible
         if (CoreLoader::isCallable('CoreMain')) {
             $key = CoreMain::getInstance()->getConfigs()->getCryptKey();
         } else {
@@ -465,10 +465,10 @@ class CoreHtml
      */
     private function checkJavascriptEnabled(): void
     {
-// Récuperation du cookie en php
+        // Récuperation du cookie en php
         $cookieTest = ExecCookie::getCookie($this->cookieTestName);
 
-// Vérification de l'existance du cookie
+        // Vérification de l'existance du cookie
         $this->javaScriptEnabled = ($cookieTest === '1') ? true : false;
     }
 
@@ -496,7 +496,7 @@ class CoreHtml
     }
 
     /**
-     * Retourne les mots clès et la description de la page.
+     * Retourne les mots clés et la description de la page.
      *
      * @return string
      */
@@ -521,19 +521,19 @@ class CoreHtml
 
         $keywords = strip_tags($keywords);
 
-// 500 caractères maximum
+        // 500 caractères maximum
         $keywords = (strlen($keywords) > 500) ? substr($keywords,
                                                        0,
                                                        500) : $keywords;
 
-        return '<meta name="description" content="' . ExecString::textDisplay($this->description) . '" />\n'
-            . '<meta name="keywords" content="' . ExecString::textDisplay($keywords) . '" />\n';
+        return '<meta name="description" content="' . ExecString::textDisplay($this->description) . '" />' . "\n"
+            . '<meta name="keywords" content="' . ExecString::textDisplay($keywords) . '" />' . "\n";
     }
 
     /**
      * Retourne les scripts à inclure.
      *
-     * @param bool $forceIncludes Pour forcer l'inclusion des fichiers javascript.
+     * @param bool $forceIncludes Pour forcer l'inclusion des fichiers javaScript.
      * @return string
      */
     private function &getMetaIncludeJavascript(bool $forceIncludes = false): string
@@ -546,9 +546,9 @@ class CoreHtml
 
         $meta = '';
 
-// Conception de l'entête
+        // Conception de l'entête
         foreach ($this->javaScriptFile as $fileName => $options) {
-            $meta .= '<script' . ((!empty($options)) ? ' ' . $options : '') . ' type="text/javascript" src="Resources/Js/' . $fileName . '"></script>\n';
+            $meta .= '<script' . ((!empty($options)) ? ' ' . $options : '') . ' type="text/javascript" src="Resources/Js/' . $fileName . '"></script>' . "\n";
         }
         return $meta;
     }
@@ -572,7 +572,7 @@ class CoreHtml
             $this->resetJavascript();
         }
 
-// Lorsque l'on ne force pas l'inclusion on fait un nouveau test
+        // Lorsque l'on ne force pas l'inclusion on fait un nouveau test
         if (!$forceIncludes) {
             if (!$this->javascriptEnabled() && !CoreSecure::getInstance()->locked()) {
                 $this->addJavascriptFile('javascriptenabled.js');
@@ -601,7 +601,7 @@ class CoreHtml
     }
 
     /**
-     * Retourne les fichiers de css à inclure.
+     * Retourne les fichiers de CSS à inclure.
      *
      * @return string
      */
@@ -612,25 +612,25 @@ class CoreHtml
 
         $meta = '';
 
-// Conception de l'entête
+        // Conception de l'entête
         foreach ($this->cssFile as $filePath => $options) {
             if (!empty($options)) {
                 $options = ' ' . $options;
             }
 
-            $meta .= '<link rel="stylesheet" href="' . $filePath . '" type="text/css" />\n';
+            $meta .= '<link rel="stylesheet" href="' . $filePath . '" type="text/css" />' . "\n";
         }
         return $meta;
     }
 
     /**
-     * Execute les fonctions javascript demandées.
+     * Retourne le script d'exécution des fonctions javaScript demandées.
      *
      * @return string
      */
     private function &getMetaExecuteJavascript(): string
     {
-        $script = '<script type="text/javascript">\n';
+        $script = '<script type="text/javascript">' . "\n";
 
         if (!empty($this->javaScriptCode)) {
             $script .= $this->javaScriptCode;
@@ -642,7 +642,7 @@ class CoreHtml
             $script .= '});';
         }
 
-        $script .= '</script>\n';
+        $script .= '</script>' . "\n";
         return $script;
     }
 }

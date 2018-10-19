@@ -621,8 +621,8 @@ class CoreCache extends CoreDriverSelector
                                       array $cacheVariables): string
     {
         // Suppression des caractères d'échappements
-        $content = str_replace('\\\'',
-                               '\'',
+        $content = str_replace("\\\"",
+                               "\"",
                                $content);
 
         // Utilisation des variables en cache
