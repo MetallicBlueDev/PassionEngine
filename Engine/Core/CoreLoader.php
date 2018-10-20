@@ -19,98 +19,98 @@ class CoreLoader
      *
      * @var string
      */
-    public const CLASS_FILE = "Class";
+    public const CLASS_FILE = 'Class';
 
     /**
      * Fichier de pilotage de base de données.
      *
      * @var string
      */
-    public const BASE_FILE = "Base";
+    public const BASE_FILE = 'Base';
 
     /**
      * Fichier de gestion du cache.
      *
      * @var string
      */
-    public const CACHE_FILE = "Cache";
+    public const CACHE_FILE = 'Cache';
 
     /**
      * Fichier du base du moteur.
      *
      * @var string
      */
-    public const CORE_FILE = "Core";
+    public const CORE_FILE = 'Core';
 
     /**
      * Fichier d'aide à la manipulation.
      *
      * @var string
      */
-    public const EXEC_FILE = "Exec";
+    public const EXEC_FILE = 'Exec';
 
     /**
      * Fichier d'erreur.
      *
      * @var string
      */
-    public const FAIL_FILE = "Fail";
+    public const FAIL_FILE = 'Fail';
 
     /**
      * Fichier de bibliothèque.
      *
      * @var string
      */
-    public const LIBRARY_FILE = "Lib";
+    public const LIBRARY_FILE = 'Lib';
 
     /**
      * Fichier représentant un block.
      *
      * @var string
      */
-    public const BLOCK_FILE = "Block";
+    public const BLOCK_FILE = 'Block';
 
     /**
      * Fichier représentant un module.
      *
      * @var string
      */
-    public const MODULE_FILE = "Module";
+    public const MODULE_FILE = 'Module';
 
     /**
      * Fichier représentant une traduction.
      *
      * @var string
      */
-    public const TRANSLATE_FILE = "Translate";
+    public const TRANSLATE_FILE = 'Translate';
 
     /**
      * Extension spécifique pour la traduction.
      *
      * @var string
      */
-    public const TRANSLATE_EXTENSION = "lang";
+    public const TRANSLATE_EXTENSION = 'lang';
 
     /**
      * Fichier représentant une inclusion spécifique.
      *
      * @var string
      */
-    public const INCLUDE_FILE = "inc";
+    public const INCLUDE_FILE = 'inc';
 
     /**
      * Fichier attaché au moteur.
      *
      * @var string
      */
-    public const ENGINE_SUBTYPE = "Engine";
+    public const ENGINE_SUBTYPE = 'Engine';
 
     /**
      * Fichier détaché du moteur.
      *
      * @var string
      */
-    public const CUSTOM_SUBTYPE = "Custom";
+    public const CUSTOM_SUBTYPE = 'Custom';
 
     /**
      * Les types de namespace possible.
@@ -131,19 +131,19 @@ class CoreLoader
      *
      * @var string
      */
-    private const MAIN_NAMESPACE = "TREngine\\";
+    private const MAIN_NAMESPACE = 'TREngine\\';
 
     /**
      * Namespace de base.
      *
      * @var string
      */
-    private const NAMESPACE_PATTERN = "{ROOT}{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}";
+    private const NAMESPACE_PATTERN = '{ROOT}{ORIGIN}\{TYPE}\{PREFIX}{KEYNAME}';
 
     /**
      * Tableau des classes chargées.
      *
-     * @var array array("name" => "path")
+     * @var array array('name' => 'path')
      */
     private static $loadedFiles = null;
 
@@ -160,7 +160,7 @@ class CoreLoader
     public static function affectRegister(): void
     {
         if (!is_null(self::$loadedFiles)) {
-            throw new FailLoader("loader already registered",
+            throw new FailLoader('loader already registered',
                                  FailBase::getErrorCodeName(4));
         }
 
@@ -173,7 +173,7 @@ class CoreLoader
                 $CoreLoaderClass->getName(),
                 'classLoader'),
                                    true)) {
-            throw new FailLoader("spl_autoload_register fail",
+            throw new FailLoader('spl_autoload_register fail',
                                  FailBase::getErrorCodeName(4));
         }
     }
@@ -182,7 +182,7 @@ class CoreLoader
      * Chargeur de classe.
      *
      * @param string $fullClassName Nom complet de la classe.
-     * @return bool true chargé.
+     * @return bool Chargé.
      */
     public static function &classLoader(string $fullClassName): bool
     {
@@ -195,7 +195,7 @@ class CoreLoader
      * Permet de charger des fichiers qui sont spécifiques à la traduction.
      *
      * @param string $rootDirectoryPath Chemin racine contenant le dossier de traduction.
-     * @return bool true chargé.
+     * @return bool Chargé.
      */
     public static function &translateLoader(string $rootDirectoryPath): bool
     {
@@ -205,11 +205,11 @@ class CoreLoader
     }
 
     /**
-     * Chargeur de fichier "à inclure".
+     * Chargeur de fichier à inclure.
      * Permet de charger des fichiers qui ne sont pas des classes.
      *
      * @param string $includeKeyName Clé spécifique pour inclure le fichier (exemple Includes_cache correspondant au chemin Includes/cache.inc.php).
-     * @return bool true chargé.
+     * @return bool Chargé.
      */
     public static function &includeLoader(string $includeKeyName): bool
     {
@@ -219,15 +219,15 @@ class CoreLoader
     }
 
     /**
-     * Vérifie la disponibilité de la classe et de ca methode éventuellement.
+     * Vérifie la disponibilité de la classe et de sa méthode éventuellement.
      *
      * @param string $className Nom de la classe.
      * @param string $methodName Nom de la méthode.
      * @param bool $static Appel d'instance ou statique.
-     * @return bool true l'appel peut être effectué.
+     * @return bool L'appel peut être effectué.
      */
     public static function &isCallable(string $className,
-                                       string $methodName = "",
+                                       string $methodName = '',
                                        bool $static = false): bool
     {
         $info = new CoreLoaderInfo($className);
@@ -248,7 +248,7 @@ class CoreLoader
     }
 
     /**
-     * Appel une methode d'un objet ou une méthode statique d'une classe.
+     * Appel une méthode d'un objet ou une méthode statique d'une classe.
      *
      * @param string $callback
      * @param mixed $example func_get_args()
@@ -267,13 +267,13 @@ class CoreLoader
                                      $args);
 
         if ($rslt === false) {
-            CoreLogger::addException("Failed to execute callback '" . $callback . "'.");
+            CoreLogger::addException('Failed to execute callback \'' . $callback . '\'.');
         }
         return $rslt;
     }
 
     /**
-     * Retourne le chemin absolu pour un fichier "à inclure".
+     * Retourne le chemin absolu pour un fichier à inclure.
      * Permet de trouver des fichiers qui ne sont pas des classes.
      *
      * @param string $includeKeyName Nom de la clé correspondant au fichier demandé (exemple Includes_cache correspondant au chemin Includes/cache.inc.php).
@@ -308,12 +308,12 @@ class CoreLoader
      * @return string
      */
     public static function &getFullQualifiedClassName(string $className,
-                                                      string $prefixName = ""): string
+                                                      string $prefixName = ''): string
     {
         $info = new CoreLoaderInfo($className);
 
         if (!empty($prefixName)) {
-            $info->prefixName = $prefixName . "\\";
+            $info->prefixName = $prefixName . '\\';
         }
 
         self::buildKeyNameAndFileType($info);
@@ -330,11 +330,11 @@ class CoreLoader
     {
         // Supprime le premier namespace
         $path = str_replace(self::MAIN_NAMESPACE,
-                            "",
+                            '',
                             $fullClassName);
 
         // Conversion du namespace en dossier
-        $path = str_replace("\\",
+        $path = str_replace('\\',
                             DIRECTORY_SEPARATOR,
                             $path);
         return $path;
@@ -348,17 +348,17 @@ class CoreLoader
      * @return string
      */
     public static function &getFilePathFromTranslate(string $rootDirectoryPath,
-                                                     string $language = ""): string
+                                                     string $language = ''): string
     {
         $path = self::getFilePathFromNamespace($rootDirectoryPath) . DIRECTORY_SEPARATOR . self::TRANSLATE_FILE . DIRECTORY_SEPARATOR;
 
         if (!empty($language)) {
             $path .= $language;
-        } else if (self::isCallable("CoreTranslate")) {
+        } else if (self::isCallable('CoreTranslate')) {
             $path .= CoreTranslate::getInstance()->getCurrentLanguage();
         }
 
-        $path .= "." . self::TRANSLATE_EXTENSION;
+        $path .= '.' . self::TRANSLATE_EXTENSION;
         return $path;
     }
 
@@ -370,9 +370,9 @@ class CoreLoader
      */
     public static function &getFilePathFromInclude(string $includeKeyName): string
     {
-        $path = str_replace("_",
+        $path = str_replace('_',
                             DIRECTORY_SEPARATOR,
-                            $includeKeyName) . "." . self::INCLUDE_FILE;
+                            $includeKeyName) . '.' . self::INCLUDE_FILE;
         return $path;
     }
 
@@ -401,10 +401,10 @@ class CoreLoader
 
             switch ($info->fileType) {
                 case self::TRANSLATE_FILE:
-                    $uniqueKey .= "." . self::TRANSLATE_EXTENSION;
+                    $uniqueKey .= '.' . self::TRANSLATE_EXTENSION;
                     break;
                 case self::INCLUDE_FILE:
-                    $uniqueKey .= "." . self::INCLUDE_FILE;
+                    $uniqueKey .= '.' . self::INCLUDE_FILE;
                     break;
             }
 
@@ -436,7 +436,7 @@ class CoreLoader
         $loaded = false;
 
         if (empty($info->keyName)) {
-            throw new FailLoader("empty file name",
+            throw new FailLoader('empty file name',
                                  FailBase::getErrorCodeName(4),
                                                             array($info->keyName, $info->fileType));
         }
@@ -476,7 +476,7 @@ class CoreLoader
                     // Aucune traduction disponible
                     break;
                 default:
-                    throw new FailLoader("unable to load file",
+                    throw new FailLoader('unable to load file',
                                          FailBase::getErrorCodeName(4),
                                                                     array($info->keyName, $info->fileType));
             }
@@ -494,13 +494,13 @@ class CoreLoader
         if ($info->fileType === self::TRANSLATE_FILE) {
             self::buildGenericKeyNameAndFileTypeFromNamespace($info);
         } else if (strpos($info->keyName,
-                          "\Block\Block") !== false) {
+                          '\Block\Block') !== false) {
             $info->fileType = self::BLOCK_FILE;
         } else if (strpos($info->keyName,
-                          "Module\Module") !== false) {
+                          'Module\Module') !== false) {
             $info->fileType = self::MODULE_FILE;
         } else if (strpos($info->keyName,
-                          "\\") === false) {
+                          '\\') === false) {
             self::buildGenericKeyNameAndFileTypeFromNamespace($info);
         }
 
@@ -526,24 +526,24 @@ class CoreLoader
                     $info->fileType = $namespaceType;
                 }
 
-                $fullClassName = str_replace("{ROOT}",
+                $fullClassName = str_replace('{ROOT}',
                                              self::MAIN_NAMESPACE,
                                              self::NAMESPACE_PATTERN);
 
-                $fullClassName = str_replace("{KEYNAME}",
+                $fullClassName = str_replace('{KEYNAME}',
                                              $info->keyName,
                                              $fullClassName);
 
-                $fullClassName = str_replace("{PREFIX}",
+                $fullClassName = str_replace('{PREFIX}',
                                              $info->prefixName,
                                              $fullClassName);
-                $fullClassName = str_replace("{TYPE}",
+                $fullClassName = str_replace('{TYPE}',
                                              $namespaceType,
                                              $fullClassName);
 
                 $namespaceOrigin = (strrpos($fullClassName,
                                             $namespaceType . self::CUSTOM_SUBTYPE) !== false) ? self::CUSTOM_SUBTYPE : self::ENGINE_SUBTYPE;
-                $info->keyName = str_replace("{ORIGIN}",
+                $info->keyName = str_replace('{ORIGIN}',
                                              $namespaceOrigin,
                                              $fullClassName);
                 break;
@@ -560,7 +560,7 @@ class CoreLoader
     private static function buildFilePath(CoreLoaderInfo &$info): void
     {
         if (empty($info->path)) {
-            $path = "";
+            $path = '';
 
             switch ($info->fileType) {
                 case self::BASE_FILE:
@@ -581,12 +581,12 @@ class CoreLoader
                     $path = self::getFilePathFromInclude($info->keyName);
                     break;
                 default:
-                    throw new FailLoader("can not determine the file path",
+                    throw new FailLoader('can not determine the file path',
                                          FailBase::getErrorCodeName(4),
                                                                     array($info->keyName, $info->fileType));
             }
 
-            $info->path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . ".php";
+            $info->path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . '.php';
         }
     }
 

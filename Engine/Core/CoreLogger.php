@@ -17,21 +17,21 @@ class CoreLogger
      *
      * @var string
      */
-    private const TYPE_ALERT = "alert";
+    private const TYPE_ALERT = 'alert';
 
     /**
      * Message d'avertissement ou note d'information demandant une action.
      *
      * @var string
      */
-    private const TYPE_NOTE = "note";
+    private const TYPE_NOTE = 'note';
 
     /**
      * Message d'information sans action attendue.
      *
      * @var string
      */
-    private const TYPE_INFO = "info";
+    private const TYPE_INFO = 'info';
 
     /**
      * Exceptions destinées au développeur.
@@ -63,11 +63,11 @@ class CoreLogger
     {
         $msg = strtolower($msg);
         $msg[0] = strtoupper($msg[0]);
-        self::$exceptions[] = date('Y-m-d H:i:s') . " : " . $msg . ".";
+        self::$exceptions[] = date('Y-m-d H:i:s') . ' : ' . $msg . '.';
     }
 
     /**
-     * Ajoute une requête sql.
+     * Ajoute une requête SQL.
      *
      * @param string $sql
      */
@@ -110,36 +110,36 @@ class CoreLogger
     }
 
     /**
-     * Retourne les messages pré-formatées.
+     * Retourne les messages.
      */
     public static function displayMessages(): void
     {
-        if (CoreLoader::isCallable("CoreMain")) {
+        if (CoreLoader::isCallable('CoreMain')) {
             $hasMessages = !empty(self::$messages);
-            $display = "none";
-            $rslt = "";
+            $display = 'none';
+            $rslt = '';
 
             if ($hasMessages) {
-                $display = "block";
-                $rslt .= "<ul class=\"exception\">";
+                $display = 'block';
+                $rslt .= '<ul class="exception">';
 
                 foreach (self::$messages as $type => $infos) {
                     foreach ($infos as $message) {
-                        $rslt .= "<li class=\"" . $type . "\"><div>" . $message . "</div></li>";
+                        $rslt .= '<li class="' . $type . '"><div>' . $message . '</div></li>';
                     }
                 }
 
-                $rslt .= "</ul>";
+                $rslt .= '</ul>';
             }
 
             // Réaction différente en fonction du type d'affichage demandée
             if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
-                echo "<div id=\"panel_message\" style=\"display: " . $display . ";\">" . $rslt . "</div>";
+                echo '<div id="panel_message" style="display: ' . $display . ';">' . $rslt . '</div>';
             } else if ($hasMessages) {
-                if (CoreLoader::isCallable("CoreHtml")) {
+                if (CoreLoader::isCallable('CoreHtml')) {
                     if (CoreHtml::getInstance()->javascriptEnabled()) {
-                        CoreHtml::getInstance()->addJavascript("displayMessage('" . addslashes($rslt) . "');");
-                        $rslt = "";
+                        CoreHtml::getInstance()->addJavascript('displayMessage(\'' . addslashes($rslt) . '\');');
+                        $rslt = '';
                     }
                 }
 
@@ -155,37 +155,37 @@ class CoreLogger
      */
     public static function displayDebugInformations(): void
     {
-        if (CoreLoader::isCallable("CoreMain") && CoreLoader::isCallable("CoreSession")) {
+        if (CoreLoader::isCallable('CoreMain') && CoreLoader::isCallable('CoreSession')) {
             if (CoreSession::getInstance()->getSessionData()->hasRegisteredRank()) {
-                echo "<div style=\"color: blue;\"><br />"
-                . "***********************SQL REQUESTS (" . count(self::$sqlRequest) . ") :<br />";
+                echo '<div style="color: blue;"><br />'
+                . '***********************SQL REQUESTS (' . count(self::$sqlRequest) . ') :<br />';
 
                 if (!empty(self::$sqlRequest)) {
                     echo str_replace("\n",
-                                     "<br />",
+                                     '<br />',
                                      self::serializeData(self::$sqlRequest));
                 } else {
-                    echo "<span style=\"color: #2EFE2E;\">No sql request registred.</span>";
+                    echo '<span style="color: #2EFE2E;">No sql request registred.</span>';
                 }
 
-                echo "<br /><br />***********************EXCEPTIONS (" . count(self::$exceptions) . ") :<br />";
+                echo '<br /><br />***********************EXCEPTIONS (' . count(self::$exceptions) . ') :<br />';
 
                 if (self::hasExceptions()) {
-                    echo "<span style=\"color: red;\">"
+                    echo '<span style="color: red;">'
                     . str_replace("\n",
-                                  "<br />",
+                                  '<br />',
                                   self::serializeData(self::$exceptions))
-                    . "</span>";
+                    . '</span>';
                 } else {
-                    echo "<span style=\"color: #2EFE2E;\">No exception registred.</span>";
+                    echo '<span style="color: #2EFE2E;">No exception registred.</span>';
                 }
 
-                echo "<br /><br />***********************BENCHMAKER :<br />"
-                . "Core : " . ExecTimeMarker::getMeasurement("core") . " ms"
-                . "<br />Launcher : " . ExecTimeMarker::getMeasurement("launcher") . " ms"
-                . "<br />Main : " . ExecTimeMarker::getMeasurement("main") . " ms"
-                . "<br /><span class=\"text_bold\">All : " . ExecTimeMarker::getMeasurement("all") . " ms</span>"
-                . "</div>";
+                echo '<br /><br />***********************BENCHMAKER :<br />'
+                . 'Core : ' . ExecTimeMarker::getMeasurement('core') . ' ms'
+                . '<br />Launcher : ' . ExecTimeMarker::getMeasurement('launcher') . ' ms'
+                . '<br />Main : ' . ExecTimeMarker::getMeasurement('main') . ' ms'
+                . '<br /><span class="text_bold">All : ' . ExecTimeMarker::getMeasurement('all') . ' ms</span>'
+                . '</div>';
             }
         }
     }
@@ -201,14 +201,14 @@ class CoreLogger
     }
 
     /**
-     * Ecriture du rapport d'erreur dans un fichier log.
+     * Enregistrement du rapport d'erreur dans un fichier.
      */
     public static function logException(): void
     {
-        if (CoreLoader::isCallable("CoreCache")) {
+        if (CoreLoader::isCallable('CoreCache')) {
             if (self::hasExceptions()) {
                 // Ecriture à la suite du rapport
-                CoreCache::getInstance(CoreCacheSection::LOGGER)->writeCacheAsString("exception_" . date('Y-m-d') . ".log.php",
+                CoreCache::getInstance(CoreCacheSection::LOGGER)->writeCacheAsString('exception_' . date('Y-m-d') . '.log.php',
                                                                                                          self::serializeData(self::$exceptions),
                                                                                                                              false);
             }
@@ -219,7 +219,7 @@ class CoreLogger
      * Ajoute un nouveau message.
      *
      * @param string $msg
-     * @param string $type Le type d'erreur (alert / note / info).
+     * @param string $type Le type d'erreur (alerte / note / information).
      */
     private static function addMessage(string $msg,
                                        string $type): void
@@ -248,14 +248,14 @@ class CoreLogger
     }
 
     /**
-     * Capture les exceptions en chaine de caractères.
+     * Capture les exceptions en chaîne de caractères.
      *
      * @param array $var
      * @return string
      */
     private static function &serializeData(array $var): string
     {
-        $content = "";
+        $content = '';
 
         foreach ($var as $msg) {
             $content .= $msg . "\n";

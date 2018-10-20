@@ -53,7 +53,7 @@ class CoreInfo
         if (!self::$initialized) {
             self::$unsafeGlobalVars[$name] = $value;
         } else {
-            exit("Invalid access.");
+            exit('Invalid access.');
         }
     }
 
@@ -100,13 +100,13 @@ class CoreInfo
             /**
              * Version php sous forme x.x.x.x (exemple : 7.1.0).
              */
-            define("TR_ENGINE_PHP_MINIMUM_VERSION",
-                   "7.1.0");
+            define('TR_ENGINE_PHP_MINIMUM_VERSION',
+                   '7.1.0');
 
             /**
              * Version php sous forme x.x.x.x (exemple : 5.2.9.2).
              */
-            define("TR_ENGINE_PHP_VERSION",
+            define('TR_ENGINE_PHP_VERSION',
                    $info->getPhpVersion());
 
             /**
@@ -114,7 +114,7 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_INDEX_DIRECTORY",
+            define('TR_ENGINE_INDEX_DIRECTORY',
                    $info->getIndexDirectory());
 
             /**
@@ -122,7 +122,7 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_URL",
+            define('TR_ENGINE_URL',
                    $info->getUrlAddress());
 
             /**
@@ -130,7 +130,7 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_PHP_OS",
+            define('TR_ENGINE_PHP_OS',
                    $info->getPhpOs());
 
             /**
@@ -138,13 +138,13 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_CRLF",
+            define('TR_ENGINE_CRLF',
                    $info->getCrLf());
 
             /**
              * Numéro de version du moteur.
              *
-             * Controle de révision
+             * contrôle de révision
              * xx -> version courante
              * xx -> fonctionnalités ajoutées
              * xx -> bugs ou failles critiques corrigés
@@ -152,8 +152,8 @@ class CoreInfo
              *
              * @var string
              */
-            define("TR_ENGINE_VERSION",
-                   "0.7.0.0");
+            define('TR_ENGINE_VERSION',
+                   '0.7.0.0');
         }
     }
 
@@ -164,10 +164,10 @@ class CoreInfo
      */
     private function getPhpVersion()
     {
-        return preg_replace("/[^0-9.]/",
-                            "",
-                            (preg_replace("/(_|-|[+])/",
-                                          ".",
+        return preg_replace('/[^0-9.]/',
+                            '',
+                            (preg_replace('/(_|-|[+])/',
+                                          '.',
                                           phpversion())));
     }
 
@@ -178,10 +178,10 @@ class CoreInfo
      */
     private function getIndexDirectory()
     {
-        $baseDir = "";
+        $baseDir = '';
 
         // Recherche du chemin absolu depuis n'importe quel fichier
-        if (defined("TR_ENGINE_INDEX")) {
+        if (defined('TR_ENGINE_INDEX')) {
             // Nous sommes dans l'index
             $baseDir = getcwd();
         } else {
@@ -197,15 +197,15 @@ class CoreInfo
      */
     private function getIndexDirectoryFromCurrentFolder()
     {
-        $pathFromWorkingFolder = "";
+        $pathFromWorkingFolder = '';
 
         // Chemin de base
-        $baseName = str_replace(self::getGlobalServer("SCRIPT_NAME"),
-                                                      "",
-                                                      self::getGlobalServer("SCRIPT_FILENAME"));
+        $baseName = str_replace(self::getGlobalServer('SCRIPT_NAME'),
+                                                      '',
+                                                      self::getGlobalServer('SCRIPT_FILENAME'));
 
         if (!empty($baseName)) {
-            $baseName = str_replace("/",
+            $baseName = str_replace('/',
                                     DIRECTORY_SEPARATOR,
                                     $baseName);
             $workingDirectory = getcwd();
@@ -217,11 +217,11 @@ class CoreInfo
         }
 
         // Verification du résultat
-        $baseDir = "";
+        $baseDir = '';
 
-        if (!empty($pathFromWorkingFolder) && is_file($baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+        if (!empty($pathFromWorkingFolder) && is_file($baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'config.inc.php')) {
             $baseDir = $baseName . DIRECTORY_SEPARATOR . $pathFromWorkingFolder;
-        } else if (is_file($baseName . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+        } else if (is_file($baseName . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'config.inc.php')) {
             $baseDir = $baseName;
         } else {
             $baseDir = $baseName;
@@ -239,11 +239,11 @@ class CoreInfo
     private function getPathFromWorkingFolder($baseName,
                                               $workingDirectory)
     {
-        $path = "";
+        $path = '';
 
         // Nous isolons le chemin en plus jusqu'au fichier
         $path = str_replace($baseName,
-                            "",
+                            '',
                             $workingDirectory);
 
         if (!empty($path)) {
@@ -254,12 +254,12 @@ class CoreInfo
             }
 
             // Vérification en se repérant sur l'emplacement du fichier de configuration
-            while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . "Includes" . DIRECTORY_SEPARATOR . "config.inc.php")) {
+            while (!is_file($baseName . DIRECTORY_SEPARATOR . $path . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'config.inc.php')) {
                 // Nous remontons d'un cran
                 $path = dirname($path);
 
                 // La recherche n'aboutira pas
-                if ($path === ".") {
+                if ($path === '.') {
                     break;
                 }
             }
@@ -274,10 +274,10 @@ class CoreInfo
      */
     private function getUrlAddress()
     {
-        $rslt = "";
+        $rslt = '';
 
         // Recherche de l'URL courante
-        $requestUri = self::getGlobalServer("REQUEST_URI");
+        $requestUri = self::getGlobalServer('REQUEST_URI');
 
         if (!empty($requestUri)) {
             $currentUrlArray = $this->getUrlAddressExploded($requestUri);
@@ -289,8 +289,8 @@ class CoreInfo
             // Construction du lien
             $urlFinal = $this->getUrlAddressBuilded($currentUrlArray,
                                                     $urlBaseArray);
-            $serverName = self::getGlobalServer("SERVER_NAME");
-            $rslt = ((empty($urlFinal)) ? $serverName : $serverName . "/" . $urlFinal);
+            $serverName = self::getGlobalServer('SERVER_NAME');
+            $rslt = ((empty($urlFinal)) ? $serverName : $serverName . '/' . $urlFinal);
         }
         return $rslt;
     }
@@ -304,18 +304,18 @@ class CoreInfo
     private function getUrlAddressExploded($requestUri)
     {
         if (substr($requestUri,
-                   -1) === "/") {
+                   -1) === '/') {
             $requestUri = substr($requestUri,
                                  0,
                                  -1);
         }
 
-        if ($requestUri[0] === "/") {
+        if ($requestUri[0] === '/') {
             $requestUri = substr($requestUri,
                                  1);
         }
 
-        $requestUri = explode("/",
+        $requestUri = explode('/',
                               $requestUri);
         return $requestUri;
     }
@@ -330,7 +330,7 @@ class CoreInfo
     private function getUrlAddressBuilded($currentUrlArray,
                                           $urlBaseArray)
     {
-        $urlFinal = "";
+        $urlFinal = '';
         $currentUrlCounter = count($currentUrlArray);
         $urlBaseCounter = count($urlBaseArray);
 
@@ -347,10 +347,10 @@ class CoreInfo
                 if (empty($urlFinal)) {
                     $urlFinal = $currentUrlArray[$i];
                 } else {
-                    $urlFinal = $currentUrlArray[$i] . "/" . $urlFinal;
+                    $urlFinal = $currentUrlArray[$i] . '/' . $urlFinal;
                 }
 
-                $urlBaseArray[$j] = "";
+                $urlBaseArray[$j] = '';
             }
         }
         return $urlFinal;
@@ -375,12 +375,12 @@ class CoreInfo
      */
     private function getCrLf()
     {
-        $rslt = "";
+        $rslt = '';
 
         // Le retour chariot de chaque OS
-        if (TR_ENGINE_PHP_OS === "WIN") {
+        if (TR_ENGINE_PHP_OS === 'WIN') {
             $rslt = "\r\n";
-        } else if (TR_ENGINE_PHP_OS === "MAC") {
+        } else if (TR_ENGINE_PHP_OS === 'MAC') {
             $rslt = "\r";
         } else {
             $rslt = "\n";
@@ -396,6 +396,6 @@ class CoreInfo
      */
     private static function getGlobalServer($keyName)
     {
-        return (isset(self::$unsafeGlobalVars['_SERVER'])) ? self::$unsafeGlobalVars['_SERVER'][$keyName] : "";
+        return (isset(self::$unsafeGlobalVars['_SERVER'])) ? self::$unsafeGlobalVars['_SERVER'][$keyName] : '';
     }
 }

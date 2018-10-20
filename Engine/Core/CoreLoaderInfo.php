@@ -15,35 +15,35 @@ class CoreLoaderInfo
      *
      * @var string
      */
-    public $keyName = "";
+    public $keyName = '';
 
     /**
      * Type de fichier.
      *
      * @var string
      */
-    public $fileType = "";
+    public $fileType = '';
 
     /**
      * Préfixe de la classe si c'est un nom court qui nécessite plus de précision.
      *
      * @var string
      */
-    public $prefixName = "";
+    public $prefixName = '';
 
     /**
      * Chemin absolu vers le fichier.
      *
      * @var string
      */
-    public $path = "";
+    public $path = '';
 
     /**
      * Représente la clé unique utilisé pour référencer le fichier dans le cache.
      *
      * @var string
      */
-    public $uniqueFileKey = "";
+    public $uniqueFileKey = '';
 
     /**
      * Nouvelle information sur le fichier à charger.

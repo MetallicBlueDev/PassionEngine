@@ -56,7 +56,7 @@ class CoreLayout
     public const DEFAULT_VIEW_SETTING = "setting";
 
     /**
-     * Affichage uniquement du module (si javascript activé).
+     * Affichage uniquement du module (si javaScript activé).
      * layout=module
      *
      * @var string
@@ -72,7 +72,7 @@ class CoreLayout
     public const MODULE_PAGE = "modulepage";
 
     /**
-     * Affichage uniquement du block (si javascript activé).
+     * Affichage uniquement du block (si javaScript activé).
      * layout=block
      *
      * @var string

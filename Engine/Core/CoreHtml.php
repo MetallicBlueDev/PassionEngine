@@ -591,7 +591,7 @@ class CoreHtml
     }
 
     /**
-     * Reset des codes et fichier inclus javascript.
+     * Reset des codes et fichier inclus javaScript.
      */
     private function resetJavascript(): void
     {
