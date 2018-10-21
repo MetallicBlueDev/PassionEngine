@@ -1,4 +1,4 @@
-# IntelliJ project files 
+# IntelliJ project files
 *.iml
 *.iws
 *.ipr
@@ -10,7 +10,7 @@
 .project
 
 # NetBeans specific
-nbproject/private/
+nbproject/
 build/
 nbbuild/
 dist/
@@ -26,4 +26,7 @@ Thumbs.db
 Desktop.ini
 
 # TR ENGINE temporary files
+vendor/
+nbproject/
+composer.lock
 tmp/
