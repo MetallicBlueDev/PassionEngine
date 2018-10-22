@@ -15,7 +15,7 @@ use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Exec\ExecTimeMarker;
 
 // Marque le passage dans l'index
-define("TR_ENGINE_INDEX",
+define("TR_ENGINE_BOOTSTRAP",
        true);
 
 // Chargement et exécution de la sécurité

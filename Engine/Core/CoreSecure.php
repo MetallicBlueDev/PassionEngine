@@ -84,9 +84,9 @@ class CoreSecure
         $this->checkGlobals();
 
         // Attention: il ne faut pas définir l'index avant CoreInfo mais avant CoreLoader
-        if (!defined("TR_ENGINE_INDEX")) {
+        if (!defined("TR_ENGINE_BOOTSTRAP")) {
             $this->locked = true;
-            define("TR_ENGINE_INDEX",
+            define("TR_ENGINE_BOOTSTRAP",
                    true);
         }
 

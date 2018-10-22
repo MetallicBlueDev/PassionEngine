@@ -98,13 +98,13 @@ class CoreInfo
             $info = new CoreInfo();
 
             /**
-             * Version php sous forme x.x.x.x (exemple : 7.1.0).
+             * Version PHP sous forme x.x.x.x (exemple : 7.1.0).
              */
             define('TR_ENGINE_PHP_MINIMUM_VERSION',
                    '7.1.0');
 
             /**
-             * Version php sous forme x.x.x.x (exemple : 5.2.9.2).
+             * Version PHP sous forme x.x.x.x (exemple : 5.2.9.2).
              */
             define('TR_ENGINE_PHP_VERSION',
                    $info->getPhpVersion());
@@ -145,10 +145,10 @@ class CoreInfo
              * Numéro de version du moteur.
              *
              * contrôle de révision
-             * xx -> version courante
-             * xx -> fonctionnalités ajoutées
-             * xx -> bugs ou failles critiques corrigés
-             * xx -> bug mineur
+             * XX -> version courante
+             * XX -> fonctionnalités ajoutées
+             * XX -> bugs ou failles critiques corrigés
+             * XX -> bug mineur
              *
              * @var string
              */
@@ -181,7 +181,7 @@ class CoreInfo
         $baseDir = '';
 
         // Recherche du chemin absolu depuis n'importe quel fichier
-        if (defined('TR_ENGINE_INDEX')) {
+        if (defined('TR_ENGINE_BOOTSTRAP')) {
             // Nous sommes dans l'index
             $baseDir = getcwd();
         } else {

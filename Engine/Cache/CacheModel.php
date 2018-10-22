@@ -223,7 +223,7 @@ abstract class CacheModel extends CoreTransaction
 
             // Ecriture de l'entête
             $content = "<?php\n"
-                . "if (!defined('TR_ENGINE_INDEX')){"
+                . "if (!defined('TR_ENGINE_BOOTSTRAP')){"
                 . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
                 . "}"
                 . "// Generated on " . date('Y-m-d H:i:s') . "\n"
