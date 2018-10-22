@@ -28,5 +28,4 @@ Desktop.ini
 # TR ENGINE temporary files
 vendor/
 nbproject/
-composer.lock
 tmp/
