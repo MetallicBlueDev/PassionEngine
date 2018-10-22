@@ -230,7 +230,7 @@ class LibMakeStyle
      */
     public static function isTemplateDirectory($directory)
     {
-        return !empty($directory) && is_dir(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $directory);
+        return !empty($directory) && is_dir(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $directory);
     }
 
     /**
@@ -273,9 +273,9 @@ class LibMakeStyle
 
         if ($this->debugMode) {
             // En debug mode, on utilise le fichier par défaut
-            $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
+            $path = TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
         } else {
-            $path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . self::$templateDirectory . DIRECTORY_SEPARATOR . $this->fileName;
+            $path = TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . self::$templateDirectory . DIRECTORY_SEPARATOR . $this->fileName;
         }
         return $path;
     }

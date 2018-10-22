@@ -175,7 +175,7 @@ class CoreMain
     public function install(): void
     {
         // TODO installation a coder
-//        $installPath = TR_ENGINE_INDEX_DIRECTORY . "/install/index.php";
+//        $installPath = TR_ENGINE_ROOT_DIRECTORY . "/install/index.php";
 //        if (is_file($installPath)) {
 //            require $installPath;
 //        }

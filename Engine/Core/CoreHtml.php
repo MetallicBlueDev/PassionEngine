@@ -481,7 +481,7 @@ class CoreHtml
     private function addCssFile(string $filePath,
                                 string $options = ''): void
     {
-        if (is_file(TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
+        if (is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
                                                                                   DIRECTORY_SEPARATOR,
                                                                                   $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,

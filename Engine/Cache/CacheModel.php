@@ -205,7 +205,7 @@ abstract class CacheModel extends CoreTransaction
             // Recherche du dossier parent
             $dirBase = '';
 
-            $localDir = str_replace(TR_ENGINE_INDEX_DIRECTORY,
+            $localDir = str_replace(TR_ENGINE_ROOT_DIRECTORY,
                                     '',
                                     $filePath);
 

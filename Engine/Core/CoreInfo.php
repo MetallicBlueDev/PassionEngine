@@ -114,7 +114,7 @@ class CoreInfo
              *
              * @var string
              */
-            define('TR_ENGINE_INDEX_DIRECTORY',
+            define('TR_ENGINE_ROOT_DIRECTORY',
                    $info->getIndexDirectory());
 
             /**
@@ -284,7 +284,7 @@ class CoreInfo
 
             // Recherche du dossier courant
             $urlBaseArray = explode(DIRECTORY_SEPARATOR,
-                                    TR_ENGINE_INDEX_DIRECTORY);
+                                    TR_ENGINE_ROOT_DIRECTORY);
 
             // Construction du lien
             $urlFinal = $this->getUrlAddressBuilded($currentUrlArray,

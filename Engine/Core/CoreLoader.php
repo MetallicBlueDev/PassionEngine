@@ -586,7 +586,7 @@ class CoreLoader
                                                                     array($info->keyName, $info->fileType));
             }
 
-            $info->path = TR_ENGINE_INDEX_DIRECTORY . DIRECTORY_SEPARATOR . $path . '.php';
+            $info->path = TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path . '.php';
         }
     }
 
