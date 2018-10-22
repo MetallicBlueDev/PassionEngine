@@ -1,11 +1,5 @@
 <?php
 
-/**
- * A inclure dans un fichier contenant une logique à exécuter.
- * Exemple:
- * require dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
- */
-
 namespace TREngine\Engine;
 
 use TREngine\Engine\Core\CoreLoader;

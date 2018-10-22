@@ -18,7 +18,9 @@
         "issues": "https://github.com/Tr4ncer/TREngine/issues"
     },
     "prefer-stable": true,
-    "require": {},
+    "require": {
+        "php": ">=7.1"
+    },
     "require-dev": {
         "phpunit/phpunit": "7.4.1"
     }
