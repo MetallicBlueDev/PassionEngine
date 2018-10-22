@@ -166,7 +166,7 @@ class CoreLoader
 
         self::$loadedFiles = array();
 
-        require 'CoreLoaderInfo.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'CoreLoaderInfo.php';
         $CoreLoaderClass = new ReflectionClass(new CoreLoader());
 
         if (!spl_autoload_register(array(

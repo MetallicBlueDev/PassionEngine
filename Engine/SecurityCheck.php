@@ -14,7 +14,7 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
     // Vérification du serveur et de la version PHP
     if (!class_exists("CoreInfo",
                       false)) {
-        require 'Core' . DIRECTORY_SEPARATOR . 'CoreInfo.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'CoreInfo.php';
 
         // Les Superglobales ne peuvent pas être appelées directement dans une classe.
         // Injection des informations dans un environnement sécurisé
@@ -50,7 +50,7 @@ if (!defined("TR_ENGINE_INITIALIZED")) {
     // Vérification de l'inclusion du chargeur
     if (!class_exists("CoreLoader",
                       false)) {
-        require 'Core' . DIRECTORY_SEPARATOR . 'CoreLoader.php';
+        require __DIR__ . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'CoreLoader.php';
     }
 }
 
