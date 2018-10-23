@@ -17,7 +17,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const DEFAULT_LAYOUT = "default";
+    public const DEFAULT_LAYOUT = 'default';
 
     /**
      * Nom de la page par défaut.
@@ -25,35 +25,35 @@ class CoreLayout
      *
      * @var string
      */
-    public const DEFAULT_PAGE = "index";
+    public const DEFAULT_PAGE = 'index';
 
     /**
      * Nom de la méthode d'affichage principal.
      *
      * @var string
      */
-    public const DEFAULT_VIEW_DISPLAY = "display";
+    public const DEFAULT_VIEW_DISPLAY = 'display';
 
     /**
      * Nom de la méthode d'installation.
      *
      * @var string
      */
-    public const DEFAULT_VIEW_INSTALL = "install";
+    public const DEFAULT_VIEW_INSTALL = 'install';
 
     /**
      * Nom de la méthode de désinstallation.
      *
      * @var string
      */
-    public const DEFAULT_VIEW_UNINSTALL = "uninstall";
+    public const DEFAULT_VIEW_UNINSTALL = 'uninstall';
 
     /**
      * Nom de la méthode de configuration.
      *
      * @var string
      */
-    public const DEFAULT_VIEW_SETTING = "setting";
+    public const DEFAULT_VIEW_SETTING = 'setting';
 
     /**
      * Affichage uniquement du module (si javaScript activé).
@@ -61,7 +61,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const MODULE = "module";
+    public const MODULE = 'module';
 
     /**
      * Affichage uniquement du module (mode forcé).
@@ -69,7 +69,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const MODULE_PAGE = "modulepage";
+    public const MODULE_PAGE = 'modulepage';
 
     /**
      * Affichage uniquement du block (si javaScript activé).
@@ -77,7 +77,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const BLOCK = "block";
+    public const BLOCK = 'block';
 
     /**
      * Affichage uniquement du block (mode forcé).
@@ -85,7 +85,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const BLOCK_PAGE = "blockpage";
+    public const BLOCK_PAGE = 'blockpage';
 
     /**
      * Requête permettant d'obtenir la mise en plage.
@@ -93,7 +93,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_LAYOUT = "layout";
+    public const REQUEST_LAYOUT = 'layout';
 
     /**
      * Requête permettant d'obtenir le nom du module.
@@ -101,7 +101,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_MODULE = "module";
+    public const REQUEST_MODULE = 'module';
 
     /**
      * Requête permettant d'obtenir le type de block.
@@ -109,7 +109,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_BLOCKTYPE = "blockType";
+    public const REQUEST_BLOCKTYPE = 'blockType';
 
     /**
      * Requête permettant d'obtenir l'identifiant du block.
@@ -117,7 +117,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_BLOCKID = "blockId";
+    public const REQUEST_BLOCKID = 'blockId';
 
     /**
      * Requête permettant d'obtenir la méthode d'affichage.
@@ -125,7 +125,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_VIEW = "view";
+    public const REQUEST_VIEW = 'view';
 
     /**
      * Requête permettant d'obtenir le nom de la page.
@@ -133,7 +133,7 @@ class CoreLayout
      *
      * @var string
      */
-    public const REQUEST_PAGE = "page";
+    public const REQUEST_PAGE = 'page';
 
     /**
      * Block désactivé (position inconnue).
@@ -201,17 +201,17 @@ class CoreLayout
     /**
      * Liste des positions valides pour un block.
      *
-     * @var array array("name" => 0)
+     * @var array array('name' => 0)
      */
     public const BLOCK_SIDE_LIST = array(
-        "right" => self::BLOCK_SIDE_RIGHT,
-        "left" => self::BLOCK_SIDE_LEFT,
-        "top" => self::BLOCK_SIDE_TOP,
-        "bottom" => self::BLOCK_SIDE_BOTTOM,
-        "moduleright" => self::BLOCK_SIDE_MODULE_RIGHT,
-        "moduleleft" => self::BLOCK_SIDE_MODULE_LEFT,
-        "moduletop" => self::BLOCK_SIDE_MODULE_TOP,
-        "modulebottom" => self::BLOCK_SIDE_MODULE_BOTTOM
+        'right' => self::BLOCK_SIDE_RIGHT,
+        'left' => self::BLOCK_SIDE_LEFT,
+        'top' => self::BLOCK_SIDE_TOP,
+        'bottom' => self::BLOCK_SIDE_BOTTOM,
+        'moduleright' => self::BLOCK_SIDE_MODULE_RIGHT,
+        'moduleleft' => self::BLOCK_SIDE_MODULE_LEFT,
+        'moduletop' => self::BLOCK_SIDE_MODULE_TOP,
+        'modulebottom' => self::BLOCK_SIDE_MODULE_BOTTOM
     );
 
 }

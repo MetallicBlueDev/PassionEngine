@@ -48,7 +48,7 @@ class CoreLogger
     private static $messages = array();
 
     /**
-     * Tableau contenant toutes les lignes sql envoyées.
+     * Tableau contenant toutes les lignes SQL envoyées.
      *
      * @var array
      */
@@ -151,7 +151,7 @@ class CoreLogger
     }
 
     /**
-     * Affichage des informations de debug.
+     * Affichage des informations de DEBUG.
      */
     public static function displayDebugInformations(): void
     {

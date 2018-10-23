@@ -12,8 +12,7 @@ use TREngine\Engine\Exec\ExecTimeMarker;
 use TREngine\Engine\Exec\ExecUtils;
 
 /**
- * Gestionnaire du noyau et d'enchainement dans le moteur.
- * Classe principal du moteur.
+ * Gestionnaire du noyau principal du moteur.
  *
  * @author Sébastien Villemain
  */
@@ -21,7 +20,7 @@ class CoreMain
 {
 
     /**
-     * Instance principal du moteur.
+     * Instance principale du moteur.
      *
      * @var CoreMain
      */
@@ -72,14 +71,14 @@ class CoreMain
     {
         if (self::$coreMain === null) {
             if (CoreSecure::debuggingMode()) {
-                ExecTimeMarker::startMeasurement("core");
+                ExecTimeMarker::startMeasurement('core');
             }
 
             self::$coreMain = new CoreMain();
             self::$coreMain->prepare();
 
             if (CoreSecure::debuggingMode()) {
-                ExecTimeMarker::stopMeasurement("core");
+                ExecTimeMarker::stopMeasurement('core');
             }
         }
     }
@@ -123,7 +122,7 @@ class CoreMain
     public function start(): void
     {
         if (CoreSecure::debuggingMode()) {
-            ExecTimeMarker::startMeasurement("launcher");
+            ExecTimeMarker::startMeasurement('launcher');
         }
 
         CoreTranslate::checkInstance();
@@ -149,10 +148,10 @@ class CoreMain
             $this->runJobs();
         }
 
-        ExecTimeMarker::stopMeasurement("main");
+        ExecTimeMarker::stopMeasurement('main');
 
         if (CoreSecure::debuggingMode()) {
-            ExecTimeMarker::stopMeasurement("launcher");
+            ExecTimeMarker::stopMeasurement('launcher');
         } else {
             $this->compressionClose();
         }
@@ -161,7 +160,7 @@ class CoreMain
     /**
      * Recherche de nouveau composant.
      *
-     * @return bool true nouveau composant détecté.
+     * @return bool Nouveau composant détecté.
      */
     public function newComponentDetected(): bool
     {
@@ -170,12 +169,12 @@ class CoreMain
     }
 
     /**
-     * Démarrage de l'installeur.
+     * Démarrage du processus d'installation.
      */
     public function install(): void
     {
         // TODO installation a coder
-//        $installPath = TR_ENGINE_ROOT_DIRECTORY . "/install/index.php";
+//        $installPath = TR_ENGINE_ROOT_DIRECTORY . '/install/index.php';
 //        if (is_file($installPath)) {
 //            require $installPath;
 //        }
@@ -220,18 +219,18 @@ class CoreMain
     {
         if ($this->getConfigs()->isInMaintenanceMode()) {
             // Mode maintenance: possibilité de s'identifier
-            $this->route->setBlockType("Login");
+            $this->route->setBlockType('Login');
             $this->route->requestBlock();
             $requestedBlockData = $this->route->getRequestedBlockDataByType();
             $requestedBlockData->buildFinalOutput();
 
             // Affichage des données de la page de maintenance (fermeture)
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->assignString("closeText",
+            $libMakeStyle->assignString('closeText',
                                         CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(8)));
-            $libMakeStyle->assignString("closeReason",
+            $libMakeStyle->assignString('closeReason',
                                         $this->getConfigs()->getDefaultSiteCloseReason());
-            $libMakeStyle->display("close");
+            $libMakeStyle->display('close');
         } else {
             // Mode normal: exécution générale
             $this->route->requestModule();
@@ -241,7 +240,7 @@ class CoreMain
             LibBlock::getInstance()->buildAllBlocks();
 
             $libMakeStyle = new LibMakeStyle();
-            $libMakeStyle->display("main");
+            $libMakeStyle->display('main');
         }
     }
 
@@ -284,22 +283,21 @@ class CoreMain
     }
 
     /**
-     * Lance le tampon de sortie.
-     * Entête & tamporisation de sortie.
+     * Enclenche la temporisation de sortie.
      */
     private function compressionOpen(): void
     {
-        header("Vary: Cookie, Accept-Encoding");
+        header('Vary: Cookie, Accept-Encoding');
         // HTTP_ACCEPT_ENCODING => gzip
-        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== "1" && function_exists("ob_gzhandler") && !$this->getConfigs()->doUrlRewriting()) {
-            ob_start("ob_gzhandler");
+        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== '1' && function_exists('ob_gzhandler') && !$this->getConfigs()->doUrlRewriting()) {
+            ob_start('ob_gzhandler');
         } else {
             ob_start();
         }
     }
 
     /**
-     * Relachement des tampons de sortie.
+     * Envoie les données du tampon de sortie et éteint la temporisation de sortie.
      */
     private function compressionClose(): void
     {
@@ -309,8 +307,6 @@ class CoreMain
             $canContinue = ob_end_flush();
         } while ($canContinue);
     }
-
-    private $test = null;
 
     /**
      * Préparation TR ENGINE.
@@ -324,21 +320,21 @@ class CoreMain
     private function prepare(): void
     {
         if (!$this->loadCache()) {
-            throw new FailCache("unable to load cache config",
+            throw new FailCache('unable to load cache config',
                                 FailBase::getErrorCodeName(5),
-                                                           array(CoreLoader::getIncludeAbsolutePath("Includes_cache")));
+                                                           array(CoreLoader::getIncludeAbsolutePath('Includes_cache')));
         }
 
         if (!$this->loadSql()) {
-            throw new FailSql("unable to load database config",
+            throw new FailSql('unable to load database config',
                               FailBase::getErrorCodeName(6),
-                                                         array(CoreLoader::getIncludeAbsolutePath("Includes_database")));
+                                                         array(CoreLoader::getIncludeAbsolutePath('Includes_database')));
         }
 
         if (!$this->loadConfig()) {
-            throw new FailEngine("unable to general config",
+            throw new FailEngine('unable to general config',
                                  FailBase::getErrorCodeName(7),
-                                                            array(CoreLoader::getIncludeAbsolutePath("Includes_config")));
+                                                            array(CoreLoader::getIncludeAbsolutePath('Includes_config')));
         }
 
         // Chargement de la session
@@ -348,15 +344,15 @@ class CoreMain
     /**
      * Charge le gestionnaire de cache.
      *
-     * @return bool true chargé
+     * @return bool Chargé
      */
     private function loadCache(): bool
     {
-        $canUse = CoreLoader::isCallable("CoreCache");
+        $canUse = CoreLoader::isCallable('CoreCache');
 
         if (!$canUse) {
             // Chemin vers le fichier de configuration du cache
-            if (CoreLoader::includeLoader("Includes_cache")) {
+            if (CoreLoader::includeLoader('Includes_cache')) {
                 // Démarrage de l'instance CoreCache
                 CoreCache::checkInstance();
 
@@ -367,17 +363,17 @@ class CoreMain
     }
 
     /**
-     * Charge le gestionnaire Sql.
+     * Charge le gestionnaire SQL.
      *
-     * @return bool true chargé
+     * @return bool Chargé
      */
     private function loadSql(): bool
     {
-        $canUse = CoreLoader::isCallable("CoreSql");
+        $canUse = CoreLoader::isCallable('CoreSql');
 
         if (!$canUse) {
             // Chemin vers le fichier de configuration de la base de données
-            if (CoreLoader::includeLoader("Includes_database")) {
+            if (CoreLoader::includeLoader('Includes_database')) {
                 // Démarrage de l'instance CoreSql
                 CoreSql::checkInstance();
 
@@ -396,13 +392,13 @@ class CoreMain
     private function loadConfig(): bool
     {
         // Chemin vers le fichier de configuration du moteur
-        $canUse = CoreLoader::includeLoader("Includes_config");
+        $canUse = CoreLoader::includeLoader('Includes_config');
 
         if ($canUse) {
             $canUse = $this->getConfigs()->initialize();
 
-            if (defined("TR_ENGINE_STATUT") && TR_ENGINE_STATUT == "close") {
-                throw new FailEngine("web site is closed",
+            if (defined('TR_ENGINE_STATUT') && TR_ENGINE_STATUT == 'close') {
+                throw new FailEngine('web site is closed',
                                      FailBase::getErrorCodeName(8));
             }
 
@@ -423,16 +419,16 @@ class CoreMain
         $coreCache = CoreCache::getInstance(CoreCacheSection::TMP);
 
         // Si le cache est disponible
-        if ($coreCache->cached("configs.php")) {
+        if ($coreCache->cached('configs.php')) {
             // Chargement de la configuration via la cache
-            $configs = $coreCache->readCacheAsArray("configs.php");
+            $configs = $coreCache->readCacheAsArray('configs.php');
         } else {
-            $content = "";
+            $content = '';
             $coreSql = CoreSql::getInstance()->getSelectedBase();
 
             // Requête vers la base de données de configs
             $coreSql->select(CoreTable::CONFIG,
-                             array("name", "value"))->query();
+                             array('name', 'value'))->query();
             $configs = ExecUtils::getArrayConfigs($coreSql->fetchArray());
 
             foreach ($configs as $key => $value) {
@@ -440,7 +436,7 @@ class CoreMain
             }
 
             // Mise en cache
-            $coreCache->writeCacheAsString("configs.php",
+            $coreCache->writeCacheAsString('configs.php',
                                            $content);
         }
 

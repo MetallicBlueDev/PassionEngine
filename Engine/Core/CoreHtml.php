@@ -8,7 +8,7 @@ use TREngine\Engine\Exec\ExecCookie;
 use TREngine\Engine\Exec\ExecCrypt;
 
 /**
- * Gestionnaire d'entête et de contenu HTML.
+ * Gestionnaire de contenu HTML.
  *
  * @author Sébastien Villemain
  */
@@ -218,7 +218,7 @@ class CoreHtml
     }
 
     /**
-     * Ajoute une feuille de style CSS provenant du dossier ressource/css à l'entête.
+     * Ajoute une feuille de style CSS à l'entête.
      *
      * @param string $fileName
      * @param string $options
@@ -482,8 +482,8 @@ class CoreHtml
                                 string $options = ''): void
     {
         if (is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
-                                                                                  DIRECTORY_SEPARATOR,
-                                                                                  $filePath))) {
+                                                                                 DIRECTORY_SEPARATOR,
+                                                                                 $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,
                                     '/',
                                     $filePath);

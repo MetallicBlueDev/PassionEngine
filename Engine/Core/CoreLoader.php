@@ -416,7 +416,7 @@ class CoreLoader
      * Vérifie si le fichier demandé a été chargé.
      *
      * @param CoreLoaderInfo $info Information sur le fichier.
-     * @return bool true si c'est déjà chargé.
+     * @return bool Chargé.
      */
     private static function loaded(CoreLoaderInfo &$info): bool
     {
@@ -428,7 +428,7 @@ class CoreLoader
      * Chargeur de fichier.
      *
      * @param CoreLoaderInfo $info Information sur le fichier.
-     * @return bool true chargé.
+     * @return bool Chargé.
      * @throws FailLoader
      */
     private static function &manageLoad(CoreLoaderInfo &$info): bool
