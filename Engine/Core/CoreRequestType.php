@@ -17,7 +17,7 @@ class CoreRequestType
      *
      * @var string
      */
-    public const GET = "_GET";
+    public const GET = '_GET';
 
     /**
      * $_POST
@@ -25,7 +25,7 @@ class CoreRequestType
      *
      * @var string
      */
-    public const POST = "_POST";
+    public const POST = '_POST';
 
     /**
      * $_FILES
@@ -33,7 +33,7 @@ class CoreRequestType
      *
      * @var string
      */
-    public const FILES = "_FILES";
+    public const FILES = '_FILES';
 
     /**
      * $_COOKIE
@@ -41,7 +41,7 @@ class CoreRequestType
      *
      * @var string
      */
-    public const COOKIE = "_COOKIE";
+    public const COOKIE = '_COOKIE';
 
     /**
      * $_ENV
@@ -49,7 +49,7 @@ class CoreRequestType
      *
      * @var string
      */
-    public const ENV = "_ENV";
+    public const ENV = '_ENV';
 
     /**
      * $_SERVER
@@ -57,6 +57,6 @@ class CoreRequestType
      *
      * @var string
      */
-    public const SERVER = "_SERVER";
+    public const SERVER = '_SERVER';
 
 }

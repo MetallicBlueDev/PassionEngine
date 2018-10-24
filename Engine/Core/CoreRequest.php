@@ -30,10 +30,10 @@ class CoreRequest
      */
     public static function &getBoolean(string $name,
                                        bool $default = false,
-                                       string $hash = "default"): bool
+                                       string $hash = 'default'): bool
     {
         return self::getMixed($name,
-                              "BOOL",
+                              'BOOL',
                               $default,
                               $hash);
     }
@@ -48,10 +48,10 @@ class CoreRequest
      */
     public static function &getInteger(string $name,
                                        int $default = 0,
-                                       string $hash = "default"): int
+                                       string $hash = 'default'): int
     {
         return self::getMixed($name,
-                              "INT",
+                              'INT',
                               $default,
                               $hash);
     }
@@ -66,16 +66,16 @@ class CoreRequest
      */
     public static function &getFloat(string $name,
                                      float $default = 0.0,
-                                     string $hash = "default"): float
+                                     string $hash = 'default'): float
     {
         return self::getMixed($name,
-                              "FLOAT",
+                              'FLOAT',
                               $default,
                               $hash);
     }
 
     /**
-     * Retourne la variable demandée de type chaine de caractères base64.
+     * Retourne la variable demandée de type chaîne de caractères base64.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
@@ -83,17 +83,17 @@ class CoreRequest
      * @return string
      */
     public static function &getBase64(string $name,
-                                      string $default = "",
-                                      string $hash = "default"): string
+                                      string $default = '',
+                                      string $hash = 'default'): string
     {
         return self::getMixed($name,
-                              "BASE64",
+                              'BASE64',
                               $default,
                               $hash);
     }
 
     /**
-     * Retourne la variable demandée de type chaine de caratères d'un seul mot.
+     * Retourne la variable demandée de type chaîne de caractères d'un seul mot.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
@@ -101,17 +101,17 @@ class CoreRequest
      * @return string
      */
     public static function &getWord(string $name,
-                                    string $default = "",
-                                    string $hash = "default"): string
+                                    string $default = '',
+                                    string $hash = 'default'): string
     {
         return self::getMixed($name,
-                              "WORD",
+                              'WORD',
                               $default,
                               $hash);
     }
 
     /**
-     * Retourne la variable demandée de type chaine de caratères.
+     * Retourne la variable demandée de type chaîne de caractères.
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
@@ -119,24 +119,24 @@ class CoreRequest
      * @return string
      */
     public static function &getString(string $name,
-                                      string $default = "",
-                                      string $hash = "default"): string
+                                      string $default = '',
+                                      string $hash = 'default'): string
     {
         return self::getMixed($name,
-                              "STRING",
+                              'STRING',
                               $default,
                               $hash);
     }
 
     /**
-     * Retourne le type de méthode utlisée pour la requête.
+     * Retourne le type de méthode utilisée pour la requête.
      *
      * @return string
      */
     public static function &getRequestMethod(): string
     {
-        $hash = "_" . self::getString("REQUEST_METHOD",
-                                      "",
+        $hash = '_' . self::getString('REQUEST_METHOD',
+                                      '',
                                       CoreRequestType::SERVER);
         return $hash;
     }
@@ -148,8 +148,8 @@ class CoreRequest
      */
     public static function &getHttpReferer(): string
     {
-        $hash = self::getUnsafeString("HTTP_REFERER",
-                                      "",
+        $hash = self::getUnsafeString('HTTP_REFERER',
+                                      '',
                                       CoreRequestType::SERVER);
         return $hash;
     }
@@ -161,8 +161,8 @@ class CoreRequest
      */
     public static function &getQueryString(): string
     {
-        return self::getString("QUERY_STRING",
-                               "",
+        return self::getString('QUERY_STRING',
+                               '',
                                CoreRequestType::SERVER);
     }
 
@@ -174,11 +174,11 @@ class CoreRequest
     public static function getRefererQueryString(): string
     {
         $queryString = self::getQueryString();
-        return !empty($queryString) ? urlencode(base64_encode($queryString)) : "";
+        return !empty($queryString) ? urlencode(base64_encode($queryString)) : '';
     }
 
     /**
-     * Retourne la variable demandée de type chaine de caratères (version non sécurisée).
+     * Retourne la variable demandée de type chaîne de caractères (version non sécurisée).
      *
      * @param string $name Nom de la variable
      * @param string $default Donnée par défaut
@@ -186,11 +186,11 @@ class CoreRequest
      * @return string
      */
     private static function &getUnsafeString(string $name,
-                                             string $default = "",
-                                             string $hash = "default"): string
+                                             string $default = '',
+                                             string $hash = 'default'): string
     {
         return self::getMixed($name,
-                              "UNSAFE-STRING",
+                              'UNSAFE-STRING',
                               $default,
                               $hash);
     }
@@ -206,8 +206,8 @@ class CoreRequest
      */
     private static function &getMixed(string $name,
                                       string $type,
-                                      $default = "",
-                                      string $hash = "default")
+                                      $default = '',
+                                      string $hash = 'default')
     {
         $rslt = null;
 
@@ -272,7 +272,7 @@ class CoreRequest
         $input = array();
 
         if (!$useDefault) {
-            throw new FailEngine("invalid request method",
+            throw new FailEngine('invalid request method',
                                  FailBase::getErrorCodeName(9),
                                                             array($hash),
                                                             true);
@@ -323,7 +323,7 @@ class CoreRequest
                                                true);
                 break;
             default:
-                CoreLogger::addException("CoreRequest : data type unknown");
+                CoreLogger::addException('CoreRequest : data type unknown');
                 $content = self::protectString($content);
                 break;
         }
@@ -331,7 +331,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en entier.
+     * Force la valeur en type entier.
      *
      * @param mixed $content
      * @return int
@@ -347,7 +347,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en virgule flottante.
+     * Force la valeur en type virgule flottante.
      *
      * @param mixed $content
      * @return float
@@ -363,7 +363,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en valeur booléenne.
+     * Force la valeur en type booléen.
      *
      * @param mixed $content
      * @return bool
@@ -371,12 +371,12 @@ class CoreRequest
     private static function &protectBool($content): bool
     {
         $content = (string) $content;
-        $content = (bool) (($content === "1" || $content === "true") ? true : false);
+        $content = (bool) (($content === '1' || $content === 'true') ? true : false);
         return $content;
     }
 
     /**
-     * Force le typage en chaine de caractère en base 64.
+     * Force la valeur en chaîne de caractère en base 64.
      *
      * @param mixed $content
      * @return string
@@ -390,7 +390,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en chaine de caractère sur un mot.
+     * Force la valeur en chaîne de caractère sur un mot.
      *
      * @param mixed $content
      * @return string
@@ -404,7 +404,7 @@ class CoreRequest
     }
 
     /**
-     * Force le typage en chaine de caractère.
+     * Force la valeur en chaîne de caractère.
      *
      * @param mixed $content
      * @return string
@@ -416,7 +416,7 @@ class CoreRequest
 
         if (!$useUnsafeMethod && preg_match('/(\.\.|http:|ftp:)/',
                                             $content)) {
-            $content = "";
+            $content = '';
         }
         return $content;
     }
