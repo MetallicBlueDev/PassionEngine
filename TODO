@@ -3,4 +3,4 @@ Replace all quotes
 
 " => '
 
-Engine\Core\CoreRequestType OK
+Engine\Core\CoreSession OK

@@ -22,35 +22,35 @@ class CoreSecure
      * @var array
      */
     private const BAD_QUERY_STRINGS = array(
-        "select",
-        "union",
-        "insert",
-        "update",
-        "and",
-        "%20union%20",
-        "/*",
-        "*/union/*",
-        "+union+",
-        "load_file",
-        "outfile",
-        "document.cookie",
-        "document.write",
-        "onmouse",
-        "<script",
-        "<iframe",
-        "<applet",
-        "<meta",
-        "<style",
-        "<form",
-        "<img",
-        "<body",
-        "<link",
-        "<comment",
-        "..",
-        "http://",
-        "https://",
-        "ftp://",
-        "%3C%3F");
+        'select',
+        'union',
+        'insert',
+        'update',
+        'and',
+        '%20union%20',
+        '/*',
+        '*/union/*',
+        '+union+',
+        'load_file',
+        'outfile',
+        'document.cookie',
+        'document.write',
+        'onmouse',
+        '<script',
+        '<iframe',
+        '<applet',
+        '<meta',
+        '<style',
+        '<form',
+        '<img',
+        '<body',
+        '<link',
+        '<comment',
+        '..',
+        'http://',
+        'https://',
+        'ftp://',
+        '%3C%3F');
 
     /**
      * Instance de cette classe.
@@ -67,7 +67,7 @@ class CoreSecure
     private $locked = false;
 
     /**
-     * Activation du mode debug.
+     * Activation du mode DEBUG.
      *
      * @var bool
      */
@@ -84,13 +84,13 @@ class CoreSecure
         $this->checkGlobals();
 
         // Attention: il ne faut pas définir l'index avant CoreInfo mais avant CoreLoader
-        if (!defined("TR_ENGINE_BOOTSTRAP")) {
+        if (!defined('TR_ENGINE_BOOTSTRAP')) {
             $this->locked = true;
-            define("TR_ENGINE_BOOTSTRAP",
+            define('TR_ENGINE_BOOTSTRAP',
                    true);
         }
 
-        $this->debuggingMode = CoreRequest::getBoolean("debuggingMode",
+        $this->debuggingMode = CoreRequest::getBoolean('debuggingMode',
                                                        false,
                                                        CoreRequestType::GET);
     }
@@ -118,14 +118,14 @@ class CoreSecure
 
             // Si nous ne sommes pas passé par l'index
             if (self::$secure->locked()) {
-                throw new FailEngine("invalid access",
+                throw new FailEngine('invalid access',
                                      FailBase::getErrorCodeName(10));
             }
         }
     }
 
     /**
-     * Vérifie si le mode de statistique et de debug est actif.
+     * Vérifie si le mode DEBUG est actif.
      *
      * @return bool
      */
@@ -160,18 +160,18 @@ class CoreSecure
         $this->locked = true;
 
         if ($ex === null) {
-            $ex = new FailEngine("generic error");
+            $ex = new FailEngine('generic error');
         }
 
         // Préparation du template debug
         $libMakeStyle = new LibMakeStyle();
-        $libMakeStyle->assignString("errorMessageTitle",
+        $libMakeStyle->assignString('errorMessageTitle',
                                     $this->getErrorMessageTitle($ex));
-        $libMakeStyle->assignArray("debugMessages",
+        $libMakeStyle->assignArray('debugMessages',
                                    $this->getDebugMessages($ex));
 
         // Affichage du template en debug si problème
-        $libMakeStyle->display("debug",
+        $libMakeStyle->display('debug',
                                true);
 
         // Arret du moteur
@@ -194,10 +194,10 @@ class CoreSecure
         }
 
         if (empty($errorMessageTitle)) {
-            $errorMessageTitle = "Stop loading";
+            $errorMessageTitle = 'Stop loading';
 
             if ($this->debuggingMode) {
-                $errorMessageTitle .= ": " . $ex->getMessage();
+                $errorMessageTitle .= ': ' . $ex->getMessage();
             }
         }
         return $errorMessageTitle;
@@ -230,7 +230,7 @@ class CoreSecure
     {
         $this->appendExceptionMessage($ex,
                                       $messages);
-        $messages[] = "";
+        $messages[] = '';
         $this->appendExceptionTrace($ex,
                                     $messages);
     }
@@ -246,11 +246,11 @@ class CoreSecure
     {
         if ($this->debuggingMode) {
             if ($ex instanceof FailBase) {
-                $messages[] = "Exception " . $ex->getFailSourceName() . " (" . $ex->getCode() . ") : " . $ex->getMessage();
+                $messages[] = 'Exception ' . $ex->getFailSourceName() . ' (' . $ex->getCode() . ') : ' . $ex->getMessage();
                 $messages = array_merge($messages,
                                         $ex->getFailArgs());
             } else {
-                $messages[] = "Exception PHP (" . $ex->getCode() . ") : " . $ex->getMessage();
+                $messages[] = 'Exception PHP (' . $ex->getCode() . ') : ' . $ex->getMessage();
             }
         }
     }
@@ -265,21 +265,21 @@ class CoreSecure
                                           array &$messages): void
     {
         foreach ($ex->getTrace() as $traceValue) {
-            $errorLine = "";
+            $errorLine = '';
 
             if (is_array($traceValue)) {
                 foreach ($traceValue as $key => $value) {
-                    if ($key === "file" || $key === "function") {
-                        $value = preg_replace("/([a-zA-Z0-9._]+).php/",
-                                              "<span class=\"text_bold\">\\1</span>.php",
+                    if ($key === 'file' || $key === 'function') {
+                        $value = preg_replace('/([a-zA-Z0-9._]+).php/',
+                                              '<span class="text_bold">\\1</span>.php',
                                               $value);
-                        $errorLine .= " <span class=\"text_bold\">" . $key . "</span> " . $value;
-                    } else if ($key === "args" && !empty($value) && is_array($value)) {
-                        $errorLine .= " with [<span class=\"text_small\">" . print_r($value,
-                                                                                     true)
-                            . "</span>]";
-                    } else if ($key === "line" || $key == "class") {
-                        $errorLine .= " in <span class=\"text_bold\">" . $key . "</span> " . $value;
+                        $errorLine .= ' <span class="text_bold">' . $key . '</span> ' . $value;
+                    } else if ($key === 'args' && !empty($value) && is_array($value)) {
+                        $errorLine .= ' with [<span class="text_small">' . print_r($value,
+                                                                                   true)
+                            . '</span>]';
+                    } else if ($key === 'line' || $key == 'class') {
+                        $errorLine .= ' in <span class="text_bold">' . $key . '</span> ' . $value;
                     }
                 }
             }
@@ -297,22 +297,22 @@ class CoreSecure
      */
     private function appendSqlErrors(array &$messages): void
     {
-        if ($this->debuggingMode && CoreLoader::isCallable("CoreSql")) {
+        if ($this->debuggingMode && CoreLoader::isCallable('CoreSql')) {
             if (CoreSql::hasConnection()) {
                 $sqlErrors = CoreSql::getInstance()->getSelectedBase()->getLastError();
 
                 if (empty($sqlErrors)) {
-                    $sqlErrors = "(empty)";
+                    $sqlErrors = '(empty)';
                 }
 
                 if (!empty($sqlErrors)) {
-                    $messages[] = "";
-                    $messages[] = "<span class=\"text_bold\">Last Sql error message:</span>";
+                    $messages[] = '';
+                    $messages[] = '<span class="text_bold">Last Sql error message:</span>';
                     $messages = array_merge($messages,
                                             $sqlErrors);
                 }
             } else {
-                $messages[] = "No connection available to the database.";
+                $messages[] = 'No connection available to the database.';
             }
         }
     }
@@ -324,12 +324,12 @@ class CoreSecure
      */
     private function appendLoggerErrors(array &$messages): void
     {
-        if (CoreLoader::isCallable("CoreLogger")) {
+        if (CoreLoader::isCallable('CoreLogger')) {
             $loggerExceptions = CoreLogger::getExceptions();
 
             if (!empty($loggerExceptions)) {
-                $messages[] = "";
-                $messages[] = "<span class=\"text_bold\">Exceptions logged:</span>";
+                $messages[] = '';
+                $messages[] = '<span class="text_bold">Exceptions logged:</span>';
                 $messages = array_merge($messages,
                                         $loggerExceptions);
             }
@@ -360,7 +360,7 @@ class CoreSecure
             foreach (self::BAD_QUERY_STRINGS as $badStringValue) {
                 if (strpos($queryString,
                            $badStringValue)) {
-                    throw new FailEngine("invalid query string",
+                    throw new FailEngine('invalid query string',
                                          FailBase::getErrorCodeName(11));
                 }
             }
@@ -376,11 +376,11 @@ class CoreSecure
     {
         if (CoreRequest::getRequestMethod() === CoreRequestType::POST && !empty(CoreRequest::getHttpReferer())) {
             // Vérification du demandeur de la méthode POST
-            if (!preg_match("/" . CoreRequest::getString("HTTP_HOST",
-                                                         "",
-                                                         CoreRequestType::SERVER) . "/",
+            if (!preg_match('/' . CoreRequest::getString('HTTP_HOST',
+                                                         '',
+                                                         CoreRequestType::SERVER) . '/',
                                                          CoreRequest::getHttpReferer())) {
-                throw new FailEngine("invalid request/referer",
+                throw new FailEngine('invalid request/referer',
                                      FailBase::getErrorCodeName(12));
             }
         }
@@ -397,7 +397,7 @@ class CoreSecure
     }
 
     /**
-     * Ajoute un antislash pour chaque quote.
+     * Ajoute un caractère d'échappement pour chaque caractère de citation.
      *
      * @param mixed $key objet sans antislash
      */

@@ -28,21 +28,21 @@ class CoreRoute
      *
      * @var string
      */
-    private $module = "";
+    private $module = '';
 
     /**
      * Nom de la page.
      *
      * @var string
      */
-    private $page = "";
+    private $page = '';
 
     /**
      * Nom du paramètre d'affichage.
      *
      * @var string
      */
-    private $view = "";
+    private $view = '';
 
     /**
      * Identifiant du block demandé.
@@ -56,11 +56,10 @@ class CoreRoute
      *
      * @var string
      */
-    private $blockType = "";
+    private $blockType = '';
 
     /**
-     * Détermine si le chemin supporte le javascript.
-     * Affichage en mode Ajax.
+     * Détermine si le chemin supporte le javaScript.
      *
      * @var bool
      */
@@ -68,25 +67,24 @@ class CoreRoute
 
     /**
      * Nom complet de l'identifiant la division du contenu permettant d'afficher la page.
-     * Affichage en mode Ajax.
      *
      * @var string
      */
-    private $jsDivisionId = "";
+    private $jsDivisionId = '';
 
     /**
      * Action spécifique sur l'événement de clique d'un lien.
      *
      * @var string
      */
-    private $onClickForLink = "";
+    private $onClickForLink = '';
 
     /**
      * Code HTML supplémentaire d'un lien.
      *
      * @var string
      */
-    private $addonsForLink = "";
+    private $addonsForLink = '';
 
     private function __construct()
     {
@@ -94,7 +92,7 @@ class CoreRoute
     }
 
     /**
-     * Demande la création d'un nouveau routeur.
+     * Demande la création d'un nouveau router.
      *
      * @return CoreRoute
      */
@@ -136,7 +134,7 @@ class CoreRoute
     /**
      * Détermine si l'affichage se fait en écran complet (affichage classique).
      *
-     * @return bool true c'est en plein écran.
+     * @return bool C'est en plein écran.
      */
     public function isDefaultLayout(): bool
     {
@@ -144,9 +142,9 @@ class CoreRoute
     }
 
     /**
-     * Détermine si l'affichage se fait en écran minimal ciblé vers un module.
+     * Détermine si l'affichage se fait en écran minimal avec un module.
      *
-     * @return bool true c'est un affichage de module uniquement.
+     * @return bool C'est un affichage de module uniquement.
      */
     public function isModuleLayout(): bool
     {
@@ -154,9 +152,9 @@ class CoreRoute
     }
 
     /**
-     * Détermine si l'affichage se fait en écran minimal ciblé vers un block.
+     * Détermine si l'affichage se fait en écran minimal avec un block.
      *
-     * @return bool true c'est un affichage de block uniquement.
+     * @return bool C'est un affichage de block uniquement.
      */
     public function isBlockLayout(): bool
     {
@@ -164,8 +162,7 @@ class CoreRoute
     }
 
     /**
-     * Détermine si le chemin supporte le javascript.
-     * Affichage en mode Ajax.
+     * Détermine si le chemin supporte le javaScript.
      *
      * @return bool
      */
@@ -317,8 +314,7 @@ class CoreRoute
     }
 
     /**
-     * Active support du javascript.
-     * Affichage en mode Ajax.
+     * Active support du javaScript.
      *
      * @param bool $enable
      * @param bool $jsDivisionId
@@ -326,19 +322,19 @@ class CoreRoute
      * @throws FailEngine
      */
     public function setJsMode(bool $enable,
-                              string $jsDivisionId = ""): CoreRoute
+                              string $jsDivisionId = ''): CoreRoute
     {
         if ($enable) {
             if (empty($jsDivisionId)) {
-                throw new FailEngine("Division identifier is empty");
+                throw new FailEngine('Division identifier is empty');
             }
 
-            CoreHtml::getInstance()->addJavascriptFile("jquery.js");
+            CoreHtml::getInstance()->addJavascriptFile('jquery.js');
         }
 
 
         $this->jsMode = $enable;
-        $this->jsDivisionId = $enable ? $jsDivisionId : "";
+        $this->jsDivisionId = $enable ? $jsDivisionId : '';
         return $this;
     }
 
@@ -369,7 +365,7 @@ class CoreRoute
     /**
      * Retourne le lien complet HTML pour le chemin demandé.
      *
-     * @param string $displayContent Données à afficher (texte simple ou code html).
+     * @param string $displayContent Données à afficher (texte simple ou code HTML).
      * @return string
      */
     public function getLink(string $displayContent): string
@@ -379,7 +375,7 @@ class CoreRoute
         if ($this->jsMode) {
             $jsLink = CoreUrlRewriting::getLink($this->getBlockLink(),
                                                 true);
-            $this->setOnClickAction("validLink('" . $this->jsDivisionId . "', '" . $jsLink . "');return false;");
+            $this->setOnClickAction('validLink(\'' . $this->jsDivisionId . '\', \'' . $jsLink . '\');return false;');
         }
 
         return CoreHtml::getLink($normalLink,
@@ -395,7 +391,7 @@ class CoreRoute
      */
     private function getRawLink(): string
     {
-        $link = "";
+        $link = '';
 
         if ($this->isModuleLayout()) {
             $link = $this->getModuleLink();
@@ -417,8 +413,8 @@ class CoreRoute
         }
 
         // Nettoyage du chemin.
-        $this->setPage("");
-        $this->setView("");
+        $this->setPage('');
+        $this->setView('');
     }
 
     /**
@@ -438,9 +434,9 @@ class CoreRoute
      */
     private function getModuleLink(): string
     {
-        return CoreLayout::REQUEST_MODULE . "=" . $this->module
-                . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
-                . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
+        return CoreLayout::REQUEST_MODULE . '=' . $this->module
+            . (!empty($this->page) ? '&amp;' . CoreLayout::REQUEST_PAGE . '=' . $this->page : '')
+            . (!empty($this->view) ? '&amp;' . CoreLayout::REQUEST_VIEW . '=' . $this->view : '');
     }
 
     /**
@@ -451,11 +447,11 @@ class CoreRoute
     private function getBlockLink(): string
     {
         return (!empty($this->blockId) ?
-                CoreLayout::REQUEST_BLOCKID . "=" . $this->blockId :
-                (!empty($this->blockType) ?
-                CoreLayout::REQUEST_BLOCKTYPE . "=" . $this->blockType : ""))
-                . (!empty($this->page) ? "&amp;" . CoreLayout::REQUEST_PAGE . "=" . $this->page : "")
-                . (!empty($this->view) ? "&amp;" . CoreLayout::REQUEST_VIEW . "=" . $this->view : "");
+            CoreLayout::REQUEST_BLOCKID . '=' . $this->blockId :
+            (!empty($this->blockType) ?
+            CoreLayout::REQUEST_BLOCKTYPE . '=' . $this->blockType : ''))
+            . (!empty($this->page) ? '&amp;' . CoreLayout::REQUEST_PAGE . '=' . $this->page : '')
+            . (!empty($this->view) ? '&amp;' . CoreLayout::REQUEST_VIEW . '=' . $this->view : '');
     }
 
     /**
@@ -484,7 +480,7 @@ class CoreRoute
             $moduleData = $this->requestDefaultModuleData();
         }
 
-        $this->module = ($moduleData !== null) ? $moduleData->getName() : "";
+        $this->module = ($moduleData !== null) ? $moduleData->getName() : '';
     }
 
     /**
@@ -501,7 +497,7 @@ class CoreRoute
         $this->blockId = ($blockData !== null) ? $blockData->getId() : -1;
 
         if (!empty($this->blockType)) {
-            $this->blockType = ($blockData !== null) ? $blockData->getType() : "";
+            $this->blockType = ($blockData !== null) ? $blockData->getType() : '';
         }
     }
 
@@ -568,7 +564,7 @@ class CoreRoute
     {
         $this->module = CoreMain::getInstance()->getConfigs()->getDefaultModule();
         $this->page = CoreLayout::DEFAULT_PAGE;
-        $this->view = "";
+        $this->view = '';
 
         $moduleData = $this->getRequestedModuleData();
         $moduleData->setPage($this->page);
