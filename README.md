@@ -1,23 +1,23 @@
  # TR Engine
-*Sébastien Villemain (trancer)*
+ *by MetallicBlueDev*
 
 **TR Engine** is an Easy PHP CMC.
 
 This project is executed with PHP 7.2.
 
 ## Documentation
-See the [wiki](https://github.com/Tr4ncer/TREngine/wiki)
-* [Installation procedure](https://github.com/Tr4ncer/TREngine/wiki/Installation)
+See the [wiki](https://github.com/MetallicBlueDev/TREngine/wiki)
+* [Installation procedure](https://github.com/MetallicBlueDev/TREngine/wiki/Installation)
 
 ## Contributing
-See [CONTRIBUTING.md](https://github.com/Tr4ncer/TREngine/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/MetallicBlueDev/TREngine/blob/master/CONTRIBUTING.md)
 
 ## Licence
-See [LICENSE](https://github.com/Tr4ncer/TREngine/blob/master/LICENSE)
+See [LICENSE](https://github.com/MetallicBlueDev/TREngine/blob/master/LICENSE)
 
 ## Source
-* GitHub: https://github.com/Tr4ncer/TREngine
-* Git clone: https://github.com/Tr4ncer/TREngine.git
+* GitHub: https://github.com/MetallicBlueDev/TREngine
+* Git clone: https://github.com/MetallicBlueDev/TREngine.git
 
 ## Links
 * NetBeans (IDE): https://netbeans.apache.org/
