@@ -1,4 +1,4 @@
-# Contributors to TREngine
+# Contributors to PassionEngine
 Includes all git commit authors. Aliases are GitHub user names.
 
 ## Development
