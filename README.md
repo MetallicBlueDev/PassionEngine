@@ -1,7 +1,7 @@
  #  Passion Engine
  *by MetallicBlueDev*
 
-Blue **Passion**flower **Engine** is an Easy PHP CMC.
+[Blue **Passion**flower](https://en.wikipedia.org/wiki/Passiflora_caerulea) **Engine** is an Easy PHP CMC.
 
 This project is executed with PHP 7.2.
 
