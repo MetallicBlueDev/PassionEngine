@@ -13,7 +13,7 @@ See the [wiki](https://github.com/MetallicBlueDev/TREngine/wiki)
 See [CONTRIBUTING.md](https://github.com/MetallicBlueDev/TREngine/blob/master/CONTRIBUTING.md)
 
 ## Licence
-See [LICENSE](https://github.com/MetallicBlueDev/TREngine/blob/master/LICENSE)
+See [LICENSE](https://github.com/MetallicBlueDev/TREngine/blob/master/LICENSE.txt)
 
 ## Source
 * GitHub: https://github.com/MetallicBlueDev/TREngine
