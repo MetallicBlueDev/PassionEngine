@@ -1,12 +1,13 @@
 {
-    "name": "tr4ncer/tr-engine",
-    "description": "TR Engine is a complete engine to manage a website.",
+    "name": "metallic-blue-dev/passion-engine",
+    "description": "PassionEngine is a complete engine to manage a website.",
     "type": "project",
     "keywords": [
-        "trengine",
+        "passionengine",
+        "bluepassionflower",
         "cms"
     ],
-    "homepage": "https://github.com/Tr4ncer/TREngine",
+    "homepage": "https://github.com/MetallicBlueDev/PassionEngine",
     "license": "GPL-3.0-or-later",
     "authors": [
         {
@@ -15,7 +16,7 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/Tr4ncer/TREngine/issues"
+        "issues": "https://github.com/MetallicBlueDev/PassionEngine/issues"
     },
     "prefer-stable": true,
     "require": {
