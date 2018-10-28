@@ -30,10 +30,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getAddressIp(): string
     {
-        if (!$this->exist("agentIp")) {
+        if (!$this->exist('agentIp')) {
             $this->searchAddressIp();
         }
-        return $this->getString("agentIp");
+        return $this->getString('agentIp');
     }
 
     /**
@@ -43,10 +43,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getHost(): string
     {
-        if (!$this->exist("agentHost")) {
+        if (!$this->exist('agentHost')) {
             $this->searchHost();
         }
-        return $this->getString("agentHost");
+        return $this->getString('agentHost');
     }
 
     /**
@@ -56,10 +56,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getUserAgent(): string
     {
-        if (!$this->exist("userAgent")) {
+        if (!$this->exist('userAgent')) {
             $this->searchUserAgent();
         }
-        return $this->getString("userAgent");
+        return $this->getString('userAgent');
     }
 
     /**
@@ -69,10 +69,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getOsCategory(): string
     {
-        if (!$this->exist("agentOsCategory")) {
+        if (!$this->exist('agentOsCategory')) {
             $this->searchOs();
         }
-        return $this->getString("agentOsCategory");
+        return $this->getString('agentOsCategory');
     }
 
     /**
@@ -82,10 +82,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getOsName(): string
     {
-        if (!$this->exist("agentOsName")) {
+        if (!$this->exist('agentOsName')) {
             $this->searchOs();
         }
-        return $this->getString("agentOsName");
+        return $this->getString('agentOsName');
     }
 
     /**
@@ -95,10 +95,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getBrowserCategory(): string
     {
-        if (!$this->exist("agentBrowserCategory")) {
+        if (!$this->exist('agentBrowserCategory')) {
             $this->searchBrowserData();
         }
-        return $this->getString("agentBrowserCategory");
+        return $this->getString('agentBrowserCategory');
     }
 
     /**
@@ -108,10 +108,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getBrowserName(): string
     {
-        if (!$this->exist("agentBrowserName")) {
+        if (!$this->exist('agentBrowserName')) {
             $this->searchBrowserData();
         }
-        return $this->getString("agentBrowserName");
+        return $this->getString('agentBrowserName');
     }
 
     /**
@@ -121,10 +121,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getBrowserVersion(): string
     {
-        if (!$this->exist("agentBrowserVersion")) {
+        if (!$this->exist('agentBrowserVersion')) {
             $this->searchBrowserData();
         }
-        return $this->getString("agentBrowserVersion");
+        return $this->getString('agentBrowserVersion');
     }
 
     /**
@@ -134,10 +134,10 @@ class CoreUserAgentData extends CoreDataStorage
      */
     public function &getReferer(): string
     {
-        if (!$this->exist("agentReferer")) {
+        if (!$this->exist('agentReferer')) {
             $this->searchReferer();
         }
-        return $this->getString("agentReferer");
+        return $this->getString('agentReferer');
     }
 
     /**
@@ -145,7 +145,7 @@ class CoreUserAgentData extends CoreDataStorage
      */
     private function searchAddressIp(): void
     {
-        $this->setDataValue("agentIp",
+        $this->setDataValue('agentIp',
                             ExecUserAgent::getAddressIp());
     }
 
@@ -154,16 +154,16 @@ class CoreUserAgentData extends CoreDataStorage
      */
     private function searchHost(): void
     {
-        $this->setDataValue("agentHost",
+        $this->setDataValue('agentHost',
                             ExecUserAgent::getHost($this->getAddressIp()));
     }
 
     /**
-     * Recherche la chaine User-Agent.
+     * Recherche la chaîne User-Agent.
      */
     private function searchUserAgent(): void
     {
-        $this->setDataValue("userAgent",
+        $this->setDataValue('userAgent',
                             ExecUserAgent::getRawUserAgent());
     }
 
@@ -174,9 +174,9 @@ class CoreUserAgentData extends CoreDataStorage
     {
         $osData = ExecUserAgent::getOsData($this->getUserAgent());
 
-        $this->setDataValue("agentOsCategory",
+        $this->setDataValue('agentOsCategory',
                             $osData['category']);
-        $this->setDataValue("agentOsName",
+        $this->setDataValue('agentOsName',
                             $osData['name']);
     }
 
@@ -187,11 +187,11 @@ class CoreUserAgentData extends CoreDataStorage
     {
         $browserData = ExecUserAgent::getBrowserData($this->getUserAgent());
 
-        $this->setDataValue("agentBrowserCategory",
+        $this->setDataValue('agentBrowserCategory',
                             $browserData['category']);
-        $this->setDataValue("agentBrowserName",
+        $this->setDataValue('agentBrowserName',
                             $browserData['name']);
-        $this->setDataValue("agentBrowserVersion",
+        $this->setDataValue('agentBrowserVersion',
                             $browserData['version']);
     }
 
@@ -200,7 +200,7 @@ class CoreUserAgentData extends CoreDataStorage
      */
     private function searchReferer(): void
     {
-        $this->setDataValue("agentReferer",
+        $this->setDataValue('agentReferer',
                             ExecUserAgent::getReferer());
     }
 }

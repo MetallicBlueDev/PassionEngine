@@ -11,14 +11,14 @@ class CoreUrlRewriting
 {
 
     /**
-     * Gestionnnaire de réécriture.
+     * Gestionnaire de réécriture.
      *
      * @var CoreUrlRewriting
      */
     private static $coreUrlRewriting = null;
 
     /**
-     * Vérifie si l'url rewriting a été activée.
+     * Vérifie si la réécriture des URL est activée.
      *
      * @var bool
      */
@@ -67,23 +67,23 @@ class CoreUrlRewriting
      * Obtention d'une adresse URL complète.
      *
      * @param string $link Adresse URL à réécrire.
-     * @param bool $layout true ajouter le layout.
+     * @param bool $layout Ajouter le layout.
      * @return string
      */
     public static function &getLink(string $link,
                                     bool $layout = false): string
     {
-        if ($link[0] !== "#") {
+        if ($link[0] !== '#') {
             // Configuration du layout
             if ($layout) {
-                $layout = "&amp;" . CoreLayout::REQUEST_LAYOUT . "=";
+                $layout = '&amp;' . CoreLayout::REQUEST_LAYOUT . '=';
 
                 if (strpos($link,
-                           CoreLayout::REQUEST_BLOCKID . "=") !== false || strpos($link,
-                                                                                  CoreLayout::REQUEST_BLOCKTYPE . "=") !== false) {
+                           CoreLayout::REQUEST_BLOCKID . '=') !== false || strpos($link,
+                                                                                  CoreLayout::REQUEST_BLOCKTYPE . '=') !== false) {
                     $layout .= CoreLayout::BLOCK;
                 } else if (strpos($link,
-                                  CoreLayout::REQUEST_MODULE . "=") !== false) {
+                                  CoreLayout::REQUEST_MODULE . '=') !== false) {
                     $layout .= CoreLayout::MODULE;
                 } else {
                     $layout .= CoreLayout::DEFAULT_LAYOUT;
@@ -94,8 +94,8 @@ class CoreUrlRewriting
 
             // Recherche de la page principal
             if (strpos($link,
-                       "index.php") === false) {
-                $link = "index.php" . ($link[0] !== "?" ? "?" : "") . $link;
+                       'index.php') === false) {
+                $link = 'index.php' . ($link[0] !== '?' ? '?' : '') . $link;
             }
         }
         // Finalise la réécriture du lien

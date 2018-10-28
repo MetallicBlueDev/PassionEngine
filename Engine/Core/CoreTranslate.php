@@ -437,7 +437,7 @@ class CoreTranslate
 
         foreach ($this->cache as $key => $value) {
             if (!empty($key) && !empty($value)) {
-                $content .= "define('" . $key . "','" . self::entitiesTranslate($value) . "');";
+                $content .= 'define(\'' . $key . '\',\'' . self::entitiesTranslate($value) . '\');';
             }
         }
         return $content;
@@ -567,7 +567,7 @@ class CoreTranslate
             // Tentative de formatage via le nom de la langue
             if (!setlocale(LC_TIME,
                            $this->getCurrentLanguage())) {
-                // Dernière tentative de formatage sous forme "fr_FR"
+                // Dernière tentative de formatage sous forme 'fr_FR'
                 setlocale(LC_TIME,
                           strtolower($this->getCurrentLanguageExtension()) . '_' . strtoupper($this->getCurrentLanguageExtension()));
             }
@@ -678,11 +678,11 @@ class CoreTranslate
      * Détermine si la langue est disponible.
      *
      * @param string $language
-     * @return bool true langue disponible.
+     * @return bool Langue disponible.
      */
     private static function canUseLanguage(string $language): bool
     {
         return !empty($language) && is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
-                                                                                                                                   $language) . '.php');
+                                                                                                                                  $language) . '.php');
     }
 }

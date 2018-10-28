@@ -15,76 +15,76 @@ class CoreTable
      *
      * @var string
      */
-    public const BANNED = "banned";
+    public const BANNED = 'banned';
 
     /**
      * Table des blocks.
      *
      * @var string
      */
-    public const BLOCKS = "blocks";
+    public const BLOCKS = 'blocks';
 
     /**
      * Table d'affectation de la visibilité des blocks.
      *
      * @var string
      */
-    public const BLOCKS_VISIBILITY = "blocks_visibility";
+    public const BLOCKS_VISIBILITY = 'blocks_visibility';
 
     /**
      * Table de configuration des blocks.
      *
      * @var string
      */
-    public const BLOCKS_CONFIGS = "blocks_configs";
+    public const BLOCKS_CONFIGS = 'blocks_configs';
 
     /**
      * Table de la configuration du moteur.
      *
      * @var string
      */
-    public const CONFIG = "configs";
+    public const CONFIG = 'configs';
 
     /**
      * Table des menus.
      *
      * @var string
      */
-    public const MENUS = "menus";
+    public const MENUS = 'menus';
 
     /**
      * Table de configuration des menus.
      *
      * @var string
      */
-    public const MENUS_CONFIGS = "menus_configs";
+    public const MENUS_CONFIGS = 'menus_configs';
 
     /**
      * Table des modules.
      *
      * @var string
      */
-    public const MODULES = "modules";
+    public const MODULES = 'modules';
 
     /**
      * Table de configuration des modules.
      *
      * @var string
      */
-    public const MODULES_CONFIGS = "modules_configs";
+    public const MODULES_CONFIGS = 'modules_configs';
 
     /**
      * Table des utilisateurs.
      *
      * @var string
      */
-    public const USERS = "users";
+    public const USERS = 'users';
 
     /**
      * Table des droits des utilisateurs.
      *
      * @var string
      */
-    public const USERS_RIGHTS = "users_rights";
+    public const USERS_RIGHTS = 'users_rights';
 
 }

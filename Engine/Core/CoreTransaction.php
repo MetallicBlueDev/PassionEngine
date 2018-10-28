@@ -44,16 +44,16 @@ abstract class CoreTransaction extends CoreDataStorage
                 $this->netConnect();
 
                 if (!$this->netConnected()) {
-                    $this->throwException("connection error",
+                    $this->throwException('connection error',
                                           FailBase::getErrorCodeName(20));
                 }
 
                 if (!$this->netSelect()) {
-                    $this->throwException("can not select a node",
+                    $this->throwException('can not select a node',
                                           FailBase::getErrorCodeName(21));
                 }
             } else {
-                $this->throwException("transaction can not be used",
+                $this->throwException('transaction can not be used',
                                       FailBase::getErrorCodeName(22));
             }
         }
@@ -91,7 +91,7 @@ abstract class CoreTransaction extends CoreDataStorage
     /**
      * Sélectionne un noeud dans la transaction.
      *
-     * @return bool true succès
+     * @return bool Succès
      */
     abstract public function &netSelect(): bool;
 
@@ -102,7 +102,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionHost(): string
     {
-        return $this->getString("host");
+        return $this->getString('host');
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionUser(): string
     {
-        return $this->getString("user");
+        return $this->getString('user');
     }
 
     /**
@@ -122,17 +122,17 @@ abstract class CoreTransaction extends CoreDataStorage
      */
     public function &getTransactionPass(): string
     {
-        return $this->getString("pass");
+        return $this->getString('pass');
     }
 
     /**
-     * Retourne le type de transaction (exemple mysqli, php, ftp, etc.).
+     * Retourne le type de transaction (exemple MSSQL, PHP, ftp, etc.).
      *
      * @return string
      */
     public function &getTransactionType(): string
     {
-        return $this->getString("type");
+        return $this->getString('type');
     }
 
     /**
@@ -151,7 +151,7 @@ abstract class CoreTransaction extends CoreDataStorage
     protected function &getConnectionObject()
     {
         if (!$this->netConnected()) {
-            $this->throwException("connection object unavailable",
+            $this->throwException('connection object unavailable',
                                   FailBase::getErrorCodeName(13));
         }
         return $this->connectionObject;

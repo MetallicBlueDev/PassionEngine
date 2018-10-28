@@ -127,7 +127,7 @@ class CoreSql extends CoreDriverSelector
      * @throws FailSql
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailSql($message,
