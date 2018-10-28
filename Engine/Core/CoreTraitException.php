@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Fail\FailEngine;
 
 /**
  * Lanceur d'exception du moteur.

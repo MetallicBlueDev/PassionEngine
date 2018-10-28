@@ -1,14 +1,14 @@
 <?php
 
-namespace TREngine\Engine\Base;
+namespace PassionEngine\Engine\Base;
 
 use PDO;
 use PDOException;
 use PDOStatement;
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Exec\ExecUtils;
-use TREngine\Engine\Base\PdoSpecific\PdoPlatformSpecific;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Base\PdoSpecific\PdoPlatformSpecific;
 
 /**
  * PDO: PHP Data Objects.
@@ -331,7 +331,7 @@ class BasePdo extends BaseModel
      */
     private function checkPlatformSpecific(): void
     {
-        $fullClassName = 'TREngine\Engine\Base\PdoSpecific\\' . ucfirst($this->getDriverName()) . 'Specific';
+        $fullClassName = 'PassionEngine\Engine\Base\PdoSpecific\\' . ucfirst($this->getDriverName()) . 'Specific';
 
         if (CoreLoader::classLoader($fullClassName)) {
             $this->platformSpecific = new $fullClassName();

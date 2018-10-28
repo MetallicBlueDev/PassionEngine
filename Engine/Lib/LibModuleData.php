@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Exec\ExecUtils;
-use TREngine\Engine\Core\CoreAccessZone;
-use TREngine\Engine\Core\CoreUrlRewriting;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreAccessZone;
+use PassionEngine\Engine\Core\CoreUrlRewriting;
 
 /**
  * Information de base sur un module.

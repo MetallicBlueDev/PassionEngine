@@ -1,6 +1,6 @@
 <?php
 
-use TREngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreCache;
 
 class Module_Management_Systeminfo extends ModuleModel
 {

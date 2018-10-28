@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecEmail;
-use TREngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Exec\ExecEmail;
+use PassionEngine\Engine\Exec\ExecString;
 use Closure;
 
 /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
 
 /**
  * Outil de manipulation des cookies.

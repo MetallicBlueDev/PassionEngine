@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Lib\LibBlockData;
-use TREngine\Engine\Lib\LibModuleData;
-use TREngine\Engine\Lib\LibBlock;
-use TREngine\Engine\Lib\LibModule;
-use TREngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Lib\LibBlockData;
+use PassionEngine\Engine\Lib\LibModuleData;
+use PassionEngine\Engine\Lib\LibBlock;
+use PassionEngine\Engine\Lib\LibModule;
+use PassionEngine\Engine\Fail\FailEngine;
 
 /**
  * Gestionnaire de chemin.

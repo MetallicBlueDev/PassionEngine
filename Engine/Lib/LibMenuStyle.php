@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
 /**
  * Référence les styles possibles dans le menu.

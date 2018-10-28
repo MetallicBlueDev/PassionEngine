@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Module\ModuleContact;
+namespace PassionEngine\Engine\Module\ModuleContact;
 
-use TREngine\Engine\Module\ModuleModel;
+use PassionEngine\Engine\Module\ModuleModel;
 
 class ModuleIndex extends ModuleModel
 {

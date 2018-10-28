@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 use DateTime;
 

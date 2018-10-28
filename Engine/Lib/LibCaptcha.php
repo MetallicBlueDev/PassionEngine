@@ -1,15 +1,15 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreLayout;
-use TREngine\Engine\Core\CoreSession;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
-use TREngine\Engine\Exec\ExecCrypt;
-use TREngine\Engine\Exec\ExecCookie;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreSession;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Exec\ExecCrypt;
+use PassionEngine\Engine\Exec\ExecCookie;
 
 /**
  * Générateur de captcha, anti-robot, anti-spam.

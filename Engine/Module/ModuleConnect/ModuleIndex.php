@@ -1,24 +1,24 @@
 <?php
 
-namespace TREngine\Engine\Module\ModuleConnect;
+namespace PassionEngine\Engine\Module\ModuleConnect;
 
-use TREngine\Engine\Module\ModuleModel;
-use TREngine\Engine\Core\CoreSession;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
-use TREngine\Engine\Core\CoreHtml;
-use TREngine\Engine\Core\CoreRoute;
-use TREngine\Engine\Core\CoreTable;
-use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Lib\LibTabs;
-use TREngine\Engine\Lib\LibForm;
-use TREngine\Engine\Exec\ExecUrl;
-use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Exec\ExecEmail;
+use PassionEngine\Engine\Module\ModuleModel;
+use PassionEngine\Engine\Core\CoreSession;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreRoute;
+use PassionEngine\Engine\Core\CoreTable;
+use PassionEngine\Engine\Core\CoreTranslate;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Lib\LibTabs;
+use PassionEngine\Engine\Lib\LibForm;
+use PassionEngine\Engine\Exec\ExecUrl;
+use PassionEngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Exec\ExecEmail;
 
 /**
  * Module d'identification.

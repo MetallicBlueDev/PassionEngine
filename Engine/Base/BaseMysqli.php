@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Base;
+namespace PassionEngine\Engine\Base;
 
 use mysqli;
 use mysqli_sql_exception;
 use mysqli_result;
 use mysqli_driver;
-use TREngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreLogger;
 
 /**
  * MySql Improve.

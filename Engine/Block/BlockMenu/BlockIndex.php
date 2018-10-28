@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Block\BlockMenu;
+namespace PassionEngine\Engine\Block\BlockMenu;
 
-use TREngine\Engine\Block\BlockModel;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Lib\LibMenu;
+use PassionEngine\Engine\Block\BlockModel;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Lib\LibMenu;
 
 /**
  * Block de menu.

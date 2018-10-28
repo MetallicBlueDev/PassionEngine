@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 /**
  * Référence le nom des sections de cache utilisées par le moteur.

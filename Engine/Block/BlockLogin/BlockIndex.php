@@ -1,18 +1,18 @@
 <?php
 
-namespace TREngine\Engine\Block\BlockLogin;
+namespace PassionEngine\Engine\Block\BlockLogin;
 
-use TREngine\Engine\Block\BlockModel;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreRoute;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreSession;
-use TREngine\Engine\Core\CoreSessionData;
-use TREngine\Engine\Core\CoreLayout;
-use TREngine\Engine\Exec\ExecImage;
-use TREngine\Engine\Lib\LibForm;
-use TREngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Block\BlockModel;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Core\CoreRoute;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreSession;
+use PassionEngine\Engine\Core\CoreSessionData;
+use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Exec\ExecImage;
+use PassionEngine\Engine\Lib\LibForm;
+use PassionEngine\Engine\Lib\LibMakeStyle;
 
 /**
  * Block Login.

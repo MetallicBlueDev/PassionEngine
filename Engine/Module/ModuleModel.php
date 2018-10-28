@@ -1,17 +1,17 @@
 <?php
 
-namespace TREngine\Engine\Module;
+namespace PassionEngine\Engine\Module;
 
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Core\CoreTable;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Lib\LibEntityModel;
-use TREngine\Engine\Lib\LibModuleData;
-use TREngine\Engine\Fail\FailModule;
-use TREngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Core\CoreTable;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreTranslate;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Lib\LibEntityModel;
+use PassionEngine\Engine\Lib\LibModuleData;
+use PassionEngine\Engine\Fail\FailModule;
+use PassionEngine\Engine\Fail\FailBase;
 
 /**
  * Module de base, hérité par tous les autres modules.

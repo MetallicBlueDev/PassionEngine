@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreHtml;
-use TREngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Exec\ExecString;
 
 /**
  * Gestionnaire d'onglet.

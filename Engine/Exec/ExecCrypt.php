@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreLogger;
 
 /**
  * Outil de manipulation de données chiffrées.

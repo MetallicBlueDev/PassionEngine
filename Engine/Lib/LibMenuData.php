@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreDataStorage;
-use TREngine\Engine\Core\CoreAccessToken;
-use TREngine\Engine\Core\CoreAccessZone;
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreDataStorage;
+use PassionEngine\Engine\Core\CoreAccessToken;
+use PassionEngine\Engine\Core\CoreAccessZone;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Collecteur d'information sur un menu.

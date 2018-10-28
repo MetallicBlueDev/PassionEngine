@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Exec\ExecString;
 
 /**
  * Gestionnaire de traduction de texte.

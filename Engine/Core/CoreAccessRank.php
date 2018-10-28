@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 /**
  * Référence les rangs possibles utilisés par le moteur.

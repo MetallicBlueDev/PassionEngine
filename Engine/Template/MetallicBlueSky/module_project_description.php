@@ -5,12 +5,12 @@
             if (!empty($projectInfo['img'])) {
                 ?>
                 <a href="<?php echo $projectInfo['img']; ?>">
-                    <?php echo TREngine\Engine\Exec\ExecImage::getTag($projectInfo['img'], 128, 128); ?>
+                    <?php echo PassionEngine\Engine\Exec\ExecImage::getTag($projectInfo['img'], 128, 128); ?>
                 </a>
                 <?php
             } else {
                 ?>
-                <img src="<?php echo TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory(); ?>/project/<?php echo $projectInfo['language']; ?>.png" alt="" />
+                <img src="<?php echo PassionEngine\Engine\Lib\LibMakeStyle::getTemplateDirectory(); ?>/project/<?php echo $projectInfo['language']; ?>.png" alt="" />
                 <?php
             }
             ?>

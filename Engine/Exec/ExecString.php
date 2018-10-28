@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreTextEditor;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreTextEditor;
 
 /**
  * Outil de manipulation des chaine de caractères.

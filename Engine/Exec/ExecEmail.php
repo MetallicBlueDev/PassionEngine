@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreLayout;
 
 /**
  * Outil de manipulation des mails.

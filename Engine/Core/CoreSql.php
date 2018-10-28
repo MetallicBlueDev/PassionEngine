@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Base\BaseModel;
-use TREngine\Engine\Fail\FailSql;
+use PassionEngine\Engine\Base\BaseModel;
+use PassionEngine\Engine\Fail\FailSql;
 
 /**
  * Gestionnaire de la communication SQL.

@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 /**
  * Représente un type de méthode HTTP à utiliser dans la requête.

@@ -1,17 +1,17 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreHtml;
-use TREngine\Engine\Core\CoreAccessType;
-use TREngine\Engine\Core\CoreAccess;
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Core\CoreTable;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreAccessType;
+use PassionEngine\Engine\Core\CoreAccess;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Core\CoreTable;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire de menu.

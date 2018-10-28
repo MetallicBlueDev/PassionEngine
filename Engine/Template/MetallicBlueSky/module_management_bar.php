@@ -1,19 +1,19 @@
 <?php
-use TREngine\Engine\Core\CoreUrlRewriting;
+use PassionEngine\Engine\Core\CoreUrlRewriting;
 
-if (TREngine\Engine\Core\CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
+if (PassionEngine\Engine\Core\CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
     ?>
     <div id="management_bar">
         <div>
             <?php
 
-echo TREngine\Engine\Core\CoreHtml::getLink('?module=management', '<img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_home.png" />');
+echo PassionEngine\Engine\Core\CoreHtml::getLink('?module=management', '<img alt="" src="' . PassionEngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_home.png" />');
     ?>
         </div>
         <div>
             <?php
 
-echo TREngine\Engine\Core\CoreHtml::getLink('?module=management&manage=update', '<img alt=""  src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_update.png" />');
+echo PassionEngine\Engine\Core\CoreHtml::getLink('?module=management&manage=update', '<img alt=""  src="' . PassionEngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/management/bar_update.png" />');
     ?>
         </div>
         <div id="management_bar_setting_page">
@@ -45,7 +45,7 @@ echo $page['name'];
         <div id="management_bar_module_page">
             <select onchange="document.location = '<?php
 
-echo TREngine\Engine\Core\CoreUrlRewriting::getLink('?module=management&manage=');
+echo PassionEngine\Engine\Core\CoreUrlRewriting::getLink('?module=management&manage=');
     ?>' + this.options[this.selectedIndex].value;">
                 <option value=""></option>
                 <?php
@@ -69,6 +69,6 @@ echo $module['name'];
         </div>
     </div>
     <?php
-    include TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . "module_management_title.php";
+    include PassionEngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . DIRECTORY_SEPARATOR . "module_management_title.php";
 }
 ?>

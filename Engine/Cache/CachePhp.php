@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Cache;
+namespace PassionEngine\Engine\Cache;
 
-use TREngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreLogger;
 
 /**
  * Gestionnaire de fichier via PHP.

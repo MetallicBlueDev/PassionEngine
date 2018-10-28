@@ -1,18 +1,18 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Core\CoreTable;
-use TREngine\Engine\Core\CoreLayout;
-use TREngine\Engine\Core\CoreTranslate;
-use TREngine\Engine\Fail\FailModule;
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Core\CoreTable;
+use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreTranslate;
+use PassionEngine\Engine\Fail\FailModule;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire de module.

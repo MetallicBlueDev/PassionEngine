@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailBase;
 
 /**
  * Modèle de base pour une sélection d'un pilote à utiliser.

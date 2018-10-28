@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
 /**
  * Utilitaire.

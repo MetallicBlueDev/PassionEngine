@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 use ReflectionClass;
-use TREngine\Engine\Fail\FailLoader;
-use TREngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailLoader;
+use PassionEngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire de chargeur de classe.
@@ -131,7 +131,7 @@ class CoreLoader
      *
      * @var string
      */
-    private const MAIN_NAMESPACE = 'TREngine\\';
+    private const MAIN_NAMESPACE = 'PassionEngine\\';
 
     /**
      * Namespace de base.

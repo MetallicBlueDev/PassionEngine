@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailCache;
-use TREngine\Engine\Cache\CacheModel;
-use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Fail\FailCache;
+use PassionEngine\Engine\Cache\CacheModel;
+use PassionEngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire de fichier cache.

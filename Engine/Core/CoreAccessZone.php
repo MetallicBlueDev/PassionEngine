@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 /**
  * Référence le nom des zones d'accès utilisées par le moteur.

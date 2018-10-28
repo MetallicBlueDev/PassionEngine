@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreHtml;
 
 /**
  * Outil de manipulation de JQuery.

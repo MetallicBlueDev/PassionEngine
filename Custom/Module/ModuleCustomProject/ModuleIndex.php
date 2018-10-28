@@ -1,16 +1,16 @@
 <?php
 
-namespace TREngine\Custom\Module\ModuleCustomProject;
+namespace PassionEngine\Custom\Module\ModuleCustomProject;
 
-use TREngine\Engine\Module\ModuleModel;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
-use TREngine\Engine\Core\CoreHtml;
-use TREngine\Engine\Core\CoreSql;
-use TREngine\Engine\Core\CoreUrlRewriting;
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Lib\LibForm;
-use TREngine\Engine\Exec\ExecJQuery;
+use PassionEngine\Engine\Module\ModuleModel;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Core\CoreUrlRewriting;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Lib\LibForm;
+use PassionEngine\Engine\Exec\ExecJQuery;
 
 class ModuleIndex extends ModuleModel
 {

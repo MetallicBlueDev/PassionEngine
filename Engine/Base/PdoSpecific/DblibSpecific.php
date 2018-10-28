@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Base\PdoSpecific;
+namespace PassionEngine\Engine\Base\PdoSpecific;
 
 /**
  * Contenu spécifique à FreeTDS / Microsoft SQL Server / Sybase.

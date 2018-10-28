@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreLayout;
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Exec\ExecString;
 
 /**
  * Classe de mise en forme d'un formulaire.

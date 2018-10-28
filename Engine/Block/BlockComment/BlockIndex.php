@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Block;
+namespace PassionEngine\Engine\Block;
 
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  *

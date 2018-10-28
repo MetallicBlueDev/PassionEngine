@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Cache;
+namespace PassionEngine\Engine\Cache;
 
 /**
  * Gestionnaire de fichier via FTP sécurisée.

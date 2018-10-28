@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Block;
+namespace PassionEngine\Engine\Block;
 
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Lib\LibBlockData;
-use TREngine\Engine\Lib\LibEntityModel;
-use TREngine\Engine\Fail\FailBlock;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Lib\LibBlockData;
+use PassionEngine\Engine\Lib\LibEntityModel;
+use PassionEngine\Engine\Fail\FailBlock;
 
 /**
  * Block de base, hérité par tous les autres blocks.

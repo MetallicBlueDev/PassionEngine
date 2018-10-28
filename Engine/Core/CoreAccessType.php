@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Lib\LibBlock;
-use TREngine\Engine\Lib\LibModule;
+use PassionEngine\Engine\Lib\LibBlock;
+use PassionEngine\Engine\Lib\LibModule;
 
 /**
  * Représente un type d'accès à une zone spécifique.

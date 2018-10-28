@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Cache;
+namespace PassionEngine\Engine\Cache;
 
-use TREngine\Engine\Core\CoreTransaction;
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Fail\FailCache;
+use PassionEngine\Engine\Core\CoreTransaction;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Fail\FailCache;
 
 /**
  * Modèle pour un gestionnaire de fichier.

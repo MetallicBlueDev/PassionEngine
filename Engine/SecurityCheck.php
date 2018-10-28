@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine;
+namespace PassionEngine\Engine;
 
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreInfo;
-use TREngine\Engine\Core\CoreSecure;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreInfo;
+use PassionEngine\Engine\Core\CoreSecure;
 
 // Initialisation principal
 if (!defined("PASSION_ENGINE_INITIALIZED")) {

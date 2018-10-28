@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Cache;
+namespace PassionEngine\Engine\Cache;
 
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreLoader;
 
 // TODO il faut verifier entierement les paths de la classe
 

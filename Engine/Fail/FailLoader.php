@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Fail;
+namespace PassionEngine\Engine\Fail;
 
 /**
  * Exception lancée par le chargeur de classe.

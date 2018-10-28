@@ -1,12 +1,12 @@
 <?php
 
-namespace TREngine\Engine\Block\BlockImageGenerator;
+namespace PassionEngine\Engine\Block\BlockImageGenerator;
 
-use TREngine\Engine\Block\BlockModel;
-use TREngine\Engine\Fail\FailBlock;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Block\BlockModel;
+use PassionEngine\Engine\Fail\FailBlock;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
 
 /**
  * Block permettant de générer une image.

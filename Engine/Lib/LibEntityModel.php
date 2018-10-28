@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreAccessType;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Core\CoreAccessType;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Entité de bibliothèque de base, hérité par toutes les autres entités.

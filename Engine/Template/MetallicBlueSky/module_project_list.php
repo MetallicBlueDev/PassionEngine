@@ -20,10 +20,10 @@ foreach ($projects as $key => $projectItem) {
     ?>
 
     <?php
-    echo TREngine\Engine\Core\CoreHtml::getLink('?module=project&" . CoreLayout::REQUEST_VIEW . "=displayProject&projectId=' . $projectItem['projectid'], '
+    echo PassionEngine\Engine\Core\CoreHtml::getLink('?module=project&" . CoreLayout::REQUEST_VIEW . "=displayProject&projectId=' . $projectItem['projectid'], '
         <div class="project_body' . $progress . '">
             <div>
-                <div class="project_img"><img alt="" src="' . TREngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/project/' . strtolower($projectItem['language']) . '.png" /></div>
+                <div class="project_img"><img alt="" src="' . PassionEngine\Engine\Lib\LibMakeStyle::getTemplateDirectory() . '/project/' . strtolower($projectItem['language']) . '.png" /></div>
                 <div class="project_text">
                     <span class=\"text_bold\">' . $projectItem['name'] . '</span> (' . $projectItem['language'] . ')
                     <br /><span class=\"text_underline\">' . PERCENT_COMPLETE . ': " ' . $projectItem['progress'] . '%</span>

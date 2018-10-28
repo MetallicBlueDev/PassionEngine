@@ -1,15 +1,15 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Lib\LibBlock;
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Fail\FailCache;
-use TREngine\Engine\Fail\FailEngine;
-use TREngine\Engine\Fail\FailSql;
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecTimeMarker;
-use TREngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Lib\LibBlock;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailCache;
+use PassionEngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Fail\FailSql;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Exec\ExecTimeMarker;
+use PassionEngine\Engine\Exec\ExecUtils;
 
 /**
  * Gestionnaire du noyau principal du moteur.

@@ -7,10 +7,10 @@ declare(strict_types = 1);
  * The blue passionflower CMS Engine, written with love and passion.
  * ----------------------------------------------------------------------- */
 
-use TREngine\Engine\Core\CoreSecure;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Exec\ExecTimeMarker;
+use PassionEngine\Engine\Core\CoreSecure;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Exec\ExecTimeMarker;
 
 // Marque le passage dans l'index
 define("PASSION_ENGINE_BOOTSTRAP",

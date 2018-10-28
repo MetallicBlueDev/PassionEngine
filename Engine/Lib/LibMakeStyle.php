@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Fail\FailTemplate;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailTemplate;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreLoader;
 
 /**
  * Make Style, moteur de template PHP.

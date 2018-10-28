@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Exec\ExecCookie;
-use TREngine\Engine\Exec\ExecCrypt;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Exec\ExecCookie;
+use PassionEngine\Engine\Exec\ExecCrypt;
 
 /**
  * Gestionnaire de contenu HTML.

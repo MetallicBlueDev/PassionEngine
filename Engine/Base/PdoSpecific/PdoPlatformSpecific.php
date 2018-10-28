@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Base\PdoSpecific;
+namespace PassionEngine\Engine\Base\PdoSpecific;
 
 /**
  * Modèle de base pour un contenu spécifique à une configuration de base de données.

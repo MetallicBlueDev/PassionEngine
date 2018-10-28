@@ -1,13 +1,13 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreLayout;
-use TREngine\Engine\Core\CoreDataStorage;
-use TREngine\Engine\Core\CoreAccessToken;
-use TREngine\Engine\Core\CoreAccess;
-use TREngine\Engine\Core\CoreAccessType;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreDataStorage;
+use PassionEngine\Engine\Core\CoreAccessToken;
+use PassionEngine\Engine\Core\CoreAccess;
+use PassionEngine\Engine\Core\CoreAccessType;
 
 /**
  * Information de base sur une entité de bibliothèque.

@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 /**
  * Recherche d'information rapide sur le moteur d'exécution et son environnement coté serveur.

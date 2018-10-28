@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
 use Throwable;
-use TREngine\Engine\Lib\LibMakeStyle;
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailEngine;
 
 /**
  * Gestionnaire de la sécurité du noyaux.

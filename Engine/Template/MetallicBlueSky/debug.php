@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="fr">
     <head>
-        <title><?php echo TREngine\Engine\Core\CoreHtml::getInstance()->getMetaTitle(); ?></title>
-        <?php echo TREngine\Engine\Core\CoreHtml::getInstance()->getMetaHeaders(); ?>
+        <title><?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaTitle(); ?></title>
+        <?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaHeaders(); ?>
     </head>
     <body>
         <div class="debugerror">
@@ -23,6 +23,6 @@
                 </ul>
             </div>
         </div>
-        <?php echo TREngine\Engine\Core\CoreHtml::getInstance()->getMetaFooters(); ?>
+        <?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaFooters(); ?>
     </body>
 </html>

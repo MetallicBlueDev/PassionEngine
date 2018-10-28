@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Module\ModuleReceiptbox;
+namespace PassionEngine\Engine\Module\ModuleReceiptbox;
 
-use TREngine\Engine\Module\ModuleModel;
+use PassionEngine\Engine\Module\ModuleModel;
 
 class ModuleIndex extends ModuleModel
 {

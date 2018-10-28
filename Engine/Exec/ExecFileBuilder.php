@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Exec;
+namespace PassionEngine\Engine\Exec;
 
-use TREngine\Engine\Core\CoreCacheSection;
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreSql;
+use PassionEngine\Engine\Core\CoreCacheSection;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreSql;
 
 /**
  * Outil de création des fichiers du moteur.

@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailEngine;
 
 /**
  * Gestionnaire de requêtes vers le protocole HTTP.

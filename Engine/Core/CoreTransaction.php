@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailBase;
 
 /**
  * Collecteur d'information sur une transaction.

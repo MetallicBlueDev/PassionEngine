@@ -1,11 +1,11 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Core\CoreLoader;
-use TREngine\Engine\Core\CoreTraitException;
-use TREngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Core\CoreLoader;
+use PassionEngine\Engine\Core\CoreTraitException;
+use PassionEngine\Engine\Fail\FailBase;
 
 /**
  * Gestionnaire d'entités.

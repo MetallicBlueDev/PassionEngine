@@ -1,9 +1,9 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreHtml;
 
 /**
  * Editeur du fil d'Ariane.

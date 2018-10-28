@@ -1,13 +1,13 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Exec\ExecCookie;
-use TREngine\Engine\Exec\ExecCrypt;
-use TREngine\Engine\Exec\ExecEmail;
-use TREngine\Engine\Exec\ExecUtils;
-use TREngine\Engine\Exec\ExecString;
-use TREngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Exec\ExecCookie;
+use PassionEngine\Engine\Exec\ExecCrypt;
+use PassionEngine\Engine\Exec\ExecEmail;
+use PassionEngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Exec\ExecString;
+use PassionEngine\Engine\Lib\LibMakeStyle;
 
 /**
  * Gestionnaire de sessions.

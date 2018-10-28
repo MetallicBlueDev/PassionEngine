@@ -1,14 +1,14 @@
 <?php
 
-namespace TREngine\Engine\Base;
+namespace PassionEngine\Engine\Base;
 
-use TREngine\Engine\Core\CoreTable;
-use TREngine\Engine\Core\CoreLogger;
-use TREngine\Engine\Core\CoreSecure;
-use TREngine\Engine\Fail\FailBase;
-use TREngine\Engine\Core\CoreTransaction;
-use TREngine\Engine\Exec\ExecUtils;
-use TREngine\Engine\Fail\FailSql;
+use PassionEngine\Engine\Core\CoreTable;
+use PassionEngine\Engine\Core\CoreLogger;
+use PassionEngine\Engine\Core\CoreSecure;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Core\CoreTransaction;
+use PassionEngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Fail\FailSql;
 
 /**
  * Modèle de base de la communication SQL.

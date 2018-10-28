@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Exec\ExecTimeMarker;
+use PassionEngine\Engine\Exec\ExecTimeMarker;
 
 /**
  * Gestionnaire de messages (journal d'information, d'avertissement et d'erreur).

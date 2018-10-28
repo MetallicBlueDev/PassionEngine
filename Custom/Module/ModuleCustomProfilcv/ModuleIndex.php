@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Custom\Module\ModuleCustomProfilcv;
+namespace PassionEngine\Custom\Module\ModuleCustomProfilcv;
 
-use TREngine\Engine\Module\ModuleModel;
+use PassionEngine\Engine\Module\ModuleModel;
 
 class ModuleIndex extends ModuleModel
 {

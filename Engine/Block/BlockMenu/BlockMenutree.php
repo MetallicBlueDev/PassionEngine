@@ -1,10 +1,10 @@
 <?php
 
-namespace TREngine\Engine\Block;
+namespace PassionEngine\Engine\Block;
 
-use TREngine\Engine\Block\BlockMenu\BlockMenu;
-use TREngine\Engine\Exec\ExecJQuery;
-use TREngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Block\BlockMenu\BlockMenu;
+use PassionEngine\Engine\Exec\ExecJQuery;
+use PassionEngine\Engine\Lib\LibMakeStyle;
 
 /**
  * Block de menu style Menu treeview by

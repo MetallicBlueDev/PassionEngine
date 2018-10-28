@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Lib;
+namespace PassionEngine\Engine\Lib;
 
 /**
  * Gestionnaire de tableau automatique.

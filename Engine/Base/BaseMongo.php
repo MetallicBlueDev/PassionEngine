@@ -1,6 +1,6 @@
 <?php
 
-namespace TREngine\Engine\Base;
+namespace PassionEngine\Engine\Base;
 
 /**
  * Description of BaseMongo

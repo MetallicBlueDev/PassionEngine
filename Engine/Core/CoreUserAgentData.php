@@ -1,8 +1,8 @@
 <?php
 
-namespace TREngine\Engine\Core;
+namespace PassionEngine\Engine\Core;
 
-use TREngine\Engine\Exec\ExecUserAgent;
+use PassionEngine\Engine\Exec\ExecUserAgent;
 
 /**
  * Collecteur d'information sur le User-Agent.

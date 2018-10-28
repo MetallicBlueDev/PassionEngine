@@ -1,10 +1,10 @@
 <?php
 
-use TREngine\Engine\Core\CoreCache;
-use TREngine\Engine\Exec\ExecEmail;
-use TREngine\Engine\Core\CoreMain;
-use TREngine\Engine\Core\CoreRequest;
-use TREngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Core\CoreCache;
+use PassionEngine\Engine\Exec\ExecEmail;
+use PassionEngine\Engine\Core\CoreMain;
+use PassionEngine\Engine\Core\CoreRequest;
+use PassionEngine\Engine\Core\CoreRequestType;
 
 class Module_Management_Setting extends ModuleModel
 {
