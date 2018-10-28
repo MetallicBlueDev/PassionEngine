@@ -4,10 +4,10 @@
 // ** Engine settings
 //
 // Webmaster email address
-$inc['TR_ENGINE_EMAIL'] = "my.mail@provider.net";
+$inc['PASSION_ENGINE_EMAIL'] = "my.mail@provider.net";
 //
 // Status of the site (open | close)
-$inc['TR_ENGINE_STATUT'] = "open";
+$inc['PASSION_ENGINE_STATUT'] = "open";
 //
 // ** Data sessions
 //

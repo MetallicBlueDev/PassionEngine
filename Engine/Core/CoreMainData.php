@@ -188,7 +188,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault('defaultAdministratorEmail',
                                                 function() {
-                return TR_ENGINE_EMAIL;
+                return PASSION_ENGINE_EMAIL;
             });
     }
 
@@ -216,7 +216,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault('defaultSiteSlogan',
                                                 function() {
-                return 'TR ENGINE';
+                return 'PassionEngine';
             });
     }
 
@@ -255,7 +255,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault('defaultDescription',
                                                 function() {
-                return 'TR ENGINE';
+                return 'PassionEngine';
             });
     }
 
@@ -268,7 +268,7 @@ class CoreMainData extends CoreDataStorage
     {
         return $this->getStringValueWithDefault('defaultKeywords',
                                                 function() {
-                return 'TR ENGINE';
+                return 'PassionEngine';
             });
     }
 
@@ -321,22 +321,22 @@ class CoreMainData extends CoreDataStorage
         $newConfig = array();
 
         // Vérification de l'adresse email du webmaster
-        if (!ExecEmail::isValidEmail($rawConfig['TR_ENGINE_EMAIL'])) {
+        if (!ExecEmail::isValidEmail($rawConfig['PASSION_ENGINE_EMAIL'])) {
             CoreLogger::addException('Default email isn\'t valid');
         }
 
-        define('TR_ENGINE_EMAIL',
-               $rawConfig['TR_ENGINE_EMAIL']);
+        define('PASSION_ENGINE_EMAIL',
+               $rawConfig['PASSION_ENGINE_EMAIL']);
 
         // Vérification du statut
-        $rawConfig['TR_ENGINE_STATUT'] = strtolower($rawConfig['TR_ENGINE_STATUT']);
+        $rawConfig['PASSION_ENGINE_STATUT'] = strtolower($rawConfig['PASSION_ENGINE_STATUT']);
 
-        if ($rawConfig['TR_ENGINE_STATUT'] !== 'close' && $rawConfig['TR_ENGINE_STATUT'] !== 'open') {
-            $rawConfig['TR_ENGINE_STATUT'] = 'open';
+        if ($rawConfig['PASSION_ENGINE_STATUT'] !== 'close' && $rawConfig['PASSION_ENGINE_STATUT'] !== 'open') {
+            $rawConfig['PASSION_ENGINE_STATUT'] = 'open';
         }
 
-        define('TR_ENGINE_STATUT',
-               $rawConfig['TR_ENGINE_STATUT']);
+        define('PASSION_ENGINE_STATUT',
+               $rawConfig['PASSION_ENGINE_STATUT']);
 
         // Vérification de la durée de validité du cache
         if (!is_int($rawConfig['sessionTimeLimit']) || $rawConfig['sessionTimeLimit'] < 1) {

@@ -670,7 +670,7 @@ class CoreCache extends CoreDriverSelector
      */
     private function &getFullPath(string $path): string
     {
-        $path = TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $this->getRelativeSectionPath($path);
+        $path = PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $this->getRelativeSectionPath($path);
         return $path;
     }
 

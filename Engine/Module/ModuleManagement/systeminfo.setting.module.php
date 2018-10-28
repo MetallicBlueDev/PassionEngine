@@ -34,20 +34,20 @@ class Module_Management_Systeminfo extends ModuleModel
         foreach ($modeActived as $mode) {
             $actived = ($currentMode === $mode);
             $modeActivedContent .= " " . $mode . "="
-                    . (($actived) ? "yes" : "no");
+                . (($actived) ? "yes" : "no");
         }
 
         $coreMain = CoreMain::getInstance();
         $infos = array(
-            "TR ENGINE VERSION" => TR_ENGINE_VERSION,
-            "TR ENGINE PHP VERSION" => TR_ENGINE_PHP_VERSION,
-            "TR ENGINE PHP OS" => TR_ENGINE_PHP_OS,
-            "TR ENGINE actived cache" => $modeActivedContent,
-            "TR ENGINE DIR" => TR_ENGINE_ROOT_DIRECTORY,
-            "TR ENGINE URL" => TR_ENGINE_URL,
-            "TR ENGINE EMAIL" => TR_ENGINE_EMAIL,
-            "TR ENGINE valid session cache time" => $coreMain->getConfigs()->getSessionTimeLimit() . " days",
-            "TR ENGINE UrlRewriting" => ($coreMain->getConfigs()->doUrlRewriting() ? "on" : "off"),
+            "PASSION ENGINE VERSION" => PASSION_ENGINE_VERSION,
+            "PASSION ENGINE PHP VERSION" => PASSION_ENGINE_PHP_VERSION,
+            "PASSION ENGINE PHP OS" => PASSION_ENGINE_PHP_OS,
+            "PASSION ENGINE actived cache" => $modeActivedContent,
+            "PASSION ENGINE DIR" => PASSION_ENGINE_ROOT_DIRECTORY,
+            "PASSION ENGINE URL" => PASSION_ENGINE_URL,
+            "PASSION ENGINE EMAIL" => PASSION_ENGINE_EMAIL,
+            "PASSION ENGINE valid session cache time" => $coreMain->getConfigs()->getSessionTimeLimit() . " days",
+            "PASSION ENGINE UrlRewriting" => ($coreMain->getConfigs()->doUrlRewriting() ? "on" : "off"),
             "PHP built on" => php_uname(),
             "PHP version" => phpversion(),
             "WebServer to PHP interface" => php_sapi_name(),

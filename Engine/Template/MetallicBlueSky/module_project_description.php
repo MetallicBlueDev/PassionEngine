@@ -20,7 +20,7 @@
             <br />
             <br /><?php echo "<span class=\"text_bold\">" . RECORDED_DATE . "</span>: " . $projectInfo['date']; ?>
             <br /><?php echo "<span class=\"text_bold\">" . PERCENT_COMPLETE . "</span>: " . $projectInfo['progress']; ?>%
-            <br /><?php echo "<span class=\"text_bold\">" . OFFICIAL_WEBSITE . "</span>: " . (!empty($projectInfo['website']) ? $projectInfo['website'] : TR_ENGINE_URL); ?>
+            <br /><?php echo "<span class=\"text_bold\">" . OFFICIAL_WEBSITE . "</span>: " . (!empty($projectInfo['website']) ? $projectInfo['website'] : PASSION_ENGINE_URL); ?>
         </div>
     </div>
 </div>

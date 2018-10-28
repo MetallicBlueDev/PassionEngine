@@ -61,7 +61,7 @@ class CachePhp extends CacheModel
                                $content,
                                bool $overwrite = true): void
     {
-        if (!is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
+        if (!is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
             // Soit le fichier n'exite pas soit tout le dossier n'existe pas
             // On commence par vérifier et si besoin écrire le dossier
             $this->writeDirectory($path);
@@ -82,7 +82,7 @@ class CachePhp extends CacheModel
     public function touchCache(string $path,
                                int $updateTime = 0): void
     {
-        if (!touch(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path,
+        if (!touch(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path,
                    $updateTime)) {
             CoreLogger::addException('Touch error on ' . $path);
         }
@@ -97,11 +97,11 @@ class CachePhp extends CacheModel
     public function removeCache(string $path,
                                 int $timeLimit = 0): void
     {
-        if (!empty($path) && is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
+        if (!empty($path) && is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
             // C'est un fichier a supprimer
             $this->removeFile($path,
                               $timeLimit);
-        } else if (is_dir(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
+        } else if (is_dir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
             // C'est un dossier a nettoyer
             $this->removeDirectory($path,
                                    $timeLimit);
@@ -116,7 +116,7 @@ class CachePhp extends CacheModel
      */
     public function &getCacheMTime(string $path): int
     {
-        $mTime = filemtime(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
+        $mTime = filemtime(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
         return $mTime;
     }
 
@@ -131,7 +131,7 @@ class CachePhp extends CacheModel
         $dirList = array();
 
         // Si le dossier est vide, on prend le dossier par défaut
-        $path = !empty($path) ? TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path : TR_ENGINE_ROOT_DIRECTORY;
+        $path = !empty($path) ? PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path : PASSION_ENGINE_ROOT_DIRECTORY;
 
         // Ouverture du dossier
         $handle = opendir($path);
@@ -183,7 +183,7 @@ class CachePhp extends CacheModel
                                                       $content) : $content;
 
         // Tentative d'écriture du fichier
-        // Des problèmes on été constaté avec l'utilisation du chemin absolu TR_ENGINE_ROOT_DIRECTORY
+        // Des problèmes on été constaté avec l'utilisation du chemin absolu PASSION_ENGINE_ROOT_DIRECTORY
         $fp = fopen($pathFile,
                     'a');
 
@@ -206,7 +206,7 @@ class CachePhp extends CacheModel
 
             // Vérification des bytes écris
             if ($nbBytesCmd !== $nbBytesFile) {
-                @unlink(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
+                @unlink(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
 
                 CoreLogger::addException('Bad response for fwrite command. Path : ' . $pathFile . '. '
                     . 'Server response : ' . $nbBytesCmd . ' bytes writed, ' . $nbBytesFile . ' bytes readed');
@@ -270,7 +270,7 @@ class CachePhp extends CacheModel
 
         // Information sur les dossiers
         $dirs = explode(DIRECTORY_SEPARATOR,
-                        TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
+                        PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
         $nbDir = count($dirs);
         $currentPath = '';
         $count = 0;
@@ -334,7 +334,7 @@ class CachePhp extends CacheModel
     {
         if ($this->canRemoveFile($path,
                                  $timeLimit)) {
-            $fp = fopen(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path,
+            $fp = fopen(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path,
                         'a');
 
             if ($fp) {
@@ -348,10 +348,10 @@ class CachePhp extends CacheModel
                 fclose($fp);
 
                 // Suppression
-                unlink(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
+                unlink(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path);
             }
 
-            if (is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
+            if (is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
                 CoreLogger::addException('Bad response for fopen|unlink command. Path : ' . $path);
             }
         }
@@ -393,7 +393,7 @@ class CachePhp extends CacheModel
                                      int $timeLimit): void
     {
         // Ouverture du dossier
-        $handle = opendir(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
+        $handle = opendir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
 
         // Boucle sur les fichiers
         do {
@@ -410,7 +410,7 @@ class CachePhp extends CacheModel
                     }
 
                     // Suppression
-                    if (is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath . DIRECTORY_SEPARATOR . $file)) {
+                    if (is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath . DIRECTORY_SEPARATOR . $file)) {
                         // Suppression du fichier
                         $this->removeFile($dirPath . DIRECTORY_SEPARATOR . $file,
                                           $timeLimit);
@@ -428,9 +428,9 @@ class CachePhp extends CacheModel
 
         // Suppression du dernière dossier
         if ($timeLimit === 0) {
-            rmdir(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
+            rmdir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
 
-            if (is_dir(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath)) {
+            if (is_dir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath)) {
                 CoreLogger::addException('Bad response for rmdir command. Path : ' . $dirPath);
             }
         }

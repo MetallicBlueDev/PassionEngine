@@ -298,7 +298,7 @@ class CacheSocket extends CacheModel
             if ($this->receiveResponseCode(array(
                     226
                 ))) {
-                $dirList = preg_split('/[' . TR_ENGINE_CRLF . ']+/',
+                $dirList = preg_split('/[' . PASSION_ENGINE_CRLF . ']+/',
                                       $dirListString,
                                       -1,
                                       PREG_SPLIT_NO_EMPTY);
@@ -366,7 +366,7 @@ class CacheSocket extends CacheModel
     private function sendCommand(string $cmd): void
     {
         if (!fwrite($this->getConnectionObject(),
-                    $cmd . TR_ENGINE_CRLF)) {
+                    $cmd . PASSION_ENGINE_CRLF)) {
             CoreLogger::addException('Unable to send command: ' . $cmd);
         }
     }
@@ -391,7 +391,7 @@ class CacheSocket extends CacheModel
         do {
             $response .= fgets($this->getConnectionObject(),
                                4096);
-        } while (!preg_match('/^([0-9]{3})(-(.*' . TR_ENGINE_CRLF . ')+\\1)? [^' . TR_ENGINE_CRLF . ']+' . TR_ENGINE_CRLF . '$/',
+        } while (!preg_match('/^([0-9]{3})(-(.*' . PASSION_ENGINE_CRLF . ')+\\1)? [^' . PASSION_ENGINE_CRLF . ']+' . PASSION_ENGINE_CRLF . '$/',
                              $response,
                              $parts) && time() < $endTime);
 
@@ -438,7 +438,7 @@ class CacheSocket extends CacheModel
             if (is_array($listNames)) {
                 // On décompose les dossiers
                 $listNamesSearch = explode(DIRECTORY_SEPARATOR,
-                                           TR_ENGINE_ROOT_DIRECTORY);
+                                           PASSION_ENGINE_ROOT_DIRECTORY);
 
                 // On recherche des correspondances
                 foreach ($listNames as $dirName) {

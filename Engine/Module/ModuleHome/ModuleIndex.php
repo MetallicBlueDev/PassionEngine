@@ -11,7 +11,7 @@ class ModuleIndex extends ModuleModel
     {
         ?>
         <div class="title">
-            <span>Bonjour, bienvenue sur <a href="index.php">le moteur TR ENGINE</a>.</span>
+            <span>Bonjour, bienvenue sur <a href="index.php">le moteur PassionEngine</a>.</span>
         </div>
         <br /><br />
         <div class="description" style="width: 70%;">

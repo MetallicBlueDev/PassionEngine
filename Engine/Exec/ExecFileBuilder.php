@@ -29,8 +29,8 @@ class ExecFileBuilder
                                            string $cookiePrefix,
                                            string $cryptKey): void
     {
-        if (empty($email) && defined("TR_ENGINE_EMAIL")) {
-            $email = TR_ENGINE_EMAIL;
+        if (empty($email) && defined("PASSION_ENGINE_EMAIL")) {
+            $email = PASSION_ENGINE_EMAIL;
         }
 
         $statut = ($statut === "close") ? "close" : "open";
@@ -52,10 +52,10 @@ class ExecFileBuilder
             . "// Engine settings\n"
             . "//\n"
             . "// Webmaster email address\n"
-            . "$" . "inc['TR_ENGINE_EMAIL'] = \"" . $email . "\";\n"
+            . "$" . "inc['PASSION_ENGINE_EMAIL'] = \"" . $email . "\";\n"
             . "//\n"
             . "// Status of the site (open | close)\n"
-            . "$" . "inc['TR_ENGINE_STATUT'] = \"" . $statut . "\";\n"
+            . "$" . "inc['PASSION_ENGINE_STATUT'] = \"" . $statut . "\";\n"
             . "// -------------------------------------------------------------------------//\n"
             . "// Data sessions\n"
             . "//\n"

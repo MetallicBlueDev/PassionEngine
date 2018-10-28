@@ -205,7 +205,7 @@ abstract class CacheModel extends CoreTransaction
             // Recherche du dossier parent
             $dirBase = '';
 
-            $localDir = str_replace(TR_ENGINE_ROOT_DIRECTORY,
+            $localDir = str_replace(PASSION_ENGINE_ROOT_DIRECTORY,
                                     '',
                                     $filePath);
 
@@ -223,7 +223,7 @@ abstract class CacheModel extends CoreTransaction
 
             // Ecriture de l'entête
             $content = "<?php\n"
-                . "if (!defined('TR_ENGINE_BOOTSTRAP')){"
+                . "if (!defined('PASSION_ENGINE_BOOTSTRAP')){"
                 . "require '" . $dirBase . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . "SecurityCheck.php';"
                 . "}"
                 . "// Generated on " . date('Y-m-d H:i:s') . "\n"

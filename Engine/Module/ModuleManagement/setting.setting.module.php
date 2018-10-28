@@ -471,7 +471,7 @@ class Module_Management_Setting extends ModuleModel
 
         if ($updateConfigFile) {
             ExecFileBuilder::buildConfigFile($coreMain->getConfigs()->getDefaultAdministratorEmail(),
-                                             TR_ENGINE_STATUT,
+                                             PASSION_ENGINE_STATUT,
                                              $sessionTimeLimit,
                                              $cookiePrefix,
                                              $cryptKey);

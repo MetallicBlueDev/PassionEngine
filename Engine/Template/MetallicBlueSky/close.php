@@ -14,7 +14,7 @@
                 <?php echo TREngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteSlogan(); ?>
             </div>
             <div id="close_block">
-                <div id="close_image"><a href="<?php echo "http://" . TR_ENGINE_URL; ?>"></a></div>
+                <div id="close_image"><a href="<?php echo "http://" . PASSION_ENGINE_URL; ?>"></a></div>
                 <div id="close_text">
                     <br /><?php echo $closeText; ?>
                     <br /><br /><?php echo $closeReason; ?>

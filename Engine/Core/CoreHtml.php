@@ -291,7 +291,7 @@ class CoreHtml
     {
         //TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
-            . '<meta name="generator" content="TR ENGINE" />' . "\n"
+            . '<meta name="generator" content="PassionEngine" />' . "\n"
             . '<meta http-equiv="content-type" content="text/html; charset=utf-8" />' . "\n"
             . '<meta http-equiv="content-script-type" content="text/javascript" />' . "\n"
             . '<meta http-equiv="content-style-type" content="text/css" />' . "\n"
@@ -481,9 +481,9 @@ class CoreHtml
     private function addCssFile(string $filePath,
                                 string $options = ''): void
     {
-        if (is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
-                                                                                 DIRECTORY_SEPARATOR,
-                                                                                 $filePath))) {
+        if (is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . str_replace('/',
+                                                                                      DIRECTORY_SEPARATOR,
+                                                                                      $filePath))) {
             $filePath = str_replace(DIRECTORY_SEPARATOR,
                                     '/',
                                     $filePath);

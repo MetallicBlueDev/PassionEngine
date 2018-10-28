@@ -2,12 +2,10 @@
 
 declare(strict_types = 1);
 
-// -----------------------------------------------------------------------
-// -- TR ENGINE = PUISSANCE + SIMPLICITE + EVOLUTIVITE
-// -- Puissance par une quantité d'énergie fournie au meilleur de PHP
-// -- Simplicité par une interface intuitive
-// -- Evolutivité par une grande souplesse d'adaptation du moteur
-// -----------------------------------------------------------------------
+/* -----------------------------------------------------------------------
+ * PassionEngine
+ * The blue passionflower CMS Engine, written with love and passion.
+ * ----------------------------------------------------------------------- */
 
 use TREngine\Engine\Core\CoreSecure;
 use TREngine\Engine\Core\CoreMain;
@@ -15,7 +13,7 @@ use TREngine\Engine\Core\CoreLogger;
 use TREngine\Engine\Exec\ExecTimeMarker;
 
 // Marque le passage dans l'index
-define("TR_ENGINE_BOOTSTRAP",
+define("PASSION_ENGINE_BOOTSTRAP",
        true);
 
 // Chargement et exécution de la sécurité

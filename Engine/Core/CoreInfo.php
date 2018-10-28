@@ -86,7 +86,7 @@ class CoreInfo
      */
     public static function compatibleVersion()
     {
-        return (TR_ENGINE_PHP_VERSION >= TR_ENGINE_PHP_MINIMUM_VERSION);
+        return (PASSION_ENGINE_PHP_VERSION >= PASSION_ENGINE_PHP_MINIMUM_VERSION);
     }
 
     /**
@@ -102,13 +102,13 @@ class CoreInfo
             /**
              * Version PHP sous forme x.x.x.x (exemple : 7.1.0).
              */
-            define('TR_ENGINE_PHP_MINIMUM_VERSION',
+            define('PASSION_ENGINE_PHP_MINIMUM_VERSION',
                    '7.1.0');
 
             /**
              * Version PHP sous forme x.x.x.x (exemple : 5.2.9.2).
              */
-            define('TR_ENGINE_PHP_VERSION',
+            define('PASSION_ENGINE_PHP_VERSION',
                    $info->getPhpVersion());
 
             /**
@@ -116,31 +116,31 @@ class CoreInfo
              *
              * @var string
              */
-            define('TR_ENGINE_ROOT_DIRECTORY',
+            define('PASSION_ENGINE_ROOT_DIRECTORY',
                    $info->getIndexDirectory());
 
             /**
-             * Adresse URL complète jusqu'à TR ENGINE.
+             * Adresse URL complète jusqu'au moteur.
              *
              * @var string
              */
-            define('TR_ENGINE_URL',
+            define('PASSION_ENGINE_URL',
                    $info->getUrlAddress());
 
             /**
-             * Le système d'exploitation qui exécute TR ENGINE.
+             * Le système d'exploitation qui exécute le moteur.
              *
              * @var string
              */
-            define('TR_ENGINE_PHP_OS',
+            define('PASSION_ENGINE_PHP_OS',
                    $info->getPhpOs());
 
             /**
-             * Le retour de chariot du serveur TR ENGINE.
+             * Le retour de chariot du serveur hébergeant le moteur.
              *
              * @var string
              */
-            define('TR_ENGINE_CRLF',
+            define('PASSION_ENGINE_CRLF',
                    $info->getCrLf());
 
             /**
@@ -154,7 +154,7 @@ class CoreInfo
              *
              * @var string
              */
-            define('TR_ENGINE_VERSION',
+            define('PASSION_ENGINE_VERSION',
                    '0.7.0.0');
         }
     }
@@ -183,7 +183,7 @@ class CoreInfo
         $baseDir = '';
 
         // Recherche du chemin absolu depuis n'importe quel fichier
-        if (defined('TR_ENGINE_BOOTSTRAP')) {
+        if (defined('PASSION_ENGINE_BOOTSTRAP')) {
             // Nous sommes dans l'index
             $baseDir = getcwd();
         } else {
@@ -270,7 +270,7 @@ class CoreInfo
     }
 
     /**
-     * Retourne l'adresse URL complète jusqu'à TR ENGINE.
+     * Retourne l'adresse URL complète jusqu'au moteur.
      *
      * @return string
      */
@@ -286,7 +286,7 @@ class CoreInfo
 
             // Recherche du dossier courant
             $urlBaseArray = explode(DIRECTORY_SEPARATOR,
-                                    TR_ENGINE_ROOT_DIRECTORY);
+                                    PASSION_ENGINE_ROOT_DIRECTORY);
 
             // Construction du lien
             $urlFinal = $this->getUrlAddressBuilded($currentUrlArray,
@@ -380,9 +380,9 @@ class CoreInfo
         $rslt = '';
 
         // Le retour chariot de chaque OS
-        if (TR_ENGINE_PHP_OS === 'WIN') {
+        if (PASSION_ENGINE_PHP_OS === 'WIN') {
             $rslt = "\r\n";
-        } else if (TR_ENGINE_PHP_OS === 'MAC') {
+        } else if (PASSION_ENGINE_PHP_OS === 'MAC') {
             $rslt = "\r";
         } else {
             $rslt = "\n";

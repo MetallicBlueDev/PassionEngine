@@ -520,12 +520,12 @@ class CoreTranslate
     private static function &getLanguageExtensionFromUrl(): string
     {
         // Recherche de l'URL
-        if (!defined('TR_ENGINE_URL')) {
+        if (!defined('PASSION_ENGINE_URL')) {
             $url = CoreRequest::getString('SERVER_NAME',
                                           '',
                                           CoreRequestType::SERVER);
         } else {
-            $url = TR_ENGINE_URL;
+            $url = PASSION_ENGINE_URL;
         }
 
         // Recherche de l'extension de URL
@@ -554,10 +554,10 @@ class CoreTranslate
      */
     private function configureLocale(): void
     {
-        if ($this->getCurrentLanguage() === 'french' && TR_ENGINE_PHP_OS === 'WIN') {
+        if ($this->getCurrentLanguage() === 'french' && PASSION_ENGINE_PHP_OS === 'WIN') {
             setlocale(LC_TIME,
                       'french');
-        } else if ($this->getCurrentLanguage() === 'french' && TR_ENGINE_PHP_OS === 'BSD') {
+        } else if ($this->getCurrentLanguage() === 'french' && PASSION_ENGINE_PHP_OS === 'BSD') {
             setlocale(LC_TIME,
                       'fr_FR.ISO8859-1');
         } else if ($this->getCurrentLanguage() === 'french') {
@@ -682,7 +682,7 @@ class CoreTranslate
      */
     private static function canUseLanguage(string $language): bool
     {
-        return !empty($language) && is_file(TR_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
+        return !empty($language) && is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
                                                                                                                                   $language) . '.php');
     }
 }

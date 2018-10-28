@@ -117,7 +117,7 @@ class CoreMain
     }
 
     /**
-     * Démarrage TR ENGINE.
+     * Démarrage du moteur.
      */
     public function start(): void
     {
@@ -174,7 +174,7 @@ class CoreMain
     public function install(): void
     {
         // TODO installation a coder
-//        $installPath = TR_ENGINE_ROOT_DIRECTORY . '/install/index.php';
+//        $installPath = PASSION_ENGINE_ROOT_DIRECTORY . '/install/index.php';
 //        if (is_file($installPath)) {
 //            require $installPath;
 //        }
@@ -309,7 +309,7 @@ class CoreMain
     }
 
     /**
-     * Préparation TR ENGINE.
+     * Préparation du moteur.
      * Procédure de préparation du moteur.
      * Une étape avant le démarrage réel.
      *
@@ -397,7 +397,7 @@ class CoreMain
         if ($canUse) {
             $canUse = $this->getConfigs()->initialize();
 
-            if (defined('TR_ENGINE_STATUT') && TR_ENGINE_STATUT == 'close') {
+            if (defined('PASSION_ENGINE_STATUT') && PASSION_ENGINE_STATUT == 'close') {
                 throw new FailEngine('web site is closed',
                                      FailBase::getErrorCodeName(8));
             }

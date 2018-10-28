@@ -51,7 +51,7 @@ INSERT INTO `tr_configs` (`config_id`, `name`, `value`) VALUES
 (19, 'defaultSiteSlogan', 'C\'est trop de la balle'),
 (20, 'defaultSiteStatut', 'open'),
 (21, 'defaultDescription', 'site de test'),
-(22, 'defaultKeywords', 'tr engine test'),
+(22, 'defaultKeywords', 'PassionEngine test'),
 (23, 'defaultLanguage', 'french'),
 (24, 'defaultTemplate', 'Engine/Template/MetallicBlueSky'),
 (25, 'urlRewriting', '0'),
