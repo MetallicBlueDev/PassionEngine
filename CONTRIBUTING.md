@@ -21,4 +21,4 @@ You have to start from the French translation to go to the other languages.
 If you are contributing to TR Engine, please add your name to ```./CONTRIBUTORS.md``` so that you can be credited for your work outside and inside the CMS.
 
 ## Coding Style
-See [wiki](https://github.com/Tr4ncer/TREngine/wiki/Coding-Style)
+See [wiki](https://github.com/MetallicBlueDev/TREngine/wiki/Coding-Style)
