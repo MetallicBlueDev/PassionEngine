@@ -20,8 +20,9 @@ See [LICENSE](https://github.com/MetallicBlueDev/PassionEngine/blob/master/LICEN
 * Git clone: https://github.com/MetallicBlueDev/PassionEngine.git
 
 ## Links
-* NetBeans (IDE): https://netbeans.apache.org/
+* :thumbsup: NetBeans (IDE): https://netbeans.apache.org/
   * Last beautiful build: https://builds.apache.org/job/incubator-netbeans-linux/lastSuccessfulBuild/artifact/nbbuild/
-* XAMPP (PHP development environment): https://www.apachefriends.org/
-* Php (doc & more): http://www.php.net
-* Website (personal website): https://www.trancer-studio.net
+* :star: XAMPP (PHP development environment): https://www.apachefriends.org/
+* :zap: Php (doc & more): http://www.php.net
+* :thought_balloon: Website (personal website): https://www.trancer-studio.net
+* :cherry_blossom: Blue Passionflower: https://en.wikipedia.org/wiki/Passiflora_caerulea
