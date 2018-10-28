@@ -225,6 +225,7 @@ class CoreLogger
                                        string $type): void
     {
         switch ($type) {
+            // no break
             case self::TYPE_ALERT:
             case self::TYPE_INFO:
             case self::TYPE_NOTE:

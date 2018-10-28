@@ -87,8 +87,8 @@ class LibMenu
         }
 
         $out = "<ul id=\"" . $this->menuFriendlyName . "\">"
-                . $this->renderMenuDatas($callback)
-                . "</ul>";
+            . $this->renderMenuDatas($callback)
+            . "</ul>";
 
         if ($activeMenuData !== null) {
             $textWithRendering = $activeMenuData->getTextWithRendering();
@@ -145,6 +145,7 @@ class LibMenu
                                          string $value): string
     {
         switch ($key) {
+            // no break
             case LibMenuStyle::BOLD:
             case LibMenuStyle::ITALIC:
             case LibMenuStyle::UNDERLINE:
@@ -215,11 +216,11 @@ class LibMenu
                              array(CoreTable::MENUS_CONFIGS . ".menu_id", "name", "value"),
                              array("block_id = '" . 0 . "'"),
                              array(CoreTable::MENUS_CONFIGS . ".menu_id"))
-                    ->innerJoin(CoreTable::MENUS,
-                                CoreTable::MENUS_CONFIGS,
-                                "menu_id",
-                                "=")
-                    ->query();
+                ->innerJoin(CoreTable::MENUS,
+                            CoreTable::MENUS_CONFIGS,
+                            "menu_id",
+                            "=")
+                ->query();
 
             $coreSql->addArrayBuffer($this->menuFriendlyName . "config",
                                      "menu_id");

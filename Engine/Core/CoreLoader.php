@@ -563,6 +563,7 @@ class CoreLoader
             $path = '';
 
             switch ($info->fileType) {
+                // No break
                 case self::BASE_FILE:
                 case self::CACHE_FILE:
                 case self::CORE_FILE:

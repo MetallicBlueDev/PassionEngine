@@ -4,8 +4,8 @@ namespace TREngine\Engine\Core;
 
 /**
  * Représente un type de méthode HTTP à utiliser dans la requête.
- * http://php.net/manual/en/language.variables.superglobals.php
  *
+ * @link http://php.net/manual/en/language.variables.superglobals.php
  * @author Sébastien Villemain
  */
 class CoreRequestType
@@ -13,48 +13,48 @@ class CoreRequestType
 
     /**
      * $_GET
-     * http://php.net/manual/en/reserved.variables.get.php
      *
+     * @link http://php.net/manual/en/reserved.variables.get.php
      * @var string
      */
     public const GET = '_GET';
 
     /**
      * $_POST
-     * http://php.net/manual/en/reserved.variables.post.php
      *
+     * @link http://php.net/manual/en/reserved.variables.post.php
      * @var string
      */
     public const POST = '_POST';
 
     /**
      * $_FILES
-     * http://php.net/manual/en/reserved.variables.files.php
      *
+     * @link http://php.net/manual/en/reserved.variables.files.php
      * @var string
      */
     public const FILES = '_FILES';
 
     /**
      * $_COOKIE
-     * http://php.net/manual/en/reserved.variables.cookies.php
      *
+     * @link http://php.net/manual/en/reserved.variables.cookies.php
      * @var string
      */
     public const COOKIE = '_COOKIE';
 
     /**
      * $_ENV
-     * http://php.net/manual/en/reserved.variables.environment.php
      *
+     * @link http://php.net/manual/en/reserved.variables.environment.php
      * @var string
      */
     public const ENV = '_ENV';
 
     /**
      * $_SERVER
-     * http://php.net/manual/en/reserved.variables.server.php
      *
+     * @link http://php.net/manual/en/reserved.variables.server.php
      * @var string
      */
     public const SERVER = '_SERVER';

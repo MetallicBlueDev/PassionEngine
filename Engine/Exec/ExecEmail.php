@@ -5,7 +5,7 @@ namespace TREngine\Engine\Exec;
 use TREngine\Engine\Core\CoreLayout;
 
 /**
- * Outil de manipulation des emails.
+ * Outil de manipulation des mails.
  *
  * @author Sébastien Villemain
  */
@@ -13,38 +13,38 @@ class ExecEmail
 {
 
     /**
-     * Vérifie la validité de l'mail.
+     * Vérifie la validité du mail.
      *
-     * @param string $email L'adresse email à vérifier
-     * @return bool true L'adresse email est valide
+     * @param string $email L'adresse mail à vérifier
+     * @return bool L'adresse mail est valide
      */
     public static function isValidEmail(string $email): bool
     {
-        return (preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix",
+        return (preg_match('/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix',
                            $email)) ? true : false;
     }
 
     /**
-     * Retourne une chaine ou une image généré
+     * Retourne une chaîne ou une image généré.
      *
      * @param string $email
      * @param string $name
      * @return string
      */
     public static function &displayEmail(string $email,
-                                         string $name = "email"): string
+                                         string $name = 'email'): string
     {
-        $rslt = "";
-        $email = str_replace("@",
-                             "_AT_",
+        $rslt = '';
+        $email = str_replace('@',
+                             '_AT_',
                              $email);
-        $email = str_replace(".",
-                             "_DOT_",
+        $email = str_replace('.',
+                             '_DOT_',
                              $email);
-        $protected = "<a href=\"mailto:" . $email . "\">" . $name . "</a>";
+        $protected = '<a href="mailto:' . $email . '">' . $name . '</a>';
 
         if (extension_loaded('gd')) {
-            $rslt = "<img src=\"index.php?" . CoreLayout::REQUEST_LAYOUT . "=" . CoreLayout::BLOCK . "&amp;" . CoreLayout::REQUEST_BLOCKTYPE . "=ImageGenerator&amp;mode=text&amp;text=" . urlencode(base64_encode($email)) . "\" alt=\"\" title=\"" . $name . "\" />";
+            $rslt = '<img src="index.php?' . CoreLayout::REQUEST_LAYOUT . '=' . CoreLayout::BLOCK . '&amp;' . CoreLayout::REQUEST_BLOCKTYPE . '=ImageGenerator&amp;mode=text&amp;text=' . urlencode(base64_encode($email)) . '" alt="" title="' . $name . '" />';
         } else {
             $rslt = $protected;
         }

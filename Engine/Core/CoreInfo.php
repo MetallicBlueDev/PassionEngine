@@ -5,13 +5,15 @@ namespace TREngine\Engine\Core;
 /**
  * Recherche d'information rapide sur le moteur d'exécution et son environnement coté serveur.
  *
- * http://php.net/supported-versions.php
+ * <code>
  * 5.6 : 31 Dec 2018 -> INCOMPATIBLE / CoreInfo uniquement (cette classe).
  * 7.0 : 3 Dec 2018 -> INCOMPATIBLE
  * 7.1 : 1 Dec 2019 <- Version minimale
  * 7.2 : 30 Nov 2020 <- Compatible
  * 7.3 : ???
+ * </code>
  *
+ * @link http://php.net/supported-versions.php
  * @author Sébastien Villemain
  */
 class CoreInfo
@@ -41,9 +43,9 @@ class CoreInfo
      * Utilisé pour mémoriser les contenus des Superglobales.
      *
      * Les Superglobales ne peuvent pas être appelées directement dans une classe.
-     * http://php.net/manual/fr/language.variables.variable.php
-     * http://php.net/manual/fr/language.variables.superglobals.php
      *
+     * @link http://php.net/manual/fr/language.variables.variable.php
+     * @link http://php.net/manual/fr/language.variables.superglobals.php
      * @param string $name Pointeur vers le nom de la variable.
      * @param array $value Pointeur vers le contenu de la variable.
      */

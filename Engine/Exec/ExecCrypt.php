@@ -6,7 +6,7 @@ use TREngine\Engine\Core\CoreLoader;
 use TREngine\Engine\Core\CoreLogger;
 
 /**
- * Outil de manipulation de données pour le cryptage.
+ * Outil de manipulation de données chiffrées.
  *
  * @author Sébastien Villemain
  */
@@ -74,19 +74,19 @@ class ExecCrypt
     }
 
     /**
-     * Cryptage MD5 via la fonction crypt() avec clé additionnelle.
-     * Cryptage qui nécessite l'activation d'une clé coté serveur.
+     * Chiffrement MD5 via la fonction <code>crypt()</code> avec clé additionnelle.
+     * Chiffrement qui nécessite l'activation d'une clé coté serveur.
      *
      * @param string $data
      * @param string $salt
      * @return string
      */
     public static function &cryptBySmd5(string $data,
-                                        string $salt = ""): string
+                                        string $salt = ''): string
     {
-        $cryptData = "";
+        $cryptData = '';
 
-        if (defined("CRYPT_MD5") && CRYPT_MD5) {
+        if (defined('CRYPT_MD5') && CRYPT_MD5) {
             if (empty($salt)) {
                 $salt = self::makeIdentifier(8);
             }
@@ -95,10 +95,10 @@ class ExecCrypt
                            0,
                            8);
             $cryptData = crypt($data,
-                               "$1$" . $salt . "$");
+                               '$1$' . $salt . '$');
         } else {
-            if (CoreLoader::isCallable("CoreLogger")) {
-                CoreLogger::addException("Unsupported crypt method: CRYPT_MD5");
+            if (CoreLoader::isCallable('CoreLogger')) {
+                CoreLogger::addException('Unsupported crypt method: CRYPT_MD5');
             }
             $cryptData = self::cryptByMd5Unsafe($data);
         }
@@ -106,8 +106,8 @@ class ExecCrypt
     }
 
     /**
-     * Cryptage standard du moteur.
-     * Cryptage équilibré (suffisant pour la plus part du temps).
+     * Chiffrement standard du moteur.
+     * Chiffrement équilibré (suffisant pour la plupart du temps).
      * MD5 amélioré spécialement pour le moteur.
      *
      * @param string $data
@@ -115,7 +115,7 @@ class ExecCrypt
      * @return string
      */
     public static function &cryptByStandard(string $data,
-                                            string $salt = ""): string
+                                            string $salt = ''): string
     {
         if (empty($salt)) {
             $salt = self::makeIdentifier(8);
@@ -124,24 +124,24 @@ class ExecCrypt
         $salt = substr($salt,
                        0,
                        8);
-        $cryptData = "TR" . md5($data . $salt);
+        $cryptData = 'TR' . md5($data . $salt);
         return $cryptData;
     }
 
     /**
-     * Cryptage DES.
-     * Cryptage qualité moyenne qui nécessite l'activation d'une clé coté serveur.
+     * Chiffrement DES.
+     * Chiffrement qualité moyenne qui nécessite l'activation d'une clé coté serveur.
      *
      * @param string $data
      * @param string $salt
      * @return string
      */
     public static function &cryptByDes(string $data,
-                                       string $salt = ""): string
+                                       string $salt = ''): string
     {
-        $cryptData = "";
+        $cryptData = '';
 
-        if (defined("CRYPT_STD_DES") && CRYPT_STD_DES) {
+        if (defined('CRYPT_STD_DES') && CRYPT_STD_DES) {
             if (empty($salt)) {
                 $salt = self::makeIdentifier(2);
             }
@@ -152,8 +152,8 @@ class ExecCrypt
             $cryptData = crypt($data,
                                $salt);
         } else {
-            if (CoreLoader::isCallable("CoreLogger")) {
-                CoreLogger::addException("Unsupported crypt method: CRYPT_STD_DES");
+            if (CoreLoader::isCallable('CoreLogger')) {
+                CoreLogger::addException('Unsupported crypt method: CRYPT_STD_DES');
             }
             $cryptData = self::cryptBySmd5($data,
                                            $salt);
@@ -162,8 +162,8 @@ class ExecCrypt
     }
 
     /**
-     * Cryptage SHA1.
-     * Cryptage de qualité moyenne et sans clé additionnelle.
+     * Chiffrement SHA1.
+     * Chiffrement de qualité moyenne et sans clé additionnelle.
      *
      * @param string $data
      * @return string
@@ -175,15 +175,15 @@ class ExecCrypt
     }
 
     /**
-     * Cryptage SSHA.
-     * Cryptage de bonne qualité mais lent.
+     * Chiffrement SSHA.
+     * Chiffrement de bonne qualité mais lent.
      *
      * @param string $data
      * @param string $salt
      * @return string
      */
     public static function &cryptBySsha(string $data,
-                                        string $salt = ""): string
+                                        string $salt = ''): string
     {
         if (empty($salt)) {
             $salt = self::makeIdentifier(4);
@@ -192,14 +192,14 @@ class ExecCrypt
         $salt = substr($salt,
                        0,
                        4);
-        $cryptData = "{SSHA}" . base64_encode(pack("H*",
+        $cryptData = '{SSHA}' . base64_encode(pack('H*',
                                                    sha1($data . $salt)) . $salt);
         return $cryptData;
     }
 
     /**
-     * Cryptage en chaîne binaire SHA1.
-     * Cryptage de bonne qualité mais lent et sans clé additionnelle.
+     * Chiffrement en chaîne binaire SHA1.
+     * Chiffrement de bonne qualité mais lent et sans clé additionnelle.
      *
      * @param string $data
      * @param string $salt
@@ -208,16 +208,15 @@ class ExecCrypt
     public static function &cryptByBinarySha1(string $data): string
     {
         // Chaîne hexadécimale H, bit de poids fort en premier
-        $cryptData = "*" . sha1(pack("H*",
+        $cryptData = '*' . sha1(pack('H*',
                                      sha1($data)));
         return $cryptData;
     }
 
     /**
-     * Encodeur de chaine.
-     * Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
-     * http://fr2.php.net/manual/fr/function.md5.php
+     * Encodeur de chaîne.
      *
+     * @link http://fr2.php.net/manual/fr/function.md5.php Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
      * @param string $plainText
      * @param string $password
      * @param int $ivLen
@@ -227,11 +226,11 @@ class ExecCrypt
                                        string $password,
                                        int $ivLen = 16): string
     {
-        $plainText .= "\x13";
+        $plainText .= '\x13';
         $n = strlen($plainText);
 
         if ($n % 16) {
-            $plainText .= str_repeat("\0",
+            $plainText .= str_repeat('\0',
                                      16 - ($n % 16));
         }
 
@@ -257,10 +256,9 @@ class ExecCrypt
     }
 
     /**
-     * Décodeur de chaine.
-     * Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
-     * http://fr2.php.net/manual/fr/function.md5.php
+     * Décodeur de chaîne.
      *
+     * @link http://fr2.php.net/manual/fr/function.md5.php Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
      * @param string $encText
      * @param string $password
      * @param int $ivLen
@@ -312,10 +310,10 @@ class ExecCrypt
                                         bool $number = true,
                                         bool $caseSensitive = true): string
     {
-        $randKey = "";
-        $string = "";
-        $letters = "abcdefghijklmnopqrstuvwxyz";
-        $numbers = "0123456789";
+        $randKey = '';
+        $string = '';
+        $letters = 'abcdefghijklmnopqrstuvwxyz';
+        $numbers = '0123456789';
 
         if ($letter && $number) {
             $string = $letters . $numbers;
@@ -343,8 +341,8 @@ class ExecCrypt
     }
 
     /**
-     * Cryptage MD5 classique sans clé additionnelle.
-     * Cryptage de faible qualité.
+     * Chiffrement MD5 classique sans clé additionnelle.
+     * Chiffrement de faible qualité.
      *
      * @param string $data
      * @return string
@@ -357,15 +355,15 @@ class ExecCrypt
 
     /**
      * Génère une valeur.
-     * Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
-     * http://fr2.php.net/manual/fr/function.md5.php
      *
+     *
+     * @link http://fr2.php.net/manual/fr/function.md5.php Thanks Alexander Valyalkin @ 30-Jun-2004 08:41
      * @param int $ivLen
      * @return string
      */
     private static function &getRandIv(int $ivLen): string
     {
-        $iv = "";
+        $iv = '';
 
         while ($ivLen-- > 0) {
             $iv .= chr(mt_rand() & 0xff);

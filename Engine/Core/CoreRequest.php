@@ -243,6 +243,7 @@ class CoreRequest
         $input = array();
 
         switch ($hash) {
+            // no break
             case CoreRequestType::GET:
             case CoreRequestType::POST:
             case CoreRequestType::FILES:

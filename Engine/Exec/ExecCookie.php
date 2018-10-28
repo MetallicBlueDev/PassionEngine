@@ -19,9 +19,11 @@ class ExecCookie
      * @param string $name
      * @param string $content
      * @param int $timeLimit
-     * @return bool true succès
+     * @return bool Succès
      */
-    public static function &createCookie(string $name, string $content, int $timeLimit = 0): bool
+    public static function &createCookie(string $name,
+                                         string $content,
+                                         int $timeLimit = 0): bool
     {
         $rslt = false;
 
@@ -39,7 +41,7 @@ class ExecCookie
      * Destruction d'un cookie.
      *
      * @param string $name
-     * @return bool true succès
+     * @return bool Succès
      */
     public static function &destroyCookie(string $name): bool
     {
@@ -48,7 +50,7 @@ class ExecCookie
 
         if (!empty(self::requestCookie($name))) {
             $rslt = setcookie($name,
-                              "");
+                              '');
         }
         return $rslt;
     }
@@ -76,7 +78,7 @@ class ExecCookie
     private static function &requestCookie(string $encodeName): string
     {
         return CoreRequest::getString($encodeName,
-                                      "",
+                                      '',
                                       CoreRequestType::COOKIE);
     }
 }
