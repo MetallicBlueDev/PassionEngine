@@ -8,6 +8,7 @@ use PassionEngine\Engine\Core\CoreSecure;
 use PassionEngine\Engine\Fail\FailBase;
 use PassionEngine\Engine\Core\CoreTransaction;
 use PassionEngine\Engine\Exec\ExecUtils;
+use PassionEngine\Engine\Exec\ExecString;
 use PassionEngine\Engine\Fail\FailSql;
 
 /**
@@ -751,7 +752,7 @@ abstract class BaseModel extends CoreTransaction
      */
     protected function converEscapeString(string $str): string
     {
-        return addslashes($str);
+        return ExecString::addSlashes($str);
     }
 
     /**

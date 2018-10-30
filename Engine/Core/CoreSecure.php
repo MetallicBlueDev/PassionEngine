@@ -399,7 +399,7 @@ class CoreSecure
     /**
      * Ajoute un caractère d'échappement pour chaque caractère de citation.
      *
-     * @param mixed $key objet sans antislash
+     * @param mixed $key
      */
     private function addSlashesForQuotes(&$key): void
     {

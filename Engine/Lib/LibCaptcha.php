@@ -10,6 +10,7 @@ use PassionEngine\Engine\Core\CoreRequest;
 use PassionEngine\Engine\Core\CoreRequestType;
 use PassionEngine\Engine\Exec\ExecCrypt;
 use PassionEngine\Engine\Exec\ExecCookie;
+use PassionEngine\Engine\Exec\ExecString;
 
 /**
  * Générateur de captcha, anti-robot, anti-spam.
@@ -123,7 +124,7 @@ class LibCaptcha
         }
 
         ExecCookie::createCookie("captcha",
-                                 addslashes(serialize($this)));
+                                 ExecString::addSlashes(serialize($this)));
         return $rslt;
     }
 

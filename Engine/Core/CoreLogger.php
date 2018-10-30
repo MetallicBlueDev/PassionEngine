@@ -3,6 +3,7 @@
 namespace PassionEngine\Engine\Core;
 
 use PassionEngine\Engine\Exec\ExecTimeMarker;
+use PassionEngine\Engine\Exec\ExecString;
 
 /**
  * Gestionnaire de messages (journal d'information, d'avertissement et d'erreur).
@@ -138,7 +139,7 @@ class CoreLogger
             } else if ($hasMessages) {
                 if (CoreLoader::isCallable('CoreHtml')) {
                     if (CoreHtml::getInstance()->javascriptEnabled()) {
-                        CoreHtml::getInstance()->addJavascript('displayMessage(\'' . addslashes($rslt) . '\');');
+                        CoreHtml::getInstance()->addJavascript('displayMessage(\'' . ExecString::addSlashes($rslt) . '\');');
                         $rslt = '';
                     }
                 }

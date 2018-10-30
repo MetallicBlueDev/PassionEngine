@@ -249,7 +249,7 @@ class CoreInfo
                             $workingDirectory);
 
         if (!empty($path)) {
-            // Suppression du slash supplémentaire
+            // Suppression du séparateur supplémentaire
             if ($path[0] === DIRECTORY_SEPARATOR) {
                 $path = substr($path,
                                1);

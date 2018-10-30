@@ -576,7 +576,7 @@ class CoreTranslate
 
     /**
      * Conversion des caractères spéciaux en entitiées UTF-8.
-     * Ajout d'antislashes pour utilisation dans le cache.
+     * Ajout du caractère d'échappement pour utilisation dans le cache.
      *
      * @param string
      * @return string
@@ -584,7 +584,7 @@ class CoreTranslate
     private static function &entitiesTranslate(string $text): string
     {
         $text = ExecString::entitiesUtf8($text);
-        $text = addSlashes($text);
+        $text = ExecString::addSlashes($text);
         return $text;
     }
 
@@ -683,6 +683,6 @@ class CoreTranslate
     private static function canUseLanguage(string $language): bool
     {
         return !empty($language) && is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromTranslate(CoreLoader::ENGINE_SUBTYPE,
-                                                                                                                                  $language) . '.php');
+                                                                                                                                       $language) . '.php');
     }
 }
