@@ -19,7 +19,7 @@ class FailEngine extends FailBase
      * @param bool $useArgsInTranslate
      */
     public function __construct(string $message,
-                                string $failCode = "",
+                                string $failCode = '',
                                 array $failArgs = array(),
                                 bool $useArgsInTranslate = false)
     {

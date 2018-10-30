@@ -3,4 +3,4 @@ Replace all quotes
 
 " => '
 
-ExecJQuery OK
+FailTemplate OK

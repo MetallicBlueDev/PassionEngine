@@ -17,14 +17,14 @@ abstract class FailBase extends Exception
      *
      * @var string
      */
-    private const ERROR_CODE = "ERROR_CODE_";
+    private const ERROR_CODE = 'ERROR_CODE_';
 
     /**
      * Nom de la source de l'exception.
      *
      * @var string
      */
-    private $failSourceName = "";
+    private $failSourceName = '';
 
     /**
      * Informations supplémentaires sur l'erreur.
@@ -49,7 +49,7 @@ abstract class FailBase extends Exception
      * @param bool $useArgsInTranslate Détermine si il faut utiliser le tableau de valeur dans la traduction du message.
      */
     public function __construct(string $message,
-                                string $failCode = "",
+                                string $failCode = '',
                                 array $failArgs = array(),
                                 bool $useArgsInTranslate = false)
     {
@@ -115,7 +115,7 @@ abstract class FailBase extends Exception
 
         if (!empty($errorCodeName)) {
             $codeValue = str_replace(self::ERROR_CODE,
-                                     "",
+                                     '',
                                      $errorCodeName);
 
             if (is_numeric($codeValue)) {

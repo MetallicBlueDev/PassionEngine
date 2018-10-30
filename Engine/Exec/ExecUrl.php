@@ -11,15 +11,15 @@ class ExecUrl
 {
 
     /**
-     * Nettoie l'adresse web du protocole.
+     * Nettoie l'adresse URL du protocole.
      *
      * @param string $url
      * @return string
      */
     public static function &cleanUrl(string $url): string
     {
-        $url = preg_replace("/https*:\/\//i",
-                            "",
+        $url = preg_replace('/https*:\/\//i',
+                            '',
                             $url);
         return $url;
     }

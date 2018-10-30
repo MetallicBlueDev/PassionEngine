@@ -11,7 +11,7 @@ class ExecUtils
 {
 
     /**
-     * Le timestamp UNIX actuellemnt mémorisé.
+     * Le timestamp UNIX actuellement mémorisé.
      * Evite d'appeler plusieurs fois la fonction <code>timer()</code>.
      *
      * @var int
