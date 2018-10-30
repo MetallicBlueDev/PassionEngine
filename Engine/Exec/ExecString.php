@@ -6,7 +6,7 @@ use PassionEngine\Engine\Core\CoreLoader;
 use PassionEngine\Engine\Core\CoreTextEditor;
 
 /**
- * Outil de manipulation des chaine de caractères.
+ * Outil de manipulation des chaîne de caractères.
  *
  * @author Sébastien Villemain
  */

@@ -16,15 +16,15 @@ class ExecImage
      * @var array
      */
     private const TYPE_LIST = array(
-        "IMAGETYPE_GIF",
-        "IMAGETYPE_JPEG",
-        "IMAGETYPE_JPG",
-        "IMAGETYPE_PNG",
-        "IMAGETYPE_BMP",
+        'IMAGETYPE_GIF',
+        'IMAGETYPE_JPEG',
+        'IMAGETYPE_JPG',
+        'IMAGETYPE_PNG',
+        'IMAGETYPE_BMP',
     );
 
     /**
-     * Retourne la balise complète de l'image avec redimension.
+     * Retourne la balise complète de l'image.
      *
      * @param string $url
      * @param int $widthDefault
@@ -35,7 +35,7 @@ class ExecImage
                                    int $widthDefault = 350,
                                    int $heightDefault = -1): string
     {
-        $img = "";
+        $img = '';
 
         $infos = self::getInfos($url);
 
@@ -44,9 +44,9 @@ class ExecImage
             $height = $infos[1];
 
             foreach (array(
-        'width',
-        'height') as $original) {
-                $default = $original . "Default";
+            'width',
+            'height') as $original) {
+                $default = $original . 'Default';
 
                 if (${$original} > ${$default} && ${$default}) {
                     $originalInverse = ($original == 'width') ? 'height' : 'width';
@@ -55,13 +55,13 @@ class ExecImage
                     ${$originalInverse} = ceil(${$originalInverse} * $resize);
                 }
 
-                $img = "<img src=\"" . $url . "\" width=\"" . $width . "\" height=\"" . $height . "\" alt=\"\" style=\"border: 0;\" />";
+                $img = '<img src="' . $url . '" width="' . $width . '" height="' . $height . '" alt="" style="border: 0;" />';
             }
 
             if (empty($img) && $heightDefault > 0) {
-                $img = "<img src=\"" . $url . "\" width=\"" . $widthDefault . "\" height=\"" . $heightDefault . "\" alt=\"\" style=\"border: 0;\" />";
+                $img = '<img src="' . $url . '" width="' . $widthDefault . '" height="' . $heightDefault . '" alt="" style="border: 0;" />';
             } else if (empty($img)) {
-                $img = "<img src=\"" . $url . "\" width=\"" . $widthDefault . "\" alt=\"\" style=\"border: 0;\" />";
+                $img = '<img src="' . $url . '" width="' . $widthDefault . '" alt="" style="border: 0;" />';
             }
         }
         return $img;
@@ -83,7 +83,7 @@ class ExecImage
 
             if ($infos !== false && isset($infos[2]) && ExecUtils::inArrayStrictCaseSensitive($infos[2],
                                                                                               self::TYPE_LIST
-                    )) {
+                )) {
                 $type[] = isset($infos[0]) ? $infos[0] : 0;
                 $type[] = isset($infos[1]) ? $infos[1] : 0;
                 $type[] = $infos[2];

@@ -29,18 +29,18 @@ class ExecFileBuilder
                                            string $cookiePrefix,
                                            string $cryptKey): void
     {
-        if (empty($email) && defined("PASSION_ENGINE_EMAIL")) {
+        if (empty($email) && defined('PASSION_ENGINE_EMAIL')) {
             $email = PASSION_ENGINE_EMAIL;
         }
 
-        $statut = ($statut === "close") ? "close" : "open";
+        $statut = ($statut === 'close') ? 'close' : 'open';
 
         if (!is_int($sessionTimeLimit) || $sessionTimeLimit < 0) {
             $sessionTimeLimit = 7;
         }
 
         if (empty($cookiePrefix)) {
-            $cookiePrefix = "tr";
+            $cookiePrefix = 'tr';
         }
 
         if (empty($cryptKey)) {
@@ -70,12 +70,12 @@ class ExecFileBuilder
             . "// -------------------------------------------------------------------------//\n"
             . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString("config.inc.php",
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString('config.inc.php',
                                                                               $content);
     }
 
     /**
-     * Génére un nouveau fichier de configuration du cache.
+     * Génère un nouveau fichier de configuration du cache.
      *
      * @param string $type
      * @param string $host
@@ -99,7 +99,7 @@ class ExecFileBuilder
         }
 
         if (empty($host)) {
-            $host = "127.0.0.1";
+            $host = '127.0.0.1';
         }
 
         if (!is_int($port)) {
@@ -107,7 +107,7 @@ class ExecFileBuilder
         }
 
         if (empty($user)) {
-            $user = "root";
+            $user = 'root';
         }
 
         $content = "<?php \n"
@@ -134,12 +134,12 @@ class ExecFileBuilder
             . "// -------------------------------------------------------------------------//\n"
             . "?>\n";
 
-        $coreCache->writeCacheAsString("cache.inc.php",
+        $coreCache->writeCacheAsString('cache.inc.php',
                                        $content);
     }
 
     /**
-     * Génére un nouveau fichier de configuration pour la base de données.
+     * Génère un nouveau fichier de configuration pour la base de données.
      *
      * @param string $type
      * @param string $host
@@ -161,15 +161,15 @@ class ExecFileBuilder
         }
 
         if (empty($host)) {
-            $host = "mysql:host=127.0.0.1";
+            $host = 'mysql:host=127.0.0.1';
         }
 
         if (empty($user)) {
-            $user = "root";
+            $user = 'root';
         }
 
         if (empty($prefix)) {
-            $prefix = "tr";
+            $prefix = 'tr';
         }
 
         $content = "<?php \n"
@@ -197,7 +197,7 @@ class ExecFileBuilder
             . "// -------------------------------------------------------------------------//\n"
             . "?>\n";
 
-        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString("database.inc.php",
+        CoreCache::getInstance(CoreCacheSection::CONFIGS)->writeCacheAsString('database.inc.php',
                                                                               $content);
     }
 }
