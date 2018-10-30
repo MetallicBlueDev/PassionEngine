@@ -10,6 +10,7 @@ use PassionEngine\Engine\Core\CoreMain;
 use PassionEngine\Engine\Core\CoreSession;
 use PassionEngine\Engine\Core\CoreSessionData;
 use PassionEngine\Engine\Core\CoreLayout;
+use PassionEngine\Engine\Core\CoreHtml;
 use PassionEngine\Engine\Exec\ExecImage;
 use PassionEngine\Engine\Lib\LibForm;
 use PassionEngine\Engine\Lib\LibMakeStyle;
