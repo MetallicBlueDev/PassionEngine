@@ -5,6 +5,7 @@ namespace PassionEngine\Engine\Core;
 use PassionEngine\Engine\Lib\LibMakeStyle;
 use PassionEngine\Engine\Exec\ExecString;
 use PassionEngine\Engine\Exec\ExecCookie;
+use PassionEngine\Engine\Core\CoreRequest;
 use PassionEngine\Engine\Exec\ExecCrypt;
 
 /**
@@ -30,11 +31,16 @@ class CoreHtml
     private $cookieTestName = 'test';
 
     /**
-     * Détermine si le javaScript est actif chez le client.
+     * Détermine l'état du javaScript chez le client.
+     * <ul>
+     * <li>-1: désactivé explicitement chez le client.</li>
+     * <li>0: état inconnu.</li>
+     * <li>1: activé.</li>
+     * </ul>
      *
-     * @var bool
+     * @var int
      */
-    private $javaScriptEnabled = false;
+    private $javaScriptMode = 0;
 
     /**
      * Fonctions et codes javaScript demandées.
@@ -42,6 +48,13 @@ class CoreHtml
      * @var string
      */
     private $javaScriptCode = '';
+
+    /**
+     * Fonctionnalités de script ne sont pas prises en charge.
+     *
+     * @var string
+     */
+    private $noScriptCode = '';
 
     /**
      * Fonctions et codes javaScript JQUERY demandées.
@@ -157,6 +170,16 @@ class CoreHtml
     }
 
     /**
+     * Ajoute d'une fonctionnalité qui n'est pas prise en charge.
+     *
+     * @param string $noScript
+     */
+    public function addNoScriptCode(string $noScript): void
+    {
+        $this->noScriptCode .= $noScript . "\n";
+    }
+
+    /**
      * Ajoute un code javaScript (compatible JQUERY et javaScript pur) à exécuter.
      *
      * @param string $javaScript
@@ -175,11 +198,9 @@ class CoreHtml
      *
      * @return bool
      */
-    public function &javascriptEnabled(): bool
+    public function javascriptEnabled(): bool
     {
-        // Example : Do not align after formatting.
-        // Example : Functional alignment after formatting.
-        return $this->javaScriptEnabled;
+        return $this->javaScriptMode > -1;
     }
 
     /**
@@ -285,6 +306,7 @@ class CoreHtml
     /**
      * Retourne les métas données de l'entête HTML.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/meta
      * @return string
      */
     public function getMetaHeaders(): string
@@ -292,10 +314,10 @@ class CoreHtml
         //TODO ajouter un support RSS XML
         return $this->getMetaKeywords()
             . '<meta name="generator" content="PassionEngine" />' . "\n"
-            . '<meta http-equiv="content-type" content="text/html; charset=utf-8" />' . "\n"
-            . '<meta http-equiv="content-script-type" content="text/javascript" />' . "\n"
-            . '<meta http-equiv="content-style-type" content="text/css" />' . "\n"
+            . '<meta charset="utf-8" />' . "\n"
+            . '<link rel="canonical" href="https://' . PASSION_ENGINE_URL . '" />' . "\n"
             . '<link rel="shortcut icon" type="image/x-icon" href="' . LibMakeStyle::getTemplateDirectory() . '/favicon.ico" />' . "\n"
+            . $this->getMetaNoScript()
             . $this->getMetaIncludeJavascript()
             . $this->getMetaIncludeCss();
     }
@@ -328,7 +350,7 @@ class CoreHtml
      */
     public function setKeywords(array $keywords): void
     {
-        if (empty($this->keywords)) {
+        if (!empty($this->keywords)) {
             array_push($this->keywords,
                        $keywords);
         } else {
@@ -338,6 +360,7 @@ class CoreHtml
 
     /**
      * Affecte la description de la page courante.
+     * Résumé concis et pertinent du contenu de la page.
      *
      * @param string $description
      */
@@ -349,6 +372,7 @@ class CoreHtml
     /**
      * Retourne un lien HTML sans javaScript.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/a
      * @param string $link Adresse URL de base.
      * @param string $displayContent Données à afficher (texte simple ou code HTML)
      * @param string $onclick Données à exécuter lors du clique
@@ -465,11 +489,33 @@ class CoreHtml
      */
     private function checkJavascriptEnabled(): void
     {
-        // Récuperation du cookie en php
-        $cookieTest = ExecCookie::getCookie($this->cookieTestName);
+        $this->javaScriptMode = $this->requestJavascriptMode();
 
-        // Vérification de l'existance du cookie
-        $this->javaScriptEnabled = ($cookieTest === '1') ? true : false;
+        if ($this->javaScriptMode === 0 && !CoreSecure::getInstance()->locked()) {
+            $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?javaScriptMode=-1">');
+            $this->javaScriptMode = 1;
+        }
+    }
+
+    /**
+     * Détection du javaScript chez le client.
+     *
+     * @return int
+     */
+    private function requestJavascriptMode(): int
+    {
+        $newMode = CoreRequest::getInteger('javaScriptMode');
+        $currentMode = ExecCookie::getCookie($this->cookieTestName);
+
+        if (empty($currentMode) && $newMode === -1) {
+            $currentMode = '-1';
+
+            if (!ExecCookie::createCookie($this->cookieTestName,
+                                          $newMode)) {
+                CoreLogger::addException('Fail to create cookie with javaScriptMode.');
+            }
+        }
+        return ($currentMode === '-1') ? -1 : 0;
     }
 
     /**
@@ -498,14 +544,16 @@ class CoreHtml
     /**
      * Retourne les mots clés et la description de la page.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/meta
      * @return string
      */
     private function getMetaKeywords(): string
     {
+        // Contient une liste de mots-clés séparés par des virgules.
         $keywords = '';
 
-        if (empty($this->keywords)) {
-            $keywords = implode(', ',
+        if (!empty($this->keywords)) {
+            $keywords = implode(',',
                                 $this->keywords);
         }
 
@@ -533,6 +581,7 @@ class CoreHtml
     /**
      * Retourne les scripts à inclure.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/script
      * @param bool $forceIncludes Pour forcer l'inclusion des fichiers javaScript.
      * @return string
      */
@@ -572,14 +621,6 @@ class CoreHtml
             $this->resetJavascript();
         }
 
-        // Lorsque l'on ne force pas l'inclusion on fait un nouveau test
-        if (!$forceIncludes) {
-            if (!$this->javascriptEnabled() && !CoreSecure::getInstance()->locked()) {
-                $this->addJavascriptFile('javascriptenabled.js');
-                $this->addJavascriptCode('javascriptEnabled(\'' . $this->cookieTestName . '\');');
-            }
-        }
-
         if (CoreLoader::isCallable('CoreMain')) {
             $coreMain = CoreMain::getInstance();
 
@@ -591,7 +632,7 @@ class CoreHtml
     }
 
     /**
-     * Reset des codes et fichier inclus javaScript.
+     * Nettoyage des codes et fichier inclus javaScript.
      */
     private function resetJavascript(): void
     {
@@ -603,6 +644,7 @@ class CoreHtml
     /**
      * Retourne les fichiers de CSS à inclure.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/link
      * @return string
      */
     private function &getMetaIncludeCss(): string
@@ -618,7 +660,7 @@ class CoreHtml
                 $options = ' ' . $options;
             }
 
-            $meta .= '<link rel="stylesheet" href="' . $filePath . '" type="text/css" />' . "\n";
+            $meta .= '<link rel="stylesheet" type="text/css" href="' . $filePath . '" />' . "\n";
         }
         return $meta;
     }
@@ -626,6 +668,7 @@ class CoreHtml
     /**
      * Retourne le script d'exécution des fonctions javaScript demandées.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/script
      * @return string
      */
     private function &getMetaExecuteJavascript(): string
@@ -643,6 +686,24 @@ class CoreHtml
         }
 
         $script .= '</script>' . "\n";
+        return $script;
+    }
+
+    /**
+     * Retourne le script des fonctionnalités ne sont pas prises en charge.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/noscript
+     * @return string
+     */
+    private function &getMetaNoScript(): string
+    {
+        $script = '';
+
+        if (!empty($this->noScriptCode)) {
+            $script = '<noscript>' . "\n"
+                . $this->noScriptCode
+                . '</noscript>' . "\n";
+        }
         return $script;
     }
 }
