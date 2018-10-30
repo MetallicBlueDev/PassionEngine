@@ -2,8 +2,8 @@
 <html lang="fr">
     <head>
         <title><?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaTitle(); ?></title>
-        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile("engine_animation.css"); ?>
-        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile("main_animation.css"); ?>
+        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile('engine_animation.css'); ?>
+        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile('main_animation.css'); ?>
         <?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaHeaders(); ?>
     </head>
     <body>
@@ -91,7 +91,7 @@
                     <div id="footer_left"></div>
                     <div id="footer_middle">
                         <div style="padding: 50px;">
-                            Page g&eacute;n&eacute;r&eacute;e en <?php echo PassionEngine\Engine\Exec\ExecTimeMarker::getMeasurement("main"); ?> ms.
+                            Page g&eacute;n&eacute;r&eacute;e en <?php echo PassionEngine\Engine\Exec\ExecTimeMarker::getMeasurement('main'); ?> ms.
                         </div>
                     </div>
                     <div id="footer_right"></div>

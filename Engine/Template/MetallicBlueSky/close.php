@@ -2,8 +2,8 @@
 <html lang="fr">
     <head>
         <title><?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaTitle(); ?></title>
-        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile("main_animation.css"); ?>
-        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile("close.css"); ?>
+        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile('main_animation.css'); ?>
+        <?php PassionEngine\Engine\Core\CoreHtml::getInstance()->addCssTemplateFile('close.css'); ?>
         <?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getMetaHeaders(); ?>
     </head>
     <body>
@@ -14,7 +14,7 @@
                 <?php echo PassionEngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteSlogan(); ?>
             </div>
             <div id="close_block">
-                <div id="close_image"><a href="<?php echo "http://" . PASSION_ENGINE_URL; ?>"></a></div>
+                <div id="close_image"><a href="https://<?php echo PASSION_ENGINE_URL; ?>"></a></div>
                 <div id="close_text">
                     <br /><?php echo $closeText; ?>
                     <br /><br /><?php echo $closeReason; ?>

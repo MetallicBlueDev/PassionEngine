@@ -46,7 +46,7 @@ class ModuleIndex extends ModuleModel
     {
         if (CoreSession::connected()) {
             // Ajout des formulaires dans les onglets
-            $accountTabs = new LibTabs("accounttabs");
+            $accountTabs = new LibTabs('accounttabs');
             $accountTabs->addTab(ACCOUNT_PROFILE,
                                  $this->tabProfile());
             $accountTabs->addTab(ACCOUNT_PRIVATE,
@@ -66,20 +66,20 @@ class ModuleIndex extends ModuleModel
 
     private function tabProfile(): string
     {
-        $form = new LibForm("account-profile");
+        $form = new LibForm('account-profile');
         $form->setTitle(ACCOUNT_PROFILE_TITLE);
         $form->setDescription(ACCOUNT_PROFILE_DESCRIPTION);
         $form->addSpace();
-        $form->addInputText("website",
+        $form->addInputText('website',
                             ACCOUNT_PROFILE_WEBSITE);
-        $form->addTextarea("signature",
+        $form->addTextarea('signature',
                            ACCOUNT_PROFILE_SIGNATURE,
                            CoreSession::getInstance()->getSessionData()->getSignature(),
-                           "style=\"display: block;\" rows=\"5\" cols=\"50\"");
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("sendProfile");
-        $form->addInputHiddenLayout("module");
-        $form->addInputSubmit("submit",
+                           'style="display: block;" rows="5" cols="50"');
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('sendProfile');
+        $form->addInputHiddenLayout('module');
+        $form->addInputSubmit('submit',
                               VALID);
         return $form->render();
     }
@@ -87,11 +87,11 @@ class ModuleIndex extends ModuleModel
     public function sendProfile()
     {
         $values = array();
-        $website = CoreRequest::getString("website",
-                                          "",
+        $website = CoreRequest::getString('website',
+                                          '',
                                           CoreRequestType::POST);
-        $signature = CoreRequest::getString("signature",
-                                            "",
+        $signature = CoreRequest::getString('signature',
+                                            '',
                                             CoreRequestType::POST);
 
         if (!empty($website)) {
@@ -109,7 +109,7 @@ class ModuleIndex extends ModuleModel
                 CoreTable::USERS,
                 $values,
                 array(
-                    "user_id = '" . $coreSession->getSessionData()->getId() . "'")
+                    'user_id = \'' . $coreSession->getSessionData()->getId() . '\'')
             )->query();
 
             if ($coreSql->affectedRows() > 0) {
@@ -118,7 +118,7 @@ class ModuleIndex extends ModuleModel
             }
         }
         if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
-            CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab0",
+            CoreHtml::getInstance()->redirect('index.php?module=connect&' . CoreLayout::REQUEST_VIEW . '=account&selectedTab=accounttabsidTab0',
                                               1);
         }
     }
@@ -127,29 +127,29 @@ class ModuleIndex extends ModuleModel
     {
         $sessionData = CoreSession::getInstance()->getSessionData();
 
-        $form = new LibForm("account-accountprivate");
+        $form = new LibForm('account-accountprivate');
         $form->setTitle(ACCOUNT_PRIVATE_TITLE);
         $form->setDescription(ACCOUNT_PRIVATE_DESCRIPTION);
         $form->addSpace();
-        $form->addInputText("name",
+        $form->addInputText('name',
                             LOGIN,
                             $sessionData->getName());
-        $form->addInputPassword("pass",
+        $form->addInputPassword('pass',
                                 PASSWORD);
-        $form->addInputPassword("pass2",
+        $form->addInputPassword('pass2',
                                 ACCOUNT_PRIVATE_PASSWORD_CONFIRME);
-        $form->addInputText("email",
+        $form->addInputText('email',
                             EMAIL,
                             $sessionData->getEmail());
 
         $form->addSpace();
-        $form->addSelectOpenTag("langue",
+        $form->addSelectOpenTag('langue',
                                 ACCOUNT_PRIVATE_LANGUE);
 
         $langues = CoreTranslate::getLangList();
         $currentLanguage = CoreTranslate::getInstance()->getCurrentLanguage();
         $form->addSelectItemTag($currentLanguage,
-                                "",
+                                '',
                                 true);
 
         // Liste des langages disponibles
@@ -161,13 +161,13 @@ class ModuleIndex extends ModuleModel
         }
 
         $form->addSelectCloseTag();
-        $form->addSelectOpenTag("template",
+        $form->addSelectOpenTag('template',
                                 ACCOUNT_PRIVATE_TEMPLATE)
         ;
         $templates = LibMakeStyle::getTemplateList();
         $currentTemplate = LibMakeStyle::getTemplateDirectory();
         $form->addSelectItemTag($currentTemplate,
-                                "",
+                                '',
                                 true);
 
         // Liste des templates disponibles
@@ -179,12 +179,12 @@ class ModuleIndex extends ModuleModel
         }
         $form->addSelectCloseTag();
         $form->addSpace();
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("sendAccount");
-        $form->addInputHiddenLayout("module");
-        $form->addInputSubmit("submit",
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('sendAccount');
+        $form->addInputHiddenLayout('module');
+        $form->addInputSubmit('submit',
                               VALID);
-        CoreHtml::getInstance()->addJavascript("validAccount('#form-account-accountprivate', '#form-account-accountprivate-name-input', '#form-account-accountprivate-pass-input', '#form-account-accountprivate-pass2-input', '#form-account-accountprivate-mail-input');");
+        CoreHtml::getInstance()->addJavascript('validAccount(\'#form-account-accountprivate\', \'#form-account-accountprivate-name-input\', \'#form-account-accountprivate-pass-input\', \'#form-account-accountprivate-pass2-input\', \'#form-account-accountprivate-mail-input\');');
         return $form->render();
     }
 
@@ -192,23 +192,23 @@ class ModuleIndex extends ModuleModel
     {
         $sessionData = CoreSession::getInstance()->getSessionData();
 
-        $name = CoreRequest::getWord("name",
-                                     "",
+        $name = CoreRequest::getWord('name',
+                                     '',
                                      CoreRequestType::POST);
-        $pass = CoreRequest::getString("pass",
-                                       "",
+        $pass = CoreRequest::getString('pass',
+                                       '',
                                        CoreRequestType::POST);
-        $pass2 = CoreRequest::getString("pass2",
-                                        "",
+        $pass2 = CoreRequest::getString('pass2',
+                                        '',
                                         CoreRequestType::POST);
-        $email = CoreRequest::getString("email",
-                                        "",
+        $email = CoreRequest::getString('email',
+                                        '',
                                         CoreRequestType::POST);
-        $langue = CoreRequest::getString("langue",
-                                         "",
+        $langue = CoreRequest::getString('langue',
+                                         '',
                                          CoreRequestType::POST);
-        $template = CoreRequest::getString("template",
-                                           "",
+        $template = CoreRequest::getString('template',
+                                           '',
                                            CoreRequestType::POST);
 
         if ($sessionData->getName() != $name || $sessionData->getEmail() != $email || $sessionData->getLangue() != $langue || $sessionData->getTemplate() != $template) {
@@ -221,9 +221,9 @@ class ModuleIndex extends ModuleModel
                     $selectedBase->select(
                         CoreTable::USERS,
                         array(
-                            "user_id"),
+                            'user_id'),
                         array(
-                            "name = '" . $name . "'")
+                            'name = \'' . $name . '\'')
                     )->query();
 
                     if ($selectedBase->affectedRows() > 0) {
@@ -254,7 +254,7 @@ class ModuleIndex extends ModuleModel
                             CoreTable::USERS,
                             $values,
                             array(
-                                "user_id = '" . $sessionData->getId() . "'")
+                                'user_id = \'' . $sessionData->getId() . '\'')
                         )->query();
 
                         if ($selectedBase0->affectedRows() > 0) {
@@ -270,21 +270,21 @@ class ModuleIndex extends ModuleModel
             }
         }
         if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
-            CoreHtml::getInstance()->redirect("index.php?module=connect&" . CoreLayout::REQUEST_VIEW . "=account&selectedTab=accounttabsidTab1",
+            CoreHtml::getInstance()->redirect('index.php?module=connect&' . CoreLayout::REQUEST_VIEW . '=account&selectedTab=accounttabsidTab1',
                                               1);
         }
     }
 
     private function tabAvatar(): string
     {
-        $form = new LibForm("account-avatar");
+        $form = new LibForm('account-avatar');
         $form->setTitle(ACCOUNT_AVATAR_TITLE);
         $form->setDescription(ACCOUNT_AVATAR_DESCRIPTION);
         $form->addSpace();
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("account");
-        $form->addInputHiddenLayout("module");
-        $form->addInputSubmit("submit",
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('account');
+        $form->addInputHiddenLayout('module');
+        $form->addInputSubmit('submit',
                               VALID);
         return $form->render();
     }
@@ -293,13 +293,13 @@ class ModuleIndex extends ModuleModel
     {
         $sessionData = CoreSession::getInstance()->getSessionData();
 
-        $form = new LibForm("account-admin");
+        $form = new LibForm('account-admin');
         $form->setTitle(ACCOUNT_ADMIN_TITLE);
         $form->setDescription(ACCOUNT_ADMIN_DESCRIPTION);
 
         // Type de compte admin
         $form->addSpace();
-        $form->addHtmlInFieldset("<span class=\"text_bold\">");
+        $form->addHtmlInFieldset('<span class="text_bold">');
 
         if ($sessionData->hasSuperAdminRank()) {
             $form->addHtmlInFieldset(ACCOUNT_ADMIN_RIGHT_MAX);
@@ -309,11 +309,11 @@ class ModuleIndex extends ModuleModel
             $form->addHtmlInFieldset(ACCOUNT_ADMIN_RIGHT_MED);
         }
 
-        $form->addHtmlInFieldset("</span>");
+        $form->addHtmlInFieldset('</span>');
 
         // Liste des droits
         $form->addSpace();
-        $form->addHtmlInFieldset("<span class=\"text_underline\">" . ACCOUNT_ADMIN_RIGHT . ":</span>");
+        $form->addHtmlInFieldset('<span class="text_underline">' . ACCOUNT_ADMIN_RIGHT . ':</span>');
 
         if ($sessionData->hasSuperAdminRank()) {
             $form->addHtmlInFieldset(ADMIN_RIGHT_ALL);
@@ -323,7 +323,7 @@ class ModuleIndex extends ModuleModel
                     continue;
                 }
 
-                $text = "";
+                $text = '';
 
                 if ($userAccessType->isModuleZone()) {
                     $text = ADMIN_RIGHT_MODULE;
@@ -331,13 +331,13 @@ class ModuleIndex extends ModuleModel
                     $text = ADMIN_RIGHT_BLOCK;
                 }
 
-                $form->addHtmlInFieldset($text . " <span class=\"text_bold\">" . $userAccessType->getPage() . "</span> (#" . $userAccessType->getId() . ")");
+                $form->addHtmlInFieldset($text . ' <span class="text_bold">' . $userAccessType->getPage() . '</span> (#' . $userAccessType->getId() . ')');
             }
         }
 
-        $form->addInputHiddenModule("connect");
-        $form->addInputHiddenView("account");
-        $form->addInputHiddenLayout("module");
+        $form->addInputHiddenModule('connect');
+        $form->addInputHiddenView('account');
+        $form->addInputHiddenLayout('module');
         return $form->render();
     }
 
@@ -347,55 +347,55 @@ class ModuleIndex extends ModuleModel
     public function logon()
     {
         if (!CoreSession::connected()) {
-            $login = CoreRequest::getString("login",
-                                            "",
+            $login = CoreRequest::getString('login',
+                                            '',
                                             CoreRequestType::POST);
-            $password = CoreRequest::getString("password",
-                                               "",
+            $password = CoreRequest::getString('password',
+                                               '',
                                                CoreRequestType::POST);
 
             if (!empty($login) || !empty($password)) {
                 if (CoreSession::openSession($login,
                                              $password)) {
                     // Redirection de la page
-                    $url = "";
-                    $referer = base64_decode(urldecode(CoreRequest::getString("referer",
-                                                                              "",
+                    $url = '';
+                    $referer = base64_decode(urldecode(CoreRequest::getString('referer',
+                                                                              '',
                                                                               CoreRequestType::POST)));
                     if (!empty($referer)) {
                         $url = $referer;
                     } else {
-                        $url = $this->getModuleData()->getConfigValue("defaultUrlAfterLogon",
-                                                                      CoreLayout::REQUEST_MODULE . "=home");
+                        $url = $this->getModuleData()->getConfigValue('defaultUrlAfterLogon',
+                                                                      CoreLayout::REQUEST_MODULE . '=home');
                     }
-                    CoreHtml::getInstance()->redirect("index.php?" . $url);
+                    CoreHtml::getInstance()->redirect('index.php?' . $url);
                 } else {
                     $this->errorBox();
                 }
             }
 
             if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || (empty($login) && empty($password))) {
-                $form = new LibForm("login-logon");
+                $form = new LibForm('login-logon');
                 $form->setTitle(LOGIN_FORM_TITLE);
                 $form->setDescription(LOGIN_FORM_DESCRIPTION);
-                $form->addInputText("login",
+                $form->addInputText('login',
                                     LOGIN,
-                                    "",
-                                    "maxlength=\"180\" value=\"" . $login . "\"");
-                $form->addInputPassword("password",
+                                    '',
+                                    'maxlength="180" value="' . $login . '"');
+                $form->addInputPassword('password',
                                         PASSWORD,
-                                        "maxlength=\"180\"");
+                                        'maxlength="180"');
                 $form->addInputHiddenReferer();
-                $form->addInputHiddenModule("connect");
-                $form->addInputHiddenView("logon");
-                $form->addInputHiddenLayout("module");
-                $form->addInputSubmit("submit",
+                $form->addInputHiddenModule('connect');
+                $form->addInputHiddenView('logon');
+                $form->addInputHiddenLayout('module');
+                $form->addInputSubmit('submit',
                                       CONNECT);
 
                 $form->addHtmlInFieldset($this->getMoreLink());
 
                 echo $form->render();
-                CoreHtml::getInstance()->addJavascript("validLogon('#form-login-logon', '#form-login-logon-login-input', '#form-login-logon-password-input');");
+                CoreHtml::getInstance()->addJavascript('validLogon(\'#form-login-logon\', \'#form-login-logon-login-input\', \'#form-login-logon-password-input\');');
             }
         } else {
             $this->display();
@@ -422,15 +422,15 @@ class ModuleIndex extends ModuleModel
     }
 
     /**
-     * Formulaire d'identifiant oublié
+     * Formulaire de nom d'utilisateur oublié
      */
     public function forgetlogin()
     {
         if (!CoreSession::connected()) {
-            $login = "";
+            $login = '';
             $ok = false;
-            $email = CoreRequest::getString("email",
-                                            "",
+            $email = CoreRequest::getString('email',
+                                            '',
                                             CoreRequestType::POST);
 
             if (!empty($email)) {
@@ -439,9 +439,9 @@ class ModuleIndex extends ModuleModel
                     $selectedBase1->select(
                         CoreTable::USERS,
                         array(
-                            "name"),
+                            'name'),
                         array(
-                            "email = '" . $email . "'")
+                            'email = \'' . $email . '\'')
                     )->query();
 
                     if ($selectedBase1->affectedRows() == 1) {
@@ -457,24 +457,24 @@ class ModuleIndex extends ModuleModel
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . " " . $email);
+                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . ' ' . $email);
             } else {
                 if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($email)) {
-                    $form = new LibForm("login-forgetlogin");
+                    $form = new LibForm('login-forgetlogin');
                     $form->setTitle(FORGET_LOGIN_TITLE);
                     $form->setDescription(FORGET_LOGIN_DESCRIPTION);
-                    $form->addInputText("email",
+                    $form->addInputText('email',
                                         EMAIL);
-                    $form->addInputHiddenModule("connect");
-                    $form->addInputHiddenView("forgetlogin");
-                    $form->addInputHiddenLayout("module");
-                    $form->addInputSubmit("submit",
+                    $form->addInputHiddenModule('connect');
+                    $form->addInputHiddenView('forgetlogin');
+                    $form->addInputHiddenLayout('module');
+                    $form->addInputSubmit('submit',
                                           FORGET_LOGIN_SUBMIT);
 
                     $form->addHtmlInFieldset($this->getMoreLink());
 
                     echo $form->render();
-                    CoreHtml::getInstance()->addJavascript("validForgetLogin('#form-login-forgetlogin', '#form-login-forgetlogin-email-input');");
+                    CoreHtml::getInstance()->addJavascript('validForgetLogin(\'#form-login-forgetlogin\', \'#form-login-forgetlogin-email-input\');');
                 }
             }
         } else {
@@ -489,9 +489,9 @@ class ModuleIndex extends ModuleModel
     {
         if (!CoreSession::connected()) {
             $ok = false;
-            $email = "";
-            $login = CoreRequest::getString("login",
-                                            "",
+            $email = '';
+            $login = CoreRequest::getString('login',
+                                            '',
                                             CoreRequestType::POST);
 
             if (!empty($login)) {
@@ -500,9 +500,9 @@ class ModuleIndex extends ModuleModel
                     $selectedBase2->select(
                         CoreTable::USERS,
                         array(
-                            "name, email"),
+                            'name, email'),
                         array(
-                            "name = '" . $login . "'")
+                            'name = \'' . $login . '\'')
                     )->query();
 
                     if ($selectedBase2->affectedRows() == 1) {
@@ -521,24 +521,24 @@ class ModuleIndex extends ModuleModel
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . " " . $email);
+                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . ' ' . $email);
             } else {
                 if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($login)) {
-                    $form = new LibForm("login-forgetpass");
+                    $form = new LibForm('login-forgetpass');
                     $form->setTitle(FORGET_PASSWORD_TITLE);
                     $form->setDescription(FORGET_PASSWORD_DESCRIPTION);
-                    $form->addInputText("login",
+                    $form->addInputText('login',
                                         LOGIN);
-                    $form->addInputHiddenModule("connect");
-                    $form->addInputHiddenView("forgetpass");
-                    $form->addInputHiddenLayout("module");
-                    $form->addInputSubmit("submit",
+                    $form->addInputHiddenModule('connect');
+                    $form->addInputHiddenView('forgetpass');
+                    $form->addInputHiddenLayout('module');
+                    $form->addInputSubmit('submit',
                                           FORGET_PASSWORD_SUBMIT);
 
                     $form->addHtmlInFieldset($this->getMoreLink());
 
                     echo $form->render();
-                    CoreHtml::getInstance()->addJavascript("validForgetPass('#form-login-forgetpass', '#form-login-forgetpass-login-input');");
+                    CoreHtml::getInstance()->addJavascript('validForgetPass(\'#form-login-forgetpass\', \'#form-login-forgetpass-login-input\');');
                 }
             }
         } else {
@@ -554,16 +554,16 @@ class ModuleIndex extends ModuleModel
     private function getMoreLink(): string
     {
         $currentView = $this->getModuleData()->getView();
-        $route = CoreRoute::getNewRoute()->setModule("connect");
-        $moreLink = "<ul>";
+        $route = CoreRoute::getNewRoute()->setModule('connect');
+        $moreLink = '<ul>';
 
         if (CoreMain::getInstance()->getConfigs()->registrationAllowed()) {
-            $moreLink .= "<li><span class=\"text_bold\">" . $route->setView("registration")->getLink(LINK_TO_NEW_ACCOUNT) . "</span></li>";
+            $moreLink .= '<li><span class="text_bold">' . $route->setView('registration')->getLink(LINK_TO_NEW_ACCOUNT) . '</span></li>';
         }
 
-        $moreLink .= ($currentView !== "forgetlogin" ? "<li>" . $route->setView("forgetlogin")->getLink(LINK_TO_FORGET_LOGIN) . "</li>" : "")
-            . ($currentView !== "logon" ? "<li>" . $route->setView("logon")->getLink(LINK_TO_LOGON) . "</li>" : "")
-            . ($currentView !== "forgetpass" ? "<li>" . $route->setView("forgetpass")->getLink(LINK_TO_FORGET_PASS) . "</li></ul>" : "");
+        $moreLink .= ($currentView !== 'forgetlogin' ? '<li>' . $route->setView('forgetlogin')->getLink(LINK_TO_FORGET_LOGIN) . '</li>' : '')
+            . ($currentView !== 'logon' ? '<li>' . $route->setView('logon')->getLink(LINK_TO_LOGON) . '</li>' : '')
+            . ($currentView !== 'forgetpass' ? '<li>' . $route->setView('forgetpass')->getLink(LINK_TO_FORGET_PASS) . '</li></ul>' : '');
 
         return $moreLink;
     }

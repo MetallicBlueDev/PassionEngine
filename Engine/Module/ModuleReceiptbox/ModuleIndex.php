@@ -9,6 +9,6 @@ class ModuleIndex extends ModuleModel
 
     public function display()
     {
-        echo "Bienvenue sur la messagerie !";
+        echo 'Bienvenue sur la messagerie !';
     }
 }

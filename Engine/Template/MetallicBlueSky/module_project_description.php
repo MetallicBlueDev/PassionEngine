@@ -5,7 +5,11 @@
             if (!empty($projectInfo['img'])) {
                 ?>
                 <a href="<?php echo $projectInfo['img']; ?>">
-                    <?php echo PassionEngine\Engine\Exec\ExecImage::getTag($projectInfo['img'], 128, 128); ?>
+                    <?php
+                    echo PassionEngine\Engine\Exec\ExecImage::getTag($projectInfo['img'],
+                                                                     128,
+                                                                     128);
+                    ?>
                 </a>
                 <?php
             } else {
@@ -16,11 +20,11 @@
             ?>
         </div>
         <div class="project_text, description">
-            <span><?php echo "<span class=\"text_bold\">" . LANGUAGE_TYPE . "</span>: " . $projectInfo['language']; ?></span>
+            <span><?php echo '<span class="text_bold">' . LANGUAGE_TYPE . '</span>: ' . $projectInfo['language']; ?></span>
             <br />
-            <br /><?php echo "<span class=\"text_bold\">" . RECORDED_DATE . "</span>: " . $projectInfo['date']; ?>
-            <br /><?php echo "<span class=\"text_bold\">" . PERCENT_COMPLETE . "</span>: " . $projectInfo['progress']; ?>%
-            <br /><?php echo "<span class=\"text_bold\">" . OFFICIAL_WEBSITE . "</span>: " . (!empty($projectInfo['website']) ? $projectInfo['website'] : PASSION_ENGINE_URL); ?>
+            <br /><?php echo '<span class="text_bold">' . RECORDED_DATE . '</span>: ' . $projectInfo['date']; ?>
+            <br /><?php echo '<span class="text_bold">' . PERCENT_COMPLETE . '</span>: ' . $projectInfo['progress']; ?>%
+            <br /><?php echo '<span class="text_bold">' . OFFICIAL_WEBSITE . '</span>: ' . (!empty($projectInfo['website']) ? $projectInfo['website'] : PASSION_ENGINE_URL); ?>
         </div>
     </div>
 </div>
