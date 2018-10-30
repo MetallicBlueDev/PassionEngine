@@ -13,7 +13,7 @@ use PassionEngine\Engine\Exec\ExecCookie;
 use PassionEngine\Engine\Exec\ExecString;
 
 /**
- * Générateur de captcha, anti-robot, anti-spam.
+ * Générateur de captcha.
  *
  * @author Sébastien Villemain
  */
@@ -35,48 +35,48 @@ class LibCaptcha
     private $enabled = false;
 
     /**
-     * Un object utiliser suivant le type.
+     * Un objet utiliser suivant le type.
      *
      * @var object
      */
-    private $object = "";
+    private $object = '';
 
     /**
      * La réponse correcte à donner.
      *
      * @var string
      */
-    private $response = "";
+    private $response = '';
 
     /**
-     * Nom du champs input anti robot.
+     * Nom du champs en entrée.
      *
      * @var string
      */
-    private $inputRobotName = "";
+    private $inputRobotName = '';
 
     /**
      * Question poser lié à la réponse courante.
      *
      * @var string
      */
-    private $question = "";
+    private $question = '';
 
     /**
      * Configuration d'un nouveau captcha
      *
-     * @param object $object (LibForm object par exemple)
+     * @param mixed $object (LibForm par exemple)
      */
     public function __construct(&$object = null)
     {
         // Mode du captcha
         $captchaMode = CoreMain::getInstance()->getConfigs()->getCaptchaMode();
-        $captchaMode = ($captchaMode === "off" || $captchaMode === "auto" || $captchaMode === "manu") ? $captchaMode : "auto";
+        $captchaMode = ($captchaMode === 'off' || $captchaMode === 'auto' || $captchaMode === 'manu') ? $captchaMode : 'auto';
 
         $sessionData = CoreSession::getInstance()->getSessionData();
 
         // Decide de l'activation
-        if ($captchaMode === "off" || ($captchaMode === "auto" && $sessionData->hasRank()) || ($captchaMode === "manu" && $sessionData->hasAdminRank())) {
+        if ($captchaMode === 'off' || ($captchaMode === 'auto' && $sessionData->hasRank()) || ($captchaMode === 'manu' && $sessionData->hasAdminRank())) {
             $this->enabled = false;
         } else {
             $this->enabled = true;
@@ -91,11 +91,11 @@ class LibCaptcha
      * Création du captcha.
      * Captcha créé dans l'objet valide sinon retourne en code HTML.
      *
-     * @return string le code HTML a incruster dans la page ou une chaine vide si un objet valide est utilisé
+     * @return string le code HTML a incruster dans la page ou une chaîne vide si un objet valide est utilisé
      */
     public function &create(): string
     {
-        $rslt = "";
+        $rslt = '';
 
         if ($this->enabled) {
             $this->inputRobotName = ExecCrypt::makeLetterIdentifier($this->randInt(5,
@@ -109,21 +109,21 @@ class LibCaptcha
             if ($this->object !== null) {
                 // TODO A vérifier
                 if ($this->object instanceOf LibForm) {
-                    $this->object->addInputText("cles",
+                    $this->object->addInputText('cles',
                                                 $this->question,
-                                                "",
-                                                "",
-                                                "input captcha");
+                                                '',
+                                                '',
+                                                'input captcha');
                     $this->object->addInputHidden($this->inputRobotName,
-                                                  "");
+                                                  '');
                 }
             } else {
-                $rslt = $this->question . " <input name=\"cles\" type=\"text\" value=\"\" />"
-                    . "<input name=\"" . $this->inputRobotName . "\" type=\"hidden\" value=\"\" />";
+                $rslt = $this->question . ' <input name="cles" type="text" value="" />'
+                    . '<input name="' . $this->inputRobotName . '" type="hidden" value="" />';
             }
         }
 
-        ExecCookie::createCookie("captcha",
+        ExecCookie::createCookie('captcha',
                                  ExecString::addSlashes(serialize($this)));
         return $rslt;
     }
@@ -139,7 +139,7 @@ class LibCaptcha
         $rslt = false;
 
         if ($object === null || !is_object($object)) {
-            $object = unserialize(stripslashes(ExecCookie::getCookie("captcha")));
+            $object = unserialize(stripslashes(ExecCookie::getCookie('captcha')));
         }
 
         if (is_object($object)) {
@@ -193,11 +193,11 @@ class LibCaptcha
     {
         $rslt = false;
 
-        $code = CoreRequest::getString("cles",
-                                       "",
+        $code = CoreRequest::getString('cles',
+                                       '',
                                        CoreRequestType::POST);
         $inputRobot = CoreRequest::getString($this->inputRobotName,
-                                             "",
+                                             '',
                                              CoreRequestType::POST);
 
         // Vérification du formulaire
@@ -239,11 +239,11 @@ class LibCaptcha
 
         // Choix de l'operateur de façon aléatoire
         $operateur = ($numberTwo >= $numberOne) ? array(
-            "+",
-            "*") : array(
-            "-",
-            "+",
-            "*");
+            '+',
+            '*') : array(
+            '-',
+            '+',
+            '*');
         $operateur = $operateur[array_rand($operateur)];
 
         // Calcul de la réponse
@@ -255,25 +255,25 @@ class LibCaptcha
             // Affichage de l'opérateur en lettre
             switch ($operateur) {
                 case '*':
-                    $operateur = "fois";
+                    $operateur = 'fois';
                     break;
                 case '-':
-                    $operateur = "moins";
+                    $operateur = 'moins';
                     break;
                 case '+':
-                    $operateur = "plus";
+                    $operateur = 'plus';
                     break;
                 default:
-                    $operateur = "plus";
+                    $operateur = 'plus';
                     break;
             }
         } else {
             // Affichage de l'opérateur en symbole
-            $operateur = ($operateur === "*" && $this->randInt(0,
-                                                               1) == 1) ? "x" : $operateur;
+            $operateur = ($operateur === '*' && $this->randInt(0,
+                                                               1) == 1) ? 'x' : $operateur;
         }
 
-        $this->question = CAPTCHA_MAKE_SIMPLE_CALCULATION . " " . $numberOne . " " . $operateur . " " . $numberTwo . " ?";
+        $this->question = CAPTCHA_MAKE_SIMPLE_CALCULATION . ' ' . $numberOne . ' ' . $operateur . ' ' . $numberTwo . ' ?';
     }
 
     /**
@@ -284,8 +284,8 @@ class LibCaptcha
         $number = $this->randInt(1,
                                  6);
 
-        $this->question = CAPTCHA_MAKE_LETTERS . " " . $number;
-        $this->response = substr("abcdef",
+        $this->question = CAPTCHA_MAKE_LETTERS . ' ' . $number;
+        $this->response = substr('abcdef',
                                  0,
                                  $number);
     }
@@ -298,8 +298,8 @@ class LibCaptcha
         $number = $this->randInt(1,
                                  6);
 
-        $this->question = CAPTCHA_MAKE_LETTER . " " . $number;
-        $this->response = substr("abcdef",
+        $this->question = CAPTCHA_MAKE_LETTER . ' ' . $number;
+        $this->response = substr('abcdef',
                                  $number - 1,
                                  1);
     }
@@ -312,8 +312,8 @@ class LibCaptcha
         $number = $this->randInt(1,
                                  6);
 
-        $this->question = CAPTCHA_MAKE_NUMBERS . " " . $number;
-        $this->response = substr("012345",
+        $this->question = CAPTCHA_MAKE_NUMBERS . ' ' . $number;
+        $this->response = substr('012345',
                                  0,
                                  $number + 1);
     }
@@ -372,11 +372,11 @@ class LibCaptcha
         if ($this->randInt(0,
                            1) == 0) {
             // Ecrire en lettre un mois de l'année
-            $this->question = CAPTCHA_MAKE_NUMBER_TO_MONTH . " " . $number . " ?";
+            $this->question = CAPTCHA_MAKE_NUMBER_TO_MONTH . ' ' . $number . ' ?';
             $this->response = $month;
         } else {
             // Ecrire en chiffre un mois de l'année
-            $this->question = CAPTCHA_MAKE_MONTH_TO_NUMBER . " " . $month . " ?";
+            $this->question = CAPTCHA_MAKE_MONTH_TO_NUMBER . ' ' . $month . ' ?';
             $this->response = $number;
         }
     }
@@ -388,7 +388,7 @@ class LibCaptcha
     {// TODO a vérifier
         $this->response = ExecCrypt::makeIdentifier($this->randInt(3,
                                                                    6));
-        $this->question = CAPTCHA_MAKE_PICTURE_CODE . ": " . "<img src=\"index.php?" . CoreLayout::REQUEST_LAYOUT . "=" . CoreLayout::BLOCK . "&amp;" . CoreLayout::REQUEST_BLOCKTYPE . "=ImageGenerator&amp;mode=code&amp;code=" . $this->response . "\" alt=\"\" />\n";
+        $this->question = CAPTCHA_MAKE_PICTURE_CODE . ': ' . '<img src="index.php?' . CoreLayout::REQUEST_LAYOUT . '=' . CoreLayout::BLOCK . '&amp;' . CoreLayout::REQUEST_BLOCKTYPE . '=ImageGenerator&amp;mode=code&amp;code=' . $this->response . '" alt="" />\n';
     }
 
     /**

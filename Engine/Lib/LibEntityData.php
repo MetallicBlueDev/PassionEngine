@@ -29,21 +29,21 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
      *
      * @var string
      */
-    private $page = "";
+    private $page = '';
 
     /**
      * Le paramètre d'affichage.
      *
      * @var string
      */
-    private $view = "";
+    private $view = '';
 
     /**
      * Les données compilées.
      *
      * @var string
      */
-    private $temporyOutputBuffer = "";
+    private $temporyOutputBuffer = '';
 
     /**
      * Nouvelle information d'une entité.
@@ -90,7 +90,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     /**
      * Détermine si l'entité peut être utilisée.
      *
-     * @return bool true L'entité peut être utilisée.
+     * @return bool L'entité peut être utilisée.
      */
     abstract public function &canUse(): bool;
 
@@ -133,7 +133,7 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
     public function isValid(): bool
     {
         $fullClassName = $this->getFullQualifiedClassName();
-        return is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($fullClassName) . ".php");
+        return is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . CoreLoader::getFilePathFromNamespace($fullClassName) . '.php');
     }
 
     /**

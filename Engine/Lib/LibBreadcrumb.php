@@ -6,7 +6,7 @@ use PassionEngine\Engine\Core\CoreMain;
 use PassionEngine\Engine\Core\CoreHtml;
 
 /**
- * Editeur du fil d'Ariane.
+ * Gestionnaire du fil d'Ariane.
  *
  * @author Sébastien Villemain
  */
@@ -31,11 +31,11 @@ class LibBreadcrumb
     {
         // Ajoute la page principal
         $this->addTrail(CoreMain::getInstance()->getConfigs()->getDefaultSiteName(),
-                        "index.php");
+                        'index.php');
     }
 
     /**
-     * Retoune l'instance LibBreadcrumb.
+     * Retourne l'instance LibBreadcrumb.
      *
      * @return LibBreadcrumb
      */
@@ -54,7 +54,7 @@ class LibBreadcrumb
      * @param string $link
      */
     public function addTrail(string $trail,
-                             string $link = ""): void
+                             string $link = ''): void
     {
         if (!empty($trail)) {
             $trail = self::getTrailDescription($trail);
@@ -75,18 +75,18 @@ class LibBreadcrumb
      */
     public function &getBreadcrumbTrail(): string
     {
-        $rslt = "<nav class=\"breadcrumbtrail\"><ul>";
+        $rslt = '<nav class="breadcrumbtrail"><ul>';
 
         foreach ($this->breadcrumbTrail as $trail) {
-            $rslt .= "<li>" . $trail . "</li>";
+            $rslt .= '<li>' . $trail . '</li>';
         }
-        $rslt .= "</ul></nav>";
+        $rslt .= '</ul></nav>';
         return $rslt;
     }
 
     private static function &getTrailDescription(string $trail): string
     {
-        $constant = "TRAIL_" . strtoupper($trail);
+        $constant = 'TRAIL_' . strtoupper($trail);
 
         if (defined($constant)) {
             $trail = constant($constant);

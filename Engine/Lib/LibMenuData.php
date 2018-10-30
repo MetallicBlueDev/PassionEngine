@@ -18,18 +18,18 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
 {
 
     /**
-     * Un élement de menu parent.
+     * Un élément de menu parent.
      *
      * @var string
      */
-    public const ITEM_PARENT = "parent";
+    public const ITEM_PARENT = 'parent';
 
     /**
      * Un élément de menu actif.
      *
      * @var string
      */
-    public const ITEM_ACTIVE = "active";
+    public const ITEM_ACTIVE = 'active';
 
     /**
      * Attributs de l'élément de menu.
@@ -63,7 +63,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
         parent::__construct();
 
         $this->newStorage($data);
-        $this->addTags("li");
+        $this->addTags('li');
     }
 
     /**
@@ -84,7 +84,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getId(): int
     {
-        return $this->getInt("menu_id",
+        return $this->getInt('menu_id',
                              -1);
     }
 
@@ -95,7 +95,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getName(): string
     {
-        return "menu" . $this->getId();
+        return 'menu' . $this->getId();
     }
 
     /**
@@ -105,7 +105,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getRank(): int
     {
-        return $this->getInt("rank",
+        return $this->getInt('rank',
                              0);
     }
 
@@ -128,7 +128,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getConfigs(): array
     {
-        return $this->getArray("menu_config");
+        return $this->getArray('menu_config');
     }
 
     /**
@@ -139,9 +139,9 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getText(): array
     {
-        return $this->getSubString("menu_config",
-                                   "text",
-                                   "");
+        return $this->getSubString('menu_config',
+                                   'text',
+                                   '');
     }
 
     /**
@@ -151,7 +151,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getTextWithRendering(): string
     {
-        return $this->getString("text_with_rendering");
+        return $this->getString('text_with_rendering');
     }
 
     /**
@@ -161,18 +161,18 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getBlockId(): int
     {
-        return $this->getInt("block_id");
+        return $this->getInt('block_id');
     }
 
     /**
      * Identifiant l'élément de menu parent.
-     * Retourne "-1" si aucun parent.
+     * Retourne '-1' si aucun parent.
      *
      * @return int
      */
     public function &getParentId(): int
     {
-        return $this->getInt("parent_id",
+        return $this->getInt('parent_id',
                              -1);
     }
 
@@ -183,7 +183,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getSubLevel(): smallint
     {
-        return $this->getInt("sublevel");
+        return $this->getInt('sublevel');
     }
 
     /**
@@ -193,7 +193,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function &getPosition(): int
     {
-        return $this->getInt("position");
+        return $this->getInt('position');
     }
 
     /**
@@ -259,7 +259,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function addClassItemAttribute(LibMenuData $menuData): void
     {
-        $this->addClassAttribute("item" . $menuData->getId());
+        $this->addClassAttribute('item' . $menuData->getId());
     }
 
     /**
@@ -269,7 +269,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     public function addClassAttribute(string $value): void
     {
-        $this->addAttribute("class",
+        $this->addAttribute('class',
                             $value);
     }
 
@@ -383,24 +383,24 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      * @param string $callback
      * @return string
      */
-    public function &render(string $callback = ""): string
+    public function &render(string $callback = ''): string
     {
         $this->renderText($callback);
 
         // Préparation des données
-        $out = "";
-        $end = "";
+        $out = '';
+        $end = '';
         $attribute = $this->renderAttributes();
 
         // Extraction des balises et ajout du texte
         foreach ($this->tags as $key => $tag) {
-            $out .= "<" . $tag . $attribute . ">";
+            $out .= '<' . $tag . $attribute . '>';
 
             if ($key === 0) {
-                $out .= "<span>" . $this->getTextWithRendering() . "</span>";
+                $out .= '<span>' . $this->getTextWithRendering() . '</span>';
             }
 
-            $end = $end . "</" . $tag . ">";
+            $end = $end . '</' . $tag . '>';
         }
 
         // Ajout des enfants et des balises de fin
@@ -471,7 +471,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
     {
         // Ajout du tag UL si c'est le 1er enfant
         if (empty($this->children)) {
-            $this->addTags("ul");
+            $this->addTags('ul');
         }
 
         // Ajoute la classe parent
@@ -503,13 +503,13 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      */
     private function &renderMultiDimensionalAttributes(array $multiDimensionalData): string
     {
-        $rslt = "";
+        $rslt = '';
 
         foreach ($multiDimensionalData as $key => $value) {
             $isAttributeName = !is_int($key);
 
             if ($isAttributeName) {
-                $rslt .= " " . $key . "=\"";
+                $rslt .= ' ' . $key . '="';
             }
 
             if (is_array($value)) {
@@ -517,14 +517,14 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
             } else {
                 // Prochaine valeur d'attribut
                 if (!empty($rslt) && !$isAttributeName) {
-                    $rslt .= " ";
+                    $rslt .= ' ';
                 }
 
                 $rslt .= htmlspecialchars($value);
             }
 
             if ($isAttributeName) {
-                $rslt .= "\"";
+                $rslt .= '"';
             }
         }
         return $rslt;
@@ -535,7 +535,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      *
      * @param string $callback
      */
-    private function renderText(string $callback = ""): void
+    private function renderText(string $callback = ''): void
     {
         $text = $this->getText();
 
@@ -546,7 +546,7 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
                                          $this->getConfigs());
         }
 
-        $this->setDataValue("text_with_rendering",
+        $this->setDataValue('text_with_rendering',
                             $text);
     }
 
@@ -556,9 +556,9 @@ class LibMenuData extends CoreDataStorage implements CoreAccessToken
      * @param string $callback
      * @return string
      */
-    public function &renderChildren(string $callback = ""): string
+    public function &renderChildren(string $callback = ''): string
     {
-        $out = "";
+        $out = '';
 
         if (!empty($this->children)) {
             foreach ($this->children as $child) {

@@ -55,7 +55,7 @@ abstract class LibEntity
         $entityId = $this->requestEntityId($entityFolderName);
 
         if ($entityId < 0) {
-            $this->throwException("invalid entity folder name",
+            $this->throwException('invalid entity folder name',
                                   FailBase::getErrorCodeName(15),
                                                              array($entityFolderName),
                                                              true);
@@ -205,7 +205,7 @@ abstract class LibEntity
 
         // Recherche dans le cache
         $coreCache = CoreCache::getInstance($this->getCacheSectionName());
-        $cacheFileName = $entityId . ".php";
+        $cacheFileName = $entityId . '.php';
 
         if (!$coreCache->cached($cacheFileName)) {
             $entityArrayDatas = $this->loadEntityDatas($entityId);

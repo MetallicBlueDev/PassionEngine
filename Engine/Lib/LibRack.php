@@ -5,6 +5,7 @@ namespace PassionEngine\Engine\Lib;
 /**
  * Gestionnaire de tableau automatique.
  *
+ * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/table
  * @author Sébastien Villemain
  */
 class LibRack
@@ -41,7 +42,7 @@ class LibRack
      * @param string $title titre de la colonne.
      */
     public function addColumn($size,
-                              $title = ""): void
+                              $title = ''): void
     {
         $this->firstLine[] = array(
             $size,
@@ -64,30 +65,30 @@ class LibRack
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string
+    public function &render(string $class = ''): string
     {
-        $content = "<table class=\"" . ((!empty($class)) ? $class : "table") . "\">"
-            . "<tbody><tr class=\"first\">";
+        $content = '<table class="' . ((!empty($class)) ? $class : 'table') . '">'
+            . '<tbody><tr class="first">';
 
         // Création de la 1ère lignes
         foreach ($this->firstLine as $column) {
-            $content .= "<td style=\"width: " . $column[0] . "%;\">" . $column[1] . "</td>";
+            $content .= '<td style="width: ' . $column[0] . '%;">' . $column[1] . '</td>';
         }
 
-        $content .= "</tr>";
+        $content .= '</tr>';
 
         // Création de toutes les lignes
         foreach ($this->lines as $line) {
-            $content .= "<tr>";
+            $content .= '<tr>';
 
             foreach ($line as $column) {
-                $content .= "<td>" . $column . "</td>";
+                $content .= '<td>' . $column . '</td>';
             }
 
-            $content .= "</tr>";
+            $content .= '</tr>';
         }
 
-        $content .= "</tbody></table>";
+        $content .= '</tbody></table>';
         return $content;
     }
 }

@@ -28,14 +28,14 @@ class LibBlock extends LibEntity
      *
      * @var string
      */
-    private const BLOCKS_INDEXER_FILENAME = "blocks_indexer.php";
+    private const BLOCKS_INDEXER_FILENAME = 'blocks_indexer.php';
 
     /**
      * Nom du fichier listant les blocks.
      *
      * @var string
      */
-    private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . "s";
+    private const BLOCKS_FILELISTER = CoreLoader::BLOCK_FILE . 's';
 
     /**
      * Gestionnaire de blocks.
@@ -93,7 +93,7 @@ class LibBlock extends LibEntity
      */
     public function &getBlocksBuildedBySide(int $selectedSide): string
     {
-        $buffer = "";
+        $buffer = '';
 
         if ($selectedSide >= CoreLayout::BLOCK_SIDE_NONE) {
             foreach ($this->getEntityDatas() as $blockData) {
@@ -110,7 +110,7 @@ class LibBlock extends LibEntity
     /**
      * Liste des positions possibles.
      *
-     * @return array array("numeric" => identifiant int, "letters" => nom de la position).
+     * @return array array('numeric' => identifiant int, 'letters' => nom de la position).
      */
     public static function &getSideList(): array
     {
@@ -118,8 +118,8 @@ class LibBlock extends LibEntity
 
         foreach (CoreLayout::BLOCK_SIDE_LIST as $side) {
             $sideList[] = array(
-                "numeric" => $side,
-                "letters" => self::getSideNumericDescription($side)
+                'numeric' => $side,
+                'letters' => self::getSideNumericDescription($side)
             );
         }
         return $sideList;
@@ -163,7 +163,7 @@ class LibBlock extends LibEntity
                                  CoreLayout::BLOCK_SIDE_LIST);
 
         if ($sideName === false) {
-            throw new FailBlock("invalid block side number",
+            throw new FailBlock('invalid block side number',
                                 FailBase::getErrorCodeName(16),
                                                            array($side),
                                                            true);
@@ -181,7 +181,7 @@ class LibBlock extends LibEntity
     public static function &getSideAsNumeric(string $sideName): int
     {
         if (!isset(CoreLayout::BLOCK_SIDE_LIST[$sideName])) {
-            throw new FailBlock("invalid block side name",
+            throw new FailBlock('invalid block side name',
                                 FailBase::getErrorCodeName(16),
                                                            array($sideName),
                                                            true);
@@ -212,7 +212,7 @@ class LibBlock extends LibEntity
      * @throws FailBlock
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailBlock($message,
@@ -231,8 +231,8 @@ class LibBlock extends LibEntity
         $blockId = -1;
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id"),
-                         array("called_by_type = 1", "AND type =  '" . $entityFolderName . "'"))->query();
+                         array('block_id'),
+                         array('called_by_type = 1', 'AND type =  \'' . $entityFolderName . '\''))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockId = $coreSql->fetchArray()[0]['block_id'];
@@ -262,14 +262,14 @@ class LibBlock extends LibEntity
 
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::BLOCKS,
-                         array("block_id",
-                "side",
-                "position",
-                "title",
-                "type",
-                "rank",
-                "all_modules"),
-                         array("block_id =  '" . $entityId . "'"))->query();
+                         array('block_id',
+                'side',
+                'position',
+                'title',
+                'type',
+                'rank',
+                'all_modules'),
+                         array('block_id =  \'' . $entityId . '\''))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $blockArrayDatas = $coreSql->fetchArray()[0];
@@ -277,16 +277,16 @@ class LibBlock extends LibEntity
             $blockArrayDatas['block_config'] = array();
 
             $coreSql->select(CoreTable::BLOCKS_VISIBILITY,
-                             array("module_id"),
-                             array("block_id =  '" . $entityId . "'"))->query();
+                             array('module_id'),
+                             array('block_id =  \'' . $entityId . '\''))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['module_ids'] = $coreSql->fetchArray();
             }
 
             $coreSql->select(CoreTable::BLOCKS_CONFIGS,
-                             array("name", "value"),
-                             array("block_id =  '" . $entityId . "'"))->query();
+                             array('name', 'value'),
+                             array('block_id =  \'' . $entityId . '\''))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blockArrayDatas['block_config'] = $coreSql->fetchArray();
@@ -377,20 +377,20 @@ class LibBlock extends LibEntity
         if (!$coreCache->cached(self::BLOCKS_INDEXER_FILENAME)) {
             $coreSql = CoreSql::getInstance()->getSelectedBase();
             $coreSql->select(CoreTable::BLOCKS,
-                             array("block_id",
-                    "side",
-                    "type",
-                    "rank"),
+                             array('block_id',
+                    'side',
+                    'type',
+                    'rank'),
                              array(),
-                             array("side",
-                    "position"))->query();
+                             array('side',
+                    'position'))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $blocksIndexer = $coreSql->fetchArray();
 
                 // Mise en cache
                 $content = $coreCache->serializeData($blocksIndexer);
-                $coreCache->writeCacheAsString("blocks_indexer.php",
+                $coreCache->writeCacheAsString('blocks_indexer.php',
                                                $content);
             }
         } else {

@@ -27,7 +27,7 @@ class LibModule extends LibEntity
      *
      * @var string
      */
-    private const MODULES_FILELISTER = CoreLoader::MODULE_FILE . "s";
+    private const MODULES_FILELISTER = CoreLoader::MODULE_FILE . 's';
 
     /**
      * Instance du gestionnaire de module.
@@ -68,7 +68,7 @@ class LibModule extends LibEntity
     /**
      * Retourne un tableau contenant les modules disponibles.
      *
-     * @return array => array("value" => valeur du module, "name" => nom du module).
+     * @return array => array('value' => valeur du module, 'name' => nom du module).
      */
     public static function &getModuleList(): array
     {
@@ -77,8 +77,8 @@ class LibModule extends LibEntity
 
         foreach ($modules as $module) {
             $moduleList[] = array(
-                "value" => $module,
-                "name" => "Module " . $module
+                'value' => $module,
+                'name' => 'Module ' . $module
             );
         }
         return $moduleList;
@@ -94,7 +94,7 @@ class LibModule extends LibEntity
      * @throws FailModule
      */
     protected function throwException(string $message,
-                                      string $failCode = "",
+                                      string $failCode = '',
                                       array $failArgs = array()): void
     {
         throw new FailModule($message,
@@ -113,8 +113,8 @@ class LibModule extends LibEntity
         $moduleId = -1;
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::MODULES,
-                         array("module_id"),
-                         array("name =  '" . ucfirst($entityFolderName) . "'"))->query();
+                         array('module_id'),
+                         array('name =  \'' . ucfirst($entityFolderName) . '\''))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $moduleId = $coreSql->fetchArray()[0]['module_id'];
@@ -143,16 +143,16 @@ class LibModule extends LibEntity
         $moduleArrayDatas = array();
         $coreSql = CoreSql::getInstance()->getSelectedBase();
         $coreSql->select(CoreTable::MODULES,
-                         array("module_id", "name", "rank"),
-                         array("module_id =  '" . $entityId . "'"))->query();
+                         array('module_id', 'name', 'rank'),
+                         array('module_id =  \'' . $entityId . '\''))->query();
 
         if ($coreSql->affectedRows() > 0) {
             $moduleArrayDatas = $coreSql->fetchArray()[0];
             $moduleArrayDatas['module_config'] = array();
 
             $coreSql->select(CoreTable::MODULES_CONFIGS,
-                             array("name", "value"),
-                             array("module_id =  '" . $moduleArrayDatas['module_id'] . "'"))->query();
+                             array('name', 'value'),
+                             array('module_id =  \'' . $moduleArrayDatas['module_id'] . '\''))->query();
 
             if ($coreSql->affectedRows() > 0) {
                 $moduleArrayDatas['module_config'] = $coreSql->fetchArray();
@@ -188,13 +188,13 @@ class LibModule extends LibEntity
 
         $libBreadcrumb = LibBreadcrumb::getInstance();
         $libBreadcrumb->addTrail($entityData->getName(),
-                                 "?" . CoreLayout::REQUEST_MODULE . "=" . $entityData->getName());
+                                 '?' . CoreLayout::REQUEST_MODULE . '=' . $entityData->getName());
 
         // TODO A MODIFIER
         // Juste une petite exception pour le module management qui est different
-        if ($entityData->getName() !== "management") {
+        if ($entityData->getName() !== 'management') {
             $libBreadcrumb->addTrail($entityData->getView(),
-                                     "?" . CoreLayout::REQUEST_MODULE . "=" . $entityData->getName() . "&" . CoreLayout::REQUEST_VIEW . "=" . $entityData->getView());
+                                     '?' . CoreLayout::REQUEST_MODULE . '=' . $entityData->getName() . '&' . CoreLayout::REQUEST_VIEW . '=' . $entityData->getView());
         }
     }
 
@@ -252,9 +252,9 @@ class LibModule extends LibEntity
     private function updateCount(int $moduleId): void
     {
         $coreSql = CoreSql::getInstance()->getSelectedBase();
-        $coreSql->addQuotedValue("count + 1");
+        $coreSql->addQuotedValue('count + 1');
         $coreSql->update(CoreTable::MODULES,
-                         array("count" => "count + 1"),
-                         array("module_id = '" . $moduleId . "'"))->query();
+                         array('count' => 'count + 1'),
+                         array('module_id = \'' . $moduleId . '\''))->query();
     }
 }

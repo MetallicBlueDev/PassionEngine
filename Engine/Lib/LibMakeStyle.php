@@ -21,7 +21,7 @@ class LibMakeStyle
      *
      * @var string
      */
-    public const TEMPLATE_ROOT_DIRECTORY_NAME = "Template";
+    public const TEMPLATE_ROOT_DIRECTORY_NAME = 'Template';
 
     /**
      * chemin vers le dossier principal contenant les dossiers templates.
@@ -35,7 +35,7 @@ class LibMakeStyle
      *
      * @var string
      */
-    public const DEFAULT_TEMPLATE_DIRECTORY = self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "MetallicBlueSky";
+    public const DEFAULT_TEMPLATE_DIRECTORY = self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . 'MetallicBlueSky';
 
     /**
      * Dossier contenant les fichiers templates en cours d'utilisation.
@@ -50,7 +50,7 @@ class LibMakeStyle
      *
      * @var string
      */
-    private $fileName = "";
+    private $fileName = '';
 
     /**
      * Variables assignées.
@@ -79,7 +79,7 @@ class LibMakeStyle
      *
      * @param string $fileName Nom du template
      */
-    public function __construct(string $fileName = "")
+    public function __construct(string $fileName = '')
     {
         $this->setFileName($fileName);
     }
@@ -97,7 +97,7 @@ class LibMakeStyle
     }
 
     /**
-     * Assigne une chaine de caractères au template.
+     * Assigne une chaîne de caractères au template.
      *
      * @param string $key Nom de la variable
      * @param string $value Valeur de la variable
@@ -124,9 +124,9 @@ class LibMakeStyle
      * Exécute et affiche le fichier template.
      *
      * @param string $fileName Nom du template
-     * @param bool $debugMode Si le fichier de template debug n'est pas trouvé, le fichier debug par défaut est utilisé.
+     * @param bool $debugMode Si le fichier de template DEBUG n'est pas trouvé, le fichier DEBUG par défaut est utilisé.
      */
-    public function display(string $fileName = "",
+    public function display(string $fileName = '',
                             bool $debugMode = false): void
     {
         if ($debugMode) {
@@ -149,17 +149,17 @@ class LibMakeStyle
      * @return string
      * @throws FailTemplate
      */
-    public function &render(string $fileName = ""): string
+    public function &render(string $fileName = ''): string
     {
         $this->setFileName($fileName);
 
         // Vérification du template
         if (!$this->isTemplateFile()) {
             if ($this->debugMode) {
-                exit("CRITICAL ERROR: DEBUG TEMPLATE NOT FOUND.");
+                exit('CRITICAL ERROR: DEBUG TEMPLATE NOT FOUND.');
             }
 
-            throw new FailTemplate("invalid template file",
+            throw new FailTemplate('invalid template file',
                                    FailBase::getErrorCodeName(17),
                                                               array($this->getTemplateFilePath()));
         }
@@ -183,7 +183,7 @@ class LibMakeStyle
     public static function configureTemplateDirectory(string $directory): void
     {
         if (!self::isTemplateDirectory($directory)) {
-            throw new FailTemplate("invalid template directory",
+            throw new FailTemplate('invalid template directory',
                                    FailBase::getErrorCodeName(18),
                                                               array($directory));
         }
@@ -242,8 +242,8 @@ class LibMakeStyle
     {
         if (!empty($fileName)) {
             if (substr($fileName,
-                       -4) !== ".php") {
-                $fileName .= ".php";
+                       -4) !== '.php') {
+                $fileName .= '.php';
             }
 
             if ($this->fileName !== $fileName) {
@@ -265,15 +265,15 @@ class LibMakeStyle
     /**
      * Retourne le chemin jusqu'au fichier template.
      *
-     * @return string path
+     * @return string
      */
     private function &getTemplateFilePath(): string
     {
-        $path = "";
+        $path = '';
 
         if ($this->debugMode) {
             // En debug mode, on utilise le fichier par défaut
-            $path = PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . "makestyle.debug.php";
+            $path = PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . self::DEFAULT_TEMPLATE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . 'makestyle.debug.php';
         } else {
             $path = PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . self::$templateDirectory . DIRECTORY_SEPARATOR . $this->fileName;
         }
@@ -283,7 +283,7 @@ class LibMakeStyle
     /**
      * Vérifie la validité du fichier template.
      *
-     * @return bool true si le chemin du template est valide
+     * @return bool Si le chemin du template est valide
      */
     private function isTemplateFile(): bool
     {

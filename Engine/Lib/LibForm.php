@@ -12,6 +12,7 @@ use PassionEngine\Engine\Exec\ExecString;
  * Classe de mise en forme d'un formulaire.
  * Avec mise en cache automatique.
  *
+ * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element
  * @author Sébastien Villemain
  */
 class LibForm
@@ -20,45 +21,45 @@ class LibForm
     /**
      * Nom de la variable en cache.
      */
-    private const CACHE_VARIABLE_NAME = "vars";
+    private const CACHE_VARIABLE_NAME = 'vars';
 
     /**
      * Nom du formulaire.
      *
      * @var string
      */
-    private $name = "";
+    private $name = '';
 
     /**
-     * Url pour le tag d'action.
+     * URL pour la balise d'action.
      *
      * @var string
      */
-    private $urlAction = "";
+    private $urlAction = '';
 
     /**
      * Titre du formulaire.
      *
      * @var string
      */
-    private $title = "";
+    private $title = '';
 
     /**
      * Description du formulaire.
      *
      * @var string
      */
-    private $description = "";
+    private $description = '';
 
     /**
      * Donnée contenu dans le formulaire.
      *
      * @var string
      */
-    private $inputData = "";
+    private $inputData = '';
 
     /**
-     * Fermeture de la balise fieldset.
+     * Fermeture de la balise <cod>fieldset</code>.
      *
      * @var bool
      */
@@ -88,19 +89,19 @@ class LibForm
     /**
      * Nouveau formulaire.
      *
-     * @param string $name identifiant du formlaire : attention à ne pas prendre un nom déjà utilisé !
+     * @param string $name identifiant du formulaire : attention à ne pas prendre un nom déjà utilisé !
      * @param string $urlAction
      */
     public function __construct(string $name,
-                                string $urlAction = "")
+                                string $urlAction = '')
     {
         $this->name = $name;
-        $this->urlAction = !empty($urlAction) ? $urlAction : "index.php";
-        $this->cached = CoreCache::getInstance(CoreCacheSection::FORMS)->cached($name . ".php");
+        $this->urlAction = !empty($urlAction) ? $urlAction : 'index.php';
+        $this->cached = CoreCache::getInstance(CoreCacheSection::FORMS)->cached($name . '.php');
     }
 
     /**
-     * Affecte un title au début du formulaire.
+     * Affecte un titre au début du formulaire.
      *
      * @param string $title
      */
@@ -120,13 +121,13 @@ class LibForm
     }
 
     /**
-     * Ajoute un fieldset.
+     * Ajoute un regroupement de champs.
      *
      * @param string $title
      * @param string $description
      */
-    public function addFieldset(string $title = "",
-                                string $description = ""): void
+    public function addFieldset(string $title = '',
+                                string $description = ''): void
     {
         $title = $this->getTitle($title);
         $description = $this->getDescription($description);
@@ -135,17 +136,18 @@ class LibForm
             if (!$this->doFieldset) {
                 $this->doFieldset = true;
             } else {
-                $this->inputData .= "</fieldset>";
+                $this->inputData .= '</fieldset>';
             }
 
-            $this->inputData .= "<fieldset class=\"fieldset\">"
-                    . $title . $description;
+            $this->inputData .= '<fieldset class="fieldset">'
+                . $title . $description;
         }
     }
 
     /**
      * Ajoute un champ de type texte.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/text
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -153,15 +155,15 @@ class LibForm
      * @param string $class
      */
     public function addInputText(string $name,
-                                 string $description = "",
-                                 string $defaultValue = "",
-                                 string $options = "",
-                                 string $class = ""): void
+                                 string $description = '',
+                                 string $defaultValue = '',
+                                 string $options = '',
+                                 string $class = ''): void
     {
         $this->addInput($name,
                         $name,
                         $description,
-                        "text",
+                        'text',
                         $defaultValue,
                         $options,
                         $class);
@@ -170,21 +172,22 @@ class LibForm
     /**
      * Ajoute un champ masqué.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/hidden
      * @param string $name
      * @param string $defaultValue
      * @param string $options
      */
     public function addInputHidden(string $name,
                                    string $defaultValue,
-                                   string $options = ""): void
+                                   string $options = ''): void
     {
         $this->addInput($name,
                         $name,
-                        "",
-                        "hidden",
+                        '',
+                        'hidden',
                         $defaultValue,
                         $options,
-                        "");
+                        '');
     }
 
     /**
@@ -192,7 +195,7 @@ class LibForm
      */
     public function addInputHiddenReferer(): void
     {
-        $this->addInputHidden("referer",
+        $this->addInputHidden('referer',
                               CoreRequest::getRefererQueryString());
     }
 
@@ -232,6 +235,7 @@ class LibForm
     /**
      * Ajoute un bouton d'envoi.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/submit
      * @param string $name
      * @param string $defaultValue
      * @param string $options
@@ -239,13 +243,13 @@ class LibForm
      */
     public function addInputSubmit(string $name,
                                    string $defaultValue,
-                                   string $options = "",
-                                   string $class = ""): void
+                                   string $options = '',
+                                   string $class = ''): void
     {
         $this->addInput($name,
                         $name,
-                        "",
-                        "submit",
+                        '',
+                        'submit',
                         $defaultValue,
                         $options,
                         $class);
@@ -254,6 +258,7 @@ class LibForm
     /**
      * Ajoute un champ de type bouton radio.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/radio
      * @param string $id
      * @param string $name
      * @param string $description
@@ -264,24 +269,22 @@ class LibForm
      */
     public function addInputRadio(string $id,
                                   string $name,
-                                  string $description = "",
+                                  string $description = '',
                                   bool $checked = false,
-                                  string $defaultValue = "",
-                                  string $options = "",
-                                  string $class = ""): void
+                                  string $defaultValue = '',
+                                  string $options = '',
+                                  string $class = ''): void
     {
-        if (empty($class)) {
-            $class = "radio";
-        }
+
 
         if ($checked) {
-            $options = "checked=\"checked\"" . ((!empty($options)) ? " " . $options : "");
+            $options = 'checked="checked"' . ((!empty($options)) ? ' ' . $options : '');
         }
 
         $this->addInput($id,
                         $name,
                         $description,
-                        "radio",
+                        'radio',
                         $defaultValue,
                         $options,
                         $class);
@@ -290,6 +293,7 @@ class LibForm
     /**
      * Ajoute un champ de type case à cocher.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/checkbox
      * @param string $id
      * @param string $name
      * @param string $description
@@ -300,32 +304,29 @@ class LibForm
      */
     public function addInputCheckbox(string $id,
                                      string $name,
-                                     string $description = "",
+                                     string $description = '',
                                      bool $checked = false,
-                                     string $defaultValue = "",
-                                     string $options = "",
-                                     string $class = ""): void
+                                     string $defaultValue = '',
+                                     string $options = '',
+                                     string $class = ''): void
     {
-        if (empty($class)) {
-            $class = "checkbox";
-        }
-
         if ($checked) {
-            $options = "checked=\"checked\"" . ((!empty($options)) ? " " . $options : "");
+            $options = 'checked="checked"' . ((!empty($options)) ? ' ' . $options : '');
         }
 
         $this->addInput($id,
                         $name,
                         $description,
-                        "checkbox",
+                        'checkbox',
                         $defaultValue,
                         $options,
                         $class);
     }
 
     /**
-     * Ajoute un bouton.
+     * Ajoute un bouton générique.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/button
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -333,15 +334,190 @@ class LibForm
      * @param string $class
      */
     public function addInputButton(string $name,
-                                   string $description = "",
-                                   string $defaultValue = "",
-                                   string $options = "",
-                                   string $class = ""): void
+                                   string $description = '',
+                                   string $defaultValue = '',
+                                   string $options = '',
+                                   string $class = ''): void
     {
         $this->addInput($name,
                         $name,
                         $description,
-                        "button",
+                        'button',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute un bouton qui appel la palette de couleur.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/color
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputColor(string $name,
+                                  string $description = '',
+                                  string $defaultValue = '',
+                                  string $options = '',
+                                  string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'color',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie de date.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/date
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputDate(string $name,
+                                 string $description = '',
+                                 string $defaultValue = '',
+                                 string $options = '',
+                                 string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'date',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie d'un mail.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/email
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputEmail(string $name,
+                                  string $description = '',
+                                  string $defaultValue = '',
+                                  string $options = '',
+                                  string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'email',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie d'une heure (avec des minutes et éventuellement des secondes).
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/time
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputTime(string $name,
+                                 string $description = '',
+                                 string $defaultValue = '',
+                                 string $options = '',
+                                 string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'time',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie d'un chiffre.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/number
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputNumber(string $name,
+                                   string $description = '',
+                                   string $defaultValue = '',
+                                   string $options = '',
+                                   string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'number',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie de valeur numérique comprise entre deux bornes.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/range
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputRange(string $name,
+                                  string $description = '',
+                                  string $defaultValue = '',
+                                  string $options = '',
+                                  string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'range',
+                        $defaultValue,
+                        $options,
+                        $class);
+    }
+
+    /**
+     * Ajoute une saisie de numéro de téléphone.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/tel
+     * @param string $name
+     * @param string $description
+     * @param string $defaultValue
+     * @param string $options
+     * @param string $class
+     */
+    public function addInputTelephone(string $name,
+                                      string $description = '',
+                                      string $defaultValue = '',
+                                      string $options = '',
+                                      string $class = ''): void
+    {
+        $this->addInput($name,
+                        $name,
+                        $description,
+                        'tel',
                         $defaultValue,
                         $options,
                         $class);
@@ -350,28 +526,30 @@ class LibForm
     /**
      * Ajoute un champ de type mot de passe.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/password
      * @param string $name
      * @param string $description
      * @param string $options
      * @param string $class
      */
     public function addInputPassword(string $name,
-                                     string $description = "",
-                                     string $options = "",
-                                     string $class = ""): void
+                                     string $description = '',
+                                     string $options = '',
+                                     string $class = ''): void
     {
         $this->addInput($name,
                         $name,
                         $description,
-                        "password",
-                        "",
+                        'password',
+                        '',
                         $options,
                         $class);
     }
 
     /**
-     * Ajoute un textarea.
+     * Ajoute un éditeur de texte.
      *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/textarea
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -380,19 +558,19 @@ class LibForm
      */
     public function addTextarea(string $name,
                                 string $description,
-                                string $defaultValue = "",
-                                string $options = "",
-                                string $class = ""): void
+                                string $defaultValue = '',
+                                string $options = '',
+                                string $class = ''): void
     {
         if (empty($class)) {
-            $class = "textarea";
+            $class = 'textarea';
         }
 
         $idDescription = $this->getId($name);
         $description = $this->getLabel($name,
                                        $description);
         $id = $this->getId($name,
-                           "input");
+                           'input');
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -408,10 +586,10 @@ class LibForm
         $defaultValue = $this->getLastCacheVar();
 
         if (!$this->cached) {
-            $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                    . " <textarea id=\"" . $id . "\" name=\"" . $name . "\""
-                    . " class=\"" . $class . "\" " . $options . " >"
-                    . $defaultValue . "</textarea></p>";
+            $this->inputData .= '<p id="' . $idDescription . '">' . $description
+                . ' <textarea id="' . $id . '" name="' . $name . '"'
+                . ' class="' . $class . '" ' . $options . ' >'
+                . $defaultValue . '</textarea></p>';
         }
     }
 
@@ -425,18 +603,18 @@ class LibForm
      */
     public function addSelectOpenTag(string $name,
                                      string $description,
-                                     string $options = "",
-                                     string $class = ""): void
+                                     string $options = '',
+                                     string $class = ''): void
     {
         if (empty($class)) {
-            $class = "select";
+            $class = 'select';
         }
 
         $idDescription = $this->getId($name);
         $description = $this->getLabel($name,
                                        $description);
         $id = $this->getId($name,
-                           "input");
+                           'input');
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -448,9 +626,9 @@ class LibForm
         $options = $this->getLastCacheVar();
 
         if (!$this->cached) {
-            $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                    . " <select id=\"" . $id . "\" name=\"" . $name . "\""
-                    . " class=\"" . $class . "\" " . $options . ">";
+            $this->inputData .= '<p id="' . $idDescription . '">' . $description
+                . ' <select id="' . $id . '" name="' . $name . '"'
+                . ' class="' . $class . '" ' . $options . '>';
         }
     }
 
@@ -463,12 +641,12 @@ class LibForm
      * @param string $options
      */
     public function addSelectItemTag(string $value,
-                                     string $description = "",
+                                     string $description = '',
                                      bool $selected = false,
-                                     string $options = ""): void
+                                     string $options = ''): void
     {
         if ($selected) {
-            $options = "selected=\"selected\"" . ((!empty($options)) ? " " . $options : "");
+            $options = 'selected="selected"' . ((!empty($options)) ? ' ' . $options : '');
         }
 
         $description = ((!empty($description)) ? ExecString::textDisplay($description) : $value);
@@ -483,8 +661,8 @@ class LibForm
         $description = $this->getLastCacheVar();
 
         if (!$this->cached) {
-            $this->inputData .= " <option value=\"" . $value . "\" " . $options . ">"
-                    . $description . "</option>";
+            $this->inputData .= ' <option value="' . $value . '" ' . $options . '>'
+                . $description . '</option>';
         }
     }
 
@@ -494,12 +672,12 @@ class LibForm
     public function addSelectCloseTag(): void
     {
         if (!$this->cached) {
-            $this->inputData .= "</select></p>";
+            $this->inputData .= '</select></p>';
         }
     }
 
     /**
-     * Ajoute du code HTML en plus dans le fieldset courant.
+     * Ajoute du code HTML en plus dans le regroupement de champ actuel.
      *
      * @param string $html
      */
@@ -508,22 +686,24 @@ class LibForm
         $this->addCacheVar($html);
 
         if (!$this->cached) {
-            $this->inputData .= "<p>" . $this->getLastCacheVar() . "</p>";
+            $this->inputData .= '<p>' . $this->getLastCacheVar() . '</p>';
         }
     }
 
     /**
      * Ajoute un espace.
+     *
+     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/br
      */
     public function addSpace(): void
     {
         if (!$this->cached) {
-            $this->inputData .= "<p><br /></p>";
+            $this->inputData .= '<p><br /></p>';
         }
     }
 
     /**
-     * Ajoute du code HTML en plus après avoir fermé le fieldset courant.
+     * Ajoute du code HTML en plus après avoir fermé le regroupement de champ actuel.
      *
      * @param string $html
      */
@@ -533,11 +713,11 @@ class LibForm
 
         if (!$this->cached) {
             if ($this->doFieldset) {
-                $this->inputData .= "</fieldset>";
+                $this->inputData .= '</fieldset>';
                 $this->doFieldset = false;
             }
 
-            $this->inputData .= "<p>" . $this->getLastCacheVar() . "</p>";
+            $this->inputData .= '<p>' . $this->getLastCacheVar() . '</p>';
         }
     }
 
@@ -548,10 +728,10 @@ class LibForm
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string
+    public function &render(string $class = ''): string
     {
         if (empty($class)) {
-            $class = "form";
+            $class = 'form';
         }
 
         $this->addCacheVar($this->urlAction);
@@ -567,21 +747,21 @@ class LibForm
         $description = $this->getDescription($this->description);
 
         $coreCache = CoreCache::getInstance(CoreCacheSection::FORMS);
-        $content = "";
+        $content = '';
 
         if ($this->cached) {
             // Récupération des données mise en cache.
-            $content = $coreCache->readCacheAsString($this->name . ".php",
+            $content = $coreCache->readCacheAsString($this->name . '.php',
                                                      self::CACHE_VARIABLE_NAME,
                                                      $this->cacheVars);
         } else { // Préparation puis mise en cache
-            $data = "<form action=\"" . $url . "\" method=\"post\" id=\"form-" . $name . "\" name=\"" . $name . "\""
-                    . " class=\"" . $class . "\"><fieldset class=\"fieldset\">" . $title . $description . $this->inputData
-                    . (($this->doFieldset) ? "</fieldset>" : "") . "</form>";
+            $data = '<form action="' . $url . '" method="post" id="form-' . $name . '" name="' . $name . '"'
+                . ' class="' . $class . '"><fieldset class="fieldset">' . $title . $description . $this->inputData
+                . (($this->doFieldset) ? '</fieldset>' : '') . '</form>';
 
             // Enregistrement dans le cache
             $data = $coreCache->serializeData($data);
-            $content = $coreCache->writeCacheWithVariable($this->name . ".php",
+            $content = $coreCache->writeCacheWithVariable($this->name . '.php',
                                                           $data,
                                                           true,
                                                           self::CACHE_VARIABLE_NAME,
@@ -601,14 +781,14 @@ class LibForm
                                string $description): string
     {
         $id = $this->getId($name,
-                           "input");
+                           'input');
         $description = ExecString::textDisplay($description);
         $this->addCacheVar($description);
 
-        $rslt = "";
+        $rslt = '';
 
         if (!$this->cached) {
-            $rslt = "<label class=\"label\" for=\"" . $id . "\">" . $this->getLastCacheVar() . "</label>";
+            $rslt = '<label class="label" for="' . $id . '">' . $this->getLastCacheVar() . '</label>';
         }
         return $rslt;
     }
@@ -624,10 +804,10 @@ class LibForm
         $title = ExecString::textDisplay($title);
         $this->addCacheVar($title);
 
-        $rslt = "";
+        $rslt = '';
 
         if (!$this->cached) {
-            $rslt = "<legend class=\"legend\"><span class=\"text_bold\">" . $this->getLastCacheVar() . "</span></legend>";
+            $rslt = '<legend class="legend"><span class="text_bold">' . $this->getLastCacheVar() . '</span></legend>';
         }
         return $rslt;
     }
@@ -640,14 +820,14 @@ class LibForm
      */
     private function &getDescription(string $description): string
     {
-        $id = $this->getId("description");
+        $id = $this->getId('description');
         $description = ExecString::textDisplay($description);
         $this->addCacheVar($description);
 
-        $rslt = "";
+        $rslt = '';
 
         if (!$this->cached) {
-            $rslt = "<p class=\"" . $id . "\">" . $this->getLastCacheVar() . "</p>";
+            $rslt = '<p class="' . $id . '">' . $this->getLastCacheVar() . '</p>';
         }
         return $rslt;
     }
@@ -660,16 +840,16 @@ class LibForm
      * @return string
      */
     private function &getId(string $name,
-                            string $options = ""): string
+                            string $options = ''): string
     {
         if (!empty($options)) {
-            $options = "-" . $options;
+            $options = '-' . $options;
         }
 
-        $id = "form-" . $this->name . "-" . $name . $options;
+        $id = 'form-' . $this->name . '-' . $name . $options;
         $this->addCacheVar($id);
 
-        $rslt = "";
+        $rslt = '';
 
         if (!$this->cached) {
             $rslt = $this->getLastCacheVar();
@@ -692,19 +872,19 @@ class LibForm
                               string $name,
                               string $description,
                               string $type,
-                              string $defaultValue = "",
-                              string $options = "",
-                              string $class = ""): void
+                              string $defaultValue = '',
+                              string $options = '',
+                              string $class = ''): void
     {
         if (empty($class)) {
-            $class = "input";
+            $class = !empty($type) ? $type : 'input';
         }
 
         $idDescription = $this->getId($name);
         $description = $this->getLabel($id,
                                        $description);
         $id = $this->getId($id,
-                           "input");
+                           'input');
 
         $this->addCacheVar($name);
         $name = $this->getLastCacheVar();
@@ -722,10 +902,10 @@ class LibForm
         $options = $this->getLastCacheVar();
 
         if (!$this->cached) {
-            $this->inputData .= "<p id=\"" . $idDescription . "\">" . $description
-                    . " <input id=\"" . $id . "\" name=\"" . $name . "\" type=\"" . $type . "\""
-                    . " class=\"" . $class . "\" value=\"" . $defaultValue . "\" " . $options . " />"
-                    . "</p>";
+            $this->inputData .= '<p id="' . $idDescription . '">' . $description
+                . ' <input id="' . $id . '" name="' . $name . '" type="' . $type . '"'
+                . ' class="' . $class . '" value="' . $defaultValue . '" ' . $options . ' />'
+                . '</p>';
         }
     }
 
@@ -747,11 +927,11 @@ class LibForm
      */
     private function &getLastCacheVar(): string
     {
-        $rslt = "";
+        $rslt = '';
 
         if (!$this->cached) {
-            // Le nom de la "vars" est relatif a CoreCache::getInstance()->getCache()
-            $rslt = "$" . self::CACHE_VARIABLE_NAME . "[" . ($this->cacheVarsIndex - 1) . "]";
+            // Le nom de la 'vars' est relatif a CoreCache::getInstance()->getCache()
+            $rslt = '$' . self::CACHE_VARIABLE_NAME . '[' . ($this->cacheVarsIndex - 1) . ']';
         }
         return $rslt;
     }

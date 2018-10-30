@@ -22,7 +22,7 @@ class LibBlockData extends LibEntityData
      *
      * @var string
      */
-    private $sideName = "";
+    private $sideName = '';
 
     /**
      * Nouvelle information de block.
@@ -41,8 +41,8 @@ class LibBlockData extends LibEntityData
 
         $this->newStorage($data);
 
-        $this->updateDataValue("title",
-                               ExecString::textDisplay($this->getString("title")));
+        $this->updateDataValue('title',
+                               ExecString::textDisplay($this->getString('title')));
 
         // Affecte le nom de la position du block.
         $this->sideName = LibBlock::getSideAsLetters($this->getSide());
@@ -55,7 +55,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getId(): int
     {
-        return $this->getInt("block_id",
+        return $this->getInt('block_id',
                              -1);
     }
 
@@ -76,7 +76,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getRank(): int
     {
-        return $this->getInt("rank");
+        return $this->getInt('rank');
     }
 
     /**
@@ -106,7 +106,7 @@ class LibBlockData extends LibEntityData
      */
     public function installed(): bool
     {
-        return $this->hasValue("block_id");
+        return $this->hasValue('block_id');
     }
 
     /**
@@ -139,7 +139,7 @@ class LibBlockData extends LibEntityData
         $configs = $this->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if (ExecUtils::inArrayStrictCaseInSensitive("rewriteBuffer",
+        if (ExecUtils::inArrayStrictCaseInSensitive('rewriteBuffer',
                                                     $configs)) {
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
@@ -173,7 +173,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getSide(): int
     {
-        return $this->getInt("side");
+        return $this->getInt('side');
     }
 
     /**
@@ -193,7 +193,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getTemplateName(): string
     {
-        $templateName = "block_" . $this->sideName;
+        $templateName = 'block_' . $this->sideName;
         return $templateName;
     }
 
@@ -204,7 +204,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getTitle(): string
     {
-        return $this->getString("title");
+        return $this->getString('title');
     }
 
     /**
@@ -215,7 +215,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getConfigs(): ?array
     {
-        return $this->getArray("block_config");
+        return $this->getArray('block_config');
     }
 
     /**
@@ -225,7 +225,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getAllowedModules(): array
     {
-        $rslt = $this->getArray("module_ids",
+        $rslt = $this->getArray('module_ids',
                                 array());
         return $rslt;
     }
@@ -237,7 +237,7 @@ class LibBlockData extends LibEntityData
      */
     public function &canDisplayOnAllModules(): bool
     {
-        return $this->getBool("all_modules");
+        return $this->getBool('all_modules');
     }
 
     /**
@@ -247,7 +247,7 @@ class LibBlockData extends LibEntityData
      */
     public function &getType(): string
     {
-        $dataValue = ucfirst($this->getString("type"));
+        $dataValue = ucfirst($this->getString('type'));
         return $dataValue;
     }
 
@@ -260,7 +260,7 @@ class LibBlockData extends LibEntityData
     {
         $rslt = false;
 
-        if (CoreLoader::isCallable("LibModule")) {
+        if (CoreLoader::isCallable('LibModule')) {
             if ($this->canDisplayOnAllModules()) {
                 $rslt = true;
             } else {

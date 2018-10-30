@@ -19,22 +19,22 @@ class LibTabs
      *
      * @var string
      */
-    private $name = "";
+    private $name = '';
 
     /**
      * Groupe d'onglets (HTML).
      *
      * @var string
      */
-    private $tabsBuffer = "";
-    private $tabsContentBuffer = "";
+    private $tabsBuffer = '';
+    private $tabsContentBuffer = '';
 
     /**
      * Identifiant de l'onglet sélectionné.
      *
      * @var string
      */
-    private $selected = "";
+    private $selected = '';
 
     /**
      * Compteur d'onglet
@@ -51,19 +51,19 @@ class LibTabs
     public function __construct(string $name)
     {
         $this->name = $name;
-        $this->selected = CoreRequest::getString("selectedTab");
+        $this->selected = CoreRequest::getString('selectedTab');
 
         if (empty($this->selected)) {
             $this->selected = $this->getTabId();
         }
 
-        CoreHtml::getInstance()->addJavascript("
-            $('#" . $this->name . " ul li').click(function() {
-                $('#" . $this->name . " div').hide();
-                var activeTab = $(this).find('input').attr('id');
-                var activeTabId = '#' + activeTab.toString().replace('tab_', 'tab_content_');
+        CoreHtml::getInstance()->addJavascript('
+            $(\'#' . $this->name . ' ul li\').click(function() {
+                $(\'#' . $this->name . ' div\').hide();
+                var activeTab = $(this).find(\'input\').attr(\'id\');
+                var activeTabId = \'#\' + activeTab.toString().replace(\'tab_\', \'tab_content_\');
                 $(activeTabId).show();
-            });");
+            });');
     }
 
     /**
@@ -78,20 +78,20 @@ class LibTabs
         $tabId = $this->getTabId();
         $tabSelected = ($this->selected === $tabId);
 
-        $this->tabsBuffer .= "<li>"
-            . "<input type=\"radio\" name=\"" . $this->getTabsName() . "\" id=\"" . $tabId . "\""
-            . ($tabSelected ? " checked" : "") . ">"
-            . "<label for=\"" . $tabId . "\">"
+        $this->tabsBuffer .= '<li>'
+            . '<input type="radio" name="' . $this->getTabsName() . '" id="' . $tabId . '"'
+            . ($tabSelected ? ' checked' : '') . '>'
+            . '<label for="' . $tabId . '">'
             . ExecString::textDisplay($title)
-            . "</label>"
-            . "</li>";
+            . '</label>'
+            . '</li>';
 
-        $purHtml = "";
+        $purHtml = '';
 
         if (!CoreHtml::getInstance()->javascriptEnabled() || $tabSelected) {
-            $purHtml = " style=\"display: block;\"";
+            $purHtml = ' style="display: block;"';
         }
-        $this->tabsContentBuffer .= "<div id=\"" . $this->getTabContentId() . "\"" . $purHtml . ">" . $htmlContent . "</div>";
+        $this->tabsContentBuffer .= '<div id="' . $this->getTabContentId() . '"' . $purHtml . '>' . $htmlContent . '</div>';
         $this->tabCounter++;
     }
 
@@ -101,14 +101,14 @@ class LibTabs
      * @param string $class
      * @return string
      */
-    public function &render(string $class = ""): string
+    public function &render(string $class = ''): string
     {
-        $content = "<div id=\"" . $this->name . "\" class=\"" . ((!empty($class)) ? $class : "tabs") . "\">"
-            . "<ul>"
+        $content = '<div id="' . $this->name . '" class="' . ((!empty($class)) ? $class : 'tabs') . '">'
+            . '<ul>'
             . $this->tabsBuffer
-            . "</ul>"
+            . '</ul>'
             . $this->tabsContentBuffer
-            . "</div>";
+            . '</div>';
         return $content;
     }
 
@@ -119,7 +119,7 @@ class LibTabs
      */
     private function getTabsName(): string
     {
-        return "tabs_" . $this->name;
+        return 'tabs_' . $this->name;
     }
 
     /**
@@ -129,7 +129,7 @@ class LibTabs
      */
     private function getTabId(): string
     {
-        return "tab_" . $this->name . "_" . $this->tabCounter;
+        return 'tab_' . $this->name . '_' . $this->tabCounter;
     }
 
     /**
@@ -139,6 +139,6 @@ class LibTabs
      */
     private function getTabContentId(): string
     {
-        return "tab_content_" . $this->name . "_" . $this->tabCounter;
+        return 'tab_content_' . $this->name . '_' . $this->tabCounter;
     }
 }

@@ -39,7 +39,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getName(): string
     {
-        $dataValue = ucfirst($this->getString("name"));
+        $dataValue = ucfirst($this->getString('name'));
         return $dataValue;
     }
 
@@ -70,7 +70,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getId(): int
     {
-        return $this->getInt("module_id",
+        return $this->getInt('module_id',
                              -1);
     }
 
@@ -81,7 +81,7 @@ class LibModuleData extends LibEntityData
      */
     public function installed(): bool
     {
-        return $this->hasValue("module_id");
+        return $this->hasValue('module_id');
     }
 
     /**
@@ -114,7 +114,7 @@ class LibModuleData extends LibEntityData
         $configs = $this->getConfigs();
 
         // Recherche le parametre indiquant qu'il doit y avoir une réécriture du buffer
-        if ($configs !== null && ExecUtils::inArrayStrictCaseInSensitive("rewriteBuffer",
+        if ($configs !== null && ExecUtils::inArrayStrictCaseInSensitive('rewriteBuffer',
                                                                          $configs)) {
             $buffer = CoreUrlRewriting::getInstance()->rewriteBuffer($buffer);
         }
@@ -128,7 +128,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getRank(): int
     {
-        return $this->getInt("rank");
+        return $this->getInt('rank');
     }
 
     /**
@@ -150,7 +150,7 @@ class LibModuleData extends LibEntityData
      */
     public function &getConfigs(): ?array
     {
-        return $this->getArray("module_config");
+        return $this->getArray('module_config');
     }
 
     /**
@@ -161,9 +161,9 @@ class LibModuleData extends LibEntityData
      * @return string
      */
     public function &getConfigValue(string $key,
-                                    string $defaultValue = ""): string
+                                    string $defaultValue = ''): string
     {
-        return $this->getSubString("module_config",
+        return $this->getSubString('module_config',
                                    $key,
                                    $defaultValue);
     }
