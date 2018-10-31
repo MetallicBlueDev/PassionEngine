@@ -107,7 +107,7 @@ class CoreHtml
         if (CoreLoader::isCallable('CoreMain')) {
             $prefix = CoreMain::getInstance()->getConfigs()->getCookiePrefix();
         } else {
-            $prefix = 'tr';
+            $prefix = 'pe';
         }
 
         // Composition du nom du cookie de test
@@ -492,7 +492,8 @@ class CoreHtml
         $this->javaScriptMode = $this->requestJavascriptMode();
 
         if ($this->javaScriptMode === 0 && !CoreSecure::getInstance()->locked()) {
-            $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?javaScriptMode=-1">');
+
+            $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&javaScriptMode=-1">');
             $this->javaScriptMode = 1;
         }
     }

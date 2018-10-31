@@ -16,9 +16,10 @@ class ExecCookie
     /**
      * Création d'un cookie.
      *
-     * @param string $name
-     * @param string $content
-     * @param int $timeLimit
+     * @link http://php.net/manual/en/function.setcookie.php
+     * @param string $name Le nom du cookie. 
+     * @param string $content La valeur du cookie.
+     * @param int $timeLimit  Timestamp Unix, un nombre de secondes depuis l'époque Unix. Si 0, le cookie expirera à la fin de la session.
      * @return bool Succès
      */
     public static function &createCookie(string $name,

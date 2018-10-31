@@ -124,7 +124,7 @@ class ExecCrypt
         $salt = substr($salt,
                        0,
                        8);
-        $cryptData = 'TR' . md5($data . $salt);
+        $cryptData = 'PE' . md5($data . $salt);
         return $cryptData;
     }
 

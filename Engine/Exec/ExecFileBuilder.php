@@ -40,7 +40,7 @@ class ExecFileBuilder
         }
 
         if (empty($cookiePrefix)) {
-            $cookiePrefix = 'tr';
+            $cookiePrefix = 'pe';
         }
 
         if (empty($cryptKey)) {
@@ -52,10 +52,10 @@ class ExecFileBuilder
             . "// Engine settings\n"
             . "//\n"
             . "// Webmaster email address\n"
-            . "$" . "inc['PASSION_ENGINE_EMAIL'] = \"" . $email . "\";\n"
+            . "$" . "inc['webmasterEmail'] = \"" . $email . "\";\n"
             . "//\n"
             . "// Status of the site (open | close)\n"
-            . "$" . "inc['PASSION_ENGINE_STATUT'] = \"" . $statut . "\";\n"
+            . "$" . "inc['websiteStatus'] = \"" . $statut . "\";\n"
             . "// -------------------------------------------------------------------------//\n"
             . "// Data sessions\n"
             . "//\n"
@@ -169,7 +169,7 @@ class ExecFileBuilder
         }
 
         if (empty($prefix)) {
-            $prefix = 'tr';
+            $prefix = 'pe';
         }
 
         $content = "<?php \n"

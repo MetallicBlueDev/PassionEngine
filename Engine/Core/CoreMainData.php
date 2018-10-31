@@ -321,22 +321,22 @@ class CoreMainData extends CoreDataStorage
         $newConfig = array();
 
         // Vérification de l'adresse email du webmaster
-        if (!ExecEmail::isValidEmail($rawConfig['PASSION_ENGINE_EMAIL'])) {
+        if (!ExecEmail::isValidEmail($rawConfig['webmasterEmail'])) {
             CoreLogger::addException('Default email isn\'t valid');
         }
 
         define('PASSION_ENGINE_EMAIL',
-               $rawConfig['PASSION_ENGINE_EMAIL']);
+               $rawConfig['webmasterEmail']);
 
         // Vérification du statut
-        $rawConfig['PASSION_ENGINE_STATUT'] = strtolower($rawConfig['PASSION_ENGINE_STATUT']);
+        $rawConfig['websiteStatus'] = strtolower($rawConfig['websiteStatus']);
 
-        if ($rawConfig['PASSION_ENGINE_STATUT'] !== 'close' && $rawConfig['PASSION_ENGINE_STATUT'] !== 'open') {
-            $rawConfig['PASSION_ENGINE_STATUT'] = 'open';
+        if ($rawConfig['websiteStatus'] !== 'close' && $rawConfig['websiteStatus'] !== 'open') {
+            $rawConfig['websiteStatus'] = 'open';
         }
 
         define('PASSION_ENGINE_STATUT',
-               $rawConfig['PASSION_ENGINE_STATUT']);
+               $rawConfig['websiteStatus']);
 
         // Vérification de la durée de validité du cache
         if (!is_int($rawConfig['sessionTimeLimit']) || $rawConfig['sessionTimeLimit'] < 1) {
@@ -347,7 +347,7 @@ class CoreMainData extends CoreDataStorage
 
         // Vérification du préfixage des cookies
         if (empty($rawConfig['cookiePrefix'])) {
-            $rawConfig['cookiePrefix'] = 'tr';
+            $rawConfig['cookiePrefix'] = 'pe';
         }
 
         $newConfig['cookiePrefix'] = $rawConfig['cookiePrefix'];
