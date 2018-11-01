@@ -1,0 +1,3 @@
+
+Detailed installation instructions available here:
+https://github.com/MetallicBlueDev/PassionEngine/wiki/Installation

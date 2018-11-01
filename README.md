@@ -1,4 +1,5 @@
- # Passion Engine
+
+# Passion Engine
  *by MetallicBlueDev*
 
 [Blue **Passion**flower](https://en.wikipedia.org/wiki/Passiflora_caerulea) **Engine** is an Easy PHP CMC.
@@ -7,13 +8,17 @@ This project is executed with PHP 7.2.
 
 ## Documentation
 See the [wiki](https://github.com/MetallicBlueDev/PassionEngine/wiki)
+
+* [System Requirements](https://github.com/MetallicBlueDev/PassionEngine/wiki/System-Requirements)
 * [Installation procedure](https://github.com/MetallicBlueDev/PassionEngine/wiki/Installation)
 
 ## Contributing
-See [CONTRIBUTING.md](https://github.com/MetallicBlueDev/PassionEngine/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/MetallicBlueDev/PassionEngine/blob/master/.github/CONTRIBUTING.md)
 
 ## Licence
-See [LICENSE](https://github.com/MetallicBlueDev/PassionEngine/blob/master/LICENSE.txt)
+GNU General Public License v3.0
+
+See [COPYING](https://github.com/MetallicBlueDev/PassionEngine/blob/master/COPYING.txt) to see the full text.
 
 ## Source
 * [GitHub](https://github.com/MetallicBlueDev/PassionEngine)
