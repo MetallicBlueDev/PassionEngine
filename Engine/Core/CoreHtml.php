@@ -204,6 +204,30 @@ class CoreHtml
     }
 
     /**
+     * Retourne l'état du cookie du client.
+     *
+     * @return bool
+     */
+    public function cookieEnabled(): bool
+    {
+
+//        session_start();
+//        $a = session_id();
+//        session_destroy();
+//
+//        session_start();
+//        $b = session_id();
+//        session_destroy();
+//
+//        if ($a == $b)
+//            echo"Cookies ON";
+//        else
+//            echo"Cookies OFF";
+//        exit;
+        return $this->javaScriptMode > -1;
+    }
+
+    /**
      * Ajoute un fichier javaScript à l'entête.
      *
      * @param string $fileName

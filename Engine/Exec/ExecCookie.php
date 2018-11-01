@@ -4,6 +4,7 @@ namespace PassionEngine\Engine\Exec;
 
 use PassionEngine\Engine\Core\CoreRequest;
 use PassionEngine\Engine\Core\CoreRequestType;
+use PassionEngine\Engine\Core\CoreHtml;
 
 /**
  * Outil de manipulation des cookies.
@@ -17,7 +18,7 @@ class ExecCookie
      * Création d'un cookie.
      *
      * @link http://php.net/manual/en/function.setcookie.php
-     * @param string $name Le nom du cookie. 
+     * @param string $name Le nom du cookie.
      * @param string $content La valeur du cookie.
      * @param int $timeLimit  Timestamp Unix, un nombre de secondes depuis l'époque Unix. Si 0, le cookie expirera à la fin de la session.
      * @return bool Succès
@@ -34,6 +35,10 @@ class ExecCookie
             $rslt = setcookie($name,
                               $content,
                               $timeLimit);
+
+            if ($rslt && CoreLoader::isCallable('CoreHtml') && !CoreHtml::getInstance()->cookieEnabled()) {
+                $rslt = false;
+            }
         }
         return $rslt;
     }
