@@ -19,6 +19,7 @@ See [CONTRIBUTING.md](https://github.com/MetallicBlueDev/PassionEngine/blob/mast
 GNU General Public License v3.0
 
 See [COPYING](https://github.com/MetallicBlueDev/PassionEngine/blob/master/COPYING.txt) to see the full text.
+GPLv3 Quick Guide: [EN](https://www.gnu.org/licenses/quick-guide-gplv3.en.html) | [FR](https://www.gnu.org/licenses/quick-guide-gplv3.html)
 
 ## Source
 * [GitHub](https://github.com/MetallicBlueDev/PassionEngine)
