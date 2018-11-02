@@ -1,35 +1,32 @@
----
-name: Bug report
-about: Create a report to help us improve
+# Bug report
+<!-- This is a generic template and may not be applicable in all cases. -->
+<!-- Try to follow it where possible. -->
 
----
+- [ ] Yes, i read the [CONTRIBUTING.md](https://github.com/MetallicBlueDev/PassionEngine/blob/master/.github/CONTRIBUTING.md) file (put a cross)
 
-**Describe the bug**
+## Describe the bug
+<!-- Provide a more detailed description to the issue itself -->
 A clear and concise description of what the bug is.
 
-**To Reproduce**
+## To Reproduce
+<!-- Set of steps to reproduce this issue -->
 Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+ 1. Go to '...'
+ 2. Click on '....'
+ 3. Scroll down to '....'
+ 4. See error
 
-**Expected behavior**
+<!-- Add any other context about the problem here. -->
+
+## Expected behavior
+<!-- What did you expect to happen -->
 A clear and concise description of what you expected to happen.
 
-**Screenshots**
+## Screenshots
 If applicable, add screenshots to help explain your problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
+## Browser information (please complete the following information):
+ - Device: [e.g. Desktop, Smartphone]
+ - OS: [e.g. Windows10, iOS8.1]
+ - Browser [e.g. Firefox, chrome, stock browser]
  - Version [e.g. 22]
-
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
