@@ -330,7 +330,7 @@ class CoreHtml
     /**
      * Retourne les métas données de l'entête HTML.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/meta
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/meta
      * @return string
      */
     public function getMetaHeaders(): string
@@ -396,7 +396,7 @@ class CoreHtml
     /**
      * Retourne un lien HTML sans javaScript.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/a
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/a
      * @param string $link Adresse URL de base.
      * @param string $displayContent Données à afficher (texte simple ou code HTML)
      * @param string $onclick Données à exécuter lors du clique
@@ -569,7 +569,7 @@ class CoreHtml
     /**
      * Retourne les mots clés et la description de la page.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/meta
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/meta
      * @return string
      */
     private function getMetaKeywords(): string
@@ -606,7 +606,7 @@ class CoreHtml
     /**
      * Retourne les scripts à inclure.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/script
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/script
      * @param bool $forceIncludes Pour forcer l'inclusion des fichiers javaScript.
      * @return string
      */
@@ -669,7 +669,7 @@ class CoreHtml
     /**
      * Retourne les fichiers de CSS à inclure.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/link
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/link
      * @return string
      */
     private function &getMetaIncludeCss(): string
@@ -693,7 +693,7 @@ class CoreHtml
     /**
      * Retourne le script d'exécution des fonctions javaScript demandées.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/script
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/script
      * @return string
      */
     private function &getMetaExecuteJavascript(): string
@@ -717,7 +717,7 @@ class CoreHtml
     /**
      * Retourne le script des fonctionnalités ne sont pas prises en charge.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/noscript
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/noscript
      * @return string
      */
     private function &getMetaNoScript(): string

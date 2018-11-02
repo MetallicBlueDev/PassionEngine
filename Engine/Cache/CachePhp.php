@@ -206,7 +206,7 @@ class CachePhp extends CacheModel
 
             // Vérification des bytes écris
             if ($nbBytesCmd !== $nbBytesFile) {
-                @unlink(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
+                unlink(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
 
                 CoreLogger::addException('Bad response for fwrite command. Path : ' . $pathFile . '. '
                     . 'Server response : ' . $nbBytesCmd . ' bytes writed, ' . $nbBytesFile . ' bytes readed');

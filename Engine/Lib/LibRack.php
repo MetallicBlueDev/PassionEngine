@@ -5,7 +5,7 @@ namespace PassionEngine\Engine\Lib;
 /**
  * Gestionnaire de tableau automatique.
  *
- * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/table
+ * @link https://developer.mozilla.org/docs/Web/HTML/Element/table
  * @author Sébastien Villemain
  */
 class LibRack

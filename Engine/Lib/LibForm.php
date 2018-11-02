@@ -12,7 +12,7 @@ use PassionEngine\Engine\Exec\ExecString;
  * Classe de mise en forme d'un formulaire.
  * Avec mise en cache automatique.
  *
- * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element
+ * @link https://developer.mozilla.org/docs/Web/HTML/Element
  * @author Sébastien Villemain
  */
 class LibForm
@@ -147,7 +147,7 @@ class LibForm
     /**
      * Ajoute un champ de type texte.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/text
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/text
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -172,7 +172,7 @@ class LibForm
     /**
      * Ajoute un champ masqué.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/hidden
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/hidden
      * @param string $name
      * @param string $defaultValue
      * @param string $options
@@ -235,7 +235,7 @@ class LibForm
     /**
      * Ajoute un bouton d'envoi.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/submit
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/submit
      * @param string $name
      * @param string $defaultValue
      * @param string $options
@@ -258,7 +258,7 @@ class LibForm
     /**
      * Ajoute un champ de type bouton radio.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/radio
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/radio
      * @param string $id
      * @param string $name
      * @param string $description
@@ -293,7 +293,7 @@ class LibForm
     /**
      * Ajoute un champ de type case à cocher.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/checkbox
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/checkbox
      * @param string $id
      * @param string $name
      * @param string $description
@@ -326,7 +326,7 @@ class LibForm
     /**
      * Ajoute un bouton générique.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/button
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/button
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -351,7 +351,7 @@ class LibForm
     /**
      * Ajoute un bouton qui appel la palette de couleur.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/color
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/color
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -376,7 +376,7 @@ class LibForm
     /**
      * Ajoute une saisie de date.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/date
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/date
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -401,7 +401,7 @@ class LibForm
     /**
      * Ajoute une saisie d'un mail.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/email
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/email
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -426,7 +426,7 @@ class LibForm
     /**
      * Ajoute une saisie d'une heure (avec des minutes et éventuellement des secondes).
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/time
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/time
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -451,7 +451,7 @@ class LibForm
     /**
      * Ajoute une saisie d'un chiffre.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/number
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/number
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -476,7 +476,7 @@ class LibForm
     /**
      * Ajoute une saisie de valeur numérique comprise entre deux bornes.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/range
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/range
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -501,7 +501,7 @@ class LibForm
     /**
      * Ajoute une saisie de numéro de téléphone.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/tel
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/tel
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -526,7 +526,7 @@ class LibForm
     /**
      * Ajoute un champ de type mot de passe.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/input/password
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/input/password
      * @param string $name
      * @param string $description
      * @param string $options
@@ -549,7 +549,7 @@ class LibForm
     /**
      * Ajoute un éditeur de texte.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/textarea
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/textarea
      * @param string $name
      * @param string $description
      * @param string $defaultValue
@@ -693,7 +693,7 @@ class LibForm
     /**
      * Ajoute un espace.
      *
-     * @link https://developer.mozilla.org/fr/docs/Web/HTML/Element/br
+     * @link https://developer.mozilla.org/docs/Web/HTML/Element/br
      */
     public function addSpace(): void
     {

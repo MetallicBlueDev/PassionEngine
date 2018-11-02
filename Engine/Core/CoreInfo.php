@@ -44,8 +44,8 @@ class CoreInfo
      *
      * Les Superglobales ne peuvent pas être appelées directement dans une classe.
      *
-     * @link http://php.net/manual/fr/language.variables.variable.php
-     * @link http://php.net/manual/fr/language.variables.superglobals.php
+     * @link http://php.net/manual/language.variables.variable.php
+     * @link http://php.net/manual/language.variables.superglobals.php
      * @param string $name Pointeur vers le nom de la variable.
      * @param array $value Pointeur vers le contenu de la variable.
      */

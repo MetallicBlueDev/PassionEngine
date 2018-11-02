@@ -5,7 +5,7 @@ namespace PassionEngine\Engine\Core;
 /**
  * Représente un type de méthode HTTP à utiliser dans la requête.
  *
- * @link http://php.net/manual/en/language.variables.superglobals.php
+ * @link http://php.net/manual/language.variables.superglobals.php
  * @author Sébastien Villemain
  */
 class CoreRequestType
@@ -14,7 +14,7 @@ class CoreRequestType
     /**
      * $_GET
      *
-     * @link http://php.net/manual/en/reserved.variables.get.php
+     * @link http://php.net/manual/reserved.variables.get.php
      * @var string
      */
     public const GET = '_GET';
@@ -22,7 +22,7 @@ class CoreRequestType
     /**
      * $_POST
      *
-     * @link http://php.net/manual/en/reserved.variables.post.php
+     * @link http://php.net/manual/reserved.variables.post.php
      * @var string
      */
     public const POST = '_POST';
@@ -30,7 +30,7 @@ class CoreRequestType
     /**
      * $_FILES
      *
-     * @link http://php.net/manual/en/reserved.variables.files.php
+     * @link http://php.net/manual/reserved.variables.files.php
      * @var string
      */
     public const FILES = '_FILES';
@@ -38,7 +38,7 @@ class CoreRequestType
     /**
      * $_COOKIE
      *
-     * @link http://php.net/manual/en/reserved.variables.cookies.php
+     * @link http://php.net/manual/reserved.variables.cookies.php
      * @var string
      */
     public const COOKIE = '_COOKIE';
@@ -46,7 +46,7 @@ class CoreRequestType
     /**
      * $_ENV
      *
-     * @link http://php.net/manual/en/reserved.variables.environment.php
+     * @link http://php.net/manual/reserved.variables.environment.php
      * @var string
      */
     public const ENV = '_ENV';
@@ -54,7 +54,7 @@ class CoreRequestType
     /**
      * $_SERVER
      *
-     * @link http://php.net/manual/en/reserved.variables.server.php
+     * @link http://php.net/manual/reserved.variables.server.php
      * @var string
      */
     public const SERVER = '_SERVER';
