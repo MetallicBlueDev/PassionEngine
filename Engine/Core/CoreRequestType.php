@@ -59,4 +59,12 @@ class CoreRequestType
      */
     public const SERVER = '_SERVER';
 
+    /**
+     * $_SESSION
+     *
+     * @link http://php.net/manual/reserved.variables.session.php
+     * @var string
+     */
+    public const SESSION = '_SESSION';
+
 }

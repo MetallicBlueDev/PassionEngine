@@ -52,7 +52,8 @@ class CoreInfo
     public static function addGlobalVars(&$name,
                                          &$value)
     {
-        if (!self::$initialized) {
+        if (!self::$initialized || ($name === '_SESSION' && !array_key_exists($name,
+                                                                              self::$unsafeGlobalVars))) {
             self::$unsafeGlobalVars[$name] = $value;
         } else {
             exit('Invalid access.');
@@ -150,12 +151,11 @@ class CoreInfo
              * XX -> version courante
              * XX -> fonctionnalités ajoutées
              * XX -> bugs ou failles critiques corrigés
-             * XX -> bug mineur
              *
              * @var string
              */
             define('PASSION_ENGINE_VERSION',
-                   '0.7.0.0');
+                   '0.8.0');
         }
     }
 

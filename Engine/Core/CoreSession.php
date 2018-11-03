@@ -8,6 +8,9 @@ use PassionEngine\Engine\Exec\ExecEmail;
 use PassionEngine\Engine\Exec\ExecUtils;
 use PassionEngine\Engine\Exec\ExecString;
 use PassionEngine\Engine\Lib\LibMakeStyle;
+use PassionEngine\Engine\Fail\FailBase;
+use PassionEngine\Engine\Fail\FailEngine;
+use PassionEngine\Engine\Core\CoreRequestType;
 
 /**
  * Gestionnaire de sessions.
@@ -100,6 +103,8 @@ class CoreSession
         foreach ($this->cookieName as $key => $name) {
             $this->cookieName[$key] = $coreMain->getConfigs()->getCookiePrefix() . $name;
         }
+
+        $this->startNativeSession();
     }
 
     /**
@@ -369,6 +374,39 @@ class CoreSession
                                         $this->userIpBanned);
             $libMakeStyle->display('banishment');
         }
+    }
+
+    /**
+     * Démarrage de la session PHP.
+     *
+     * @throws FailEngine
+     */
+    private function startNativeSession(): void
+    {
+        if (ini_get('session.auto_start') <> '1') {
+            if (!session_start()) {
+                throw new FailEngine('fail to start session',
+                                     FailBase::getErrorCodeName(14));
+            }
+
+            $name = CoreRequestType::SESSION;
+            CoreInfo::addGlobalVars($name,
+                                    $_SESSION);
+            // Attention, il faudra enregistrer de nouveau les informations
+            // @see http://php.net/manual/function.session-unset.php#refsect1-function.session-unset-notes
+            unset($_SESSION);
+        }
+    }
+
+    /**
+     * Efface toutes les données de la session en mémoire.
+     *
+     * @return void
+     */
+    private function clearNativeSession(): void
+    {
+        session_unset();
+        session_destroy();
     }
 
     /**
@@ -651,6 +689,8 @@ class CoreSession
 
             ExecCookie::destroyCookie(self::getCryptCookieName($value));
         }
+
+        $this->clearNativeSession();
     }
 
     /**
@@ -703,7 +743,7 @@ class CoreSession
     /**
      * Détermine si l'utilisateur est identifié.
      *
-     * @return bool true c'est un client valide
+     * @return bool Client valide
      */
     private function hasValidSessionData(): bool
     {
