@@ -13,19 +13,19 @@ use PassionEngine\Engine\Core\CoreLogger;
 use PassionEngine\Engine\Exec\ExecTimeMarker;
 
 // Marque le passage dans l'index
-define("PASSION_ENGINE_BOOTSTRAP",
+define('PASSION_ENGINE_BOOTSTRAP',
        true);
 
 // Chargement et exécution de la sécurité
 require __DIR__ . DIRECTORY_SEPARATOR . 'Engine' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 if (CoreSecure::debuggingMode()) {
-    ExecTimeMarker::startMeasurement("all");
+    ExecTimeMarker::startMeasurement('all');
 }
 
 try {
     // Mesure principal utilisable en permanence
-    ExecTimeMarker::startMeasurement("main");
+    ExecTimeMarker::startMeasurement('main');
 
     // Préparation du moteur
     CoreMain::checkInstance();
@@ -43,6 +43,6 @@ try {
 }
 
 if (CoreSecure::debuggingMode()) {
-    ExecTimeMarker::stopMeasurement("all");
+    ExecTimeMarker::stopMeasurement('all');
     CoreLogger::displayDebugInformations();
 }
