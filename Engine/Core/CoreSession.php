@@ -107,6 +107,11 @@ class CoreSession
         $this->startNativeSession();
     }
 
+    public function __destruct()
+    {
+        $this->saveNativeSession();
+    }
+
     /**
      * Instance du gestionnaire des sessions.
      *
@@ -388,14 +393,32 @@ class CoreSession
                 throw new FailEngine('fail to start session',
                                      FailBase::getErrorCodeName(14));
             }
-
-            $name = CoreRequestType::SESSION;
-            CoreInfo::addGlobalVars($name,
-                                    $_SESSION);
-            // Attention, il faudra enregistrer de nouveau les informations
-            // @see http://php.net/manual/function.session-unset.php#refsect1-function.session-unset-notes
-            unset($_SESSION);
         }
+
+        $this->initializeNativeSession();
+    }
+
+    /**
+     * Initialisation de la session PHP.
+     */
+    private function initializeNativeSession(): void
+    {
+        $name = CoreRequestType::SESSION;
+        CoreInfo::addGlobalVars($name,
+                                $_SESSION);
+        // Attention, il faudra enregistrer de nouveau les informations
+        // {@link http://php.net/manual/function.session-unset.php#refsect1-function.session-unset-notes}
+        // {@see saveNativeSession()}
+        unset($_SESSION);
+    }
+
+    /**
+     * Enregistre les informations de session.
+     */
+    private function saveNativeSession(): void
+    {
+        $globalVars = CoreInfo::getGlobalVars(CoreRequestType::SESSION);
+        $_SESSION = $globalVars;
     }
 
     /**
