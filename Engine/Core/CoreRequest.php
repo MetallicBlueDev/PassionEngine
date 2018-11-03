@@ -415,7 +415,7 @@ class CoreRequest
     {
         $content = trim((string) $content);
 
-        if (!$useUnsafeMethod && preg_match('/(\.\.|http:|ftp:)/',
+        if (!$useUnsafeMethod && preg_match('/(\.\.|http:|ftp:|https:|ftps:)/i',
                                             $content)) {
             $content = '';
         }
