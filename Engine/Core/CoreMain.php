@@ -152,6 +152,11 @@ class CoreMain
             ExecTimeMarker::stopMeasurement('launcher');
         }
 
+        if (PASSION_ENGINE_DEBUGMODE) {
+            ExecTimeMarker::stopMeasurement('all');
+            CoreLogger::displayDebugInformations();
+        }
+
         $this->compressionClose();
     }
 

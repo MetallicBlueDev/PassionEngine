@@ -55,7 +55,3 @@ try {
     CoreSecure::getInstance()->catchException($ex);
 }
 
-if (PASSION_ENGINE_DEBUGMODE) {
-    ExecTimeMarker::stopMeasurement('all');
-    CoreLogger::displayDebugInformations();
-}
