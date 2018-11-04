@@ -15,6 +15,7 @@ use PassionEngine\Engine\Exec\ExecTimeMarker;
 /**
  * Détermine si le mode debug est activé.
  *
+ * @link https://github.com/MetallicBlueDev/PassionEngine/wiki/Debugging-mode
  * @var bool
  */
 define('PASSION_ENGINE_DEBUGMODE',
