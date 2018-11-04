@@ -32,6 +32,7 @@ class CoreHtml
 
     /**
      * Détermine l'état du javaScript chez le client.
+     *
      * <ul>
      * <li>-1: désactivé explicitement chez le client.</li>
      * <li>0: état inconnu.</li>
@@ -41,6 +42,19 @@ class CoreHtml
      * @var int
      */
     private $javaScriptMode = 0;
+
+    /**
+     * Détermine l'état des cookies chez le client.
+     *
+     * <ul>
+     * <li>-1: désactivé explicitement chez le client.</li>
+     * <li>0: état inconnu.</li>
+     * <li>1: activé.</li>
+     * </ul>
+     *
+     * @var int
+     */
+    private $cookieMode = 0;
 
     /**
      * Fonctions et codes javaScript demandées.
@@ -115,9 +129,6 @@ class CoreHtml
                 $prefix . '_' . $this->cookieTestName,
                 self::getSalt()
         );
-
-        // Vérification du javascript du client
-        $this->checkJavascriptEnabled();
     }
 
     /**
@@ -138,6 +149,11 @@ class CoreHtml
     {
         if (self::$coreHtml === null) {
             self::$coreHtml = new CoreHtml();
+
+            // Vérification du client
+            self::$coreHtml->requestCookieMode();
+            self::$coreHtml->requestJavaScriptMode();
+            self::$coreHtml->checkClientOptions();
         }
     }
 
@@ -211,20 +227,7 @@ class CoreHtml
     public function cookieEnabled(): bool
     {
 
-//        session_start();
-//        $a = session_id();
-//        session_destroy();
-//
-//        session_start();
-//        $b = session_id();
-//        session_destroy();
-//
-//        if ($a == $b)
-//            echo"Cookies ON";
-//        else
-//            echo"Cookies OFF";
-//        exit;
-        return $this->javaScriptMode > -1;
+        return $this->cookieMode > -1;
     }
 
     /**
@@ -509,17 +512,41 @@ class CoreHtml
     }
 
     /**
-     * Détection du javaScript chez le client.
+     * Test sur les cookies et le javaScript chez le client.
      */
-    private function checkJavascriptEnabled(): void
+    private function checkClientOptions(): void
     {
-        $this->javaScriptMode = $this->requestJavascriptMode();
-
         if ($this->javaScriptMode === 0 && !CoreSecure::getInstance()->locked()) {
+            if ($this->cookieEnabled()) {
+                $cookieMode = CoreSession::getInstance()->getNativeSessionId();
+                $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&javaScriptMode=-1&cookieMode=' . $cookieMode . '">');
+            }
 
-            $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&javaScriptMode=-1">');
+            // Activation par défaut
             $this->javaScriptMode = 1;
         }
+
+        if (!$this->cookieEnabled()) {
+            CoreLogger::addUserAlert(ERROR_COOKIE_DISABLED);
+        }
+
+        if (!$this->javascriptEnabled()) {
+            CoreLogger::addUserAlert(ERROR_JAVASCRIPT_DISABLED);
+        }
+    }
+
+    /**
+     * Détection des cookies chez le client.
+     *
+     * @return int
+     */
+    private function requestCookieMode(): void
+    {
+        $oldNativeSessionId = CoreRequest::getString('cookieMode');
+        $currentNativeSessionId = CoreSession::getInstance()->getNativeSessionId();
+        $cookieModeDisabled = !empty($oldNativeSessionId) && $oldNativeSessionId !== $currentNativeSessionId;
+        $cookieModeEnabled = !empty($oldNativeSessionId) && $oldNativeSessionId === $currentNativeSessionId;
+        $this->cookieMode = ($cookieModeDisabled ? -1 : ($cookieModeEnabled ? 1 : 0));
     }
 
     /**
@@ -527,20 +554,19 @@ class CoreHtml
      *
      * @return int
      */
-    private function requestJavascriptMode(): int
+    private function requestJavaScriptMode(): void
     {
-        $newMode = CoreRequest::getInteger('javaScriptMode');
-        $currentMode = ExecCookie::getCookie($this->cookieTestName);
+        $newJsMode = CoreRequest::getInteger('javaScriptMode');
+        $currentJsMode = ExecCookie::getCookie($this->cookieTestName);
 
-        if (empty($currentMode) && $newMode === -1) {
-            $currentMode = '-1';
-
+        if (empty($currentJsMode) && $newJsMode === -1) {
             if (!ExecCookie::createCookie($this->cookieTestName,
-                                          $newMode)) {
-                CoreLogger::addDebug('Fail to create cookie with javaScriptMode.');
+                                          $newJsMode)) {
+                CoreLogger::addDebug('Fail to create cookie for javaScriptMode.');
             }
         }
-        return ($currentMode === '-1') ? -1 : 0;
+
+        $this->javaScriptMode = ($currentJsMode === '-1') ? -1 : 0;
     }
 
     /**

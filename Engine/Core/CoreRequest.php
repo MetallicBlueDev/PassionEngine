@@ -250,6 +250,7 @@ class CoreRequest
             case CoreRequestType::COOKIE:
             case CoreRequestType::ENV:
             case CoreRequestType::SERVER:
+            case CoreRequestType::SESSION:
                 $input = CoreInfo::getGlobalVars($hash);
                 break;
             default:

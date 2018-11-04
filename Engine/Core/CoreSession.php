@@ -77,6 +77,19 @@ class CoreSession
     private $sessionData = null;
 
     /**
+     * Détermine l'état de la session PHP.
+     *
+     * <ul>
+     * <li><code>NULL</code>: inconnu</li>
+     * <li><code>false</code>: désactivé</li>
+     * <li><code>true></code>: activé</li>
+     * </ul>
+     *
+     * @var bool
+     */
+    private $nativeSessionEnabled = null;
+
+    /**
      * Nom des cookies.
      *
      * @var array
@@ -382,20 +395,70 @@ class CoreSession
     }
 
     /**
+     * Retourne l'identifiant de la session PHP.
+     *
+     * @return string
+     * @throws FailEngine
+     */
+    public function getNativeSessionId(): string
+    {
+        if (!$this->nativeSessionEnabled) {
+            throw new FailEngine('session is inactive',
+                                 FailBase::getErrorCodeName(14));
+        }
+        return session_id();
+    }
+
+    /**
+     * Retourne l'identifiant de la session PHP.
+     *
+     * @return string
+     * @throws FailEngine
+     */
+    public function getNativeSessionName(): string
+    {
+        return session_name();
+    }
+
+    /**
      * Création de la session PHP (si nécessaire).
      *
      * @throws FailEngine
      */
     private function createNativeSession(): void
     {
-        if (ini_get('session.auto_start') !== '1') {
+        if ($this->nativeSessionEnabled === null) {
+            if ((ini_get('session.auto_start') === '1')) {
+                $this->destroyNativeSession();
+            }
+            $this->nativeSessionEnabled = false;
+        }
+
+        if (!$this->nativeSessionEnabled) {
+            $nativeSessionId = CoreRequest::getString($this->getNativeSessionName(),
+                                                      '',
+                                                      CoreRequestType::COOKIE);
+            session_id($nativeSessionId);
+
             if (!session_start()) {
                 throw new FailEngine('fail to start session',
                                      FailBase::getErrorCodeName(14));
             }
-        }
 
-        $this->collectNativeSession();
+            $this->nativeSessionEnabled = true;
+            $this->collectNativeSession();
+        }
+    }
+
+    /**
+     * Régénération de la session PHP (si nécessaire).
+     *
+     * @throws FailEngine
+     */
+    private function regenerateNativeSession(): void
+    {
+        $this->destroyNativeSession();
+        $this->createNativeSession();
     }
 
     /**
@@ -420,11 +483,18 @@ class CoreSession
      */
     private function saveNativeSession(): void
     {
-        $globalVars = CoreInfo::getGlobalVars(CoreRequestType::SESSION);
-        $_SESSION = $globalVars;
+        if ($this->nativeSessionEnabled) {
+            $nativeSessionName = $this->getNativeSessionName();
+            $_COOKIE[$nativeSessionName] = CoreRequest::getString($nativeSessionName,
+                                                                  $this->getNativeSessionId(),
+                                                                  CoreRequestType::COOKIE);
+            $_SESSION = CoreInfo::getGlobalVars(CoreRequestType::SESSION);
 
-        if (!session_write_close()) {
-            CoreLogger::addDebug('Unable to close session.');
+            if (!session_write_close()) {
+                CoreLogger::addDebug('Unable to close session.');
+            }
+
+            $this->nativeSessionEnabled = false;
         }
     }
 
@@ -435,11 +505,16 @@ class CoreSession
      */
     private function destroyNativeSession(): void
     {
-        if (!session_unset()) {
-            CoreLogger::addDebug('Unable to unset session variables.');
-        }
-        if (!session_destroy()) {
-            CoreLogger::addDebug('Unable to destroy session.');
+        if ($this->nativeSessionEnabled) {
+            if (!session_unset()) {
+                CoreLogger::addDebug('Unable to unset session variables.');
+            }
+
+            if (!session_destroy()) {
+                CoreLogger::addDebug('Unable to destroy session.');
+            }
+
+            $this->nativeSessionEnabled = false;
         }
     }
 
@@ -724,7 +799,7 @@ class CoreSession
             ExecCookie::destroyCookie(self::getCryptCookieName($value));
         }
 
-        $this->destroyNativeSession();
+        $this->regenerateNativeSession();
     }
 
     /**

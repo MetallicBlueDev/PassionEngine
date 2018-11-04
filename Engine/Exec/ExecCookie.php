@@ -5,6 +5,7 @@ namespace PassionEngine\Engine\Exec;
 use PassionEngine\Engine\Core\CoreRequest;
 use PassionEngine\Engine\Core\CoreRequestType;
 use PassionEngine\Engine\Core\CoreHtml;
+use PassionEngine\Engine\Core\CoreLoader;
 
 /**
  * Outil de manipulation des cookies.

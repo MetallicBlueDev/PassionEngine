@@ -31,6 +31,8 @@ $lang = array(
     'ERROR_CODE_26' => 'Le fichier d\'un block n\'a pas été trouvé.',
 // Erreur diverse (qui ne sont pas des exceptions)
     'ERROR_404' => 'Erreur 404, la page demandée est introuvable.',
+    'ERROR_COOKIE_DISABLED' => 'Vous devez activer les cookies pour naviguer sur le site.',
+    'ERROR_JAVASCRIPT_DISABLED' => 'Vous devez activer les scripts pour naviguer sur le site.',
     'ERROR_SESSION_COOKIE' => 'Impossible d\'ouvrir une session, vérifiez vos paramètres cookie.',
 // Chemin par défaut
     'TRAIL_DISPLAY' => 'Accueil',
