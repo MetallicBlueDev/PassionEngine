@@ -810,7 +810,7 @@ abstract class BaseModel extends CoreTransaction
         $this->resetSql();
 
         // Ajout la requête au log
-        if (CoreSecure::debuggingMode()) {
+        if (PASSION_ENGINE_DEBUGMODE) {
             CoreLogger::addSqlRequest($this->sql);
         }
 

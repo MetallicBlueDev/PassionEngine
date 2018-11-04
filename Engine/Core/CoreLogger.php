@@ -156,12 +156,10 @@ class CoreLogger
      */
     public static function displayDebugInformations(): void
     {
-        if (CoreLoader::isCallable('CoreMain') && CoreLoader::isCallable('CoreSession')) {
-            if (CoreSession::getInstance()->getSessionData()->hasRegisteredRank()) {
-                echo self::getSqlRequestPane()
-                . self::getDebugMessagesPane()
-                . self::getBenchmarkPane();
-            }
+        if (CoreLoader::isCallable('CoreMain')) {
+            echo self::getSqlRequestPane()
+            . self::getDebugMessagesPane()
+            . self::getBenchmarkPane();
         }
     }
 

@@ -12,14 +12,26 @@ use PassionEngine\Engine\Core\CoreMain;
 use PassionEngine\Engine\Core\CoreLogger;
 use PassionEngine\Engine\Exec\ExecTimeMarker;
 
-// Marque le passage dans l'index
+/**
+ * Détermine si le mode debug est activé.
+ *
+ * @var bool
+ */
+define('PASSION_ENGINE_DEBUGMODE',
+       file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'debugmode'));
+
+/**
+ * Marque le passage dans l'index.
+ *
+ * @var bool
+ */
 define('PASSION_ENGINE_BOOTSTRAP',
        true);
 
 // Chargement et exécution de la sécurité
 require __DIR__ . DIRECTORY_SEPARATOR . 'Engine' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
-if (CoreSecure::debuggingMode()) {
+if (PASSION_ENGINE_DEBUGMODE) {
     ExecTimeMarker::startMeasurement('all');
 }
 
@@ -42,7 +54,7 @@ try {
     CoreSecure::getInstance()->catchException($ex);
 }
 
-if (CoreSecure::debuggingMode()) {
+if (PASSION_ENGINE_DEBUGMODE) {
     ExecTimeMarker::stopMeasurement('all');
     CoreLogger::displayDebugInformations();
 }

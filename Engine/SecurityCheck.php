@@ -6,8 +6,12 @@ use PassionEngine\Engine\Core\CoreLoader;
 use PassionEngine\Engine\Core\CoreInfo;
 use PassionEngine\Engine\Core\CoreSecure;
 
-// Initialisation principal
 if (!defined('PASSION_ENGINE_INITIALIZED')) {
+    /**
+     * Initialisation principale.
+     *
+     * @var bool
+     */
     define('PASSION_ENGINE_INITIALIZED',
            true);
 
@@ -54,15 +58,23 @@ if (!defined('PASSION_ENGINE_INITIALIZED')) {
     }
 }
 
-// Initialisation du chargeur de classe
 if (!defined('PASSION_ENGINE_AUTOLOADED')) {
+    /**
+     * Initialisation du chargeur de classe.
+     *
+     * @var bool
+     */
     define('PASSION_ENGINE_AUTOLOADED',
            true);
     CoreLoader::affectRegister();
 }
 
-// Initialisation du système de sécurité
 if (!defined('PASSION_ENGINE_SECURED')) {
+    /**
+     * Initialisation du système de sécurité.
+     *
+     * @var bool
+     */
     define('PASSION_ENGINE_SECURED',
            true);
     CoreSecure::checkInstance();

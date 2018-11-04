@@ -67,13 +67,6 @@ class CoreSecure
     private $locked = false;
 
     /**
-     * Activation du mode DEBUG.
-     *
-     * @var bool
-     */
-    private $debuggingMode = false;
-
-    /**
      * Routine de sécurisation.
      */
     private function __construct()
@@ -89,10 +82,6 @@ class CoreSecure
             define('PASSION_ENGINE_BOOTSTRAP',
                    true);
         }
-
-        $this->debuggingMode = CoreRequest::getBoolean('debuggingMode',
-                                                       false,
-                                                       CoreRequestType::GET);
     }
 
     /**
@@ -122,21 +111,6 @@ class CoreSecure
                                      FailBase::getErrorCodeName(10));
             }
         }
-    }
-
-    /**
-     * Vérifie si le mode DEBUG est actif.
-     *
-     * @return bool
-     */
-    public static function &debuggingMode(): bool
-    {
-        $rslt = false;
-
-        if (self::$secure !== null) {
-            $rslt = self::$secure->debuggingMode;
-        }
-        return $rslt;
     }
 
     /**
@@ -196,7 +170,7 @@ class CoreSecure
         if (empty($errorMessageTitle)) {
             $errorMessageTitle = 'Stop loading';
 
-            if ($this->debuggingMode) {
+            if (PASSION_ENGINE_DEBUGMODE) {
                 $errorMessageTitle .= ': ' . $ex->getMessage();
             }
         }
@@ -244,7 +218,7 @@ class CoreSecure
     private function appendExceptionMessage(Throwable $ex,
                                             array &$messages): void
     {
-        if ($this->debuggingMode) {
+        if (PASSION_ENGINE_DEBUGMODE) {
             if ($ex instanceof FailBase) {
                 $messages[] = 'Exception ' . $ex->getFailSourceName() . ' (' . $ex->getCode() . ') : ' . $ex->getMessage();
                 $messages = array_merge($messages,
@@ -297,7 +271,7 @@ class CoreSecure
      */
     private function appendSqlErrors(array &$messages): void
     {
-        if ($this->debuggingMode && CoreLoader::isCallable('CoreSql')) {
+        if (PASSION_ENGINE_DEBUGMODE && CoreLoader::isCallable('CoreSql')) {
             if (CoreSql::hasConnection()) {
                 $sqlErrors = CoreSql::getInstance()->getSelectedBase()->getLastError();
 

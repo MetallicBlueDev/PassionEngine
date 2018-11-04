@@ -70,14 +70,14 @@ class CoreMain
     public static function checkInstance(): void
     {
         if (self::$coreMain === null) {
-            if (CoreSecure::debuggingMode()) {
+            if (PASSION_ENGINE_DEBUGMODE) {
                 ExecTimeMarker::startMeasurement('core');
             }
 
             self::$coreMain = new CoreMain();
             self::$coreMain->prepare();
 
-            if (CoreSecure::debuggingMode()) {
+            if (PASSION_ENGINE_DEBUGMODE) {
                 ExecTimeMarker::stopMeasurement('core');
             }
         }
@@ -121,7 +121,7 @@ class CoreMain
      */
     public function start(): void
     {
-        if (CoreSecure::debuggingMode()) {
+        if (PASSION_ENGINE_DEBUGMODE) {
             ExecTimeMarker::startMeasurement('launcher');
         }
 
@@ -137,7 +137,7 @@ class CoreMain
         $this->route->requestLayout();
         $this->checkMakeStyle();
 
-        if (!CoreSecure::debuggingMode()) {
+        if (!PASSION_ENGINE_DEBUGMODE) {
             $this->compressionOpen();
         }
 
@@ -150,7 +150,7 @@ class CoreMain
 
         ExecTimeMarker::stopMeasurement('main');
 
-        if (CoreSecure::debuggingMode()) {
+        if (PASSION_ENGINE_DEBUGMODE) {
             ExecTimeMarker::stopMeasurement('launcher');
         } else {
             $this->compressionClose();
@@ -206,7 +206,7 @@ class CoreMain
         // Validation et routine du cache
         CoreCache::getInstance()->runJobs();
 
-        if (CoreSecure::debuggingMode()) {
+        if (PASSION_ENGINE_DEBUGMODE) {
             // Assemble tous les messages d'erreurs dans un fichier log
             CoreLogger::logException();
         }
@@ -288,11 +288,15 @@ class CoreMain
     private function compressionOpen(): void
     {
         header('Vary: Cookie, Accept-Encoding');
+        $callback = null;
+
         // HTTP_ACCEPT_ENCODING => gzip
         if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== '1' && function_exists('ob_gzhandler') && !$this->getConfigs()->doUrlRewriting()) {
-            ob_start('ob_gzhandler');
-        } else {
-            ob_start();
+            $callback = 'ob_gzhandler';
+        }
+
+        if (!ob_start($callback)) {
+            CoreLogger::addDebug('Unable to turn on ' . $callback . ' output buffering.');
         }
     }
 

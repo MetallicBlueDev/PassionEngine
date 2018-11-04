@@ -102,12 +102,16 @@ class CoreInfo
 
             /**
              * Version PHP sous forme x.x.x.x (exemple : 7.1.0).
+             *
+             * @var string
              */
             define('PASSION_ENGINE_PHP_MINIMUM_VERSION',
                    '7.1.0');
 
             /**
              * Version PHP sous forme x.x.x.x (exemple : 5.2.9.2).
+             *
+             * @var string
              */
             define('PASSION_ENGINE_PHP_VERSION',
                    $info->getPhpVersion());
