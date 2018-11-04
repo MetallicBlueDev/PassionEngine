@@ -104,7 +104,7 @@ class CoreSession
             $this->cookieName[$key] = $coreMain->getConfigs()->getCookiePrefix() . $name;
         }
 
-        $this->startNativeSession();
+        $this->createNativeSession();
     }
 
     public function __destruct()
@@ -382,54 +382,65 @@ class CoreSession
     }
 
     /**
-     * Démarrage de la session PHP.
+     * Création de la session PHP (si nécessaire).
      *
      * @throws FailEngine
      */
-    private function startNativeSession(): void
+    private function createNativeSession(): void
     {
-        if (ini_get('session.auto_start') <> '1') {
+        if (ini_get('session.auto_start') !== '1') {
             if (!session_start()) {
                 throw new FailEngine('fail to start session',
                                      FailBase::getErrorCodeName(14));
             }
         }
 
-        $this->initializeNativeSession();
+        $this->collectNativeSession();
     }
 
     /**
-     * Initialisation de la session PHP.
+     * Récupère les informations de la session PHP.
+     *
+     * @link http://php.net/manual/function.session-unset.php#refsect1-function.session-unset-notes
+     * @see CoreSession::saveNativeSession()
      */
-    private function initializeNativeSession(): void
+    private function collectNativeSession(): void
     {
-        $name = CoreRequestType::SESSION;
-        CoreInfo::addGlobalVars($name,
-                                $_SESSION);
-        // Attention, il faudra enregistrer de nouveau les informations
-        // {@link http://php.net/manual/function.session-unset.php#refsect1-function.session-unset-notes}
-        // {@see saveNativeSession()}
-        unset($_SESSION);
+        if (isset($_SESSION)) {
+            $name = CoreRequestType::SESSION;
+            CoreInfo::addGlobalVars($name,
+                                    $_SESSION);
+            // Attention, il faudra enregistrer de nouveau les informations
+            unset($_SESSION);
+        }
     }
 
     /**
-     * Enregistre les informations de session.
+     * Enregistre les informations de session vers la session PHP.
      */
     private function saveNativeSession(): void
     {
         $globalVars = CoreInfo::getGlobalVars(CoreRequestType::SESSION);
         $_SESSION = $globalVars;
+
+        if (!session_write_close()) {
+            CoreLogger::addDebug('Unable to close session.');
+        }
     }
 
     /**
-     * Efface toutes les données de la session en mémoire.
+     * Efface toutes les données de la session PHP en mémoire.
      *
      * @return void
      */
-    private function clearNativeSession(): void
+    private function destroyNativeSession(): void
     {
-        session_unset();
-        session_destroy();
+        if (!session_unset()) {
+            CoreLogger::addDebug('Unable to unset session variables.');
+        }
+        if (!session_destroy()) {
+            CoreLogger::addDebug('Unable to destroy session.');
+        }
     }
 
     /**
@@ -713,7 +724,7 @@ class CoreSession
             ExecCookie::destroyCookie(self::getCryptCookieName($value));
         }
 
-        $this->clearNativeSession();
+        $this->destroyNativeSession();
     }
 
     /**
@@ -745,7 +756,7 @@ class CoreSession
                                                                                    $this->getSerializedSession());
             $rslt = true;
         } else {
-            CoreLogger::addWarning(ERROR_SESSION_COOKIE);
+            CoreLogger::addUserWarning(ERROR_SESSION_COOKIE);
         }
         return $rslt;
     }

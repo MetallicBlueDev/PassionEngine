@@ -288,10 +288,10 @@ class CoreMain
     private function compressionOpen(): void
     {
         header('Vary: Cookie, Accept-Encoding');
+        header('Content-Encoding: gzip');
         $callback = null;
 
-        // HTTP_ACCEPT_ENCODING => gzip
-        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== '1' && function_exists('ob_gzhandler') && !$this->getConfigs()->doUrlRewriting()) {
+        if (extension_loaded('zlib') && ini_get('zlib.output_compression') !== '1' && ini_get('output_handler') !== 'ob_gzhandler' && function_exists('ob_gzhandler') && !$this->getConfigs()->doUrlRewriting()) {
             $callback = 'ob_gzhandler';
         }
 
