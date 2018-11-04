@@ -16,10 +16,10 @@ class CoreAccess
     /**
      * Retourne l'erreur d'accès liée au jeton.
      *
-     * @param CoreAccessToken $token
+     * @param CoreAccessTokenInterface $token
      * @return string
      */
-    public static function &getAccessErrorMessage(?CoreAccessToken $token): string
+    public static function &getAccessErrorMessage(?CoreAccessTokenInterface $token): string
     {
         $error = ERROR_ACCES_FORBIDDEN;
 

@@ -10,7 +10,7 @@ use PassionEngine\Engine\Lib\LibModule;
  *
  * @author Sébastien Villemain
  */
-class CoreAccessType extends CoreDataStorage implements CoreAccessToken
+class CoreAccessType extends CoreDataStorage implements CoreAccessTokenInterface
 {
 
     /**
@@ -48,10 +48,10 @@ class CoreAccessType extends CoreDataStorage implements CoreAccessToken
     /**
      * Retourne l'accès spécifique suivant la zone.
      *
-     * @param CoreAccessToken $token
+     * @param CoreAccessTokenInterface $token
      * @return CoreAccessType
      */
-    public static function &getTypeFromToken(CoreAccessToken $token): CoreAccessType
+    public static function &getTypeFromToken(CoreAccessTokenInterface $token): CoreAccessType
     {
         return self::getTypeFromDatas($token->getZone(),
                                       $token->getRank(),

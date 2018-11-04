@@ -3,7 +3,7 @@
 namespace PassionEngine\Engine\Lib;
 
 use PassionEngine\Engine\Core\CoreDataStorage;
-use PassionEngine\Engine\Core\CoreAccessToken;
+use PassionEngine\Engine\Core\CoreAccessTokenInterface;
 use PassionEngine\Engine\Core\CoreAccessZone;
 use PassionEngine\Engine\Core\CoreLoader;
 use PassionEngine\Engine\Exec\ExecUtils;
@@ -14,7 +14,7 @@ use PassionEngine\Engine\Exec\ExecUtils;
  *
  * @author Sébastien Villemain
  */
-class LibMenuData extends CoreDataStorage implements CoreAccessToken
+class LibMenuData extends CoreDataStorage implements CoreAccessTokenInterface
 {
 
     /**

@@ -10,7 +10,7 @@ use DateTime;
  *
  * @author Sébastien Villemain
  */
-class CoreSessionData extends CoreDataStorage implements CoreAccessToken
+class CoreSessionData extends CoreDataStorage implements CoreAccessTokenInterface
 {
 
     /**

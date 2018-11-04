@@ -5,7 +5,7 @@ namespace PassionEngine\Engine\Lib;
 use PassionEngine\Engine\Core\CoreLoader;
 use PassionEngine\Engine\Core\CoreLayout;
 use PassionEngine\Engine\Core\CoreDataStorage;
-use PassionEngine\Engine\Core\CoreAccessToken;
+use PassionEngine\Engine\Core\CoreAccessTokenInterface;
 use PassionEngine\Engine\Core\CoreAccess;
 use PassionEngine\Engine\Core\CoreAccessType;
 
@@ -14,7 +14,7 @@ use PassionEngine\Engine\Core\CoreAccessType;
  *
  * @author Sébastien Villemain
  */
-abstract class LibEntityData extends CoreDataStorage implements CoreAccessToken
+abstract class LibEntityData extends CoreDataStorage implements CoreAccessTokenInterface
 {
 
     /**

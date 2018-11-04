@@ -7,7 +7,7 @@ namespace PassionEngine\Engine\Core;
  *
  * @author Sébastien Villemain
  */
-interface CoreAccessToken
+interface CoreAccessTokenInterface
 {
 
     /**
