@@ -137,9 +137,7 @@ class CoreMain
         $this->route->requestLayout();
         $this->checkMakeStyle();
 
-        if (!PASSION_ENGINE_DEBUGMODE) {
-            $this->compressionOpen();
-        }
+        $this->compressionOpen();
 
         if ($coreSession->bannedSession()) {
             // Isoloire du bannissement
@@ -152,9 +150,9 @@ class CoreMain
 
         if (PASSION_ENGINE_DEBUGMODE) {
             ExecTimeMarker::stopMeasurement('launcher');
-        } else {
-            $this->compressionClose();
         }
+
+        $this->compressionClose();
     }
 
     /**
