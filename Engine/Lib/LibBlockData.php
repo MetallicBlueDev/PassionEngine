@@ -70,13 +70,23 @@ class LibBlockData extends LibEntityData
     }
 
     /**
-     * Retourne le rang pour accèder au block.
+     * Retourne le rang pour accéder au block.
      *
      * @return int
      */
     public function &getRank(): int
     {
         return $this->getInt('rank');
+    }
+
+    /**
+     * Détermine si le block correspond au nom demandé.
+     *
+     * @return bool
+     */
+    public function hasFolderName(string $name): bool
+    {
+        return (bool) (!empty($name) && ucfirst($name) === $this->getType());
     }
 
     /**

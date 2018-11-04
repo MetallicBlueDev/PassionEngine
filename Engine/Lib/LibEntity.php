@@ -184,7 +184,7 @@ abstract class LibEntity
 
         if (!empty($this->entityDatas)) {
             foreach ($this->entityDatas as $entityData) {
-                if ($entityData->getFolderName() === $entityFolderName) {
+                if ($entityData->hasFolderName($entityFolderName)) {
                     $entityId = $entityData->getId();
                     break;
                 }

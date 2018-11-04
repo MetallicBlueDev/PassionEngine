@@ -55,6 +55,13 @@ abstract class LibEntityData extends CoreDataStorage implements CoreAccessTokenI
     }
 
     /**
+     * Détermine si le nom du dossier correspond à celui de l'entité.
+     *
+     * @return string
+     */
+    abstract public function hasFolderName(string $name): bool;
+
+    /**
      * Retourne le nom du dossier contenant l'entité.
      *
      * @return string

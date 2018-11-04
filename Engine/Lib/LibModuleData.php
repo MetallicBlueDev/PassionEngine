@@ -44,6 +44,16 @@ class LibModuleData extends LibEntityData
     }
 
     /**
+     * Détermine si le module correspond au nom demandé.
+     *
+     * @return bool
+     */
+    public function hasFolderName(string $name): bool
+    {
+        return (bool) (!empty($name) && ucfirst($name) === $this->getName());
+    }
+
+    /**
      * Retourne le nom du dossier contenant le module.
      *
      * @return string
