@@ -19,7 +19,7 @@ use PassionEngine\Engine\Exec\ExecTimeMarker;
  * @var bool
  */
 define('PASSION_ENGINE_DEBUGMODE',
-       file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'debugmode'));
+       (bool) file_exists(__DIR__ . DIRECTORY_SEPARATOR . 'Includes' . DIRECTORY_SEPARATOR . 'debugmode'));
 
 /**
  * Marque le passage dans l'index.
