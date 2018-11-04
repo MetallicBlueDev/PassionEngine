@@ -114,7 +114,7 @@ class ModuleIndex extends ModuleModel
 
             if ($coreSql->affectedRows() > 0) {
                 $coreSession->refreshSessionData();
-                CoreLogger::addInfo(DATA_SAVED);
+                CoreLogger::addUserInformation(DATA_SAVED);
             }
         }
         if (CoreMain::getInstance()->getRoute()->isDefaultLayout()) {
@@ -228,7 +228,7 @@ class ModuleIndex extends ModuleModel
 
                     if ($selectedBase->affectedRows() > 0) {
                         $validName = false;
-                        CoreLogger::addWarning(ACCOUNT_PRIVATE_LOGIN_IS_ALLOWED);
+                        CoreLogger::addUserWarning(ACCOUNT_PRIVATE_LOGIN_IS_ALLOWED);
                     }
                 }
                 if ($validName) {
@@ -242,7 +242,7 @@ class ModuleIndex extends ModuleModel
                                     $this->errorBox();
                                 }
                             } else {
-                                CoreLogger::addWarning(ACCOUNT_PRIVATE_PASSWORD_INVALID_CONFIRME);
+                                CoreLogger::addUserWarning(ACCOUNT_PRIVATE_PASSWORD_INVALID_CONFIRME);
                             }
                         }
                         $values['name'] = $name;
@@ -259,10 +259,10 @@ class ModuleIndex extends ModuleModel
 
                         if ($selectedBase0->affectedRows() > 0) {
                             CoreSession::getInstance()->refreshSessionData();
-                            CoreLogger::addInfo(DATA_SAVED);
+                            CoreLogger::addUserInformation(DATA_SAVED);
                         }
                     } else {
-                        CoreLogger::addWarning(INVALID_EMAIL);
+                        CoreLogger::addUserWarning(INVALID_EMAIL);
                     }
                 }
             } else {
@@ -408,7 +408,7 @@ class ModuleIndex extends ModuleModel
     private function errorBox()
     {
         foreach (CoreSession::getErrorMessage() as $errorMessage) {
-            CoreLogger::addWarning($errorMessage);
+            CoreLogger::addUserWarning($errorMessage);
         }
     }
 
@@ -449,15 +449,15 @@ class ModuleIndex extends ModuleModel
                         $ok = ExecEmail::sendEmail(); // TODO envoyer un mail
                     }
                     if (!$ok) {
-                        CoreLogger::addWarning(FORGET_LOGIN_INVALID_EMAIL_ACCOUNT);
+                        CoreLogger::addUserWarning(FORGET_LOGIN_INVALID_EMAIL_ACCOUNT);
                     }
                 } else {
-                    CoreLogger::addWarning(INVALID_EMAIL);
+                    CoreLogger::addUserWarning(INVALID_EMAIL);
                 }
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_LOGIN_IS_SUBMIT_TO . ' ' . $email);
+                CoreLogger::addUserInformation(FORGET_LOGIN_IS_SUBMIT_TO . ' ' . $email);
             } else {
                 if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($email)) {
                     $form = new LibForm('login-forgetlogin');
@@ -513,7 +513,7 @@ class ModuleIndex extends ModuleModel
                         }
                     }
                     if (!$ok) {
-                        CoreLogger::addWarning(FORGET_PASSWORD_INVALID_LOGIN_ACCOUNT);
+                        CoreLogger::addUserWarning(FORGET_PASSWORD_INVALID_LOGIN_ACCOUNT);
                     }
                 } else {
                     $this->errorBox();
@@ -521,7 +521,7 @@ class ModuleIndex extends ModuleModel
             }
 
             if ($ok) {
-                CoreLogger::addInfo(FORGET_PASSWORD_IS_SUBMIT_TO . ' ' . $email);
+                CoreLogger::addUserInformation(FORGET_PASSWORD_IS_SUBMIT_TO . ' ' . $email);
             } else {
                 if (CoreMain::getInstance()->getRoute()->isDefaultLayout() || empty($login)) {
                     $form = new LibForm('login-forgetpass');

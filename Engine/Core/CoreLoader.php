@@ -267,7 +267,7 @@ class CoreLoader
                                      $args);
 
         if ($rslt === false) {
-            CoreLogger::addException('Failed to execute callback \'' . $callback . '\'.');
+            CoreLogger::addDebug('Failed to execute callback \'' . $callback . '\'.');
         }
         return $rslt;
     }
@@ -467,10 +467,10 @@ class CoreLoader
         } else {
             switch ($info->fileType) {
                 case self::BLOCK_FILE:
-                    CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(26)));
+                    CoreLogger::addUserAlert(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(26)));
                     break;
                 case self::MODULE_FILE:
-                    CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(23)));
+                    CoreLogger::addUserAlert(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(23)));
                     break;
                 case self::TRANSLATE_FILE:
                     // Aucune traduction disponible

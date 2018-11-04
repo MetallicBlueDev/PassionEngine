@@ -22,7 +22,7 @@ abstract class BlockModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . ((!empty($this->getBlockData()->getTitle())) ? ' (' . $this->getBlockData()->getTitle() . ')' : ''));
+        CoreLogger::addUserAlert(FailBase::getErrorCodeDescription(FailBase::getErrorCodeName(25)) . ((!empty($this->getBlockData()->getTitle())) ? ' (' . $this->getBlockData()->getTitle() . ')' : ''));
     }
 
     /**

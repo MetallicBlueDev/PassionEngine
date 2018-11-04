@@ -28,7 +28,7 @@ abstract class ModuleModel extends LibEntityModel
     public function display(string $view): void
     {
         unset($view);
-        CoreLogger::addError(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24),
+        CoreLogger::addUserAlert(CoreTranslate::getConstantDescription(FailBase::getErrorCodeName(24),
                                                                                               array($this->getModuleData()->getName()),
                                                                                               true));
     }

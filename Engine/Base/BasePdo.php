@@ -63,7 +63,7 @@ class BasePdo extends BaseModel
         }
 
         if (!$rslt) {
-            CoreLogger::addException('PDO driver not found: ' . $driverName);
+            CoreLogger::addDebug('PDO driver not found: ' . $driverName);
         }
         return $rslt;
     }
@@ -85,7 +85,7 @@ class BasePdo extends BaseModel
             $this->getPdo()->setAttribute(PDO::ATTR_STRINGIFY_FETCHES,
                                           false);
         } catch (PDOException $ex) {
-            CoreLogger::addException('PDO exception: ' . $ex->getMessage());
+            CoreLogger::addDebug('PDO exception: ' . $ex->getMessage());
             $this->unsetConnectionObject();
         }
     }
@@ -228,7 +228,7 @@ class BasePdo extends BaseModel
         $this->lastQueryResult = $this->getPdo()->query($this->getSql());
 
         if ($this->lastQueryResult === false) {
-            CoreLogger::addException('PDO query: ' . $this->getPdoErrorMessage());
+            CoreLogger::addDebug('PDO query: ' . $this->getPdoErrorMessage());
         }
     }
 
@@ -321,7 +321,7 @@ class BasePdo extends BaseModel
         }
 
         if ($this->driverName === null) {
-            CoreLogger::addException('Invalid PDO driver syntax');
+            CoreLogger::addDebug('Invalid PDO driver syntax');
             $this->driverName = '';
         }
     }
@@ -336,7 +336,7 @@ class BasePdo extends BaseModel
         if (CoreLoader::classLoader($fullClassName)) {
             $this->platformSpecific = new $fullClassName();
         } else {
-            CoreLogger::addException('PDO platform specific implementation not found: ' . $this->getDriverName());
+            CoreLogger::addDebug('PDO platform specific implementation not found: ' . $this->getDriverName());
             $this->platformSpecific = new PdoPlatformSpecific();
         }
     }

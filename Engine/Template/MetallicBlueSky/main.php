@@ -41,7 +41,7 @@
                                     <?php echo PassionEngine\Engine\Core\CoreHtml::getInstance()->getLoader(); ?>
                                     <?php echo PassionEngine\Engine\Lib\LibBreadcrumb::getInstance()->getBreadcrumbTrail(); ?>
                                     <div class="spacer"></div>
-                                    <?php PassionEngine\Engine\Core\CoreLogger::displayMessages(); ?>
+                                    <?php PassionEngine\Engine\Core\CoreLogger::displayUserMessages(); ?>
                                     <?php echo PassionEngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(PassionEngine\Engine\Core\CoreLayout::BLOCK_SIDE_TOP); ?>
                                     <div>
                                         <?php echo PassionEngine\Engine\Lib\LibBlock::getInstance()->getBlocksBuildedBySide(PassionEngine\Engine\Core\CoreLayout::BLOCK_SIDE_MODULE_LEFT); ?>

@@ -474,7 +474,7 @@ class CoreRoute
         if ($moduleData === null || !$moduleData->isValid()) {
             // Afficher une erreur 404
             if (!empty($this->module)) {
-                CoreLogger::addInfo(ERROR_404);
+                CoreLogger::addUserWarning(ERROR_404);
             }
 
             $moduleData = $this->requestDefaultModuleData();

@@ -84,7 +84,7 @@ class CachePhp extends CacheModel
     {
         if (!touch(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path,
                    $updateTime)) {
-            CoreLogger::addException('Touch error on ' . $path);
+            CoreLogger::addDebug('Touch error on ' . $path);
         }
     }
 
@@ -208,7 +208,7 @@ class CachePhp extends CacheModel
             if ($nbBytesCmd !== $nbBytesFile) {
                 unlink(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $pathFile);
 
-                CoreLogger::addException('Bad response for fwrite command. Path : ' . $pathFile . '. '
+                CoreLogger::addDebug('Bad response for fwrite command. Path : ' . $pathFile . '. '
                     . 'Server response : ' . $nbBytesCmd . ' bytes writed, ' . $nbBytesFile . ' bytes readed');
             }
 
@@ -255,7 +255,7 @@ class CachePhp extends CacheModel
                    $htaccessPath . '.htaccess');
         }
 
-        CoreLogger::addException('Bad response for fopen command. Path : ' . $pathFile);
+        CoreLogger::addDebug('Bad response for fopen command. Path : ' . $pathFile);
     }
 
     /**
@@ -319,7 +319,7 @@ class CachePhp extends CacheModel
 
         // Vérification de l'existence du fichier
         if (!is_dir($path)) {
-            CoreLogger::addException('Bad response for mkdir|chmod command. Path : ' . $path);
+            CoreLogger::addDebug('Bad response for mkdir|chmod command. Path : ' . $path);
         }
     }
 
@@ -352,7 +352,7 @@ class CachePhp extends CacheModel
             }
 
             if (is_file(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $path)) {
-                CoreLogger::addException('Bad response for fopen|unlink command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for fopen|unlink command. Path : ' . $path);
             }
         }
     }
@@ -431,7 +431,7 @@ class CachePhp extends CacheModel
             rmdir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath);
 
             if (is_dir(PASSION_ENGINE_ROOT_DIRECTORY . DIRECTORY_SEPARATOR . $dirPath)) {
-                CoreLogger::addException('Bad response for rmdir command. Path : ' . $dirPath);
+                CoreLogger::addDebug('Bad response for rmdir command. Path : ' . $dirPath);
             }
         }
     }

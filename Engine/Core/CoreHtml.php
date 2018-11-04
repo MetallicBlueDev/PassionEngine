@@ -537,7 +537,7 @@ class CoreHtml
 
             if (!ExecCookie::createCookie($this->cookieTestName,
                                           $newMode)) {
-                CoreLogger::addException('Fail to create cookie with javaScriptMode.');
+                CoreLogger::addDebug('Fail to create cookie with javaScriptMode.');
             }
         }
         return ($currentMode === '-1') ? -1 : 0;

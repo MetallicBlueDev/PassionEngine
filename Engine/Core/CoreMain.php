@@ -197,7 +197,7 @@ class CoreMain
             }
 
             // Execute la commande de récupération d'erreur
-            CoreLogger::displayMessages();
+            CoreLogger::displayUserMessages();
 
             // Javascript autonome
             CoreHtml::getInstance()->selfJavascript();

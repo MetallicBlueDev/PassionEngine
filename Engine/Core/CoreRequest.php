@@ -324,7 +324,7 @@ class CoreRequest
                                                true);
                 break;
             default:
-                CoreLogger::addException('CoreRequest : data type unknown');
+                CoreLogger::addDebug('CoreRequest : data type unknown');
                 $content = self::protectString($content);
                 break;
         }

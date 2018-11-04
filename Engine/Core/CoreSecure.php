@@ -325,7 +325,7 @@ class CoreSecure
     private function appendLoggerErrors(array &$messages): void
     {
         if (CoreLoader::isCallable('CoreLogger')) {
-            $loggerExceptions = CoreLogger::getExceptions();
+            $loggerExceptions = CoreLogger::getDebugMessage();
 
             if (!empty($loggerExceptions)) {
                 $messages[] = '';

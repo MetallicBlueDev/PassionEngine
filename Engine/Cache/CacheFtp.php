@@ -32,7 +32,7 @@ class CacheFtp extends CacheModel
         $rslt = extension_loaded('ftp') && function_exists('ftp_connect');
 
         if (!$rslt) {
-            CoreLogger::addException('FTP function not found');
+            CoreLogger::addDebug('FTP function not found');
         }
         return $rslt;
     }
@@ -49,7 +49,7 @@ class CacheFtp extends CacheModel
                                                    $this->timeOut));
 
             if ($this->getConnectionObject() === false) {
-                CoreLogger::addException('Could not connect to host ' . $this->getTransactionHost() . ' on port ' . $this->getServerPort());
+                CoreLogger::addDebug('Could not connect to host ' . $this->getTransactionHost() . ' on port ' . $this->getServerPort());
                 $this->unsetConnectionObject();
             } else {
                 // Force le timeout, si possible
@@ -65,7 +65,7 @@ class CacheFtp extends CacheModel
     {
         if ($this->netConnected()) {
             if (ftp_close($this->getConnectionObject())) {
-                CoreLogger::addException('Unable to close connection');
+                CoreLogger::addDebug('Unable to close connection');
             }
             $this->unsetConnectionObject();
         }
@@ -88,7 +88,7 @@ class CacheFtp extends CacheModel
             $this->rootConfig();
             $rslt = true;
         } else {
-            CoreLogger::addException('Unable to login.');
+            CoreLogger::addDebug('Unable to login.');
         }
         return $rslt;
     }
@@ -223,7 +223,7 @@ class CacheFtp extends CacheModel
                               $this->getRootPath($path));
 
             if ($mTime === -1) { // Une erreur est survenue
-                CoreLogger::addException('Bad response for ftp_mdtm command. Path : ' . $path
+                CoreLogger::addDebug('Bad response for ftp_mdtm command. Path : ' . $path
                     . ' Turn off the native command.');
             }
         }
@@ -297,7 +297,7 @@ class CacheFtp extends CacheModel
         if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . 'SecurityCheck.php')) {
             $this->setServerRoot($pathFound);
         } else if (empty($this->getServerRoot())) {
-            CoreLogger::addException('Unable to configure root path.');
+            CoreLogger::addDebug('Unable to configure root path.');
         }
     }
 
@@ -312,7 +312,7 @@ class CacheFtp extends CacheModel
     {
         if (ftp_site($this->getConnectionObject(),
                      'CHMOD ' . $mode . ' ' . $this->getRootPath($path))) {
-            CoreLogger::addException('Bad response for ftp_site CHMOD command. Path : ' . $path);
+            CoreLogger::addDebug('Bad response for ftp_site CHMOD command. Path : ' . $path);
         }
     }
 
@@ -345,7 +345,7 @@ class CacheFtp extends CacheModel
                               $buffer,
                               $this->getRootPath($path),
                                                  FTP_ASCII)) {// TODO il faut mettre une path remote ici !
-                    CoreLogger::addException('Bad response for ftp_fget command. Path : ' . $path);
+                    CoreLogger::addDebug('Bad response for ftp_fget command. Path : ' . $path);
                 }
 
                 fclose($buffer);
@@ -410,7 +410,7 @@ class CacheFtp extends CacheModel
     {
         if (!ftp_mkdir($this->getConnectionObject(),
                        $path)) {
-            CoreLogger::addException('Bad response for ftp_mkdir command. Path : ' . $path);
+            CoreLogger::addDebug('Bad response for ftp_mkdir command. Path : ' . $path);
         }
 
         // Ajuste les droits CHMOD
@@ -446,7 +446,7 @@ class CacheFtp extends CacheModel
             // On efface le fichier, si c'est un fichier
             if (!ftp_delete($this->getConnectionObject(),
                             $this->getRootPath($path))) {
-                CoreLogger::addException('Bad response for ftp_delete command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for ftp_delete command. Path : ' . $path);
             }
         }
     }
@@ -488,7 +488,7 @@ class CacheFtp extends CacheModel
         if ($timeLimit === 0 && $this->netConnected()) {
             if (!ftp_rmdir($this->getConnectionObject(),
                            $this->getRootPath($path))) {
-                CoreLogger::addException('Bad response for ftp_rmdir command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for ftp_rmdir command. Path : ' . $path);
             }
         }
     }

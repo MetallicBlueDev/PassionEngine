@@ -98,7 +98,7 @@ class ExecCrypt
                                '$1$' . $salt . '$');
         } else {
             if (CoreLoader::isCallable('CoreLogger')) {
-                CoreLogger::addException('Unsupported crypt method: CRYPT_MD5');
+                CoreLogger::addDebug('Unsupported crypt method: CRYPT_MD5');
             }
             $cryptData = self::cryptByMd5Unsafe($data);
         }
@@ -153,7 +153,7 @@ class ExecCrypt
                                $salt);
         } else {
             if (CoreLoader::isCallable('CoreLogger')) {
-                CoreLogger::addException('Unsupported crypt method: CRYPT_STD_DES');
+                CoreLogger::addDebug('Unsupported crypt method: CRYPT_STD_DES');
             }
             $cryptData = self::cryptBySmd5($data,
                                            $salt);

@@ -29,7 +29,7 @@ class BaseMysqli extends BaseModel
         $rslt = class_exists('mysqli');
 
         if (!$rslt) {
-            CoreLogger::addException('MySqli driver not found');
+            CoreLogger::addDebug('MySqli driver not found');
         }
         return $rslt;
     }
@@ -52,7 +52,7 @@ class BaseMysqli extends BaseModel
             $this->getMysqli()->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE,
                                         true);
         } catch (mysqli_sql_exception $ex) {
-            CoreLogger::addException('MySqli connect_error: ' . $ex->getMessage());
+            CoreLogger::addDebug('MySqli connect_error: ' . $ex->getMessage());
             $this->unsetConnectionObject();
         }
     }
@@ -207,7 +207,7 @@ class BaseMysqli extends BaseModel
         $this->lastQueryResult = $this->getMysqli()->query($this->getSql());
 
         if ($this->lastQueryResult === false) {
-            CoreLogger::addException('MySqli query: ' . $this->getMysqli()->error);
+            CoreLogger::addDebug('MySqli query: ' . $this->getMysqli()->error);
         }
     }
 

@@ -322,7 +322,7 @@ class CoreMainData extends CoreDataStorage
 
         // Vérification de l'adresse email du webmaster
         if (!ExecEmail::isValidEmail($rawConfig['webmasterEmail'])) {
-            CoreLogger::addException('Default email isn\'t valid');
+            CoreLogger::addDebug('Default email isn\'t valid');
         }
 
         define('PASSION_ENGINE_EMAIL',

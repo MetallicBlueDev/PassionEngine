@@ -75,7 +75,7 @@ class CacheSocket extends CacheModel
                                                  $this->timeOut));
 
             if ($this->getConnectionObject() === false) {
-                CoreLogger::addException('Could not connect to host ' . $this->getTransactionHost() . ' on port ' . $this->getServerPort() . '. ErrorCode = ' . $socketErrorNumber . ' ErrorMessage = ' . $socketErrorMessage);
+                CoreLogger::addDebug('Could not connect to host ' . $this->getTransactionHost() . ' on port ' . $this->getServerPort() . '. ErrorCode = ' . $socketErrorNumber . ' ErrorMessage = ' . $socketErrorMessage);
                 $this->unsetConnectionObject();
             } else {
                 // Force le timeout, si possible
@@ -93,7 +93,7 @@ class CacheSocket extends CacheModel
             $this->sendCommand('QUIT');
 
             if (!fclose($this->getConnectionObject())) {
-                CoreLogger::addException('Unable to close connection');
+                CoreLogger::addDebug('Unable to close connection');
             }
             $this->unsetConnectionObject();
         }
@@ -128,11 +128,11 @@ class CacheSocket extends CacheModel
                     // Configuration du chemin FTP
                     $this->rootConfig();
                 } else {
-                    CoreLogger::addException('Unable to login: bad password?');
+                    CoreLogger::addDebug('Unable to login: bad password?');
                 }
             }
         } else {
-            CoreLogger::addException('Unable to login: bad user?');
+            CoreLogger::addDebug('Unable to login: bad user?');
         }
         return $rslt;
     }
@@ -252,7 +252,7 @@ class CacheSocket extends CacheModel
                                                                                  array(
                         250
                 ))) {
-                CoreLogger::addException('Bad response for MDTM command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for MDTM command. Path : ' . $path);
             }
 
             $mTime = $this->lastResponseMessage;
@@ -322,7 +322,7 @@ class CacheSocket extends CacheModel
         $rslt = function_exists('fsockopen');
 
         if (!$rslt) {
-            CoreLogger::addException('Socket function not found');
+            CoreLogger::addDebug('Socket function not found');
         }
         return $rslt;
     }
@@ -367,7 +367,7 @@ class CacheSocket extends CacheModel
     {
         if (!fwrite($this->getConnectionObject(),
                     $cmd . PASSION_ENGINE_CRLF)) {
-            CoreLogger::addException('Unable to send command: ' . $cmd);
+            CoreLogger::addDebug('Unable to send command: ' . $cmd);
         }
     }
 
@@ -407,7 +407,7 @@ class CacheSocket extends CacheModel
                 $rslt = true;
             }
         } else {
-            CoreLogger::addException('Timeout or unrecognized response while waiting for a response from the server. Full response : ' . $response);
+            CoreLogger::addDebug('Timeout or unrecognized response while waiting for a response from the server. Full response : ' . $response);
         }
         return $rslt;
     }
@@ -466,7 +466,7 @@ class CacheSocket extends CacheModel
         if (is_file(DIRECTORY_SEPARATOR . $pathRebuild . DIRECTORY_SEPARATOR . $pathFound . DIRECTORY_SEPARATOR . CoreLoader::ENGINE_SUBTYPE . DIRECTORY_SEPARATOR . 'SecurityCheck.php')) {
             $this->setServerRoot($pathFound);
         } else if (empty($this->getServerRoot())) {
-            CoreLogger::addException('Unable to configure root path.');
+            CoreLogger::addDebug('Unable to configure root path.');
         }
     }
 
@@ -484,7 +484,7 @@ class CacheSocket extends CacheModel
                     200,
                     250
             ))) {
-            CoreLogger::addException('Bad response for SITE CHMOD command. Path : ' . $path);
+            CoreLogger::addDebug('Bad response for SITE CHMOD command. Path : ' . $path);
         }
     }
 
@@ -542,7 +542,7 @@ class CacheSocket extends CacheModel
                 if (!$this->receiveResponseCode(array(
                         226
                     ))) {
-                    CoreLogger::addException('Bad response for STOR|APPE|fwrite command. Path : ' . $path);
+                    CoreLogger::addDebug('Bad response for STOR|APPE|fwrite command. Path : ' . $path);
                 }
             }
         }
@@ -607,7 +607,7 @@ class CacheSocket extends CacheModel
                                                 array(
                     257
             ))) {
-            CoreLogger::addException('Bad response for MKD command. Path : ' . $path);
+            CoreLogger::addDebug('Bad response for MKD command. Path : ' . $path);
         }
 
         // Ajuste les droits CHMOD
@@ -645,7 +645,7 @@ class CacheSocket extends CacheModel
                                                                                  array(
                         250
                 ))) {
-                CoreLogger::addException('Bad response for DELE command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for DELE command. Path : ' . $path);
             }
         }
     }
@@ -690,7 +690,7 @@ class CacheSocket extends CacheModel
                                                                                array(
                         250
                 ))) {
-                CoreLogger::addException('Bad response for RMD command. Path : ' . $path);
+                CoreLogger::addDebug('Bad response for RMD command. Path : ' . $path);
             }
         }
     }
@@ -760,7 +760,7 @@ class CacheSocket extends CacheModel
                     $this->setTimeOut();
                     $rslt = true;
                 } else {
-                    CoreLogger::addException('Could not connect to host ' . $this->passiveIp . ' on port ' . $this->passivePort . '. Socket error number ' . $socket_error_number . ' and error message: ' . $socket_error_message);
+                    CoreLogger::addDebug('Could not connect to host ' . $this->passiveIp . ' on port ' . $this->passivePort . '. Socket error number ' . $socket_error_number . ' and error message: ' . $socket_error_message);
                 }
             }
         }
