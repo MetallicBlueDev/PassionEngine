@@ -2,6 +2,8 @@
 
 declare(strict_types = 1);
 
+$startTime = microtime(true);
+
 /* -----------------------------------------------------------------------
  * PassionEngine
  * The blue passionflower CMS Engine, written with love and passion.
@@ -9,7 +11,6 @@ declare(strict_types = 1);
 
 use PassionEngine\Engine\Core\CoreSecure;
 use PassionEngine\Engine\Core\CoreMain;
-use PassionEngine\Engine\Core\CoreLogger;
 use PassionEngine\Engine\Exec\ExecTimeMarker;
 
 /**
@@ -33,7 +34,9 @@ define('PASSION_ENGINE_BOOTSTRAP',
 require __DIR__ . DIRECTORY_SEPARATOR . 'Engine' . DIRECTORY_SEPARATOR . 'SecurityCheck.php';
 
 if (PASSION_ENGINE_DEBUGMODE) {
-    ExecTimeMarker::startMeasurement('all');
+    ExecTimeMarker::startMeasurement('all',
+                                     $startTime);
+    unset($startTime);
 }
 
 try {

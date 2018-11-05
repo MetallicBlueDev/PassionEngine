@@ -30,9 +30,8 @@ if (!defined('PASSION_ENGINE_INITIALIZED')) {
                        1) === '_') {
                 CoreInfo::addGlobalVars($gvName,
                                         $gvValue);
+                unset(${$gvName});
             }
-
-            unset(${$gvName});
         }
 
         unset($GLOBALS);

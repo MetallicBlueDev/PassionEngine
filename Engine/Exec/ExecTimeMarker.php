@@ -28,10 +28,12 @@ class ExecTimeMarker
      * Marque le temps de début de génération.
      *
      * @param string $name Nom de la mesure.
+     * @param string $value Valeur de démarrage.
      */
-    public static function startMeasurement(string $name): void
+    public static function startMeasurement(string $name,
+                                            float $value = -1): void
     {
-        self::$startTime[$name] = self::getMaker();
+        self::$startTime[$name] = $value > 0 ? $value : self::getMaker();
     }
 
     /**
