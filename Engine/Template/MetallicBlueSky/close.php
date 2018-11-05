@@ -14,7 +14,7 @@
                 <?php echo PassionEngine\Engine\Core\CoreMain::getInstance()->getConfigs()->getDefaultSiteSlogan(); ?>
             </div>
             <div id="close_block">
-                <div id="close_image"><a href="https://<?php echo PASSION_ENGINE_URL; ?>"></a></div>
+                <div id="close_image"><a href="<?php echo PASSION_ENGINE_URL; ?>"></a></div>
                 <div id="close_text">
                     <br /><?php echo $closeText; ?>
                     <br /><br /><?php echo $closeReason; ?>

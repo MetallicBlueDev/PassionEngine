@@ -356,7 +356,7 @@ class CoreHtml
         return $this->getMetaKeywords()
             . '<meta name="generator" content="PassionEngine" />' . "\n"
             . '<meta charset="utf-8" />' . "\n"
-            . '<link rel="canonical" href="https://' . PASSION_ENGINE_URL . '" />' . "\n"
+            . '<link rel="canonical" href="' . PASSION_ENGINE_URL . '" />' . "\n"
             . '<link rel="shortcut icon" type="image/x-icon" href="' . LibMakeStyle::getTemplateDirectory() . '/favicon.ico" />' . "\n"
             . $this->getMetaNoScript()
             . $this->getMetaIncludeJavascript()
@@ -533,7 +533,7 @@ class CoreHtml
         if ($this->javaScriptMode === 0 && !CoreSecure::getInstance()->locked()) {
             if ($this->cookieEnabled()) {
                 $cookieMode = CoreSession::getInstance()->getNativeSessionId();
-                $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&' . self::JAVASCRIPT_MODE_REQUEST . '=-1&' . self::COOKIE_MODE_REQUEST . '=' . $cookieMode . '">');
+                $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&' . self::JAVASCRIPT_MODE_REQUEST . '=-1&' . self::COOKIE_MODE_REQUEST . '=' . $cookieMode . '">');
             }
 
             // Activation par défaut

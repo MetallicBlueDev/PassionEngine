@@ -280,6 +280,19 @@ class CoreInfo
      */
     private function getUrlAddress()
     {
+        $protocolValue = 'http' . (!empty(self::getGlobalServer('HTTPS')) ? 's' : '');
+        $serverName = self::getGlobalServer('SERVER_NAME');
+        $queryUrl = $this->getQueryUrlAddress();
+        return $protocolValue . '://' . $serverName . $queryUrl;
+    }
+
+    /**
+     * Retourne l'adresse URL complète jusqu'au moteur.
+     *
+     * @return string
+     */
+    private function getQueryUrlAddress()
+    {
         $rslt = '';
 
         // Recherche de l'URL courante
@@ -295,8 +308,7 @@ class CoreInfo
             // Construction du lien
             $urlFinal = $this->getUrlAddressBuilded($currentUrlArray,
                                                     $urlBaseArray);
-            $serverName = self::getGlobalServer('SERVER_NAME');
-            $rslt = ((empty($urlFinal)) ? $serverName : $serverName . '/' . $urlFinal);
+            $rslt = !empty($urlFinal) ? '/' . $urlFinal : '';
         }
         return $rslt;
     }
@@ -402,6 +414,6 @@ class CoreInfo
      */
     private static function getGlobalServer($keyName)
     {
-        return (isset(self::$unsafeGlobalVars['_SERVER'])) ? self::$unsafeGlobalVars['_SERVER'][$keyName] : '';
+        return (isset(self::$unsafeGlobalVars['_SERVER']) && isset(self::$unsafeGlobalVars['_SERVER'][$keyName])) ? self::$unsafeGlobalVars['_SERVER'][$keyName] : '';
     }
 }
