@@ -17,6 +17,20 @@ class CoreHtml
 {
 
     /**
+     * Requête de test pour l'état des cookies.
+     *
+     * @var string
+     */
+    private const COOKIE_MODE_REQUEST = "cookieMode";
+
+    /**
+     * Requête de test pour l'état du javaScript.
+     *
+     * @var string
+     */
+    private const JAVASCRIPT_MODE_REQUEST = "javaScriptMode";
+
+    /**
      * Instance de cette classe.
      *
      * @var CoreHtml
@@ -519,7 +533,7 @@ class CoreHtml
         if ($this->javaScriptMode === 0 && !CoreSecure::getInstance()->locked()) {
             if ($this->cookieEnabled()) {
                 $cookieMode = CoreSession::getInstance()->getNativeSessionId();
-                $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&javaScriptMode=-1&cookieMode=' . $cookieMode . '">');
+                $this->addNoScriptCode('<meta http-equiv="refresh" content="1;url=http://' . PASSION_ENGINE_URL . '/index.php?' . CoreRequest::getQueryString() . '&' . self::JAVASCRIPT_MODE_REQUEST . '=-1&' . self::COOKIE_MODE_REQUEST . '=' . $cookieMode . '">');
             }
 
             // Activation par défaut
@@ -542,7 +556,7 @@ class CoreHtml
      */
     private function requestCookieMode(): void
     {
-        $oldNativeSessionId = CoreRequest::getString('cookieMode');
+        $oldNativeSessionId = CoreRequest::getString(self::COOKIE_MODE_REQUEST);
         $currentNativeSessionId = CoreSession::getInstance()->getNativeSessionId();
         $cookieModeDisabled = !empty($oldNativeSessionId) && $oldNativeSessionId !== $currentNativeSessionId;
         $cookieModeEnabled = !empty($oldNativeSessionId) && $oldNativeSessionId === $currentNativeSessionId;
@@ -556,7 +570,7 @@ class CoreHtml
      */
     private function requestJavaScriptMode(): void
     {
-        $newJsMode = CoreRequest::getInteger('javaScriptMode');
+        $newJsMode = CoreRequest::getInteger(self::JAVASCRIPT_MODE_REQUEST);
         $currentJsMode = ExecCookie::getCookie($this->cookieTestName);
 
         if (empty($currentJsMode) && $newJsMode === -1) {
