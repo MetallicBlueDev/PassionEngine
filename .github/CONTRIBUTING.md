@@ -18,7 +18,7 @@ You have to start from the French translation to go to the other languages.
 4. Wait for other users to test and review your changes.
 
 ## :star2: Credits
-If you are contributing to PassionEngine, please add your name to ```./CONTRIBUTORS.md``` so that you can be credited for your work outside and inside the CMS.
+If you are contributing to PassionEngine, please add your name to [`./CONTRIBUTORS.md`](https://github.com/MetallicBlueDev/PassionEngine/blob/master/.github/CONTRIBUTORS.md) so that you can be credited for your work outside and inside the CMS.
 
 ## :dizzy: Coding Style
 See [wiki](https://github.com/MetallicBlueDev/PassionEngine/wiki/Coding-Style)
